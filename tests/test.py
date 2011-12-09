@@ -2,6 +2,8 @@ import os
 import unittest
 import ConfigParser
 
+import gspread
+
 class ClientTest(unittest.TestCase):
 
     def setUp(self):
