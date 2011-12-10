@@ -29,6 +29,11 @@ class ClientTest(unittest.TestCase):
         book = gc.open('test1')
         self.assertTrue(isinstance(book, gspread.Book))
 
+        self.book = book
+
+        sheet = book.get_sheet(0)
+        self.assertTrue(isinstance(sheet, gspread.Sheet))
+
 
 if __name__ == '__main__':
     unittest.main()
