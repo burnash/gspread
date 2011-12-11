@@ -4,6 +4,7 @@ This is a simple Python library for accessing Google Spreadsheets. The point is 
 
 ## Usage
 
+```python
     import gspread
 
     gc = gspread.Client(auth=('the.email.address@gmail.com','password'))
@@ -15,3 +16,4 @@ This is a simple Python library for accessing Google Spreadsheets. The point is 
     worksheet = spreadsheet.get_worksheet(0)
 
     first_col = worksheet.col_values(1)
+```
