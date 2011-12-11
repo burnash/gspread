@@ -5,15 +5,15 @@ This is a simple Python library for accessing Google Spreadsheets. The point is 
 ## Usage
 
 ~~~python
-    import gspread
+import gspread
 
-    gc = gspread.Client(auth=('the.email.address@gmail.com','password'))
-    gc.login()
+gc = gspread.Client(auth=('the.email.address@gmail.com','password'))
+gc.login()
 
-    # Spreadsheets can be opened by their title in Google Docs
-    spreadsheet = gc.open('some title')
+# Spreadsheets can be opened by their title in Google Docs
+spreadsheet = gc.open('some title')
 
-    worksheet = spreadsheet.get_worksheet(0)
+worksheet = spreadsheet.get_worksheet(0)
 
-    first_col = worksheet.col_values(1)
+first_col = worksheet.col_values(1)
 ~~~
