@@ -17,22 +17,6 @@ def _ns1(name):
     return '{%s}%s' % (SPREADSHEET_NS, name)
 
 
-def indent(elem, level=0):
-    i = "\n" + level*"  "
-    if len(elem):
-        if not elem.text or not elem.text.strip():
-            elem.text = i + "  "
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-        for elem in elem:
-            indent(elem, level+1)
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-    else:
-        if level and (not elem.tail or not elem.tail.strip()):
-            elem.tail = i
-
-
 class HTTPSession(object):
     def __init__(self, headers=None):
         self.headers = headers or {}
