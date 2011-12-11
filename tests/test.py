@@ -20,19 +20,17 @@ class ClientTest(unittest.TestCase):
             raise Exception(msg % (creds_filename, creds_filename))
 
     def test_instantiate(self):
-        gc = gspread.Client(self.email, self.password)
+        gc = gspread.Client(auth=(self.email, self.password))
         self.assertTrue(isinstance(gc, gspread.Client))
 
     def test_login_and_open_book(self):
-        gc = gspread.Client(self.email, self.password)
+        gc = gspread.Client(auth=(self.email, self.password))
         gc.login()
-        book = gc.open('test1')
-        self.assertTrue(isinstance(book, gspread.Book))
+        spreadsheet = gc.open('test1')
+        self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
 
-        self.book = book
-
-        sheet = book.get_sheet(0)
-        self.assertTrue(isinstance(sheet, gspread.Sheet))
+        worksheet = spreadsheet.get_worksheet(0)
+        self.assertTrue(isinstance(worksheet, gspread.Worksheet))
 
 
 if __name__ == '__main__':

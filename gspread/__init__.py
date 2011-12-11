@@ -58,9 +58,8 @@ class HTTPSession(object):
 
 
 class Client(object):
-    def __init__(self, email, password, http_session=None):
-        self._email = email
-        self._password = password
+    def __init__(self, auth, http_session=None):
+        self.auth = auth
 
         if not http_session:
             self.session = HTTPSession()
@@ -75,8 +74,8 @@ class Client(object):
         source = 'burnash-gspread-0.0.1'
         service = 'wise'
 
-        data = {'Email': self._email,
-                'Passwd': self._password,
+        data = {'Email': self.auth[0],
+                'Passwd': self.auth[1],
                 'accountType': 'HOSTED_OR_GOOGLE',
                 'service': service,
                 'source': source}
