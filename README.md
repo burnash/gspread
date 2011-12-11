@@ -13,8 +13,10 @@ gc.login()
 # Spreadsheets can be opened by their title in Google Docs
 spreadsheet = gc.open('some title')
 
+# Select worksheet by index. Worksheet indexes start from zero
 worksheet = spreadsheet.get_worksheet(0)
 
+# Column and row indexes start from one
 first_col = worksheet.col_values(1)
 
 worksheet.update_cell(1, 2, 'Bingo!')
