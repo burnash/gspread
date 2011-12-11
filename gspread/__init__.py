@@ -132,22 +132,27 @@ class Worksheet(object):
         self.client = spreadsheet.client
         self.key = key
 
-    def row(self, rowx):
-        pass
-
-    def cell(self, rowx, colx):
-        pass
+    def _cell_addr(self, row, col):
+        return 'R%sC%s' % (row, col)
 
     def _fetch_cells(self):
         feed = self.client.get_cells_feed(self.spreadsheet.key, self.key)
         cells_list = []
         for elem in feed.findall(_ns('entry')):
             c_elem = elem.find(_ns1('cell'))
-            cells_list.append(Cell(self, c_elem.get('row'), c_elem.get('col'), c_elem.text))
+            cells_list.append(Cell(self, c_elem.get('row'),
+                                   c_elem.get('col'), c_elem.text))
 
         return cells_list
 
-    def get_rows(self):
+    def cell(self, row, col):
+        feed = self.client.get_cells_feed(self.spreadsheet.key,
+                                          self.key, self._cell_addr(row, col))
+        cell_elem = feed.find(_ns1('cell'))
+        return Cell(self, cell_elem.get('row'), cell_elem.get('col'),
+                    cell_elem.text)
+
+    def get_all_rows(self):
         cells = self._fetch_cells()
 
         rows = {}
@@ -167,26 +172,41 @@ class Worksheet(object):
 
         return simple_rows_list
 
-    def col_values(self, colx):
+    def row_values(self, row):
         cells_list = self._fetch_cells()
 
         cells = {}
         for cell in cells_list:
-            if int(cell.col) == colx:
-                cells[int(cell.row)] = cell
+            if int(cell.row) == row:
+                cells[int(cell.col)] = cell
 
         last_index = max(cells.keys())
         vals = []
-        for i in range(last_index):
+        for i in range(1, last_index + 1):
             c = cells.get(i)
             vals.append(c.value if c else None)
 
         return vals
 
-    def update_cell(self, rowx, colx, val):
-        cell_addr = 'R%sC%s' % (rowx, colx)
+    def col_values(self, col):
+        cells_list = self._fetch_cells()
 
-        feed = self.client.get_cells_feed(self.spreadsheet.key, self.key, cell_addr)
+        cells = {}
+        for cell in cells_list:
+            if int(cell.col) == col:
+                cells[int(cell.row)] = cell
+
+        last_index = max(cells.keys())
+        vals = []
+        for i in range(1, last_index + 1):
+            c = cells.get(i)
+            vals.append(c.value if c else None)
+
+        return vals
+
+    def update_cell(self, row, col, val):
+        feed = self.client.get_cells_feed(self.spreadsheet.key,
+                                          self.key, self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
         cell_elem.set('inputValue', val)
         edit_link = filter(lambda x: x.get('rel') == 'edit',
