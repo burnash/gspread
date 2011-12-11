@@ -16,4 +16,6 @@ spreadsheet = gc.open('some title')
 worksheet = spreadsheet.get_worksheet(0)
 
 first_col = worksheet.col_values(1)
+
+worksheet.update_cell(1, 2, 'Bingo!')
 ~~~
