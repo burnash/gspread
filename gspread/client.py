@@ -1,13 +1,20 @@
+import re
 from xml.etree import ElementTree
 
 from . import __version__
 from .ns import _ns
 from .httpsession import HTTPSession
 from .models import Spreadsheet
-from .exceptions import AuthenticationError, SpreadsheetNotFound
+from .exceptions import (AuthenticationError, SpreadsheetNotFound,
+                         NoValidUrlKeyFound)
 
 AUTH_SERVER = 'https://www.google.com'
 SPREADSHEETS_SERVER = 'spreadsheets.google.com'
+
+_url_key_re = re.compile(r'key=([^&#]+)')
+
+def finditem(func, seq):
+    return next((item for item in seq if func(item)))
 
 class Client(object):
     """A client class for communicating with Google's Date API.
@@ -80,13 +87,22 @@ class Client(object):
             raise SpreadsheetNotFound
 
     def open_by_key(self, key):
-        pass
-
-    def open_by_id(self, id):
-        pass
+        feed = self.get_spreadsheets_feed()
+        for elem in feed.findall(_ns('entry')):
+            alter_link = finditem(lambda x: x.get('rel') == 'alternate',
+                                  elem.findall(_ns('link')))
+            m = _url_key_re.search(alter_link.get('href'))
+            if m and m.group(1) == key:
+                return Spreadsheet(self, elem)
+        else:
+            raise SpreadsheetNotFound
 
     def open_by_url(self, url):
-        pass
+        m = _url_key_re.search(url)
+        if m:
+            return self.open_by_key(m.group(1))
+        else:
+            raise NoValidUrlKeyFound
 
     def openall(self, title=None):
         """Open all spreadsheets.

@@ -6,3 +6,6 @@ class AuthenticationError(GSpreadException):
 
 class SpreadsheetNotFound(GSpreadException):
     pass
+
+class NoValidUrlKeyFound(GSpreadException):
+    pass
