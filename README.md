@@ -31,3 +31,16 @@ val = worksheet.cell(1, 2).value
 
 worksheet.update_cell(1, 2, 'Bingo!')
 ~~~
+## Requirements
+
+Python 2.6+
+
+## Installation
+
+### From github
+
+~~~sh
+git clone https://github.com/burnash/gspread.git
+cd gspread
+python setup.py install
+~~~
