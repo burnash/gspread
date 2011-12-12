@@ -11,6 +11,7 @@ setup(
     description='Google Spreadsheets Python library',
     version='0.0.1',
     author='Anton Burnashev',
+    author_email='',
     url='https://github.com/burnash/gspread',
     keywords=['spreadsheets', 'google-spreadsheets'],
     classifiers=[
