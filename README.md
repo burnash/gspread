@@ -37,6 +37,18 @@ Python 2.6+
 
 ## Installation
 
+### From Pypi
+
+~~~sh
+pip install gspread
+~~~
+
+If you're on easy_install, it's:
+
+~~~sh
+easy_install gspread
+~~~
+
 ### From github
 
 ~~~sh
