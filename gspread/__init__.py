@@ -17,6 +17,12 @@ def _ns1(name):
 
 
 class Client(object):
+    """A client class for communicating with Google's Date API.
+
+    auth param is a tuple containing an email and a password.
+    http_session is session object capable of making HTTP requests while
+    persisting headers. Defaults to gspread.httpsession.HTTPSession.
+    """
     def __init__(self, auth, http_session=None):
         self.auth = auth
 
@@ -30,6 +36,12 @@ class Client(object):
         return None
 
     def login(self):
+        """Authorize client using ClientLogin.
+
+        This method is using API described at:
+        http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html
+
+        """
         source = 'burnash-gspread-0.0.1'
         service = 'wise'
 
@@ -56,6 +68,22 @@ class Client(object):
                 raise Exception("Unable to authenticate. %s code" % r.code)
         else:
             raise Exception("Unable to authenticate. %s code" % r.code)
+
+    def open(self, title):
+        """Open a spreadsheet with specified title.
+
+        If there's more than one spreadsheet with same title the first one
+        will be opened.
+
+        """
+        feed = self.get_spreadsheets_feed()
+
+        for elem in feed.findall(_ns('entry')):
+            title = elem.find(_ns('title')).text
+            if title.strip() == title:
+                id_parts = elem.find(_ns('id')).text.split('/')
+                key = id_parts[-1]
+                return Spreadsheet(self, key)
 
     def get_spreadsheets_feed(self, visibility='private', projection='full'):
         uri = ('https://%s/feeds/spreadsheets/%s/%s'
@@ -89,18 +117,11 @@ class Client(object):
 
         return ElementTree.fromstring(r.read())
 
-    def open(self, name):
-        feed = self.get_spreadsheets_feed()
-
-        for elem in feed.findall(_ns('entry')):
-            title = elem.find(_ns('title')).text
-            if title.strip() == name:
-                id_parts = elem.find(_ns('id')).text.split('/')
-                key = id_parts[-1]
-                return Spreadsheet(self, key)
-
 
 class Spreadsheet(object):
+    """A model for representing a spreadsheet object.
+
+    """
     def __init__(self, client, key):
         self.client = client
         self.key = key
@@ -116,17 +137,25 @@ class Spreadsheet(object):
             self._sheet_list.append(Worksheet(self, key))
 
     def worksheets(self):
+        """Return a list of all worksheets in a spreadsheet."""
         if not self._sheet_list:
             self._fetch_sheets()
         return self._sheet_list[:]
 
     def get_worksheet(self, sheet_index):
+        """Return a worksheet with index `sheet_index`.
+
+        Indexes start from zero.
+        """
         if not self._sheet_list:
             self._fetch_sheets()
         return self._sheet_list[sheet_index]
 
 
 class Worksheet(object):
+    """A model for worksheet object.
+
+    """
     def __init__(self, spreadsheet, key):
         self.spreadsheet = spreadsheet
         self.client = spreadsheet.client
@@ -146,6 +175,10 @@ class Worksheet(object):
         return cells_list
 
     def cell(self, row, col):
+        """Return a Cell object.
+
+        Fetch a cell in row `row` and column `col`.
+        """
         feed = self.client.get_cells_feed(self.spreadsheet.key,
                                           self.key, self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
@@ -153,6 +186,7 @@ class Worksheet(object):
                     cell_elem.text)
 
     def get_all_rows(self):
+        """Return a list of lists containing worksheet's rows."""
         cells = self._fetch_cells()
 
         rows = {}
@@ -173,6 +207,11 @@ class Worksheet(object):
         return simple_rows_list
 
     def row_values(self, row):
+        """Return a list of all values in row `row`.
+
+        Empty cells in this list will be rendered as None.
+
+        """
         cells_list = self._fetch_cells()
 
         cells = {}
@@ -189,6 +228,11 @@ class Worksheet(object):
         return vals
 
     def col_values(self, col):
+        """Return a list of all values in column `col`.
+
+        Empty cells in this list will be rendered as None.
+
+        """
         cells_list = self._fetch_cells()
 
         cells = {}
@@ -205,6 +249,7 @@ class Worksheet(object):
         return vals
 
     def update_cell(self, row, col, val):
+        """Set new value to a cell."""
         feed = self.client.get_cells_feed(self.spreadsheet.key,
                                           self.key, self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
@@ -217,6 +262,9 @@ class Worksheet(object):
 
 
 class Cell(object):
+    """A model for cell object.
+
+    """
     def __init__(self, worksheet, row, col, value):
         self.row = row
         self.col = col

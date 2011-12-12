@@ -2,6 +2,9 @@ import urllib
 import urllib2
 
 class HTTPSession(object):
+    """Handles HTTP activity while keeping headers across requests.
+
+    """
     def __init__(self, headers=None):
         self.headers = headers or {}
 
