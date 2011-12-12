@@ -75,11 +75,18 @@ class Client(object):
         for elem in feed.findall(_ns('entry')):
             elem_title = elem.find(_ns('title')).text
             if elem_title.strip() == title:
-                id_parts = elem.find(_ns('id')).text.split('/')
-                key = id_parts[-1]
-                return Spreadsheet(self, key)
+                return Spreadsheet(self, elem)
         else:
             raise SpreadsheetNotFound
+
+    def open_by_key(self, key):
+        pass
+
+    def open_by_id(self, id):
+        pass
+
+    def open_by_url(self, url):
+        pass
 
     def openall(self, title=None):
         """Open all spreadsheets.
@@ -91,13 +98,11 @@ class Client(object):
         feed = self.get_spreadsheets_feed()
         result = []
         for elem in feed.findall(_ns('entry')):
-            id_parts = elem.find(_ns('id')).text.split('/')
-            key = id_parts[-1]
             if title is not None:
                 elem_title = elem.find(_ns('title')).text
                 if elem_title.strip() != title:
                     continue
-            result.append(Spreadsheet(self, key))
+            result.append(Spreadsheet(self, elem))
 
         return result
 
@@ -108,17 +113,19 @@ class Client(object):
         r = self.session.get(uri)
         return ElementTree.fromstring(r.read())
 
-    def get_worksheets_feed(self, key, visibility='private', projection='full'):
+    def get_worksheets_feed(self, spreadsheet_id,
+                            visibility='private', projection='full'):
         uri = ('https://%s/feeds/worksheets/%s/%s/%s'
-            % (SPREADSHEETS_SERVER, key, visibility, projection))
+            % (SPREADSHEETS_SERVER, spreadsheet_id, visibility, projection))
 
         r = self.session.get(uri)
         return ElementTree.fromstring(r.read())
 
-    def get_cells_feed(self, key, worksheet_key, cell=None,
+    def get_cells_feed(self, spreadsheet_id, worksheet_id, cell=None,
                        visibility='private', projection='full'):
         uri = ('https://%s/feeds/cells/%s/%s/%s/%s'
-            % (SPREADSHEETS_SERVER, key, worksheet_key, visibility, projection))
+            % (SPREADSHEETS_SERVER, spreadsheet_id, worksheet_id,
+               visibility, projection))
 
         if cell != None:
             uri = '%s/%s' % (uri, cell)

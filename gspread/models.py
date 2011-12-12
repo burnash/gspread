@@ -6,19 +6,19 @@ class Spreadsheet(object):
     """A model for representing a spreadsheet object.
 
     """
-    def __init__(self, client, key):
+    def __init__(self, client, feed_entry):
         self.client = client
-        self.key = key
+        id_parts = feed_entry.find(_ns('id')).text.split('/')
+        self.id = id_parts[-1]
         self._sheet_list = []
 
     def sheet_by_name(self, sheet_name):
         pass
 
     def _fetch_sheets(self):
-        feed = self.client.get_worksheets_feed(self.key)
+        feed = self.client.get_worksheets_feed(self.id)
         for elem in feed.findall(_ns('entry')):
-            key = elem.find(_ns('id')).text.split('/')[-1]
-            self._sheet_list.append(Worksheet(self, key))
+            self._sheet_list.append(Worksheet(self, elem))
 
     def worksheets(self):
         """Return a list of all worksheets in a spreadsheet."""
@@ -41,16 +41,16 @@ class Worksheet(object):
     """A model for worksheet object.
 
     """
-    def __init__(self, spreadsheet, key):
+    def __init__(self, spreadsheet, feed_entry):
         self.spreadsheet = spreadsheet
         self.client = spreadsheet.client
-        self.key = key
+        self.id = feed_entry.find(_ns('id')).text.split('/')[-1]
 
     def _cell_addr(self, row, col):
         return 'R%sC%s' % (row, col)
 
     def _fetch_cells(self):
-        feed = self.client.get_cells_feed(self.spreadsheet.key, self.key)
+        feed = self.client.get_cells_feed(self.spreadsheet.id, self.id)
         cells_list = []
         for elem in feed.findall(_ns('entry')):
             c_elem = elem.find(_ns1('cell'))
@@ -65,8 +65,8 @@ class Worksheet(object):
         Fetch a cell in row `row` and column `col`.
 
         """
-        feed = self.client.get_cells_feed(self.spreadsheet.key,
-                                          self.key, self._cell_addr(row, col))
+        feed = self.client.get_cells_feed(self.spreadsheet.id,
+                                          self.id, self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
         return Cell(self, cell_elem.get('row'), cell_elem.get('col'),
                     cell_elem.text)
@@ -136,8 +136,8 @@ class Worksheet(object):
 
     def update_cell(self, row, col, val):
         """Set new value to a cell."""
-        feed = self.client.get_cells_feed(self.spreadsheet.key,
-                                          self.key, self._cell_addr(row, col))
+        feed = self.client.get_cells_feed(self.spreadsheet.id,
+                                          self.id, self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
         cell_elem.set('inputValue', val)
         edit_link = filter(lambda x: x.get('rel') == 'edit',
