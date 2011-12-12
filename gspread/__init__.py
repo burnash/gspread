@@ -22,6 +22,7 @@ class Client(object):
     auth param is a tuple containing an email and a password.
     http_session is session object capable of making HTTP requests while
     persisting headers. Defaults to gspread.httpsession.HTTPSession.
+
     """
     def __init__(self, auth, http_session=None):
         self.auth = auth
@@ -146,6 +147,7 @@ class Spreadsheet(object):
         """Return a worksheet with index `sheet_index`.
 
         Indexes start from zero.
+
         """
         if not self._sheet_list:
             self._fetch_sheets()
@@ -178,6 +180,7 @@ class Worksheet(object):
         """Return a Cell object.
 
         Fetch a cell in row `row` and column `col`.
+
         """
         feed = self.client.get_cells_feed(self.spreadsheet.key,
                                           self.key, self._cell_addr(row, col))
