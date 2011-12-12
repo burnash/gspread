@@ -26,5 +26,8 @@ worksheet = spreadsheet.get_worksheet(0)
 # Column and row indexes start from one
 first_col = worksheet.col_values(1)
 
+# Get single cell value
+val = worksheet.cell(1, 2).value
+
 worksheet.update_cell(1, 2, 'Bingo!')
 ~~~
