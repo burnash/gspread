@@ -63,3 +63,9 @@ git clone https://github.com/burnash/gspread.git
 cd gspread
 python setup.py install
 ~~~
+
+## Feedback and contribution
+
+The library is in active development so any feedback is *urgently* needed. Please
+don't hesitate to open up a new [github issue](https://github.com/burnash/gspread/issues)
+or simply drop me a line to <fuss.here@gmail.com>.

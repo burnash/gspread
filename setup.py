@@ -13,7 +13,7 @@ setup(
     description='Google Spreadsheets Python library',
     version=gspread.__version__,
     author='Anton Burnashev',
-    author_email='',
+    author_email='fuss.here@gmail.com',
     url='https://github.com/burnash/gspread',
     keywords=['spreadsheets', 'google-spreadsheets'],
     classifiers=[
