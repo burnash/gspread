@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import gspread
+
 try:
     from setuptools import setup
 except ImportError:
@@ -9,7 +11,7 @@ setup(
     name='gspread',
     packages=['gspread'],
     description='Google Spreadsheets Python library',
-    version='0.0.1',
+    version=gspread.__version__,
     author='Anton Burnashev',
     author_email='',
     url='https://github.com/burnash/gspread',

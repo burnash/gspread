@@ -1,3 +1,14 @@
+"""
+gspread
+
+Google Spreadsheets client library.
+
+"""
+
+__version__ = '0.0.2'
+__author__ = 'Anton Burnashev'
+
+
 from xml.etree import ElementTree
 
 from .httpsession import HTTPSession
@@ -15,6 +26,15 @@ def _ns(name):
 def _ns1(name):
     return '{%s}%s' % (SPREADSHEET_NS, name)
 
+
+class GSpreadException(Exception):
+    pass
+
+class AuthenticationError(GSpreadException):
+    pass
+
+class SpreadsheetNotFound(GSpreadException):
+    pass
 
 class Client(object):
     """A client class for communicating with Google's Date API.
@@ -43,7 +63,7 @@ class Client(object):
         http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html
 
         """
-        source = 'burnash-gspread-0.0.1'
+        source = 'burnash-gspread-%s' % __version__
         service = 'wise'
 
         data = {'Email': self.auth[0],
@@ -64,11 +84,11 @@ class Client(object):
 
         elif r.code == 403:
             if content.strip() == 'Error=BadAuthentication':
-                raise Exception("Incorrect username or password")
+                raise AuthenticationError("Incorrect username or password")
             else:
-                raise Exception("Unable to authenticate. %s code" % r.code)
+                raise AuthenticationError("Unable to authenticate. %s code" % r.code)
         else:
-            raise Exception("Unable to authenticate. %s code" % r.code)
+            raise AuthenticationError("Unable to authenticate. %s code" % r.code)
 
     def open(self, title):
         """Open a spreadsheet with specified title.
@@ -80,11 +100,33 @@ class Client(object):
         feed = self.get_spreadsheets_feed()
 
         for elem in feed.findall(_ns('entry')):
-            title = elem.find(_ns('title')).text
-            if title.strip() == title:
+            elem_title = elem.find(_ns('title')).text
+            if elem_title.strip() == title:
                 id_parts = elem.find(_ns('id')).text.split('/')
                 key = id_parts[-1]
                 return Spreadsheet(self, key)
+        else:
+            raise SpreadsheetNotFound
+
+    def openall(self, title=None):
+        """Open all spreadsheets.
+
+        Return a list of all available spreadsheets.
+        Can be filtered with title parameter.
+
+        """
+        feed = self.get_spreadsheets_feed()
+        result = []
+        for elem in feed.findall(_ns('entry')):
+            id_parts = elem.find(_ns('id')).text.split('/')
+            key = id_parts[-1]
+            if title is not None:
+                elem_title = elem.find(_ns('title')).text
+                if elem_title.strip() != title:
+                    continue
+            result.append(Spreadsheet(self, key))
+
+        return result
 
     def get_spreadsheets_feed(self, visibility='private', projection='full'):
         uri = ('https://%s/feeds/spreadsheets/%s/%s'
