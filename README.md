@@ -20,6 +20,13 @@ gc.login()
 # Spreadsheets can be opened by their title in Google Docs
 spreadsheet = gc.open('some title')
 
+# If you want to be specific, use a key (which can be extracted from
+# the spreadsheet's url
+sht1 = gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
+
+# Or, if you're feel really lazy to extract that key, paste the entire url
+sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
+
 # Select worksheet by index. Worksheet indexes start from zero
 worksheet = spreadsheet.get_worksheet(0)
 
