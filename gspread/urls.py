@@ -1,5 +1,5 @@
 """
-gpread url patterns storage
+gspread url patterns storage
 
 # General pattern
 /feeds/feedType/key/worksheetId/visibility/projection
