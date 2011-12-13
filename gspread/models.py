@@ -1,6 +1,8 @@
 from xml.etree import ElementTree
+from xml.etree.ElementTree import Element, SubElement
 
 from .ns import _ns, _ns1
+from .urls import construct_url
 
 class Spreadsheet(object):
     """A model for representing a spreadsheet object.
@@ -12,11 +14,14 @@ class Spreadsheet(object):
         self.id = id_parts[-1]
         self._sheet_list = []
 
+    def get_id_fields(self):
+        return {'spreadsheet_id': self.id}
+
     def sheet_by_name(self, sheet_name):
         pass
 
     def _fetch_sheets(self):
-        feed = self.client.get_worksheets_feed(self.id)
+        feed = self.client.get_worksheets_feed(self)
         for elem in feed.findall(_ns('entry')):
             self._sheet_list.append(Worksheet(self, elem))
 
@@ -46,16 +51,18 @@ class Worksheet(object):
         self.client = spreadsheet.client
         self.id = feed_entry.find(_ns('id')).text.split('/')[-1]
 
+    def get_id_fields(self):
+        return {'spreadsheet_id': self.spreadsheet.id,
+                'worksheet_id': self.id}
+
     def _cell_addr(self, row, col):
         return 'R%sC%s' % (row, col)
 
     def _fetch_cells(self):
-        feed = self.client.get_cells_feed(self.spreadsheet.id, self.id)
+        feed = self.client.get_cells_feed(self)
         cells_list = []
         for elem in feed.findall(_ns('entry')):
-            c_elem = elem.find(_ns1('cell'))
-            cells_list.append(Cell(self, c_elem.get('row'),
-                                   c_elem.get('col'), c_elem.text))
+            cells_list.append(Cell(self, elem))
 
         return cells_list
 
@@ -65,11 +72,9 @@ class Worksheet(object):
         Fetch a cell in row `row` and column `col`.
 
         """
-        feed = self.client.get_cells_feed(self.spreadsheet.id,
-                                          self.id, self._cell_addr(row, col))
-        cell_elem = feed.find(_ns1('cell'))
-        return Cell(self, cell_elem.get('row'), cell_elem.get('col'),
-                    cell_elem.text)
+        feed = self.client.get_cells_cell_id_feed(self,
+                                                  self._cell_addr(row, col))
+        return Cell(self, feed)
 
     def get_all_rows(self):
         """Return a list of lists containing worksheet's rows."""
@@ -136,8 +141,8 @@ class Worksheet(object):
 
     def update_cell(self, row, col, val):
         """Set new value to a cell."""
-        feed = self.client.get_cells_feed(self.spreadsheet.id,
-                                          self.id, self._cell_addr(row, col))
+        feed = self.client.get_cells_cell_id_feed(self,
+                                                  self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
         cell_elem.set('inputValue', val)
         edit_link = filter(lambda x: x.get('rel') == 'edit',
@@ -146,12 +151,34 @@ class Worksheet(object):
 
         self.client.put_cell(uri, ElementTree.tostring(feed))
 
+    def _create_update_feed(self):
+        feed = Element('feed',
+                      {'xmlns': 'http://www.w3.org/2005/Atom',
+                       'xmlns:batch': 'http://schemas.google.com/gdata/batch',
+                       'xmlns:gs': 'http://schemas.google.com/spreadsheets/2006'})
+        id_elem = SubElement(feed, 'id')
+        id_elem.text = 'https://spreadsheets.google.com/feeds/cells/key/worksheetId/private/full'
+
+        id_elem.text = construct_url('cells', self)
+
+        return feed
+
+    def _ds(self, elem):
+        return ElementTree.tostring(elem)
+
+    def update_cells(self, cell_list):
+        """Set new value to a cell."""
+        cell = cell_list[0]
+        feed = self._create_update_feed()
+
 
 class Cell(object):
     """A model for cell object.
 
     """
-    def __init__(self, worksheet, row, col, value):
-        self.row = row
-        self.col = col
-        self.value = value
+    def __init__(self, worksheet, element):
+        self.element = element
+        cell_elem = element.find(_ns1('cell'))
+        self.row = cell_elem.get('row')
+        self.col = cell_elem.get('col')
+        self.value = cell_elem.text

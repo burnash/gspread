@@ -5,6 +5,7 @@ from . import __version__
 from .ns import _ns
 from .httpsession import HTTPSession
 from .models import Spreadsheet
+from .urls import construct_url
 from .exceptions import (AuthenticationError, SpreadsheetNotFound,
                          NoValidUrlKeyFound)
 
@@ -123,30 +124,34 @@ class Client(object):
         return result
 
     def get_spreadsheets_feed(self, visibility='private', projection='full'):
-        uri = ('https://%s/feeds/spreadsheets/%s/%s'
-            % (SPREADSHEETS_SERVER, visibility, projection))
+        url = construct_url('spreadsheets',
+                            visibility=visibility, projection=projection)
 
-        r = self.session.get(uri)
+        r = self.session.get(url)
         return ElementTree.fromstring(r.read())
 
-    def get_worksheets_feed(self, spreadsheet_id,
+    def get_worksheets_feed(self, spreadsheet,
                             visibility='private', projection='full'):
-        uri = ('https://%s/feeds/worksheets/%s/%s/%s'
-            % (SPREADSHEETS_SERVER, spreadsheet_id, visibility, projection))
+        url = construct_url('worksheets', spreadsheet,
+                            visibility=visibility, projection=projection)
 
-        r = self.session.get(uri)
+        r = self.session.get(url)
         return ElementTree.fromstring(r.read())
 
-    def get_cells_feed(self, spreadsheet_id, worksheet_id, cell=None,
+    def get_cells_feed(self, worksheet,
                        visibility='private', projection='full'):
-        uri = ('https://%s/feeds/cells/%s/%s/%s/%s'
-            % (SPREADSHEETS_SERVER, spreadsheet_id, worksheet_id,
-               visibility, projection))
+        url = construct_url('cells', worksheet,
+                            visibility=visibility, projection=projection)
 
-        if cell != None:
-            uri = '%s/%s' % (uri, cell)
+        r = self.session.get(url)
+        return ElementTree.fromstring(r.read())
 
-        r = self.session.get(uri)
+    def get_cells_cell_id_feed(self, worksheet, cell_id,
+                       visibility='private', projection='full'):
+        url = construct_url('cells_cell_id', worksheet, cell_id=cell_id,
+                            visibility=visibility, projection=projection)
+
+        r = self.session.get(url)
         return ElementTree.fromstring(r.read())
 
     def put_cell(self, url, data):

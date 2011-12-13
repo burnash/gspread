@@ -9,3 +9,12 @@ class SpreadsheetNotFound(GSpreadException):
 
 class NoValidUrlKeyFound(GSpreadException):
     pass
+
+class UnsupportedFeedTypeError(GSpreadException):
+    pass
+
+class UnsupportedFeedTypeError(GSpreadException):
+    pass
+
+class UrlParameterMissing(GSpreadException):
+    pass
