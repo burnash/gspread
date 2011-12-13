@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os.path
 import gspread
 
 try:
@@ -7,10 +8,36 @@ try:
 except ImportError:
     from distutils.core import setup
 
+def read(filename):
+    return open(os.path.join(os.path.dirname(__file__), filename)).read()
+
+description = 'Google Spreadsheets Python library'
+
+long_description = """
+gspread
+=======
+
+{description}
+
+{index}
+
+License
+-------
+*MIT*
+
+Download
+========
+"""
+
+long_description = long_description.lstrip("\n").format(
+        description=description,
+        index=read('docs/index.txt'))
+
 setup(
     name='gspread',
     packages=['gspread'],
-    description='Google Spreadsheets Python library',
+    description=description,
+    long_description=long_description,
     version=gspread.__version__,
     author='Anton Burnashev',
     author_email='fuss.here@gmail.com',

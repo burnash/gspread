@@ -1,0 +1,35 @@
+
+Features
+--------
+
+* Open a spreadsheet by its **title** or **url**.
+* Extract entire row or column values.
+* No need to mess around with spreadsheets' keys.
+* Independent of Google Data Python client library.
+
+Usage
+-----
+
+::
+    import gspread
+
+    gc = gspread.Client(auth=('the.email.address@gmail.com','password'))
+    gc.login()
+
+    # Spreadsheets can be opened by their title in Google Docs
+    spreadsheet = gc.open('some title')
+
+    # If you want to be specific, use a key (which can be extracted from
+    # the spreadsheet's url
+    sht1 = gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
+
+    # Or by the entire url
+    sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
+
+    # Select worksheet by index
+    worksheet = spreadsheet.get_worksheet(0)
+
+    # Get a cell value
+    val = worksheet.cell(1, 2).value
+
+    worksheet.update_cell(1, 2, 'Bingo!')
