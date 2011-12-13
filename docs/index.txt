@@ -11,6 +11,7 @@ Usage
 -----
 
 ::
+
     import gspread
 
     gc = gspread.Client(auth=('the.email.address@gmail.com','password'))

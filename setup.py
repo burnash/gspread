@@ -23,7 +23,7 @@ gspread
 
 License
 -------
-*MIT*
+MIT
 
 Download
 ========
