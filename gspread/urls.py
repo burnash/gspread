@@ -58,13 +58,13 @@ def construct_url(feedtype=None,
     obj_fields = obj.get_id_fields() if obj is not None else {}
 
     params = {'visibility': visibility,
-                'projection': projection,
-                'batch': 'batch' if batch else None,
-                'spreadsheet_id': (spreadsheet_id if spreadsheet_id
+              'projection': projection,
+              'batch': 'batch' if batch else None,
+              'spreadsheet_id': (spreadsheet_id if spreadsheet_id
                                     else obj_fields.get('spreadsheet_id')),
-                'worksheet_id': (worksheet_id if worksheet_id
+              'worksheet_id': (worksheet_id if worksheet_id
                                     else obj_fields.get('worksheet_id')),
-                'cell_id': cell_id}
+              'cell_id': cell_id}
 
     params = dict((k, v) for k, v in params.items() if v is not None)
 
