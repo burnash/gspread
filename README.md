@@ -5,8 +5,7 @@ This is a simple Python library for accessing Google Spreadsheets.
 Features:
 
 * Open a spreadsheet by its **title** or **url**.
-* Extract entire row or column values.
-* No need to mess around with spreadsheets' keys.
+* Extract range, entire row or column values.
 * Independent of Google Data Python client library.
 
 ## Usage
@@ -37,6 +36,16 @@ first_col = worksheet.col_values(1)
 val = worksheet.cell(1, 2).value
 
 worksheet.update_cell(1, 2, 'Bingo!')
+
+# Select a range
+cell_list = worksheet.range('A1:A7')
+
+for cell in cell_list:
+    cell.value = 'O_o'
+
+# Update in batch
+worksheet.update_cells(cell_list)
+
 ~~~
 ## Requirements
 
