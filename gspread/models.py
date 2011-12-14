@@ -200,9 +200,17 @@ class Cell(object):
     def __init__(self, worksheet, element):
         self.element = element
         cell_elem = element.find(_ns1('cell'))
-        self.row = cell_elem.get('row')
-        self.col = cell_elem.get('col')
+        self._row = cell_elem.get('row')
+        self._col = cell_elem.get('col')
         self.value = cell_elem.text
+
+    @property
+    def row(self):
+        return self._row
+
+    @property
+    def col(self):
+        return self._col
 
     def __repr__(self):
         return '<%s R%sC%s "%s">' % (self.__class__.__name__,
