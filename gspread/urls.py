@@ -29,6 +29,7 @@ SPREADSHEETS_FEED_URL = 'https://%s/%s/' % (SPREADSHEETS_SERVER, 'feeds')
 _feed_types = {'spreadsheets': 'spreadsheets/{visibility}/{projection}',
                'worksheets': 'worksheets/{spreadsheet_id}/{visibility}/{projection}',
                'cells': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}',
+               'cells_batch': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}/batch',
                'cells_cell_id': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}/{cell_id}'}
 
 _fields_cache = {}
@@ -42,7 +43,6 @@ def construct_url(feedtype=None,
                   obj=None,
                   visibility='private',
                   projection='full',
-                  batch=None,
                   spreadsheet_id=None,
                   worksheet_id=None,
                   cell_id=None):
@@ -59,7 +59,6 @@ def construct_url(feedtype=None,
 
     params = {'visibility': visibility,
               'projection': projection,
-              'batch': 'batch' if batch else None,
               'spreadsheet_id': (spreadsheet_id if spreadsheet_id
                                     else obj_fields.get('spreadsheet_id')),
               'worksheet_id': (worksheet_id if worksheet_id

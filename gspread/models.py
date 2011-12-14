@@ -3,6 +3,8 @@ from xml.etree.ElementTree import Element, SubElement
 
 from .ns import _ns, _ns1
 from .urls import construct_url
+from .utils import finditem
+
 
 class Spreadsheet(object):
     """A model for representing a spreadsheet object.
@@ -76,6 +78,11 @@ class Worksheet(object):
                                                   self._cell_addr(row, col))
         return Cell(self, feed)
 
+    def range(self, alphanum):
+        feed = self.client.get_cells_feed(self, params={'range': alphanum,
+                                                        'return-empty': 'true'})
+        return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
+
     def get_all_rows(self):
         """Return a list of lists containing worksheet's rows."""
         cells = self._fetch_cells()
@@ -145,31 +152,45 @@ class Worksheet(object):
                                                   self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
         cell_elem.set('inputValue', val)
-        edit_link = filter(lambda x: x.get('rel') == 'edit',
-                feed.findall(_ns('link')))[0]
+        edit_link = finditem(lambda x: x.get('rel') == 'edit',
+                feed.findall(_ns('link')))
         uri = edit_link.get('href')
 
         self.client.put_cell(uri, ElementTree.tostring(feed))
 
-    def _create_update_feed(self):
+    def _create_update_feed(self, cell_list):
         feed = Element('feed',
                       {'xmlns': 'http://www.w3.org/2005/Atom',
                        'xmlns:batch': 'http://schemas.google.com/gdata/batch',
                        'xmlns:gs': 'http://schemas.google.com/spreadsheets/2006'})
+
         id_elem = SubElement(feed, 'id')
-        id_elem.text = 'https://spreadsheets.google.com/feeds/cells/key/worksheetId/private/full'
 
         id_elem.text = construct_url('cells', self)
 
+        for cell in cell_list:
+            entry = SubElement(feed, 'entry')
+
+            SubElement(entry, 'batch:id').text = cell.element.find(_ns('title')).text
+            SubElement(entry, 'batch:operation', {'type': 'update'})
+            SubElement(entry, 'id').text = cell.element.find(_ns('id')).text
+
+            edit_link = finditem(lambda x: x.get('rel') == 'edit',
+                    cell.element.findall(_ns('link')))
+
+            SubElement(entry, 'link', {'rel': 'edit',
+                                       'type': edit_link.get('type'),
+                                       'href': edit_link.get('href')})
+
+            SubElement(entry, 'gs:cell', {'row': cell.row,
+                                          'col': cell.col,
+                                          'inputValue': cell.value})
         return feed
 
-    def _ds(self, elem):
-        return ElementTree.tostring(elem)
-
     def update_cells(self, cell_list):
-        """Set new value to a cell."""
-        cell = cell_list[0]
-        feed = self._create_update_feed()
+        """Cells batch update."""
+        feed = self._create_update_feed(cell_list)
+        self.client.post_cells(self, ElementTree.tostring(feed))
 
 
 class Cell(object):
@@ -182,3 +203,9 @@ class Cell(object):
         self.row = cell_elem.get('row')
         self.col = cell_elem.get('col')
         self.value = cell_elem.text
+
+    def __repr__(self):
+        return '<%s R%sC%s "%s">' % (self.__class__.__name__,
+                                     self.row,
+                                     self.col,
+                                     self.value)

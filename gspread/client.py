@@ -1,4 +1,5 @@
 import re
+import urllib
 from xml.etree import ElementTree
 
 from . import __version__
@@ -6,6 +7,7 @@ from .ns import _ns
 from .httpsession import HTTPSession
 from .models import Spreadsheet
 from .urls import construct_url
+from .utils import finditem
 from .exceptions import (AuthenticationError, SpreadsheetNotFound,
                          NoValidUrlKeyFound)
 
@@ -14,8 +16,6 @@ SPREADSHEETS_SERVER = 'spreadsheets.google.com'
 
 _url_key_re = re.compile(r'key=([^&#]+)')
 
-def finditem(func, seq):
-    return next((item for item in seq if func(item)))
 
 class Client(object):
     """A client class for communicating with Google's Date API.
@@ -139,9 +139,14 @@ class Client(object):
         return ElementTree.fromstring(r.read())
 
     def get_cells_feed(self, worksheet,
-                       visibility='private', projection='full'):
+                       visibility='private', projection='full', params=None):
+
         url = construct_url('cells', worksheet,
                             visibility=visibility, projection=projection)
+
+        if params:
+            params = urllib.urlencode(params)
+            url = '%s?%s' % (url, params)
 
         r = self.session.get(url)
         return ElementTree.fromstring(r.read())
@@ -158,5 +163,13 @@ class Client(object):
         headers = {'Content-Type': 'application/atom+xml'}
         data = "<?xml version='1.0' encoding='UTF-8'?>%s" % data
         r = self.session.put(url, data, headers=headers)
+
+        return ElementTree.fromstring(r.read())
+
+    def post_cells(self, worksheet, data):
+        headers = {'Content-Type': 'application/atom+xml'}
+        data = "<?xml version='1.0' encoding='UTF-8'?>%s" % data
+        url = construct_url('cells_batch', worksheet)
+        r = self.session.post(url, data, headers=headers)
 
         return ElementTree.fromstring(r.read())
