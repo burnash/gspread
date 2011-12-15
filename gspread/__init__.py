@@ -2,7 +2,7 @@
 
 """
 gspread
--------
+~~~~~~~
 
 Google Spreadsheets client library.
 

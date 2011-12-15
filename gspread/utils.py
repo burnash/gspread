@@ -1,7 +1,20 @@
+# -*- coding: utf-8 -*-
+
+"""
+gspread.utils
+~~~~~~~~~~~~~
+
+This module contains utility functions.
+
+"""
+
 from xml.etree import ElementTree
 
 
 def finditem(func, seq):
+    """Finds and returns first item in iterable for which func(item) is True.
+
+    """
     return next((item for item in seq if func(item)))
 
 

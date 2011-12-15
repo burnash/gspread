@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+
+"""
+gspread.models
+~~~~~~~~~~~~~~
+
+This module contains common spreadsheets' models
+
+"""
+
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 

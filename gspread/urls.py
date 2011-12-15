@@ -1,22 +1,32 @@
-"""
-gspread url patterns storage
+# -*- coding: utf-8 -*-
 
-# General pattern
+"""
+gspread.urls
+~~~~~~~~~~~~
+
+This module is Google API url patterns storage.
+
+General pattern
+^^^^^^^^^^^^^^^
 /feeds/feedType/key/worksheetId/visibility/projection
 
-# Spreadsheet metafeed
+Spreadsheet metafeed
+^^^^^^^^^^^^^^^^^^^^
 /feeds/spreadsheets/private/full
 /feeds/spreadsheets/private/full/key
 
-# Worksheet
+Worksheet
+^^^^^^^^^
 /feeds/worksheets/key/visibility/projection
 /feeds/worksheets/key/visibility/projection/worksheetId
 
-# Cell-based feed
+Cell-based feed
+^^^^^^^^^^^^^^^
 /feeds/cells/key/worksheetId/visibility/projection
 /feeds/cells/key/worksheetId/visibility/projection/cellId
 
 """
+
 import re
 
 from .exceptions import UnsupportedFeedTypeError, UrlParameterMissing

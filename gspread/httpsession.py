@@ -1,8 +1,18 @@
+# -*- coding: utf-8 -*-
+
+"""
+gspread.httpsession
+~~~~~~~~~~~~~~~~~~~
+
+This module contains a class for working with http sessions.
+
+"""
+
 import urllib
 import urllib2
 
 class HTTPSession(object):
-    """Handles HTTP activity while keeping headers across requests.
+    """Handles HTTP activity while keeping headers persisting across requests.
 
     """
     def __init__(self, headers=None):

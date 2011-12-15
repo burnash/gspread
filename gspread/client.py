@@ -2,10 +2,11 @@
 
 """
 gspread.client
---------------
+~~~~~~~~~~~~~~
 
 This module contains Client class responsible for communicating with
 Google Data API.
+
 """
 import re
 import urllib
