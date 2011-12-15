@@ -14,6 +14,7 @@ import urllib2
 class HTTPSession(object):
     """Handles HTTP activity while keeping headers persisting across requests.
 
+       :param headers: A dict with initial headers.
     """
     def __init__(self, headers=None):
         self.headers = headers or {}

@@ -33,3 +33,13 @@ Exceptions
 .. autoexception:: AuthenticationError
 .. autoexception:: SpreadsheetNotFound
 .. autoexception:: NoValidUrlKeyFound
+
+Internal modules
+----------------
+
+Following modules are for internal use only.
+
+.. automodule:: gspread.httpsession
+   :members: HTTPSession
+.. automodule:: gspread.urls
+   :members: construct_url

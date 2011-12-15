@@ -6,25 +6,6 @@ gspread.urls
 
 This module is Google API url patterns storage.
 
-General pattern
-^^^^^^^^^^^^^^^
-/feeds/feedType/key/worksheetId/visibility/projection
-
-Spreadsheet metafeed
-^^^^^^^^^^^^^^^^^^^^
-/feeds/spreadsheets/private/full
-/feeds/spreadsheets/private/full/key
-
-Worksheet
-^^^^^^^^^
-/feeds/worksheets/key/visibility/projection
-/feeds/worksheets/key/visibility/projection/worksheetId
-
-Cell-based feed
-^^^^^^^^^^^^^^^
-/feeds/cells/key/worksheetId/visibility/projection
-/feeds/cells/key/worksheetId/visibility/projection/cellId
-
 """
 
 import re
@@ -35,6 +16,21 @@ from .exceptions import UnsupportedFeedTypeError, UrlParameterMissing
 SPREADSHEETS_SERVER = 'spreadsheets.google.com'
 SPREADSHEETS_FEED_URL = 'https://%s/%s/' % (SPREADSHEETS_SERVER, 'feeds')
 
+
+# General pattern
+# /feeds/feedType/key/worksheetId/visibility/projection
+#
+# Spreadsheet metafeed
+# /feeds/spreadsheets/private/full
+# /feeds/spreadsheets/private/full/key
+#
+# Worksheet
+# /feeds/worksheets/key/visibility/projection
+# /feeds/worksheets/key/visibility/projection/worksheetId
+#
+# Cell-based feed
+# /feeds/cells/key/worksheetId/visibility/projection
+# /feeds/cells/key/worksheetId/visibility/projection/cellId
 
 _feed_types = {'spreadsheets': 'spreadsheets/{visibility}/{projection}',
                'worksheets': 'worksheets/{spreadsheet_id}/{visibility}/{projection}',
@@ -56,6 +52,8 @@ def construct_url(feedtype=None,
                   spreadsheet_id=None,
                   worksheet_id=None,
                   cell_id=None):
+    """Constructs URL to be used for API request.
+    """
     try:
         urlpattern = _feed_types[feedtype]
         fields = _fields_cache.get(feedtype)
