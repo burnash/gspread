@@ -30,10 +30,13 @@ _url_key_re = re.compile(r'key=([^&#]+)')
 class Client(object):
     """An instance of this class communicates with Google Data API.
 
-    :param auth: A tuple containing an email and a password used for ClientLogin
+    :param auth: A tuple containing an *email* and a *password* used for ClientLogin
                  authentication.
-    :param http_session: (optional) A session object capable of making HTTP requests while
-                         persisting headers. Defaults to gspread.httpsession.HTTPSession.
+    :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
+                                    Defaults to :class:`~gspread.httpsession.HTTPSession`.
+
+    >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
+    >>>
 
     """
     def __init__(self, auth, http_session=None):
@@ -49,10 +52,14 @@ class Client(object):
         return None
 
     def login(self):
-        """Authorize client using ClientLogin.
+        """Authorize client using ClientLogin protocol.
+
+        The credentials provided in `auth` parameter to class' constructor will be used.
 
         This method is using API described at:
         http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html
+
+        :raises AuthenticationError: if login attempt fails.
 
         """
         source = 'burnash-gspread-%s' % __version__
@@ -79,14 +86,24 @@ class Client(object):
                 raise AuthenticationError("Incorrect username or password")
             else:
                 raise AuthenticationError("Unable to authenticate. %s code" % r.code)
+
         else:
             raise AuthenticationError("Unable to authenticate. %s code" % r.code)
 
     def open(self, title):
-        """Open a spreadsheet with specified title.
+        """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
+
+        :param title: A title of a spreadsheet.
 
         If there's more than one spreadsheet with same title the first one
         will be opened.
+
+        :raises gspread.SpreadsheetNotFound: if no spreadsheet with
+                                             specified `title` is found.
+
+        >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
+        >>> c.login()
+        >>> c.open('My fancy spreadsheet')
 
         """
         feed = self.get_spreadsheets_feed()
@@ -99,6 +116,18 @@ class Client(object):
             raise SpreadsheetNotFound
 
     def open_by_key(self, key):
+        """Opens a spreadsheet specified by `key`, returning a :class:`~gspread.Spreadsheet` instance.
+
+        :param key: A key of a spreadsheet as it appears in a URL in a browser.
+
+        :raises gspread.SpreadsheetNotFound: if no spreadsheet with
+                                             specified `key` is found.
+
+        >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
+        >>> c.login()
+        >>> c.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
+
+        """
         feed = self.get_spreadsheets_feed()
         for elem in feed.findall(_ns('entry')):
             alter_link = finditem(lambda x: x.get('rel') == 'alternate',
@@ -110,6 +139,19 @@ class Client(object):
             raise SpreadsheetNotFound
 
     def open_by_url(self, url):
+        """Opens a spreadsheet specified by `url`,
+           returning a :class:`~gspread.Spreadsheet` instance.
+
+        :param url: URL of a spreadsheet as it appears in a browser.
+
+        :raises gspread.SpreadsheetNotFound: if no spreadsheet with
+                                             specified `url` is found.
+
+        >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
+        >>> c.login()
+        >>> c.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
+
+        """
         m = _url_key_re.search(url)
         if m:
             return self.open_by_key(m.group(1))
@@ -117,10 +159,11 @@ class Client(object):
             raise NoValidUrlKeyFound
 
     def openall(self, title=None):
-        """Open all spreadsheets.
+        """Opens all available spreadsheets,
+           returning a list of a :class:`~gspread.Spreadsheet` instances.
 
-        Return a list of all available spreadsheets.
-        Can be filtered with title parameter.
+        :param title: (optional) If specified can be used to filter
+                      spreadsheets by title.
 
         """
         feed = self.get_spreadsheets_feed()
