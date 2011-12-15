@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+gspread.client
+--------------
+
+This module contains Client class responsible for communicating with
+Google Data API.
+"""
 import re
 import urllib
 from xml.etree import ElementTree
@@ -18,11 +27,12 @@ _url_key_re = re.compile(r'key=([^&#]+)')
 
 
 class Client(object):
-    """A client class for communicating with Google's Date API.
+    """An instance of this class communicates with Google Data API.
 
-    auth param is a tuple containing an email and a password.
-    http_session is session object capable of making HTTP requests while
-    persisting headers. Defaults to gspread.httpsession.HTTPSession.
+    :param auth: A tuple containing an email and a password used for ClientLogin
+                 authentication.
+    :param http_session: (optional) A session object capable of making HTTP requests while
+                         persisting headers. Defaults to gspread.httpsession.HTTPSession.
 
     """
     def __init__(self, auth, http_session=None):

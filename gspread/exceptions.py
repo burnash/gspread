@@ -1,17 +1,14 @@
 class GSpreadException(Exception):
-    pass
+    """A base class for gspread's exceptions"""
 
 class AuthenticationError(GSpreadException):
-    pass
+    """An error during authentication process"""
 
 class SpreadsheetNotFound(GSpreadException):
-    pass
+    """Trying to open non-existent or inaccessible spreadsheet"""
 
 class NoValidUrlKeyFound(GSpreadException):
-    pass
-
-class UnsupportedFeedTypeError(GSpreadException):
-    pass
+    """No valid key found in URL"""
 
 class UnsupportedFeedTypeError(GSpreadException):
     pass

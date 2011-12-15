@@ -7,7 +7,7 @@ from .utils import finditem
 
 
 class Spreadsheet(object):
-    """A model for representing a spreadsheet object.
+    """A class a spreadsheet object.
 
     """
     def __init__(self, client, feed_entry):
@@ -194,7 +194,7 @@ class Worksheet(object):
 
 
 class Cell(object):
-    """A model for cell object.
+    """An instance of this class represents a single cell in a spreadsheet.
 
     """
     def __init__(self, worksheet, element):
@@ -202,14 +202,18 @@ class Cell(object):
         cell_elem = element.find(_ns1('cell'))
         self._row = cell_elem.get('row')
         self._col = cell_elem.get('col')
+
+        #: Value of the cell.
         self.value = cell_elem.text
 
     @property
     def row(self):
+        """Row number of the cell."""
         return self._row
 
     @property
     def col(self):
+        """Column number of the cell."""
         return self._col
 
     def __repr__(self):
