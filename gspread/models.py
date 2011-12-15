@@ -17,7 +17,7 @@ from .utils import finditem
 
 
 class Spreadsheet(object):
-    """A class a spreadsheet object.
+    """A class for a spreadsheet object.
 
     """
     def __init__(self, client, feed_entry):
@@ -38,24 +38,33 @@ class Spreadsheet(object):
             self._sheet_list.append(Worksheet(self, elem))
 
     def worksheets(self):
-        """Return a list of all worksheets in a spreadsheet."""
-        if not self._sheet_list:
-            self._fetch_sheets()
-        return self._sheet_list[:]
-
-    def get_worksheet(self, sheet_index):
-        """Return a worksheet with index `sheet_index`.
-
-        Indexes start from zero.
+        """Returns a list of all :class:`worksheets <Worksheet>` in a spreadsheet.
 
         """
         if not self._sheet_list:
             self._fetch_sheets()
-        return self._sheet_list[sheet_index]
+        return self._sheet_list[:]
+
+    def get_worksheet(self, index):
+        """Returns a worksheet with specified `index`.
+
+        The returning object is an instance of :class:`Worksheet`.
+
+        :param index: An index of a worksheet. Indexes start from zero.
+
+        Example. To get first worksheet of a spreadsheet:
+
+        >>> sht = client.open('My fancy spreadsheet')
+        >>> worksheet = sht.get_worksheet(0)
+
+        """
+        if not self._sheet_list:
+            self._fetch_sheets()
+        return self._sheet_list[index]
 
 
 class Worksheet(object):
-    """A model for worksheet object.
+    """A class for worksheet object.
 
     """
     def __init__(self, spreadsheet, feed_entry):
@@ -79,9 +88,11 @@ class Worksheet(object):
         return cells_list
 
     def cell(self, row, col):
-        """Return a Cell object.
+        """Returns an instance of a :class:`Cell` positioned in `row`
+           and `col` column.
 
-        Fetch a cell in row `row` and column `col`.
+        :param row: Row number.
+        :param col: Column number.
 
         """
         feed = self.client.get_cells_cell_id_feed(self,
@@ -89,12 +100,18 @@ class Worksheet(object):
         return Cell(self, feed)
 
     def range(self, alphanum):
+        """Returns a list of :class:`Cell` objects from specified range.
+
+        :param alphanum: A string with range value in common format,
+                         e.g. 'A1:A5'.
+
+        """
         feed = self.client.get_cells_feed(self, params={'range': alphanum,
                                                         'return-empty': 'true'})
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
-    def get_all_rows(self):
-        """Return a list of lists containing worksheet's rows."""
+    def get_all_values(self):
+        """Returns a list of lists containing all cells' values."""
         cells = self._fetch_cells()
 
         rows = {}
@@ -115,9 +132,9 @@ class Worksheet(object):
         return simple_rows_list
 
     def row_values(self, row):
-        """Return a list of all values in row `row`.
+        """Returns a list of all values in a `row`.
 
-        Empty cells in this list will be rendered as None.
+        Empty cells in this list will be rendered as :const:`None`.
 
         """
         cells_list = self._fetch_cells()
@@ -136,9 +153,9 @@ class Worksheet(object):
         return vals
 
     def col_values(self, col):
-        """Return a list of all values in column `col`.
+        """Returns a list of all values in column `col`.
 
-        Empty cells in this list will be rendered as None.
+        Empty cells in this list will be rendered as :const:`None`.
 
         """
         cells_list = self._fetch_cells()
@@ -157,7 +174,13 @@ class Worksheet(object):
         return vals
 
     def update_cell(self, row, col, val):
-        """Set new value to a cell."""
+        """Sets the new value to a cell.
+
+        :param row: Row number.
+        :param col: Column number.
+        :param val: New value.
+
+        """
         feed = self.client.get_cells_cell_id_feed(self,
                                                   self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
@@ -198,13 +221,17 @@ class Worksheet(object):
         return feed
 
     def update_cells(self, cell_list):
-        """Cells batch update."""
+        """Updates cells in batch.
+
+        :param cell_list: List of a :class:`Cell` objects to update.
+
+        """
         feed = self._create_update_feed(cell_list)
         self.client.post_cells(self, ElementTree.tostring(feed))
 
 
 class Cell(object):
-    """An instance of this class represents a single cell in a spreadsheet.
+    """An instance of this class represents a single cell in a :class:`worksheet <Worksheet>`.
 
     """
     def __init__(self, worksheet, element):

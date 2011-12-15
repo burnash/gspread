@@ -12,7 +12,8 @@ Main interface
 Models
 ------
 
-The models represent common spreadsheet objects: a spreadsheet, a worksheet and a cell.
+The models represent common spreadsheet objects: :class:`a spreadsheet <Spreadsheet>`,
+:class:`a worksheet <Worksheet>` and :class:`a cell <Cell>`.
 
 .. note::
 
