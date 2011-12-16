@@ -25,3 +25,6 @@ class UnsupportedFeedTypeError(GSpreadException):
 
 class UrlParameterMissing(GSpreadException):
     pass
+
+class IncorrectCellLabel(GSpreadException):
+    """The cell label is incorrect"""

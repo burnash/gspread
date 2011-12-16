@@ -7,7 +7,7 @@ gspread.models
 This module contains common spreadsheets' models
 
 """
-from datetime import datetime
+import re
 
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
@@ -16,6 +16,7 @@ from .ns import _ns, _ns1
 from .urls import construct_url
 from .utils import finditem
 
+from .exceptions import IncorrectCellLabel
 
 class Spreadsheet(object):
     """A class for a spreadsheet object.
@@ -125,14 +126,46 @@ class Worksheet(object):
 
         return cells_list
 
-    def cell(self, row, col):
+    _cell_addr_re = re.compile(r'([A-Za-z]+)(\d+)')
+    def _get_int_addr(self, label):
+        magic_number = 96
+        m = self._cell_addr_re.match(label)
+        if m:
+            column_label = m.group(1).lower()
+            row = int(m.group(2))
+
+            col = 0
+            for i, c in enumerate(reversed(column_label)):
+                col += (ord(c) - magic_number) * (26 ** i)
+        else:
+            raise IncorrectCellLabel(label)
+
+        return (row, col)
+
+    def cell(self, row_or_label=None, col=None):
         """Returns an instance of a :class:`Cell` positioned in `row`
            and `col` column.
 
-        :param row: Row number.
-        :param col: Column number.
+        :param row_or_name: Integer row number or string with cell name in
+                            common format, e.g. 'B1'. Letter case is ignored.
+        :param col: Integer column number.
+
+        There're two possible way of calling this method. By string label:
+
+        >>> wks.cell('A1') # this could be 'a1' as well
+        <Cell R1C1 "I'm cell A1">
+
+        Or by integer coords:
+
+        >>> wks.cell(1, 1)
+        <Cell R1C1 "I'm cell A1">
 
         """
+        if isinstance(row_or_label, int) and isinstance(col, int):
+            row = row_or_label
+        else:
+            (row, col) = self._get_int_addr(row_or_label)
+
         feed = self.client.get_cells_cell_id_feed(self,
                                                   self._cell_addr(row, col))
         return Cell(self, feed)

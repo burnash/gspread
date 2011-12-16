@@ -51,7 +51,10 @@ worksheet = sh.sheet1
 ### Getting a cell value
 
 ~~~python
-# Get a cell value
+# With label
+val = worksheet.cell('B1').value
+
+# With coords
 val = worksheet.cell(1, 2).value
 
 # Get all values from column. Column and row indexes start from one
