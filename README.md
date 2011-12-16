@@ -17,7 +17,7 @@ import gspread
 gc = gspread.login('thedude@abid.es','password')
 
 # Open a worksheet from spreadsheet with one shot
-wks = gc.open("Where is the money Lebowski?").sheet1 
+wks = gc.open("Where is the money Lebowski?").sheet1
 
 wks.update_cell(1, 2, "it's down there somewhere, let me take another look.")
 ~~~
@@ -52,7 +52,7 @@ worksheet = sh.sheet1
 
 ~~~python
 # With label
-val = worksheet.cell('B1').value
+val = worksheet.acell('B1').value
 
 # With coords
 val = worksheet.cell(1, 2).value

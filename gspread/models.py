@@ -142,30 +142,33 @@ class Worksheet(object):
 
         return (row, col)
 
-    def cell(self, row_or_label=None, col=None):
+    def acell(self, label):
+        """Returns an instance of a :class:`Cell`.
+
+        :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+
+        Example:
+
+        >>> wks.acell('A1') # this could be 'a1' as well
+        <Cell R1C1 "I'm cell A1">
+
+        """
+        return self.cell(*(self._get_int_addr(label)))
+
+    def cell(self, row, col):
         """Returns an instance of a :class:`Cell` positioned in `row`
            and `col` column.
 
-        :param row_or_name: Integer row number or string with cell name in
-                            common format, e.g. 'B1'. Letter case is ignored.
+        :param row: Integer row number.
         :param col: Integer column number.
 
-        There're two possible way of calling this method. By string label:
-
-        >>> wks.cell('A1') # this could be 'a1' as well
-        <Cell R1C1 "I'm cell A1">
-
-        Or by integer coords:
+        Example:
 
         >>> wks.cell(1, 1)
         <Cell R1C1 "I'm cell A1">
 
         """
-        if isinstance(row_or_label, int) and isinstance(col, int):
-            row = row_or_label
-        else:
-            (row, col) = self._get_int_addr(row_or_label)
-
         feed = self.client.get_cells_cell_id_feed(self,
                                                   self._cell_addr(row, col))
         return Cell(self, feed)
