@@ -247,6 +247,21 @@ class Worksheet(object):
 
         return vals
 
+    def update_acell(self, label, val):
+        """Sets the new value to a cell.
+
+        :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+        :param val: New value.
+
+        Example:
+
+        >>> wks.update_acell('A1', '42') # this could be 'a1' as well
+        <Cell R1C1 "I'm cell A1">
+
+        """
+        return self.update_cell(*(self._get_int_addr(label)), val=val)
+
     def update_cell(self, row, col, val):
         """Sets the new value to a cell.
 
