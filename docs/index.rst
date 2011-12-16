@@ -6,6 +6,17 @@
 gspread — Google Spreadsheets Python library
 ============================================
 
+gspread is a client library for interacting with `Google Spreadsheets`_.
+
+.. _Google Spreadsheets: http://www.google.com/google-d-s/spreadsheets/
+
+Features
+--------
+
+* Open a spreadsheet by its *title*, *url* or *key*.
+* Extract range, entire row or column values.
+* Independent of Google Data Python client library.
+
 Contents:
 
 .. toctree::
