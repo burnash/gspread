@@ -14,10 +14,10 @@ Features:
 import gspread
 
 # Login with your Google account
-gc = gspread.login('account@gmail.com','password')
+gc = gspread.login('thedude@abid.es','password')
 
 # Open a spreadsheet by its title in Google Docs
-# and access first sheet right away
+# and select the first sheet right away
 wks = gc.open("Where is the money Lebowski?").sheet1
 
 wks.update_cell(1, 2, "it's down there somewhere, let me take another look.")
