@@ -64,6 +64,9 @@ first_col = worksheet.col_values(1)
 ### Updating
 
 ~~~python
+worksheet.update_acell('B1', 'Bingo!')
+
+# Or
 worksheet.update_cell(1, 2, 'Bingo!')
 
 # Select a range
