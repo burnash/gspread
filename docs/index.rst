@@ -17,13 +17,6 @@ Features
 * Extract range, entire row or column values.
 * Independent of Google Data Python client library.
 
-Contents:
-
-.. toctree::
-   :maxdepth: 2
-
-   reference
-
 Example
 -------
 
@@ -54,7 +47,51 @@ To fetch a cell range, specify it by common notation::
 
 After some processing, this range can be updated in batch::
 
+    for cell in cell_list:
+        cell.value = 'O_o'
+
     worksheet.update_cells(cell_list)
+
+
+Installation
+------------
+
+From Pypi
+^^^^^^^^^
+::
+
+    pip install gspread
+
+If you're on easy_install, it's::
+
+    easy_install gspread
+
+
+From github
+^^^^^^^^^^^
+::
+
+    git clone https://github.com/burnash/gspread.git
+    cd gspread
+    python setup.py install
+
+
+Reference
+=========
+.. toctree::
+   :maxdepth: 2
+
+   reference
+
+Code
+====
+
+Check `gspread on GitHub <https://github.com/burnash/gspread>`_.
+
+Any feedback is more than welcome: open up a new `github issue`_ and I'll be dancing
+like crazy.
+
+.. _github issue: https://github.com/burnash/gspread/issues
 
 Indices and tables
 ==================
