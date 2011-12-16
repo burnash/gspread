@@ -7,6 +7,7 @@ gspread.models
 This module contains common spreadsheets' models
 
 """
+from datetime import datetime
 
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
@@ -62,15 +63,52 @@ class Spreadsheet(object):
             self._fetch_sheets()
         return self._sheet_list[index]
 
+    @property
+    def sheet1(self):
+        """Shortcut property for getting the first worksheet."""
+        return self.get_worksheet(0)
+
 
 class Worksheet(object):
     """A class for worksheet object.
 
     """
-    def __init__(self, spreadsheet, feed_entry):
+    def __init__(self, spreadsheet, element):
         self.spreadsheet = spreadsheet
         self.client = spreadsheet.client
-        self.id = feed_entry.find(_ns('id')).text.split('/')[-1]
+        self._id = element.find(_ns('id')).text.split('/')[-1]
+        self._title = element.find(_ns('title')).text
+        self._element = element
+
+    def __repr__(self):
+        return '<%s "%s" id:%s>' % (self.__class__.__name__,
+                                     self.title,
+                                     self.id)
+
+    @property
+    def id(self):
+        """Id of a worksheet."""
+        return self._id
+
+    @property
+    def title(self):
+        """Title of a worksheet."""
+        return self._title
+
+    @property
+    def row_count(self):
+        """Number of rows"""
+        return int(self._element.find(_ns1('rowCount')).text)
+
+    @property
+    def col_count(self):
+        """Number of columns"""
+        return int(self._element.find(_ns1('colCount')).text)
+
+    @property
+    def updated(self):
+        """Updated time in RFC 3339 format"""
+        return self._element.find(_ns('updated')).text
 
     def get_id_fields(self):
         return {'spreadsheet_id': self.spreadsheet.id,

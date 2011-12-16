@@ -3,6 +3,8 @@ API Reference
 
 .. module:: gspread
 
+.. contents:: :local:
+
 Main interface
 --------------
 
