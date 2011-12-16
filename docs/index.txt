@@ -24,7 +24,7 @@ and fetches a cell's value from a spreadsheet::
     gc = gspread.login('account@gmail.com','password')
 
     # Spreadsheets can be opened by their title in Google Docs
-    spreadsheet = gc.open('some title')
+    spreadsheet = gc.open("where's all the money gone 2011")
 
     # Select worksheet by index
     worksheet = spreadsheet.get_worksheet(0)

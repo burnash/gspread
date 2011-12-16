@@ -17,7 +17,7 @@ import gspread
 gc = gspread.login('account@gmail.com','password')
 
 # Spreadsheets can be opened by their title in Google Docs
-spreadsheet = gc.open('some title')
+spreadsheet = gc.open("where's all the money gone 2011")
 
 # If you want to be specific, use a key (which can be extracted from
 # the spreadsheet's url
