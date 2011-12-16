@@ -227,3 +227,17 @@ class Client(object):
         r = self.session.post(url, data, headers=headers)
 
         return ElementTree.fromstring(r.read())
+
+
+def login(email, password):
+    """Login to Google API using `email` and `password`.
+
+    This is a shortcut function which instantiates :class:`Client`
+    and performes login right away.
+
+    :returns: :class:`Client` instance.
+
+    """
+    client = Client(auth=(email, password))
+    client.login()
+    return client

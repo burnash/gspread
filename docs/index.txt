@@ -1,31 +1,29 @@
+gspread — Google Spreadsheets Python library
+============================================
+
+gspread is a client library for interacting with `Google Spreadsheets`_.
+
+.. _Google Spreadsheets: http://www.google.com/google-d-s/spreadsheets/
 
 Features
 --------
 
-* Open a spreadsheet by its **title** or **url**.
-* Extract entire row or column values.
-* No need to mess around with spreadsheets' keys.
+* Open a spreadsheet by its *title*, *url* or *key*.
+* Extract range, entire row or column values.
 * Independent of Google Data Python client library.
 
-Usage
------
+Example
+-------
 
-::
+The following code is a Python program that connects to Google Data API
+and fetches a cell's value from a spreadsheet::
 
     import gspread
 
-    gc = gspread.Client(auth=('the.email.address@gmail.com','password'))
-    gc.login()
+    gc = gspread.login('the.email.address@gmail.com','password')
 
     # Spreadsheets can be opened by their title in Google Docs
     spreadsheet = gc.open('some title')
-
-    # If you want to be specific, use a key (which can be extracted from
-    # the spreadsheet's url
-    sht1 = gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
-
-    # Or by the entire url
-    sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
 
     # Select worksheet by index
     worksheet = spreadsheet.get_worksheet(0)
@@ -33,4 +31,30 @@ Usage
     # Get a cell value
     val = worksheet.cell(1, 2).value
 
+The cell's value can be easily updated::
+
     worksheet.update_cell(1, 2, 'Bingo!')
+
+To fetch a cell range, specify it by common notation::
+
+    cell_list = worksheet.range('A1:A7')
+
+After some processing, this range can be updated in batch::
+
+    for cell in cell_list:
+        cell.value = 'O_o'
+
+    worksheet.update_cells(cell_list)
+
+
+Docs & API
+----------
+
+Head to `gspread's page <http://burnash.github.com/gspread/>`_.
+
+
+Code
+----
+
+Check `gspread on GitHub <https://github.com/burnash/gspread>`_.
+

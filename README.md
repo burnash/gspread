@@ -13,8 +13,7 @@ Features:
 ~~~python
 import gspread
 
-gc = gspread.Client(auth=('the.email.address@gmail.com','password'))
-gc.login()
+gc = gspread.login('the.email.address@gmail.com','password')
 
 # Spreadsheets can be opened by their title in Google Docs
 spreadsheet = gc.open('some title')
@@ -72,6 +71,11 @@ git clone https://github.com/burnash/gspread.git
 cd gspread
 python setup.py install
 ~~~
+
+## Documentation
+
+[Docs on GitHub](http://burnash.github.com/gspread/)
+
 
 ## Feedback and contribution
 

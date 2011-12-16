@@ -8,10 +8,10 @@ Google Spreadsheets client library.
 
 """
 
-__version__ = '0.0.8'
+__version__ = '0.0.9'
 __author__ = 'Anton Burnashev'
 
-from .client import Client
+from .client import Client, login
 from .models import Spreadsheet, Worksheet, Cell
 from .exceptions import (GSpreadException, AuthenticationError,
                          SpreadsheetNotFound, NoValidUrlKeyFound)

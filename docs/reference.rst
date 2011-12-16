@@ -6,6 +6,8 @@ API Reference
 Main interface
 --------------
 
+.. autofunction:: login
+
 .. autoclass:: Client
    :members:
 

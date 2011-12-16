@@ -25,8 +25,7 @@ and fetches a cell's value from a spreadsheet::
 
     import gspread
 
-    gc = gspread.Client(auth=('the.email.address@gmail.com','password'))
-    gc.login()
+    gc = gspread.login('the.email.address@gmail.com','password')
 
     # Spreadsheets can be opened by their title in Google Docs
     spreadsheet = gc.open('some title')

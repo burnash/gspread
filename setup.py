@@ -14,11 +14,6 @@ def read(filename):
 description = 'Google Spreadsheets Python library'
 
 long_description = """
-gspread
-=======
-
-{description}
-
 {index}
 
 License
