@@ -8,7 +8,7 @@ Features:
 * Extract range, entire row or column values.
 * Independent of Google Data Python client library.
 
-## Usage
+## Basic usage
 
 ~~~python
 import gspread
@@ -16,9 +16,16 @@ import gspread
 # Login with your Google account
 gc = gspread.login('account@gmail.com','password')
 
-# Spreadsheets can be opened by their title in Google Docs
-spreadsheet = gc.open("where's all the money gone 2011")
+# Open a spreadsheet by its title in Google Docs
+# and access first sheet right away
+wks = gc.open("Where is the money Lebowski?").sheet1
 
+wks.update_cell(1, 2, "it's down there somewhere, let me take another look.")
+~~~
+
+## More examples
+
+~~~python
 # If you want to be specific, use a key (which can be extracted from
 # the spreadsheet's url
 sht1 = gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
@@ -27,7 +34,7 @@ sht1 = gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
 sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
 
 # Select worksheet by index. Worksheet indexes start from zero
-worksheet = spreadsheet.get_worksheet(0)
+worksheet = sht1.get_worksheet(0)
 
 # Column and row indexes start from one
 first_col = worksheet.col_values(1)
