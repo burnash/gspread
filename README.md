@@ -16,32 +16,51 @@ import gspread
 # Login with your Google account
 gc = gspread.login('thedude@abid.es','password')
 
-# Open a spreadsheet by its title in Google Docs
-# and select the first sheet right away
-wks = gc.open("Where is the money Lebowski?").sheet1
+# Open a worksheet from spreadsheet with one shot
+wks = gc.open("Where is the money Lebowski?").sheet1 
 
 wks.update_cell(1, 2, "it's down there somewhere, let me take another look.")
 ~~~
 
 ## More examples
 
+### Opening a spreadsheet
+
 ~~~python
+# You can open a spreadsheet by its title as it appers in Google Docs
+sh = gc.open("My poor gym results") # <-- Look ma, no keys!
+
 # If you want to be specific, use a key (which can be extracted from
 # the spreadsheet's url
 sht1 = gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
 
 # Or, if you feel really lazy to extract that key, paste the entire url
 sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
+~~~
 
+### Selecting a worksheet
+
+~~~python
 # Select worksheet by index. Worksheet indexes start from zero
-worksheet = sht1.get_worksheet(0)
+worksheet = sh.get_worksheet(0)
 
-# Column and row indexes start from one
-first_col = worksheet.col_values(1)
+# Most common case: Sheet1
+worksheet = sh.sheet1
+~~~
 
+### Getting a cell value
+
+~~~python
 # Get a cell value
 val = worksheet.cell(1, 2).value
 
+# Get all values from column. Column and row indexes start from one
+first_col = worksheet.col_values(1)
+~~~
+
+### Updating
+
+~~~python
 worksheet.update_cell(1, 2, 'Bingo!')
 
 # Select a range
@@ -52,8 +71,8 @@ for cell in cell_list:
 
 # Update in batch
 worksheet.update_cells(cell_list)
-
 ~~~
+
 ## Requirements
 
 Python 2.6+
