@@ -20,8 +20,8 @@ Features
 Example
 -------
 
-The following code is a Python program that connects to Google Data API
-and fetches a cell's value from a spreadsheet::
+This code will connect to Google Data API
+and fetch a cell's value from a spreadsheet::
 
     import gspread
 
