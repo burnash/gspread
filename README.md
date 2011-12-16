@@ -13,7 +13,8 @@ Features:
 ~~~python
 import gspread
 
-gc = gspread.login('the.email.address@gmail.com','password')
+# Login with your Google account
+gc = gspread.login('account@gmail.com','password')
 
 # Spreadsheets can be opened by their title in Google Docs
 spreadsheet = gc.open('some title')
