@@ -11,50 +11,23 @@ Features
 * Extract range, entire row or column values.
 * Independent of Google Data Python client library.
 
-Example
--------
+Basic usage
+-----------
 
-This code will connect to Google Data API
-and fetch a cell's value from a spreadsheet::
+Connect to Google Spreadsheet and set a value to a cell::
 
     import gspread
 
     # Login with your Google account
-    gc = gspread.login('account@gmail.com','password')
+    gc = gspread.login('thedude@abid.es','password')
 
-    # Spreadsheets can be opened by their title in Google Docs
-    spreadsheet = gc.open("where's all the money gone 2011")
+    # Open a worksheet from spreadsheet with one shot
+    wks = gc.open("Where is the money Lebowski?").sheet1
 
-    # Get a first worksheet
-    worksheet = spreadsheet.sheet1
-
-    # Get a cell value
-    val = worksheet.acell('B1').value
-
-The cell's value can be easily updated::
-
-    worksheet.update_acell('B1', 'Bingo!')
-
-To fetch a cell range, specify it by common notation::
-
-    cell_list = worksheet.range('A1:A7')
-
-After some processing, this range can be updated in batch::
-
-    for cell in cell_list:
-        cell.value = 'O_o'
-
-    worksheet.update_cells(cell_list)
+    wks.update_acell('B2', "it's down there somewhere, let me take another look.")
 
 
-Docs & API
-----------
-
-Head to `gspread's page <http://burnash.github.com/gspread/>`_.
-
-
-Code
-----
+Code and documentation
+----------------------
 
 Check `gspread on GitHub <https://github.com/burnash/gspread>`_.
-
