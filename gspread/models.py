@@ -16,7 +16,7 @@ from .ns import _ns, _ns1
 from .urls import construct_url
 from .utils import finditem
 
-from .exceptions import IncorrectCellLabel
+from .exceptions import IncorrectCellLabel, WorksheetNotFound
 
 class Spreadsheet(object):
     """A class for a spreadsheet object.
@@ -31,9 +31,6 @@ class Spreadsheet(object):
     def get_id_fields(self):
         return {'spreadsheet_id': self.id}
 
-    def sheet_by_name(self, sheet_name):
-        pass
-
     def _fetch_sheets(self):
         feed = self.client.get_worksheets_feed(self)
         for elem in feed.findall(_ns('entry')):
@@ -46,6 +43,30 @@ class Spreadsheet(object):
         if not self._sheet_list:
             self._fetch_sheets()
         return self._sheet_list[:]
+
+    def worksheet(self, title):
+        """Returns a worksheet with specified `title`.
+
+        The returning object is an instance of :class:`Worksheet`.
+
+        :param title: A title of a worksheet. If there're multiple
+                      worksheets with the same title, first one will
+                      be returned.
+
+        Example. Getting worksheet named 'Annual bonuses'
+
+        >>> sht = client.open('Sample one')
+        >>> worksheet = sht.worksheet('Annual bonuses')
+
+        """
+        if not self._sheet_list:
+            self._fetch_sheets()
+
+        try:
+            return finditem(lambda x: x.title == title, self._sheet_list)
+        except StopIteration:
+            raise WorksheetNotFound(title)
+
 
     def get_worksheet(self, index):
         """Returns a worksheet with specified `index`.

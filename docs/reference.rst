@@ -37,6 +37,7 @@ Exceptions
 .. autoexception:: GSpreadException
 .. autoexception:: AuthenticationError
 .. autoexception:: SpreadsheetNotFound
+.. autoexception:: WorksheetNotFound
 .. autoexception:: NoValidUrlKeyFound
 
 Internal modules
