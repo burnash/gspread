@@ -27,7 +27,7 @@ class GspreadTest(unittest.TestCase):
 
 
 class ClientTest(GspreadTest):
-    """Test for gspread.client"""
+    """Test for gspread.client."""
     def test_open(self):
         title = self.config.get('Spreadsheet', 'title')
         spreadsheet = self.gc.open(title)
@@ -139,6 +139,7 @@ class WorksheetTest(GspreadTest):
 
 
 class CellTest(GspreadTest):
+    """Test for gspread.Cell."""
     def setUp(self):
         super(CellTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
