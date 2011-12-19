@@ -1,6 +1,6 @@
 # gspread
 
-Super simple Python library for accessing Google Spreadsheets.
+Python Google Spreadsheets library with simple API.
 
 Features:
 

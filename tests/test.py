@@ -1,4 +1,6 @@
 import os
+import time
+import hashlib
 import unittest
 import ConfigParser
 
@@ -54,7 +56,7 @@ class ClientTest(GspreadTest):
 
 
 class SpreadsheetTest(GspreadTest):
-    """Test for gspread.Spreadsheet"""
+    """Test for gspread.Spreadsheet."""
     def setUp(self):
         super(SpreadsheetTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
@@ -73,3 +75,80 @@ class SpreadsheetTest(GspreadTest):
         sheet = self.spreadsheet.worksheet(sheet_title)
         self.assertTrue(isinstance(sheet, gspread.Worksheet))
 
+
+class WorksheetTest(GspreadTest):
+    """Test for gspread.Worksheet."""
+    def setUp(self):
+        super(WorksheetTest, self).setUp()
+        title = self.config.get('Spreadsheet', 'title')
+        self.sheet = self.gc.open(title).sheet1
+
+    def test_properties(self):
+        self.assertEqual(self.sheet.id,
+                         self.config.get('Worksheet', 'id'))
+        self.assertEqual(self.sheet.title,
+                         self.config.get('Worksheet', 'title'))
+        self.assertEqual(self.sheet.row_count,
+                         self.config.getint('Worksheet', 'row_count'))
+        self.assertEqual(self.sheet.col_count,
+                         self.config.getint('Worksheet', 'col_count'))
+
+    def test_get_int_addr(self):
+        self.assertEqual(self.sheet.get_int_addr('ABC3'), (3, 731))
+
+    def test_acell(self):
+        cell = self.sheet.acell('A1')
+        self.assertTrue(isinstance(cell, gspread.Cell))
+
+    def test_cell(self):
+        cell = self.sheet.cell(1, 1)
+        self.assertTrue(isinstance(cell, gspread.Cell))
+
+    def test_range(self):
+        cell_range = self.sheet.range('A1:A5')
+        for c in cell_range:
+            self.assertTrue(isinstance(c, gspread.Cell))
+
+    def test_update_acell(self):
+        value = hashlib.md5(str(time.time())).hexdigest()
+        self.sheet.update_acell('A2', value)
+        self.assertEqual(self.sheet.acell('A2').value, value)
+
+    def test_update_cell(self):
+        value = hashlib.md5(str(time.time())).hexdigest()
+        self.sheet.update_cell(1, 2, value)
+        self.assertEqual(self.sheet.cell(1, 2).value, value)
+
+    def test_update_cells(self):
+        list_len = 10
+        value_list = [hashlib.md5(str(time.time() + i)).hexdigest()
+                        for i in range(list_len)]
+        range_label = 'A1:A%s' % list_len
+        cell_list = self.sheet.range(range_label)
+
+        for c, v in zip(cell_list, value_list):
+            c.value = v
+
+        self.sheet.update_cells(cell_list)
+
+        cell_list = self.sheet.range(range_label)
+
+        for c, v in zip(cell_list, value_list):
+            c.value = v
+            self.assertEqual(c.value, v)
+
+
+class CellTest(GspreadTest):
+    def setUp(self):
+        super(CellTest, self).setUp()
+        title = self.config.get('Spreadsheet', 'title')
+        sheet = self.gc.open(title).sheet1
+        self.update_value = hashlib.md5(str(time.time())).hexdigest()
+        sheet.update_acell('A1', self.update_value)
+        self.cell = sheet.acell('A1')
+
+    def test_properties(self):
+        cell = self.cell
+        self.assertEqual(cell.value, self.update_value)
+        self.assertEqual(cell.row, 1)
+        self.assertEqual(cell.col, 1)

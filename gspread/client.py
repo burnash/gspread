@@ -51,6 +51,9 @@ class Client(object):
                 return line[5:]
         return None
 
+    def _add_xml_header(self, data):
+        return "<?xml version='1.0' encoding='UTF-8'?>%s" % data
+
     def login(self):
         """Authorize client using ClientLogin protocol.
 
@@ -215,14 +218,14 @@ class Client(object):
 
     def put_cell(self, url, data):
         headers = {'Content-Type': 'application/atom+xml'}
-        data = "<?xml version='1.0' encoding='UTF-8'?>%s" % data
+        data = self._add_xml_header(data)
         r = self.session.put(url, data, headers=headers)
 
         return ElementTree.fromstring(r.read())
 
     def post_cells(self, worksheet, data):
         headers = {'Content-Type': 'application/atom+xml'}
-        data = "<?xml version='1.0' encoding='UTF-8'?>%s" % data
+        data = self._add_xml_header(data)
         url = construct_url('cells_batch', worksheet)
         r = self.session.post(url, data, headers=headers)
 

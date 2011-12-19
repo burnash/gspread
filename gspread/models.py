@@ -12,7 +12,7 @@ import re
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
-from .ns import _ns, _ns1
+from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, GS_NS
 from .urls import construct_url
 from .utils import finditem
 
@@ -148,7 +148,19 @@ class Worksheet(object):
         return cells_list
 
     _cell_addr_re = re.compile(r'([A-Za-z]+)(\d+)')
-    def _get_int_addr(self, label):
+    def get_int_addr(self, label):
+        """Translates cell's label address to a tuple of integers.
+
+        The result is a tuple containing `row` and `column` numbers.
+
+        :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+
+        Example:
+        >>> wks.get_int_addr('A1')
+        (1, 1)
+
+        """
         magic_number = 96
         m = self._cell_addr_re.match(label)
         if m:
@@ -175,7 +187,7 @@ class Worksheet(object):
         <Cell R1C1 "I'm cell A1">
 
         """
-        return self.cell(*(self._get_int_addr(label)))
+        return self.cell(*(self.get_int_addr(label)))
 
     def cell(self, row, col):
         """Returns an instance of a :class:`Cell` positioned in `row`
@@ -281,7 +293,7 @@ class Worksheet(object):
         <Cell R1C1 "I'm cell A1">
 
         """
-        return self.update_cell(*(self._get_int_addr(label)), val=val)
+        return self.update_cell(*(self.get_int_addr(label)), val=val)
 
     def update_cell(self, row, col, val):
         """Sets the new value to a cell.
@@ -302,10 +314,9 @@ class Worksheet(object):
         self.client.put_cell(uri, ElementTree.tostring(feed))
 
     def _create_update_feed(self, cell_list):
-        feed = Element('feed',
-                      {'xmlns': 'http://www.w3.org/2005/Atom',
-                       'xmlns:batch': 'http://schemas.google.com/gdata/batch',
-                       'xmlns:gs': 'http://schemas.google.com/spreadsheets/2006'})
+        feed = Element('feed', {'xmlns': ATOM_NS,
+                                'xmlns:batch': BATCH_NS,
+                                'xmlns:gs': GS_NS})
 
         id_elem = SubElement(feed, 'id')
 
@@ -325,9 +336,9 @@ class Worksheet(object):
                                        'type': edit_link.get('type'),
                                        'href': edit_link.get('href')})
 
-            SubElement(entry, 'gs:cell', {'row': cell.row,
-                                          'col': cell.col,
-                                          'inputValue': cell.value})
+            SubElement(entry, 'gs:cell', {'row': str(cell.row),
+                                          'col': str(cell.col),
+                                          'inputValue': str(cell.value)})
         return feed
 
     def update_cells(self, cell_list):
@@ -347,8 +358,8 @@ class Cell(object):
     def __init__(self, worksheet, element):
         self.element = element
         cell_elem = element.find(_ns1('cell'))
-        self._row = cell_elem.get('row')
-        self._col = cell_elem.get('col')
+        self._row = int(cell_elem.get('row'))
+        self._col = int(cell_elem.get('col'))
 
         #: Value of the cell.
         self.value = cell_elem.text
