@@ -11,6 +11,12 @@ for interacting with `Google Spreadsheets`_.
 
 .. _Google Spreadsheets: http://www.google.com/google-d-s/spreadsheets/
 
+.. toctree::
+   :maxdepth: 3
+
+   userguide 
+   reference
+
 Features
 --------
 
@@ -18,6 +24,7 @@ Features
 * Select cells by labels, e.g. 'A1'.
 * Extract range, entire row or column values.
 * Independent of Google Data Python client library.
+
 
 Example
 -------
@@ -60,36 +67,6 @@ After some processing, this range can be updated in batch::
 
     worksheet.update_cells(cell_list)
 
-
-Installation
-------------
-
-From Pypi
-^^^^^^^^^
-::
-
-    pip install gspread
-
-If you're on easy_install, it's::
-
-    easy_install gspread
-
-
-From github
-^^^^^^^^^^^
-::
-
-    git clone https://github.com/burnash/gspread.git
-    cd gspread
-    python setup.py install
-
-
-Reference
-=========
-.. toctree::
-   :maxdepth: 2
-
-   reference
 
 Code
 ====
