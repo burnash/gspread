@@ -1,3 +1,5 @@
+.. _reference:
+
 API Reference
 =============
 
@@ -5,7 +7,7 @@ API Reference
 
 .. contents:: :local:
 
-Main interface
+Main Interface
 --------------
 
 .. autofunction:: login
@@ -40,7 +42,7 @@ Exceptions
 .. autoexception:: WorksheetNotFound
 .. autoexception:: NoValidUrlKeyFound
 
-Internal modules
+Internal Modules
 ----------------
 
 Following modules are for internal use only.

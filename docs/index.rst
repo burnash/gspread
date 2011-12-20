@@ -6,7 +6,7 @@
 gspread — Google Spreadsheets Python library
 ============================================
 
-`gspread <https://github.com/burnash/gspread>`_ is a super simple library
+`gspread <https://github.com/burnash/gspread>`_ is a simple library
 for interacting with `Google Spreadsheets`_.
 
 .. _Google Spreadsheets: http://www.google.com/google-d-s/spreadsheets/
