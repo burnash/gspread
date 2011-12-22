@@ -24,9 +24,7 @@ Download
 ========
 """
 
-long_description = long_description.lstrip("\n").format(
-        description=description,
-        index=read('docs/index.txt'))
+long_description = long_description.lstrip("\n").format(index=read('docs/index.txt'))
 
 setup(
     name='gspread',
