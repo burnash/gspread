@@ -24,6 +24,7 @@ Features
 * Select cells by labels, e.g. 'A1'.
 * Extract range, entire row or column values.
 * Independent of Google Data Python client library.
+* Python 3 support.
 
 
 Example
