@@ -7,6 +7,7 @@ Features:
 * Open a spreadsheet by its **title** or **url**.
 * Extract range, entire row or column values.
 * Independent of Google Data Python client library.
+* Python 3 support.
 
 ## Basic usage
 
