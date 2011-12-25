@@ -77,7 +77,7 @@ class Client(object):
         url = AUTH_SERVER + '/accounts/ClientLogin'
 
         r = self.session.post(url, data)
-        content = r.read()
+        content = r.read().decode()
 
         if r.code == 200:
             token = self._get_auth_token(content)

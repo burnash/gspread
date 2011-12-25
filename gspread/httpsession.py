@@ -8,8 +8,18 @@ This module contains a class for working with http sessions.
 
 """
 
-import urllib
-import urllib2
+
+try:
+    import urllib2 as request
+    from urllib import urlencode
+except ImportError:
+    from urllib import request
+    from urllib.parse import urlencode
+
+try:
+    unicode
+except NameError:
+    basestring = unicode = str
 
 class HTTPSession(object):
     """Handles HTTP activity while keeping headers persisting across requests.
@@ -21,9 +31,9 @@ class HTTPSession(object):
 
     def request(self, method, url, data=None, headers=None):
         if data and not isinstance(data, basestring):
-            data = urllib.urlencode(data)
+            data = urlencode(data)
 
-        req = urllib2.Request(url, data)
+        req = request.Request(url, data)
 
         if method == 'put':
             req.get_method = lambda: 'PUT'
@@ -40,7 +50,7 @@ class HTTPSession(object):
         for k, v in request_headers.items():
             req.add_header(k, v)
 
-        return urllib2.urlopen(req)
+        return request.urlopen(req)
 
     def get(self, url, **kwargs):
         return self.request('get', url, **kwargs)
