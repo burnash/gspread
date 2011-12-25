@@ -81,7 +81,7 @@ worksheet.update_cells(cell_list)
 
 ## Requirements
 
-Python 2.6+
+Python 2.6+, Python 3+
 
 ## Installation
 
