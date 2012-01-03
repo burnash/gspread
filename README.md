@@ -98,7 +98,7 @@ If you're on easy_install, it's:
 easy_install gspread
 ~~~
 
-### From github
+### From GitHub
 
 ~~~sh
 git clone https://github.com/burnash/gspread.git
