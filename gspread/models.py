@@ -12,7 +12,7 @@ import re
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
-from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, GS_NS
+from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
 from .utils import finditem
 
@@ -138,6 +138,10 @@ class Worksheet(object):
 
     def _cell_addr(self, row, col):
         return 'R%sC%s' % (row, col)
+
+    def _get_link(self, link_type, feed):
+        return finditem(lambda x: x.get('rel') == link_type,
+                feed.findall(_ns('link')))
 
     def _fetch_cells(self):
         feed = self.client.get_cells_feed(self)
@@ -307,16 +311,14 @@ class Worksheet(object):
                                                   self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
         cell_elem.set('inputValue', val)
-        edit_link = finditem(lambda x: x.get('rel') == 'edit',
-                feed.findall(_ns('link')))
-        uri = edit_link.get('href')
+        uri = self._get_link('edit', feed).get('href')
 
-        self.client.put_cell(uri, ElementTree.tostring(feed))
+        self.client.put_feed(uri, ElementTree.tostring(feed))
 
     def _create_update_feed(self, cell_list):
         feed = Element('feed', {'xmlns': ATOM_NS,
                                 'xmlns:batch': BATCH_NS,
-                                'xmlns:gs': GS_NS})
+                                'xmlns:gs': SPREADSHEET_NS})
 
         id_elem = SubElement(feed, 'id')
 
@@ -349,6 +351,36 @@ class Worksheet(object):
         """
         feed = self._create_update_feed(cell_list)
         self.client.post_cells(self, ElementTree.tostring(feed))
+
+    def resize(self, rows=None, cols=None):
+        """Resizes the worksheet.
+
+        :param rows: New rows count.
+        :param cols: New columns count.
+        """
+        if rows is None and cols is None:
+            raise TypeError("Either 'rows' or 'cols' should be specified.")
+
+        self_uri = self._get_link('self', self._element).get('href')
+        feed = self.client.get_feed(self_uri)
+        uri = self._get_link('edit', feed).get('href')
+
+        if rows:
+            elem = feed.find(_ns1('rowCount'))
+            elem.text = str(rows)
+
+        if cols:
+            elem = feed.find(_ns1('colCount'))
+            elem.text = str(cols)
+
+        # Send request and store result
+        self._element = self.client.put_feed(uri, ElementTree.tostring(feed))
+
+    def add_rows(self, rows):
+        self.resize(rows=self.row_count + rows)
+
+    def add_cols(self, cols):
+        self.resize(cols=self.col_count + cols)
 
 
 class Cell(object):

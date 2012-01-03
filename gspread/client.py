@@ -210,6 +210,10 @@ class Client(object):
         r = self.session.get(url)
         return ElementTree.fromstring(r.read())
 
+    def get_feed(self, url):
+        r = self.session.get(url)
+        return ElementTree.fromstring(r.read())
+
     def get_cells_cell_id_feed(self, worksheet, cell_id,
                        visibility='private', projection='full'):
         url = construct_url('cells_cell_id', worksheet, cell_id=cell_id,
@@ -218,7 +222,7 @@ class Client(object):
         r = self.session.get(url)
         return ElementTree.fromstring(r.read())
 
-    def put_cell(self, url, data):
+    def put_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml'}
         data = self._add_xml_header(data)
 
