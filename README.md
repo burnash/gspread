@@ -86,7 +86,7 @@ Python 2.6+ or Python 3+
 
 ## Installation
 
-### From Pypi
+### From PyPI
 
 ~~~sh
 pip install gspread
