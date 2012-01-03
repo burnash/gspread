@@ -15,4 +15,5 @@ from .client import Client, login
 from .models import Spreadsheet, Worksheet, Cell
 from .exceptions import (GSpreadException, AuthenticationError,
                          SpreadsheetNotFound, NoValidUrlKeyFound,
-                         IncorrectCellLabel, WorksheetNotFound)
+                         IncorrectCellLabel, WorksheetNotFound,
+                         UpdateCellError)

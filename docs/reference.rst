@@ -41,6 +41,7 @@ Exceptions
 .. autoexception:: SpreadsheetNotFound
 .. autoexception:: WorksheetNotFound
 .. autoexception:: NoValidUrlKeyFound
+.. autoexception:: UpdateCellError
 
 Internal Modules
 ----------------

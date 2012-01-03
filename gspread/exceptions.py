@@ -31,3 +31,6 @@ class UrlParameterMissing(GSpreadException):
 
 class IncorrectCellLabel(GSpreadException):
     """The cell label is incorrect."""
+
+class UpdateCellError(GSpreadException):
+    """Error while setting cell's value"""

@@ -19,7 +19,7 @@ from .models import Spreadsheet
 from .urls import construct_url
 from .utils import finditem
 from .exceptions import (AuthenticationError, SpreadsheetNotFound,
-                         NoValidUrlKeyFound)
+                         NoValidUrlKeyFound, UpdateCellError)
 
 AUTH_SERVER = 'https://www.google.com'
 SPREADSHEETS_SERVER = 'spreadsheets.google.com'
@@ -221,7 +221,15 @@ class Client(object):
     def put_cell(self, url, data):
         headers = {'Content-Type': 'application/atom+xml'}
         data = self._add_xml_header(data)
-        r = self.session.put(url, data, headers=headers)
+
+        try:
+            r = self.session.put(url, data, headers=headers)
+        except HTTPError as ex:
+            if ex.code == 403:
+                message = ex.read().decode()
+                raise UpdateCellError(message)
+            else:
+                raise ex
 
         return ElementTree.fromstring(r.read())
 
