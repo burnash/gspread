@@ -14,7 +14,7 @@ from xml.etree import ElementTree
 
 from . import __version__
 from .ns import _ns
-from .httpsession import HTTPSession
+from .httpsession import HTTPSession, HTTPError
 from .models import Spreadsheet
 from .urls import construct_url
 from .utils import finditem
@@ -76,22 +76,24 @@ class Client(object):
 
         url = AUTH_SERVER + '/accounts/ClientLogin'
 
-        r = self.session.post(url, data)
-        content = r.read().decode()
-
-        if r.code == 200:
+        try:
+            r = self.session.post(url, data)
+            content = r.read().decode()
             token = self._get_auth_token(content)
             auth_header = "GoogleLogin auth=%s" % token
             self.session.add_header('Authorization', auth_header)
 
-        elif r.code == 403:
-            if content.strip() == 'Error=BadAuthentication':
-                raise AuthenticationError("Incorrect username or password")
-            else:
-                raise AuthenticationError("Unable to authenticate. %s code" % r.code)
+        except HTTPError as ex:
+            if ex.code == 403:
+                content = ex.read().decode()
+                if content.strip() == 'Error=BadAuthentication':
+                    raise AuthenticationError("Incorrect username or password")
+                else:
+                    raise AuthenticationError("Unable to authenticate. %s code" % ex.code)
 
-        else:
-            raise AuthenticationError("Unable to authenticate. %s code" % r.code)
+            else:
+                raise AuthenticationError("Unable to authenticate. %s code" % ex.code)
+
 
     def open(self, title):
         """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.

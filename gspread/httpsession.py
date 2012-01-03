@@ -12,14 +12,17 @@ This module contains a class for working with http sessions.
 try:
     import urllib2 as request
     from urllib import urlencode
+    from urllib2 import HTTPError
 except ImportError:
     from urllib import request
     from urllib.parse import urlencode
+    from urllib.error import HTTPError
 
 try:
     unicode
 except NameError:
     basestring = unicode = str
+
 
 class HTTPSession(object):
     """Handles HTTP activity while keeping headers persisting across requests.
@@ -50,7 +53,10 @@ class HTTPSession(object):
         for k, v in request_headers.items():
             req.add_header(k, v)
 
-        return request.urlopen(req)
+        try:
+            return request.urlopen(req)
+        except HTTPError as e:
+            raise e
 
     def get(self, url, **kwargs):
         return self.request('get', url, **kwargs)
