@@ -97,10 +97,14 @@ class Spreadsheet(object):
         >>> sht = client.open('My fancy spreadsheet')
         >>> worksheet = sht.get_worksheet(0)
 
+        Returns `None` if the worksheet is not found.
         """
         if not self._sheet_list:
             self._fetch_sheets()
-        return self._sheet_list[index]
+        try:
+            return self._sheet_list[index]
+        except IndexError:
+            return None
 
     @property
     def sheet1(self):
