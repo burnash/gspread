@@ -33,4 +33,7 @@ class IncorrectCellLabel(GSpreadException):
     """The cell label is incorrect."""
 
 class UpdateCellError(GSpreadException):
-    """Error while setting cell's value"""
+    """Error while setting cell's value."""
+
+class RequestError(GSpreadException):
+    """Error while sending API request."""

@@ -19,7 +19,9 @@ from .models import Spreadsheet
 from .urls import construct_url
 from .utils import finditem
 from .exceptions import (AuthenticationError, SpreadsheetNotFound,
-                         NoValidUrlKeyFound, UpdateCellError)
+                         NoValidUrlKeyFound, UpdateCellError,
+                         RequestError)
+
 
 AUTH_SERVER = 'https://www.google.com'
 SPREADSHEETS_SERVER = 'spreadsheets.google.com'
@@ -234,6 +236,18 @@ class Client(object):
                 raise UpdateCellError(message)
             else:
                 raise ex
+
+        return ElementTree.fromstring(r.read())
+
+    def post_feed(self, url, data):
+        headers = {'Content-Type': 'application/atom+xml'}
+        data = self._add_xml_header(data)
+
+        try:
+            r = self.session.post(url, data, headers=headers)
+        except HTTPError as ex:
+            message = ex.read().decode()
+            raise RequestError(message)
 
         return ElementTree.fromstring(r.read())
 

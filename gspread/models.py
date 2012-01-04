@@ -36,6 +36,23 @@ class Spreadsheet(object):
         for elem in feed.findall(_ns('entry')):
             self._sheet_list.append(Worksheet(self, elem))
 
+    def add_worksheet(self, title, rows, cols):
+        """Adds a new worksheet to a spreadsheet.
+
+        :param title: A title of a new worksheet.
+        :param rows: Number of rows.
+        :param cols: Number of columns.
+        """
+        feed = Element('entry', {'xmlns': ATOM_NS,
+                                'xmlns:gs': SPREADSHEET_NS})
+
+        SubElement(feed, 'title').text = title
+        SubElement(feed, 'gs:rowCount').text = str(rows)
+        SubElement(feed, 'gs:colCount').text = str(cols)
+
+        url = construct_url('worksheets', self)
+        self.client.post_feed(url, ElementTree.tostring(feed))
+
     def worksheets(self):
         """Returns a list of all :class:`worksheets <Worksheet>` in a spreadsheet.
 
@@ -355,8 +372,8 @@ class Worksheet(object):
     def resize(self, rows=None, cols=None):
         """Resizes the worksheet.
 
-        :param rows: New rows count.
-        :param cols: New columns count.
+        :param rows: New rows number.
+        :param cols: New columns number.
         """
         if rows is None and cols is None:
             raise TypeError("Either 'rows' or 'cols' should be specified.")

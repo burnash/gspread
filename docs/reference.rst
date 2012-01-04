@@ -42,6 +42,7 @@ Exceptions
 .. autoexception:: WorksheetNotFound
 .. autoexception:: NoValidUrlKeyFound
 .. autoexception:: UpdateCellError
+.. autoexception:: RequestError
 
 Internal Modules
 ----------------

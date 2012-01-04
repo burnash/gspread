@@ -16,4 +16,4 @@ from .models import Spreadsheet, Worksheet, Cell
 from .exceptions import (GSpreadException, AuthenticationError,
                          SpreadsheetNotFound, NoValidUrlKeyFound,
                          IncorrectCellLabel, WorksheetNotFound,
-                         UpdateCellError)
+                         UpdateCellError, RequestError)
