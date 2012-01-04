@@ -283,7 +283,11 @@ class Worksheet(object):
             if int(cell.row) == row:
                 cells[int(cell.col)] = cell
 
-        last_index = max(cells.keys())
+        try:
+            last_index = max(cells.keys())
+        except ValueError:
+            return []
+
         vals = []
         for i in range(1, last_index + 1):
             c = cells.get(i)
