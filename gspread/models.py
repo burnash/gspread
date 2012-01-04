@@ -42,6 +42,8 @@ class Spreadsheet(object):
         :param title: A title of a new worksheet.
         :param rows: Number of rows.
         :param cols: Number of columns.
+
+        Returns a newly created :class:`worksheets <Worksheet>`.
         """
         feed = Element('entry', {'xmlns': ATOM_NS,
                                 'xmlns:gs': SPREADSHEET_NS})
@@ -51,7 +53,12 @@ class Spreadsheet(object):
         SubElement(feed, 'gs:colCount').text = str(cols)
 
         url = construct_url('worksheets', self)
-        self.client.post_feed(url, ElementTree.tostring(feed))
+        elem = self.client.post_feed(url, ElementTree.tostring(feed))
+
+        worksheet = Worksheet(self, elem)
+        self._sheet_list.append(worksheet)
+
+        return worksheet
 
     def worksheets(self):
         """Returns a list of all :class:`worksheets <Worksheet>` in a spreadsheet.
