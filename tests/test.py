@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import time
 import hashlib
@@ -118,6 +120,18 @@ class WorksheetTest(GspreadTest):
         value = hashlib.md5(str(time.time())).hexdigest()
         self.sheet.update_cell(1, 2, value)
         self.assertEqual(self.sheet.cell(1, 2).value, value)
+
+        self.sheet.update_cell(1, 2, 42)
+        self.assertEqual(self.sheet.cell(1, 2).value, '42')
+
+        self.sheet.update_cell(1, 2, 42L)
+        self.assertEqual(self.sheet.cell(1, 2).value, '42')
+
+        self.sheet.update_cell(1, 2, 42.01)
+        self.assertEqual(self.sheet.cell(1, 2).value, '42.01')
+
+        self.sheet.update_cell(1, 2, u'Артур')
+        self.assertEqual(self.sheet.cell(1, 2).value, u'Артур')
 
     def test_update_cells(self):
         list_len = 10

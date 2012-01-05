@@ -18,6 +18,13 @@ from .utils import finditem
 
 from .exceptions import IncorrectCellLabel, WorksheetNotFound
 
+
+try:
+    unicode
+except NameError:
+    basestring = unicode = str
+
+
 class Spreadsheet(object):
     """A class for a spreadsheet object.
 
@@ -342,7 +349,7 @@ class Worksheet(object):
         feed = self.client.get_cells_cell_id_feed(self,
                                                   self._cell_addr(row, col))
         cell_elem = feed.find(_ns1('cell'))
-        cell_elem.set('inputValue', val)
+        cell_elem.set('inputValue', unicode(val))
         uri = self._get_link('edit', feed).get('href')
 
         self.client.put_feed(uri, ElementTree.tostring(feed))
@@ -372,7 +379,7 @@ class Worksheet(object):
 
             SubElement(entry, 'gs:cell', {'row': str(cell.row),
                                           'col': str(cell.col),
-                                          'inputValue': str(cell.value)})
+                                          'inputValue': unicode(cell.value)})
         return feed
 
     def update_cells(self, cell_list):
