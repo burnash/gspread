@@ -86,6 +86,13 @@ Python 2.6+ or Python 3+
 
 ## Installation
 
+### From GitHub
+
+~~~sh
+git clone https://github.com/burnash/gspread.git
+cd gspread
+python setup.py install
+~~~
 ### From PyPI
 
 ~~~sh
@@ -96,14 +103,6 @@ If you're on easy_install, it's:
 
 ~~~sh
 easy_install gspread
-~~~
-
-### From GitHub
-
-~~~sh
-git clone https://github.com/burnash/gspread.git
-cd gspread
-python setup.py install
 ~~~
 
 ## Documentation
