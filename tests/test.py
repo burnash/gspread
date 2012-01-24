@@ -152,13 +152,22 @@ class WorksheetTest(GspreadTest):
             self.assertEqual(c.value, v)
 
     def test_resize(self):
-        init_rows = self.sheet.row_count
-        init_cols = self.sheet.col_count
+        add_num = 10
 
-        self.sheet.resize(init_rows + 10, init_cols + 10)
+        new_rows = self.sheet.row_count + add_num
+        self.sheet.add_rows(add_num)
+        self.assertEqual(self.sheet.row_count, new_rows)
 
-        self.assertEqual(self.sheet.row_count, init_rows + 10)
-        self.assertEqual(self.sheet.col_count, init_cols + 10)
+        new_cols = self.sheet.col_count + add_num
+        self.sheet.add_cols(add_num)
+        self.assertEqual(self.sheet.col_count, new_cols)
+
+        new_rows -= add_num
+        new_cols -= add_num
+        self.sheet.resize(new_rows, new_cols)
+
+        self.assertEqual(self.sheet.row_count, new_rows)
+        self.assertEqual(self.sheet.col_count, new_cols)
 
 
 class CellTest(GspreadTest):
