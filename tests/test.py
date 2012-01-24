@@ -151,6 +151,15 @@ class WorksheetTest(GspreadTest):
             c.value = v
             self.assertEqual(c.value, v)
 
+    def test_resize(self):
+        init_rows = self.sheet.row_count
+        init_cols = self.sheet.col_count
+
+        self.sheet.resize(init_rows + 10, init_cols + 10)
+
+        self.assertEqual(self.sheet.row_count, init_rows + 10)
+        self.assertEqual(self.sheet.col_count, init_cols + 10)
+
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
