@@ -62,6 +62,20 @@ val = worksheet.cell(1, 2).value
 first_col = worksheet.col_values(1)
 ~~~
 
+### Finding a cell
+
+~~~python
+# Find a cell with exact string value
+cell = worksheet.find("Dough")
+
+# Find a cell matching a regular expression
+amount_re = re.compile(r'(Big|Enormous) dough')
+cell = worksheet.find(amount_re)
+
+# Find all cells
+cell_list = worksheet.findall(amount_re)
+~~~
+
 ### Updating
 
 ~~~python
