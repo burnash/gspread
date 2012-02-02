@@ -169,6 +169,17 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(self.sheet.row_count, new_rows)
         self.assertEqual(self.sheet.col_count, new_cols)
 
+    def test_find(self):
+        sheet = self.sheet
+        value = hashlib.md5(str(time.time())).hexdigest()
+
+        sheet.update_cell(2, 10, value)
+        sheet.update_cell(2, 11, value)
+
+        cell = sheet.find(value)
+        self.assertEqual(cell.value, value)
+
+
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""

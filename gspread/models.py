@@ -416,10 +416,43 @@ class Worksheet(object):
         self._element = self.client.put_feed(uri, ElementTree.tostring(feed))
 
     def add_rows(self, rows):
+        """Adds rows to worksheet.
+
+        :param rows: Rows number to add.
+        """
         self.resize(rows=self.row_count + rows)
 
     def add_cols(self, cols):
+        """Adds colums to worksheet.
+
+        :param cols: Columns number to add.
+        """
         self.resize(cols=self.col_count + cols)
+
+    def _finder(self, func, query):
+        cells = self._fetch_cells()
+
+        if isinstance(query, basestring):
+            match = lambda x: x.value == query
+        else:
+            match = lambda x: query.search(x.value)
+
+        return func(match, cells)
+
+    def find(self, query):
+        """Finds first cell matching query.
+
+        :param query: A text string or compiled regular expression.
+        """
+        return self._finder(finditem, query)
+
+    def findall(self, query):
+        """Finds all cells matching query.
+
+        :param query: A text string or compiled regular expression.
+        """
+        return self._finder(filter, query)
+
 
 
 class Cell(object):
