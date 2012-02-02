@@ -181,10 +181,11 @@ class WorksheetTest(GspreadTest):
         cell = sheet.find(value)
         self.assertEqual(cell.value, value)
 
-        value = "%so_O%s" % (value, hashlib.md5(str(time.time())).hexdigest())
+        value2 = hashlib.md5(str(time.time())).hexdigest()
+        value = "%so_O%s" % (value, value2)
         sheet.update_cell(2, 11, value)
 
-        o_O_re = re.compile(r'[a-z]_[A-Z]')
+        o_O_re = re.compile('[a-z]_[A-Z]%s' % value2)
 
         cell = sheet.find(o_O_re)
         self.assertEqual(cell.value, value)

@@ -20,6 +20,9 @@ class SpreadsheetNotFound(GSpreadException):
 class WorksheetNotFound(GSpreadException):
     """Trying to open non-existent or inaccessible worksheet."""
 
+class CellNotFound(GSpreadException):
+    """Cell lookup exception."""
+
 class NoValidUrlKeyFound(GSpreadException):
     """No valid key found in URL."""
 

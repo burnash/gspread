@@ -16,7 +16,7 @@ from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
 from .utils import finditem
 
-from .exceptions import IncorrectCellLabel, WorksheetNotFound
+from .exceptions import IncorrectCellLabel, WorksheetNotFound, CellNotFound
 
 
 try:
@@ -444,7 +444,10 @@ class Worksheet(object):
 
         :param query: A text string or compiled regular expression.
         """
-        return self._finder(finditem, query)
+        try:
+            return self._finder(finditem, query)
+        except StopIteration:
+            raise CellNotFound(query)
 
     def findall(self, query):
         """Finds all cells matching query.
