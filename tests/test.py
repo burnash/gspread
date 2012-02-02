@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import time
+import random
 import hashlib
 import unittest
 import ConfigParser
@@ -179,6 +181,47 @@ class WorksheetTest(GspreadTest):
         cell = sheet.find(value)
         self.assertEqual(cell.value, value)
 
+        value = "%so_O%s" % (value, hashlib.md5(str(time.time())).hexdigest())
+        sheet.update_cell(2, 11, value)
+
+        o_O_re = re.compile(r'[a-z]_[A-Z]')
+
+        cell = sheet.find(o_O_re)
+        self.assertEqual(cell.value, value)
+
+    def test_findall(self):
+        sheet = self.sheet
+
+        list_len = 10
+        range_label = 'A1:A%s' % list_len
+        cell_list = sheet.range(range_label)
+        value = hashlib.md5(str(time.time())).hexdigest()
+
+        for c in cell_list:
+            c.value = value
+        sheet.update_cells(cell_list)
+
+        result_list = sheet.findall(value)
+
+        self.assertEqual(list_len, len(result_list))
+
+        for c in result_list:
+            self.assertEqual(c.value, value)
+
+        cell_list = sheet.range(range_label)
+
+        value = hashlib.md5(str(time.time())).hexdigest()
+        for c in cell_list:
+            char = chr(random.randrange(ord('a'),ord('z')))
+            c.value = "%s%s_%s%s" % (c.value, char, char.upper(), value)
+
+        sheet.update_cells(cell_list)
+
+        o_O_re = re.compile('[a-z]_[A-Z]%s' % value)
+
+        result_list = sheet.findall(o_O_re)
+
+        self.assertEqual(list_len, len(result_list))
 
 
 class CellTest(GspreadTest):
