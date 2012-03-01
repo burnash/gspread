@@ -32,7 +32,7 @@ wks.update_acell('B2', "it's down there somewhere, let me take another look.")
 sh = gc.open("My poor gym results") # <-- Look ma, no keys!
 
 # If you want to be specific, use a key (which can be extracted from
-# the spreadsheet's url
+# the spreadsheet's url)
 sht1 = gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
 
 # Or, if you feel really lazy to extract that key, paste the entire url
