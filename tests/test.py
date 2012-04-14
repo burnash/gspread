@@ -7,6 +7,7 @@ import random
 import hashlib
 import unittest
 import ConfigParser
+import itertools
 
 import gspread
 
@@ -85,7 +86,8 @@ class WorksheetTest(GspreadTest):
     def setUp(self):
         super(WorksheetTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
-        self.sheet = self.gc.open(title).sheet1
+        self.spreadsheet = self.gc.open(title)
+        self.sheet = self.spreadsheet.sheet1
 
     def test_properties(self):
         self.assertEqual(self.sheet.id,
@@ -223,6 +225,33 @@ class WorksheetTest(GspreadTest):
         result_list = sheet.findall(o_O_re)
 
         self.assertEqual(list_len, len(result_list))
+
+    def test_get_all_values(self):
+        # make a new, clean worksheet
+        self.spreadsheet.add_worksheet('get_all_values_test', 10, 5)
+        sheet = self.spreadsheet.worksheet('get_all_values_test')
+
+        # put in new values, made from three lists
+        rows = [["A1","B1", "", "D1"],
+                ["", "b2", "", ""],
+                ["", "", "", ""],
+                ["A4", "B4", "", "D4"]]
+        cell_list = sheet.range('A1:D1')
+        cell_list.extend(sheet.range('A2:D2'))
+        cell_list.extend(sheet.range('A3:D3'))
+        cell_list.extend(sheet.range('A4:D4'))
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        sheet.update_cells(cell_list)
+
+        # read values with get_all_values, get a list of lists
+        read_data = sheet.get_all_values()
+
+        # values should match with original lists
+        self.assertEqual(read_data,rows)
+
+        # clean up newly added worksheet
+        # will have to be done by hand; there is no delete worksheet method
 
 
 class CellTest(GspreadTest):
