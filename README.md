@@ -125,6 +125,7 @@ easy_install gspread
 
 ## Suggestions & Code Contribution
 
+- [Javier Candeira](https://github.com/candeira)
 - [Peter "Mash" Morgan](https://github.com/ac001)
 
 ## Feedback
