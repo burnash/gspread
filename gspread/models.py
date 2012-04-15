@@ -8,6 +8,8 @@ This module contains common spreadsheets' models
 
 """
 import re
+from collections import defaultdict
+from itertools import chain
 
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
@@ -257,13 +259,18 @@ class Worksheet(object):
         """Returns a list of lists containing all cells' values."""
         cells = self._fetch_cells()
 
-        rows = {}
+        # defaultdicts fill in gaps for empty rows/cells not returned by gdocs
+        rows = defaultdict(lambda: defaultdict(str))
         for cell in cells:
-            rows.setdefault(int(cell.row), []).append(cell)
+            row = rows.setdefault(int(cell.row), defaultdict(str))
+            row[cell.col] = cell.value
 
-        rows_list = [rows[r] for r in sorted(rows.keys())]
+        # we return a whole rectangular region worth of cells, including empties
+        all_row_keys = chain.from_iterable(row.keys() for row in rows.values())
+        rect_cols = range(1, max(all_row_keys)+1)
+        rect_rows = range(1, max(rows.keys())+1)
 
-        return [[cell.value for cell in row] for row in rows_list]
+        return [[rows[i][j] for j in rect_cols] for i in rect_rows]
 
     def _list_values(self, index, cell_tuple, position):
         cells_list = self._fetch_cells()
