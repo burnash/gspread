@@ -123,8 +123,11 @@ easy_install gspread
 
 [Docs on GitHub](http://burnash.github.com/gspread/)
 
+## Suggestions & Code Contribution
 
-## Feedback and contribution
+- [Peter "Mash" Morgan](https://github.com/ac001)
+
+## Feedback
 
 The library is in active development so any feedback is *urgently* needed. Please
 don't hesitate to open up a new [github issue](https://github.com/burnash/gspread/issues)
