@@ -414,6 +414,26 @@ class Worksheet(object):
         """
         self.resize(cols=self.col_count + cols)
 
+    def append_row(self, values):
+        """"Adds a row to the worksheet and populates it with values.
+        Widens the worksheet if there are more values than columns.
+
+        :param values: List of values for the new row.
+        """
+        self.add_rows(1)
+        new_row = self.row_count
+        data_width = len(values)
+        if self.col_count < data_width:
+            self.resize(cols=data_width)
+
+        cell_list = []
+        for i, value in enumerate(values, start=1):
+            cell = self.cell(new_row, i)
+            cell.value = value
+            cell_list.append(cell)
+
+        self.update_cells(cell_list)
+
     def _finder(self, func, query):
         cells = self._fetch_cells()
 
