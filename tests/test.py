@@ -253,6 +253,16 @@ class WorksheetTest(GspreadTest):
         # clean up newly added worksheet
         # will have to be done by hand; there is no delete worksheet method
 
+    def test_append_row(self):
+        num_rows = self.sheet.row_count
+        num_cols = self.sheet.col_count
+        values = ['o_0'] * (num_cols + 4)
+        self.sheet.append_row(values)
+        self.assertEqual(self.sheet.row_count, num_rows+1)
+        self.assertEqual(self.sheet.col_count, num_cols+4)
+        read_values = self.sheet.row_values(self.sheet.row_count)
+        self.assertEqual(values, read_values)
+
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
