@@ -16,7 +16,7 @@ from xml.etree.ElementTree import Element, SubElement
 
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
-from .utils import finditem
+from .utils import finditem, numericise_all
 
 from .exceptions import IncorrectCellLabel, WorksheetNotFound, CellNotFound
 
@@ -256,7 +256,7 @@ class Worksheet(object):
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
     def get_all_values(self):
-        """Returns a list of lists containing all cells' values."""
+        """Returns a list of lists containing all cells' values as strings."""
         cells = self._fetch_cells()
 
         # defaultdicts fill in gaps for empty rows/cells not returned by gdocs
@@ -271,6 +271,25 @@ class Worksheet(object):
         rect_rows = range(1, max(rows.keys())+1)
 
         return [[rows[i][j] for j in rect_cols] for i in rect_rows]
+
+    def get_all_records(self, empty2zero=False):
+        """Returns a list of dictionaries, all of them having:
+            - the contents of the spreadsheet's first row of cells as keys,
+            And each of these dictionaries holding
+            - the contents of subsequent rows of cells as values.
+ 
+
+        Cell values are numericised (strings that can be read as ints 
+        or floats are converted).
+
+        :param empty2zero: determines whether empty cells are converted to zeros."""
+
+        data = self.get_all_values()
+        keys = data[0]
+        values = [numericise_all(row, empty2zero) for row in data[1:]]
+
+        return [dict(zip(keys, row)) for row in values]
+
 
     def _list_values(self, index, cell_tuple, position):
         cells_list = self._fetch_cells()
