@@ -137,10 +137,19 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cell(1, 2, u'Артур')
         self.assertEqual(self.sheet.cell(1, 2).value, u'Артур')
 
+    def test_update_cell_multiline(self):
+        value = hashlib.md5(str(time.time())).hexdigest()
+        value = "%s\n%s" % (value, value)
+        self.sheet.update_cell(1, 2, value)
+        self.assertEqual(self.sheet.cell(1, 2).value, value)
+
     def test_update_cells(self):
         list_len = 10
         value_list = [hashlib.md5(str(time.time() + i)).hexdigest()
                         for i in range(list_len)]
+        # Test multiline
+        value_list[0] = "%s\n%s" % (value_list[0], value_list[0])
+
         range_label = 'A1:A%s' % list_len
         cell_list = self.sheet.range(range_label)
 
@@ -152,7 +161,6 @@ class WorksheetTest(GspreadTest):
         cell_list = self.sheet.range(range_label)
 
         for c, v in zip(cell_list, value_list):
-            c.value = v
             self.assertEqual(c.value, v)
 
     def test_resize(self):
@@ -285,7 +293,7 @@ class WorksheetTest(GspreadTest):
         read_records = sheet.get_all_records(empty2zero=True)
         d1 = dict(zip(rows[0], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
-        
+
     def test_append_row(self):
         num_rows = self.sheet.row_count
         num_cols = self.sheet.col_count
