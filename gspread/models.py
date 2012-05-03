@@ -27,6 +27,18 @@ except NameError:
     basestring = unicode = str
 
 
+# Patch ElementTree._escape_attrib
+_elementtree_escape_attrib = ElementTree._escape_attrib
+def _escape_attrib(text, encoding=None, replace=None):
+    text = _elementtree_escape_attrib(text, encoding)
+    entities = {'\n': '&#10;', '\r': '&#13;', '\t':'&#9;'}
+    for key, value in entities.items():
+        text = text.replace(key, value)
+    return text
+
+ElementTree._escape_attrib = _escape_attrib
+
+
 class Spreadsheet(object):
     """A class for a spreadsheet object.
 
@@ -277,9 +289,9 @@ class Worksheet(object):
             - the contents of the spreadsheet's first row of cells as keys,
             And each of these dictionaries holding
             - the contents of subsequent rows of cells as values.
- 
 
-        Cell values are numericised (strings that can be read as ints 
+
+        Cell values are numericised (strings that can be read as ints
         or floats are converted).
 
         :param empty2zero: determines whether empty cells are converted to zeros."""
@@ -505,7 +517,7 @@ class Cell(object):
         return self._col
 
     def __repr__(self):
-        return '<%s R%sC%s "%s">' % (self.__class__.__name__,
+        return '<%s R%sC%s %s>' % (self.__class__.__name__,
                                      self.row,
                                      self.col,
-                                     self.value)
+                                     repr(self.value))
