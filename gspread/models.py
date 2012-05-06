@@ -242,6 +242,9 @@ class Worksheet(object):
         A1
 
         """
+        row = int(row)
+        col = int(col)
+
         if row < 1 or col < 1:
             raise IncorrectCellLabel('(%s, %s)' % (row, col))
 
