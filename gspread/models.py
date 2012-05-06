@@ -239,7 +239,7 @@ class Worksheet(object):
         Example:
 
         >>> wks.get_addr_int(1,1)
-        a1
+        A1
 
         """
         if row < 1 or col < 1:
