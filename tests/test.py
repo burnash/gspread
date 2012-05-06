@@ -102,6 +102,9 @@ class WorksheetTest(GspreadTest):
     def test_get_int_addr(self):
         self.assertEqual(self.sheet.get_int_addr('ABC3'), (3, 731))
 
+    def test_get_addr_int(self):
+        self.assertEqual(self.sheet.get_addr_int(3, 731), ('ABC3'))
+
     def test_acell(self):
         cell = self.sheet.acell('A1')
         self.assertTrue(isinstance(cell, gspread.Cell))
