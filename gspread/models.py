@@ -238,7 +238,7 @@ class Worksheet(object):
 
         Example:
 
-        >>> wks.get_addr_int(1,1)
+        >>> wks.get_addr_int(1, 1)
         A1
 
         """
