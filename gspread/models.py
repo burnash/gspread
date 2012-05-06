@@ -196,6 +196,7 @@ class Worksheet(object):
         feed = self.client.get_cells_feed(self)
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
+    _MAGIC_NUMBER = 64
     _cell_addr_re = re.compile(r'([A-Za-z]+)(\d+)')
     def get_int_addr(self, label):
         """Translates cell's label address to a tuple of integers.
@@ -211,19 +212,48 @@ class Worksheet(object):
         (1, 1)
 
         """
-        magic_number = 96
         m = self._cell_addr_re.match(label)
         if m:
-            column_label = m.group(1).lower()
+            column_label = m.group(1).upper()
             row = int(m.group(2))
 
             col = 0
             for i, c in enumerate(reversed(column_label)):
-                col += (ord(c) - magic_number) * (26 ** i)
+                col += (ord(c) - self._MAGIC_NUMBER) * (26 ** i)
         else:
             raise IncorrectCellLabel(label)
 
         return (row, col)
+
+    def get_addr_int(self, row, col):
+        """Translates cell's tuple of integers to a cell label.
+
+        The result is a string containing the cell's coordinates in label form.
+
+        :param row: The row of the cell to be converted.
+                    Rows start at index 1.
+
+        :param col: The column of the cell to be converted.
+                    Columns start at index 1.
+
+        Example:
+
+        >>> wks.get_addr_int(1, 1)
+        A1
+
+        """
+        if row < 1 or col < 1:
+            raise IncorrectCellLabel('(%s, %s)' % (row, col))
+
+        div = col
+        column_label = str()
+
+        while div:
+            (div, mod) = divmod(div, 26)
+            column_label = chr(mod+self._MAGIC_NUMBER) + column_label
+
+        label = '%s%s' % (column_label, row)
+        return label
 
     def acell(self, label):
         """Returns an instance of a :class:`Cell`.
