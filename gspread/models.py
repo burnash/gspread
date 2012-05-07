@@ -270,7 +270,8 @@ class Worksheet(object):
         <Cell R1C1 "I'm cell A1">
 
         """
-        return self.cell(*(self.get_int_addr(label)))
+        row, col = self.get_int_addr(label)
+        return self.cell(row, col)
 
     def cell(self, row, col):
         """Returns an instance of a :class:`Cell` positioned in `row`
@@ -311,7 +312,7 @@ class Worksheet(object):
             row[cell.col] = cell.value
 
         # we return a whole rectangular region worth of cells, including empties
-        all_row_keys = chain.from_iterable(row.keys() for row in rows.values())
+        all_row_keys = chain(*(row.keys() for row in rows.values()))
         rect_cols = range(1, max(all_row_keys)+1)
         rect_rows = range(1, max(rows.keys())+1)
 
@@ -385,7 +386,8 @@ class Worksheet(object):
         <Cell R1C1 "I'm cell A1">
 
         """
-        return self.update_cell(*(self.get_int_addr(label)), val=val)
+        row, col = self.get_int_addr(label)
+        return self.update_cell(row, col, val=val)
 
     def update_cell(self, row, col, val):
         """Sets the new value to a cell.
@@ -491,8 +493,8 @@ class Worksheet(object):
             self.resize(cols=data_width)
 
         cell_list = []
-        for i, value in enumerate(values, start=1):
-            cell = self.cell(new_row, i)
+        for i, value in enumerate(values):
+            cell = self.cell(new_row, i+1)
             cell.value = value
             cell_list.append(cell)
 

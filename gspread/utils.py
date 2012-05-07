@@ -10,6 +10,12 @@ This module contains utility functions.
 
 from xml.etree import ElementTree
 
+# backporting next() necessary for Python 2.5 support
+try:
+    next
+except NameError:
+    def next(obj):
+        return obj.next()
 
 def finditem(func, seq):
     """Finds and returns first item in iterable for which func(item) is True.

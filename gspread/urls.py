@@ -45,6 +45,14 @@ _field_re = re.compile(r'{(\w+)}')
 def _extract_fields(patternstr):
     return _field_re.findall(patternstr)
 
+def format(urlpattern, params):
+    fragment = urlpattern
+    fields = _extract_fields(urlpattern)
+    for field in fields:
+        _field_re = re.compile(r'{%s}' % (re.escape(field)))
+        fragment = _field_re.sub(params[field], fragment)
+    return fragment
+
 def construct_url(feedtype=None,
                   obj=None,
                   visibility='private',
@@ -60,7 +68,7 @@ def construct_url(feedtype=None,
         if fields is None:
             fields = _extract_fields(urlpattern)
             _fields_cache[feedtype] = fields
-    except KeyError as e:
+    except KeyError, e:
         raise UnsupportedFeedTypeError(e)
 
     obj_fields = obj.get_id_fields() if obj is not None else {}
@@ -77,6 +85,6 @@ def construct_url(feedtype=None,
 
     try:
         return '%s%s' % (SPREADSHEETS_FEED_URL,
-                         urlpattern.format(**params))
-    except KeyError as e:
+                         format(urlpattern, params))
+    except KeyError, e:
         raise UrlParameterMissing(e)

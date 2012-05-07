@@ -8,6 +8,7 @@ import hashlib
 import unittest
 import ConfigParser
 import itertools
+import datetime
 
 import gspread
 
@@ -80,6 +81,15 @@ class SpreadsheetTest(GspreadTest):
         sheet = self.spreadsheet.worksheet(sheet_title)
         self.assertTrue(isinstance(sheet, gspread.Worksheet))
 
+    def test_add_worksheet(self):
+        # make a new, clean worksheet
+        now = str(datetime.time())
+        sheet_name = "add_worksheet_test" + now
+        self.spreadsheet.add_worksheet(sheet_name, 10, 5)
+        sheet = self.spreadsheet.worksheet(sheet_name)
+        self.assertTrue(isinstance(sheet, gspread.Worksheet))
+
+        # TODO(candeira) delete sheet after test. Has to wait for oauth.
 
 class WorksheetTest(GspreadTest):
     """Test for gspread.Worksheet."""
@@ -267,8 +277,8 @@ class WorksheetTest(GspreadTest):
     def test_get_all_records(self):
         # make a new, clean worksheet
         # same as for test_all_values, find a way to refactor it
-        self.spreadsheet.add_worksheet('get_all_values_test', 10, 5)
-        sheet = self.spreadsheet.worksheet('get_all_values_test')
+        self.spreadsheet.add_worksheet('get_all_records_test', 10, 5)
+        sheet = self.spreadsheet.worksheet('get_all_records_test')
 
         # put in new values, made from three lists
         rows = [["A1","B1", "", "D1"],
