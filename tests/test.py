@@ -304,6 +304,9 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(self.sheet.row_count)
         self.assertEqual(values, read_values)
 
+        # undo the appending and resizing
+        self.sheet.resize(num_rows, num_cols)
+
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
