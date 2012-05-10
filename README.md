@@ -127,6 +127,7 @@ easy_install gspread
 
 - [Javier Candeira](https://github.com/candeira)
 - [Peter "Mash" Morgan](https://github.com/ac001)
+- [ptlu](https://github.com/ptlu)
 
 ## Feedback
 
