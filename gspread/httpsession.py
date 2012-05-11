@@ -55,8 +55,12 @@ class HTTPSession(object):
 
         try:
             return request.urlopen(req)
-        except HTTPError as e:
-            raise e
+        except HTTPError, e:
+            # crazy Python 2.5 urllib2 returns 201 responses as errors
+            if str(e) == 'HTTP Error 201: Created':
+                return e
+            else:
+                raise e
 
     def get(self, url, **kwargs):
         return self.request('get', url, **kwargs)

@@ -14,8 +14,6 @@ def read(filename):
 description = 'Google Spreadsheets Python library'
 
 long_description = """
-{index}
-
 License
 -------
 MIT
@@ -24,7 +22,7 @@ Download
 ========
 """
 
-long_description = long_description.lstrip("\n").format(index=read('docs/index.txt'))
+long_description = read('docs/index.txt') + long_description
 
 setup(
     name='gspread',

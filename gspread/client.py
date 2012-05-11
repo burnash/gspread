@@ -85,7 +85,7 @@ class Client(object):
             auth_header = "GoogleLogin auth=%s" % token
             self.session.add_header('Authorization', auth_header)
 
-        except HTTPError as ex:
+        except HTTPError, ex:
             if ex.code == 403:
                 content = ex.read().decode()
                 if content.strip() == 'Error=BadAuthentication':
@@ -230,7 +230,7 @@ class Client(object):
 
         try:
             r = self.session.put(url, data, headers=headers)
-        except HTTPError as ex:
+        except HTTPError, ex:
             if ex.code == 403:
                 message = ex.read().decode()
                 raise UpdateCellError(message)
@@ -245,7 +245,7 @@ class Client(object):
 
         try:
             r = self.session.post(url, data, headers=headers)
-        except HTTPError as ex:
+        except HTTPError, ex:
             message = ex.read().decode()
             raise RequestError(message)
 
