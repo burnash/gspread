@@ -27,7 +27,7 @@ wks.update_acell('B2', "it's down there somewhere, let me take another look.")
 
 ### Opening a spreadsheet
 
-~~~python
+```python
 # You can open a spreadsheet by its title as it appers in Google Docs
 sh = gc.open("My poor gym results") # <-- Look ma, no keys!
 
@@ -37,21 +37,21 @@ sht1 = gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
 
 # Or, if you feel really lazy to extract that key, paste the entire url
 sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
-~~~
+```
 
 ### Selecting a worksheet
 
-~~~python
+```python
 # Select worksheet by index. Worksheet indexes start from zero
 worksheet = sh.get_worksheet(0)
 
 # Most common case: Sheet1
 worksheet = sh.sheet1
-~~~
+```
 
 ### Getting a cell value
 
-~~~python
+```python
 # With label
 val = worksheet.acell('B1').value
 
@@ -60,11 +60,11 @@ val = worksheet.cell(1, 2).value
 
 # Get all values from column. Column and row indexes start from one
 first_col = worksheet.col_values(1)
-~~~
+```
 
 ### Finding a cell
 
-~~~python
+```python
 # Find a cell with exact string value
 cell = worksheet.find("Dough")
 
@@ -74,11 +74,11 @@ cell = worksheet.find(amount_re)
 
 # Find all cells
 cell_list = worksheet.findall(amount_re)
-~~~
+```
 
 ### Updating
 
-~~~python
+```python
 worksheet.update_acell('B1', 'Bingo!')
 
 # Or
@@ -92,7 +92,7 @@ for cell in cell_list:
 
 # Update in batch
 worksheet.update_cells(cell_list)
-~~~
+```
 
 ## Requirements
 
@@ -102,22 +102,23 @@ Python 2.6+ or Python 3+
 
 ### From GitHub
 
-~~~sh
+```sh
 git clone https://github.com/burnash/gspread.git
 cd gspread
 python setup.py install
-~~~
+```
+
 ### From PyPI
 
-~~~sh
+```sh
 pip install gspread
-~~~
+```
 
 If you're on easy_install, it's:
 
-~~~sh
+```sh
 easy_install gspread
-~~~
+```
 
 ## Documentation
 
