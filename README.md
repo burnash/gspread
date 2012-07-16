@@ -11,7 +11,7 @@ Features:
 
 ## Basic usage
 
-~~~python
+```python
 import gspread
 
 # Login with your Google account
@@ -21,7 +21,7 @@ gc = gspread.login('thedude@abid.es','password')
 wks = gc.open("Where is the money Lebowski?").sheet1
 
 wks.update_acell('B2', "it's down there somewhere, let me take another look.")
-~~~
+```
 
 ## More examples
 
