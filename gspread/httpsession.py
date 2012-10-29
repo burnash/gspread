@@ -76,9 +76,3 @@ class HTTPSession(object):
 
     def add_header(self, name, value):
         self.headers[name] = value
-
-    def close(self):
-        try:
-            self.connection.close()
-        except:
-            print 'Connection could not be closed.'
