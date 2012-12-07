@@ -1,6 +1,6 @@
-# gspread
+# Google Spreadsheets Python API
 
-Python Google Spreadsheets library with simple API.
+Manage your spreadsheets with _gspread_ in Python.
 
 Features:
 
