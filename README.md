@@ -81,12 +81,33 @@ list_of_lists = worksheet.get_all_values()
 # Find a cell with exact string value
 cell = worksheet.find("Dough")
 
+print("Found something at R%sC%s" % (cell.row, cell.col))
+
 # Find a cell matching a regular expression
 amount_re = re.compile(r'(Big|Enormous) dough')
 cell = worksheet.find(amount_re)
+```
 
-# Find all cells
-cell_list = worksheet.findall(amount_re)
+### Cell object
+
+Each cell has a value and coordinates properties
+
+```python
+
+value = cell.value
+row_number = cell.row
+column_number = cell.col
+```
+
+### Finding all matched cells
+
+```python
+# Find all cells with string value
+cell_list = worksheet.findall("Rug store")
+
+# Find all cells with regexp
+criteria_re = re.compile(r'(Small|Room-tiering) rug')
+cell_list = worksheet.findall(criteria_re)
 ```
 
 ### Updating
