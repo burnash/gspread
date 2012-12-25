@@ -88,17 +88,6 @@ amount_re = re.compile(r'(Big|Enormous) dough')
 cell = worksheet.find(amount_re)
 ```
 
-### Cell object
-
-Each cell has a value and coordinates properties
-
-```python
-
-value = cell.value
-row_number = cell.row
-column_number = cell.col
-```
-
 ### Finding all matched cells
 
 ```python
@@ -108,6 +97,17 @@ cell_list = worksheet.findall("Rug store")
 # Find all cells with regexp
 criteria_re = re.compile(r'(Small|Room-tiering) rug')
 cell_list = worksheet.findall(criteria_re)
+```
+
+### Cell object
+
+Each cell has a value and coordinates properties.
+
+```python
+
+value = cell.value
+row_number = cell.row
+column_number = cell.col
 ```
 
 ### Updating
