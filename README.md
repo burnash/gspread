@@ -62,6 +62,22 @@ val = worksheet.cell(1, 2).value
 first_col = worksheet.col_values(1)
 ```
 
+### Getting all values from a row or a column
+
+```python
+# Get all values from the first row
+values_list = worksheet.col_values(1)
+
+# Get all values from the first column
+values_list = worksheet.col_values(1)
+```
+
+### Getting all values from a worksheet as a list of lists 
+
+```python
+list_of_lists = worksheet.get_all_values()
+```
+
 ### Finding a cell
 
 ```python
