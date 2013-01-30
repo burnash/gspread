@@ -11,7 +11,7 @@ except ImportError:
 def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
-description = 'Google Spreadsheets Python library'
+description = 'Google Spreadsheets Python API'
 
 long_description = """
 {index}
