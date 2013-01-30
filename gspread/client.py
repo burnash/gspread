@@ -9,7 +9,12 @@ Google Data API.
 
 """
 import re
-import urllib
+
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
+
 from xml.etree import ElementTree
 
 from . import __version__
@@ -54,7 +59,7 @@ class Client(object):
         return None
 
     def _add_xml_header(self, data):
-        return "<?xml version='1.0' encoding='UTF-8'?>%s" % data
+        return "<?xml version='1.0' encoding='UTF-8'?>%s" % data.decode()
 
     def login(self):
         """Authorize client using ClientLogin protocol.
@@ -206,7 +211,7 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         if params:
-            params = urllib.urlencode(params)
+            params = urlencode(params)
             url = '%s?%s' % (url, params)
 
         r = self.session.get(url)

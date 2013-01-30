@@ -36,6 +36,9 @@ class HTTPSession(object):
         if data and not isinstance(data, basestring):
             data = urlencode(data)
 
+        if data is not None:
+            data = data.encode()
+
         req = request.Request(url, data)
 
         if method == 'put':
