@@ -30,7 +30,11 @@ except NameError:
 # Patch ElementTree._escape_attrib
 _elementtree_escape_attrib = ElementTree._escape_attrib
 def _escape_attrib(text, encoding=None, replace=None):
-    text = _elementtree_escape_attrib(text)
+    try:
+        text = _elementtree_escape_attrib(text)
+    except TypeError as e:
+        if str(e) == '_escape_attrib() takes exactly 2 arguments (1 given)':
+            text = _elementtree_escape_attrib(text, encoding)
     entities = {'\n': '&#10;', '\r': '&#13;', '\t':'&#9;'}
     for key, value in entities.items():
         text = text.replace(key, value)
