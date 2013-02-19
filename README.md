@@ -11,7 +11,8 @@ Features:
 
 ### Two Factor Authorization
 
-At this time gspread will not work if you have Two Factor Authorization turned on for your account.
+At this time gspread will not work if you have [Two Factor Authorization](http://support.google.com/accounts/bin/answer.py?hl=en&answer=180744) turned on for your account. 
+See [#45](https://github.com/burnash/gspread/issues/45) for details.
 
 ## Basic usage
 
