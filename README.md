@@ -9,6 +9,10 @@ Features:
 * Independent of Google Data Python client library.
 * Python 3 support.
 
+### Two Factor Authorization
+
+At this time gspread will not work if you have Two Factor Authorization turned on for your account.
+
 ## Basic usage
 
 ```python
@@ -69,7 +73,7 @@ values_list = worksheet.row_values(1)
 values_list = worksheet.col_values(1)
 ```
 
-### Getting all values from a worksheet as a list of lists 
+### Getting all values from a worksheet as a list of lists
 
 ```python
 list_of_lists = worksheet.get_all_values()
