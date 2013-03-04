@@ -20,7 +20,7 @@ See [#45](https://github.com/burnash/gspread/issues/45) for details.
 import gspread
 
 # Login with your Google account
-gc = gspread.login('thedude@abid.es','password')
+gc = gspread.login('thedude@abid.es', 'password')
 
 # Open a worksheet from spreadsheet with one shot
 wks = gc.open("Where is the money Lebowski?").sheet1
