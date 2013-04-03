@@ -221,6 +221,12 @@ class Client(object):
         r = self.session.get(url)
         return ElementTree.fromstring(r.read())
 
+    def del_worksheet(self,worksheet):
+        fi = worksheet.get_id_fields()
+        url = construct_url('worksheet',worksheet,'private','full',worksheet_version=worksheet.version)
+        print url
+        r = self.session.delete(url)
+
     def get_cells_cell_id_feed(self, worksheet, cell_id,
                        visibility='private', projection='full'):
         url = construct_url('cells_cell_id', worksheet, cell_id=cell_id,

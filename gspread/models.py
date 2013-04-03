@@ -85,6 +85,17 @@ class Spreadsheet(object):
 
         return worksheet
 
+    def del_worksheet(self, worksheet):
+        """Deletes a worksheet from a spreadsheet.
+
+        :param worksheet: The worksheet to be deleted.
+
+        """
+        self.client.del_worksheet(worksheet)
+        self._sheet_list.remove(worksheet)
+
+
+
     def worksheets(self):
         """Returns a list of all :class:`worksheets <Worksheet>` in a spreadsheet.
 
@@ -154,6 +165,7 @@ class Worksheet(object):
         self._id = element.find(_ns('id')).text.split('/')[-1]
         self._title = element.find(_ns('title')).text
         self._element = element
+        self.version = element.find(_ns("link[@rel='edit']")).attrib['href'].split('/')[-1]
 
     def __repr__(self):
         return '<%s "%s" id:%s>' % (self.__class__.__name__,
