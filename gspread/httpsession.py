@@ -44,6 +44,9 @@ class HTTPSession(object):
         if method == 'put':
             req.get_method = lambda: 'PUT'
 
+        if method == 'delete':
+            req.get_method = lambda: 'DELETE'
+
         request_headers = self.headers.copy()
 
         if headers:
@@ -63,6 +66,9 @@ class HTTPSession(object):
 
     def get(self, url, **kwargs):
         return self.request('get', url, **kwargs)
+
+    def delete(self, url, **kwargs):
+        return self.request('delete', url, **kwargs)
 
     def post(self, url, data=None, **kwargs):
         return self.request('post', url, data=data, **kwargs)
