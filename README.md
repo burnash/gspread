@@ -54,6 +54,18 @@ worksheet = sh.get_worksheet(0)
 worksheet = sh.sheet1
 ```
 
+### Creating a worksheet
+
+```python
+worksheet = sh.add_worksheet(title="A worksheet", rows="100", cols="20")
+```
+
+### Deleting a worksheet
+
+```python
+sh.del_worksheet(worksheet)
+```
+
 ### Getting a cell value
 
 ```python
