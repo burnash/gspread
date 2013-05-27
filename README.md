@@ -136,7 +136,7 @@ worksheet.update_acell('B1', 'Bingo!')
 worksheet.update_cell(1, 2, 'Bingo!')
 
 # Select a range
-cell_list = worksheet.range('A1:A7')
+cell_list = worksheet.range('A1:C7')
 
 for cell in cell_list:
     cell.value = 'O_o'
