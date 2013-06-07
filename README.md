@@ -9,10 +9,7 @@ Features:
 * Independent of Google Data Python client library.
 * Python 3 support.
 
-### Two Factor Authorization
-
-At this time gspread will not work if you have [Two Factor Authorization](http://support.google.com/accounts/bin/answer.py?hl=en&answer=180744) turned on for your account. 
-See [#45](https://github.com/burnash/gspread/issues/45) for details.
+![logo](https://raw.github.com/burnash/gspread/master/gspread.png "")
 
 ## Basic usage
 
@@ -173,6 +170,12 @@ If you're on easy_install, it's:
 ```sh
 easy_install gspread
 ```
+
+### Note: Two Factor Authorization
+
+At this time gspread will not work if you have [Two Factor Authorization](http://support.google.com/accounts/bin/answer.py?hl=en&answer=180744) turned on for your account. 
+See [#45](https://github.com/burnash/gspread/issues/45) for details.
+
 
 ## Documentation
 
