@@ -46,8 +46,8 @@ to the service. This can be done with your Google Account::
     gc = gspread.login('account@gmail.com','password')
 
 
-Openning A Spreadsheet
-^^^^^^^^^^^^^^^^^^^^^^
+Opening A Spreadsheet
+^^^^^^^^^^^^^^^^^^^^^
 
 One of the main features of `gspread` is the ability to easily open
 a spreadsheet by its title. Assuming you have a spreadsheet named
