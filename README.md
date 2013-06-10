@@ -33,7 +33,7 @@ cell_list = worksheet.range('A1:B7')
 ### Opening a spreadsheet
 
 ```python
-# You can open a spreadsheet by its title as it appers in Google Docs
+# You can open a spreadsheet by its title as it appears in Google Docs
 sh = gc.open("My poor gym results") # <-- Look ma, no keys!
 
 # If you want to be specific, use a key (which can be extracted from
