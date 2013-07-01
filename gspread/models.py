@@ -168,8 +168,8 @@ class Worksheet(object):
         self.version = element.find(_ns("link[@rel='edit']")).attrib['href'].split('/')[-1]
 
     def __repr__(self):
-        return '<%s "%s" id:%s>' % (self.__class__.__name__,
-                                     self.title,
+        return '<%s %s id:%s>' % (self.__class__.__name__,
+                                     repr(self.title),
                                      self.id)
 
     @property
