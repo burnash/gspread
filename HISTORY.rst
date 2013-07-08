@@ -1,6 +1,16 @@
 History
 =======
 
+0.1.0 (2013-07-09)
+------------------
+
+* Support for deleting worksheets from a spreadsheet.
+
+0.0.15 (2013-02-01)
+------------------
+
+* Couple of bugfixes.
+
 0.0.14 (2013-01-31)
 ------------------
 
