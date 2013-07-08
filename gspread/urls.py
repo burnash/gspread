@@ -43,8 +43,11 @@ _fields_cache = {}
 
 
 _field_re = re.compile(r'{(\w+)}')
+
+
 def _extract_fields(patternstr):
     return _field_re.findall(patternstr)
+
 
 def construct_url(feedtype=None,
                   obj=None,
@@ -67,16 +70,14 @@ def construct_url(feedtype=None,
 
     obj_fields = obj.get_id_fields() if obj is not None else {}
 
-
-
     params = {'visibility': visibility,
               'projection': projection,
               'spreadsheet_id': (spreadsheet_id if spreadsheet_id
-                                    else obj_fields.get('spreadsheet_id')),
+                                 else obj_fields.get('spreadsheet_id')),
               'worksheet_id': (worksheet_id if worksheet_id
-                                    else obj_fields.get('worksheet_id')),
+                               else obj_fields.get('worksheet_id')),
               'cell_id': cell_id,
-              'version' : worksheet_version}
+              'version': worksheet_version}
 
     params = dict((k, v) for k, v in params.items() if v is not None)
 

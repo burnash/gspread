@@ -35,6 +35,7 @@ _url_key_re = re.compile(r'key=([^&#]+)')
 
 
 class Client(object):
+
     """An instance of this class communicates with Google Data API.
 
     :param auth: A tuple containing an *email* and a *password* used for ClientLogin
@@ -96,11 +97,12 @@ class Client(object):
                 if content.strip() == 'Error=BadAuthentication':
                     raise AuthenticationError("Incorrect username or password")
                 else:
-                    raise AuthenticationError("Unable to authenticate. %s code" % ex.code)
+                    raise AuthenticationError(
+                        "Unable to authenticate. %s code" % ex.code)
 
             else:
-                raise AuthenticationError("Unable to authenticate. %s code" % ex.code)
-
+                raise AuthenticationError(
+                    "Unable to authenticate. %s code" % ex.code)
 
     def open(self, title):
         """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
@@ -221,13 +223,13 @@ class Client(object):
         r = self.session.get(url)
         return ElementTree.fromstring(r.read())
 
-    def del_worksheet(self,worksheet):
-        fi = worksheet.get_id_fields()
-        url = construct_url('worksheet',worksheet,'private','full',worksheet_version=worksheet.version)
-        r = self.session.delete(url)
+    def del_worksheet(self, worksheet):
+        url = construct_url(
+            'worksheet', worksheet, 'private', 'full', worksheet_version=worksheet.version)
+        self.session.delete(url)
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
-                       visibility='private', projection='full'):
+                               visibility='private', projection='full'):
         url = construct_url('cells_cell_id', worksheet, cell_id=cell_id,
                             visibility=visibility, projection=projection)
 

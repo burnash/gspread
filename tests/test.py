@@ -11,12 +11,14 @@ import itertools
 
 import gspread
 
+
 class GspreadTest(unittest.TestCase):
 
     def setUp(self):
         creds_filename = "tests.config"
         try:
-            config_filename = os.path.join(os.path.dirname(__file__), creds_filename)
+            config_filename = os.path.join(
+                os.path.dirname(__file__), creds_filename)
             config = ConfigParser.ConfigParser()
             config.readfp(open(config_filename))
             email = config.get('Google Account', 'email')
@@ -33,6 +35,7 @@ class GspreadTest(unittest.TestCase):
 
 class ClientTest(GspreadTest):
     """Test for gspread.client."""
+
     def test_open(self):
         title = self.config.get('Spreadsheet', 'title')
         spreadsheet = self.gc.open(title)
@@ -62,6 +65,7 @@ class ClientTest(GspreadTest):
 
 class SpreadsheetTest(GspreadTest):
     """Test for gspread.Spreadsheet."""
+
     def setUp(self):
         super(SpreadsheetTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
@@ -83,6 +87,7 @@ class SpreadsheetTest(GspreadTest):
 
 class WorksheetTest(GspreadTest):
     """Test for gspread.Worksheet."""
+
     def setUp(self):
         super(WorksheetTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
@@ -131,7 +136,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cell(1, 2, 42)
         self.assertEqual(self.sheet.cell(1, 2).value, '42')
 
-        self.sheet.update_cell(1, 2, 42L)
+        self.sheet.update_cell(1, 2, 42)
         self.assertEqual(self.sheet.cell(1, 2).value, '42')
 
         self.sheet.update_cell(1, 2, 42.01)
@@ -149,7 +154,7 @@ class WorksheetTest(GspreadTest):
     def test_update_cells(self):
         list_len = 10
         value_list = [hashlib.md5(str(time.time() + i)).hexdigest()
-                        for i in range(list_len)]
+                      for i in range(list_len)]
         # Test multiline
         value_list[0] = "%s\n%s" % (value_list[0], value_list[0])
 
@@ -226,7 +231,7 @@ class WorksheetTest(GspreadTest):
 
         value = hashlib.md5(str(time.time())).hexdigest()
         for c in cell_list:
-            char = chr(random.randrange(ord('a'),ord('z')))
+            char = chr(random.randrange(ord('a'), ord('z')))
             c.value = "%s%s_%s%s" % (c.value, char, char.upper(), value)
 
         sheet.update_cells(cell_list)
@@ -243,7 +248,7 @@ class WorksheetTest(GspreadTest):
         sheet = self.spreadsheet.worksheet('get_all_values_test')
 
         # put in new values, made from three lists
-        rows = [["A1","B1", "", "D1"],
+        rows = [["A1", "B1", "", "D1"],
                 ["", "b2", "", ""],
                 ["", "", "", ""],
                 ["A4", "B4", "", "D4"]]
@@ -259,7 +264,7 @@ class WorksheetTest(GspreadTest):
         read_data = sheet.get_all_values()
 
         # values should match with original lists
-        self.assertEqual(read_data,rows)
+        self.assertEqual(read_data, rows)
 
         # clean up newly added worksheet
         # will have to be done by hand; there is no delete worksheet method
@@ -271,7 +276,7 @@ class WorksheetTest(GspreadTest):
         sheet = self.spreadsheet.worksheet('get_all_values_test')
 
         # put in new values, made from three lists
-        rows = [["A1","B1", "", "D1"],
+        rows = [["A1", "B1", "", "D1"],
                 [1, "b2", 1.45, ""],
                 ["", "", "", ""],
                 ["A4", 0.4, "", 4]]
@@ -302,8 +307,8 @@ class WorksheetTest(GspreadTest):
         num_cols = self.sheet.col_count
         values = ['o_0'] * (num_cols + 4)
         self.sheet.append_row(values)
-        self.assertEqual(self.sheet.row_count, num_rows+1)
-        self.assertEqual(self.sheet.col_count, num_cols+4)
+        self.assertEqual(self.sheet.row_count, num_rows + 1)
+        self.assertEqual(self.sheet.col_count, num_cols + 4)
         read_values = self.sheet.row_values(self.sheet.row_count)
         self.assertEqual(values, read_values)
 
@@ -313,6 +318,7 @@ class WorksheetTest(GspreadTest):
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
+
     def setUp(self):
         super(CellTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
