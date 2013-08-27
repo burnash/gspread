@@ -50,6 +50,9 @@ sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
 # Select worksheet by index. Worksheet indexes start from zero
 worksheet = sh.get_worksheet(0)
 
+# By title
+worksheet = sh.worksheet("January")
+
 # Most common case: Sheet1
 worksheet = sh.sheet1
 ```
