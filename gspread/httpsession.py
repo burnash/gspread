@@ -8,6 +8,7 @@ This module contains a class for working with http sessions.
 
 """
 
+import googoauth
 
 try:
     import urllib2 as request
@@ -62,6 +63,9 @@ class HTTPSession(object):
         try:
             return request.urlopen(req)
         except HTTPError as e:
+            if 'Stateless token expired' in str(e) :
+                print '\nHTTP_Session .   .   .   .   .   .   .   .   .   Time to refresh token!'
+                googoauth.refreshToken('xx')
             raise e
 
     def get(self, url, **kwargs):
