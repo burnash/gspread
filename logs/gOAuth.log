@@ -1,0 +1,104 @@
+DEBUG:root:{'access_token': u'ya29.AHES6ZTTt7l44IWUjs980kwWWwXT7a5ZSchXkXJQEqwmzqdm-Dpi', 'refresh_token': u'1/oyi9LDptCFCnx-zzrvXs0x5sd3fj9h9xikpAjbe2fyM'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZTTt7l44IWUjs980kwWWwXT7a5ZSchXkXJQEqwmzqdm-Dpi.
+DEBUG:root:{'access_token': u'ya29.AHES6ZTTt7l44IWUjs980kwWWwXT7a5ZSchXkXJQEqwmzqdm-Dpi', 'refresh_token': u'1/oyi9LDptCFCnx-zzrvXs0x5sd3fj9h9xikpAjbe2fyM'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZTTt7l44IWUjs980kwWWwXT7a5ZSchXkXJQEqwmzqdm-Dpi.
+DEBUG:root: - - - - - - - 
+DEBUG:root:{'client_secret': 'WpSlnpIjM6zW8n915ejhN4hj', 'redirect_uri': 'urn:ietf:wg:oauth:2.0:oob', 'client_id': '32686918642.apps.googleusercontent.com'}
+DEBUG:root: - - - - - - - 
+DEBUG:root:Obtaining token pair with : https://accounts.google.com/o/oauth2/token?grant_type=authorization_code&client_secret=WpSlnpIjM6zW8n915ejhN4hj&code=4%2Fc6N-MG8oBuzQ74S4cJUN9CC3A1YH.0o3ESGW0sr4YRJPr4JvC3xRoJmrbgQI&client_id=32686918642.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob
+DEBUG:root:Raw response : <addinfourl at 18377184 whose fp = <socket._fileobject object at 0x113cad0>>.
+DEBUG:root:Response text : {
+  "access_token" : "ya29.AHES6ZTp02xFjeiwmrpunNzlPG9_GDD80yuZW3WPUku5yj2dBL9HYQ",
+  "token_type" : "Bearer",
+  "expires_in" : 3600,
+  "refresh_token" : "1/CLpIXG8Z4AYmKanX8T5G2hv51Qs3-UNFxTfhwSXuj4I"
+}.
+DEBUG:root:Response as json : {u'access_token': u'ya29.AHES6ZTp02xFjeiwmrpunNzlPG9_GDD80yuZW3WPUku5yj2dBL9HYQ', u'token_type': u'Bearer', u'expires_in': 3600, u'refresh_token': u'1/CLpIXG8Z4AYmKanX8T5G2hv51Qs3-UNFxTfhwSXuj4I'}.
+DEBUG:root:==>
+Access token : ya29.AHES6ZTp02xFjeiwmrpunNzlPG9_GDD80yuZW3WPUku5yj2dBL9HYQ
+Refresh token : 1/CLpIXG8Z4AYmKanX8T5G2hv51Qs3-UNFxTfhwSXuj4I
+DEBUG:root:We have token ya29.AHES6ZTp02xFjeiwmrpunNzlPG9_GDD80yuZW3WPUku5yj2dBL9HYQ
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZTp02xFjeiwmrpunNzlPG9_GDD80yuZW3WPUku5yj2dBL9HYQ.
+DEBUG:root:{'access_token': u'ya29.AHES6ZTp02xFjeiwmrpunNzlPG9_GDD80yuZW3WPUku5yj2dBL9HYQ', 'refresh_token': u'1/CLpIXG8Z4AYmKanX8T5G2hv51Qs3-UNFxTfhwSXuj4I'}
+DEBUG:root:We have "Authorization" header : Bearer corrupted to test token refresh.
+WARNING:root:Invalidate useless access token
+DEBUG:root:Killing record "dude.awap@gmail.com" for "32686918642.apps.googleusercontent.com"
+DEBUG:root:Refresh the authorization dude.awap@gmail.com gave to 32686918642.apps.googleusercontent.com with token : 1/CLpIXG8Z4AYmKanX8T5G2hv51Qs3-UNFxTfhwSXuj4I.
+DEBUG:root:Calling https://accounts.google.com/o/oauth2/token with : client_secret=WpSlnpIjM6zW8n915ejhN4hj&grant_type=refresh_token&client_id=32686918642.apps.googleusercontent.com&refresh_token=1%2FCLpIXG8Z4AYmKanX8T5G2hv51Qs3-UNFxTfhwSXuj4I.
+DEBUG:root:Refreshed access token : ya29.AHES6ZRoJ_YUgd8luJrnrJZE4113KYD6Ke0d2Mam3zkRCoj3K7caSg.
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZRoJ_YUgd8luJrnrJZE4113KYD6Ke0d2Mam3zkRCoj3K7caSg.
+DEBUG:root:{'access_token': u'ya29.AHES6ZRoJ_YUgd8luJrnrJZE4113KYD6Ke0d2Mam3zkRCoj3K7caSg', 'refresh_token': u'1/CLpIXG8Z4AYmKanX8T5G2hv51Qs3-UNFxTfhwSXuj4I'}
+DEBUG:root:We have "Authorization" header : Bearer corrupted to test token refresh.
+WARNING:root:Invalidate useless access token
+DEBUG:root:Killing record "dude.awap@gmail.com" for "32686918642.apps.googleusercontent.com"
+DEBUG:root:Refresh the authorization dude.awap@gmail.com gave to 32686918642.apps.googleusercontent.com with token : 1/CLpIXG8Z4AYmKanX8T5G2hv51Qs3-UNFxTfhwSXuj4I.
+DEBUG:root:Calling https://accounts.google.com/o/oauth2/token with : client_secret=WpSlnpIjM6zW8n915ejhN4hj&grant_type=refresh_token&client_id=32686918642.apps.googleusercontent.com&refresh_token=1%2FCLpIXG8Z4AYmKanX8T5G2hv51Qs3-UNFxTfhwSXuj4I.
+DEBUG:root:Refreshed access token : ya29.AHES6ZQLq2jkzAN-rrEJm54rhpEjk1F0MW2o97o95gVANkPoLcQUfg.
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQLq2jkzAN-rrEJm54rhpEjk1F0MW2o97o95gVANkPoLcQUfg.
+DEBUG:root: - - - - - - - 
+DEBUG:root:{'client_secret': 'WpSlnpIjM6zW8n915ejhN4hj', 'redirect_uri': 'urn:ietf:wg:oauth:2.0:oob', 'client_id': '32686918642.apps.googleusercontent.com'}
+DEBUG:root: - - - - - - - 
+DEBUG:root:Obtaining token pair with : https://accounts.google.com/o/oauth2/token?grant_type=authorization_code&client_secret=WpSlnpIjM6zW8n915ejhN4hj&code=4%2Fy5S04DbqF44lSYfH9ovRbiFjDCq5.UvxCGKXEsMIfRJPr4JvC3xSKuGvbgQI&client_id=32686918642.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob
+DEBUG:root:Raw response : <addinfourl at 42871264 whose fp = <socket._fileobject object at 0x2898ad0>>.
+DEBUG:root:Response text : {
+  "access_token" : "ya29.AHES6ZQgkS67xgZsoTG3rkEyQSJd6o7hkkICpWExKTwBid94oTmuUA",
+  "token_type" : "Bearer",
+  "expires_in" : 3600,
+  "refresh_token" : "1/sm9wDMkp5T4bIfBuSpKIQe8n7YlTRjuJXHodBMgFzqQ"
+}.
+DEBUG:root:Response as json : {u'access_token': u'ya29.AHES6ZQgkS67xgZsoTG3rkEyQSJd6o7hkkICpWExKTwBid94oTmuUA', u'token_type': u'Bearer', u'expires_in': 3600, u'refresh_token': u'1/sm9wDMkp5T4bIfBuSpKIQe8n7YlTRjuJXHodBMgFzqQ'}.
+DEBUG:root:==>
+Access token : ya29.AHES6ZQgkS67xgZsoTG3rkEyQSJd6o7hkkICpWExKTwBid94oTmuUA
+Refresh token : 1/sm9wDMkp5T4bIfBuSpKIQe8n7YlTRjuJXHodBMgFzqQ
+DEBUG:root:We have token ya29.AHES6ZQgkS67xgZsoTG3rkEyQSJd6o7hkkICpWExKTwBid94oTmuUA
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQgkS67xgZsoTG3rkEyQSJd6o7hkkICpWExKTwBid94oTmuUA.
+DEBUG:root:{'access_token': u'ya29.AHES6ZQgkS67xgZsoTG3rkEyQSJd6o7hkkICpWExKTwBid94oTmuUA', 'refresh_token': u'1/sm9wDMkp5T4bIfBuSpKIQe8n7YlTRjuJXHodBMgFzqQ'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQgkS67xgZsoTG3rkEyQSJd6o7hkkICpWExKTwBid94oTmuUA.
+DEBUG:root: -      -      -      -      -      -      -      
+DEBUG:root:{'access_token': u'ya29.AHES6ZQgkS67xgZsoTG3rkEyQSJd6o7hkkICpWExKTwBid94oTmuUA', 'refresh_token': u'1/sm9wDMkp5T4bIfBuSpKIQe8n7YlTRjuJXHodBMgFzqQ'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQgkS67xgZsoTG3rkEyQSJd6o7hkkICpWExKTwBid94oTmuUA.
+DEBUG:root: -      -      -      -      -      -      -      
+DEBUG:root: - - - - - - - 
+DEBUG:root:{'client_secret': 'WpSlnpIjM6zW8n915ejhN4hj', 'redirect_uri': 'urn:ietf:wg:oauth:2.0:oob', 'client_id': '32686918642.apps.googleusercontent.com'}
+DEBUG:root: - - - - - - - 
+DEBUG:root:Obtaining token pair with : https://accounts.google.com/o/oauth2/token?grant_type=authorization_code&client_secret=WpSlnpIjM6zW8n915ejhN4hj&code=4%2Fj_gjy8ruy32b7FBgfIGbXSulTdEW.0oCXMERV52QQRJPr4JvC3xSA32_bgQI&client_id=32686918642.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob
+DEBUG:root:Raw response : <addinfourl at 21281248 whose fp = <socket._fileobject object at 0x13fdad0>>.
+DEBUG:root:Response text : {
+  "access_token" : "ya29.AHES6ZT_5r4GcJxIFpIQyuP8cvg7YJv6BbHezLPPhF71PgSH89QFkw",
+  "token_type" : "Bearer",
+  "expires_in" : 3600,
+  "refresh_token" : "1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI"
+}.
+DEBUG:root:Response as json : {u'access_token': u'ya29.AHES6ZT_5r4GcJxIFpIQyuP8cvg7YJv6BbHezLPPhF71PgSH89QFkw', u'token_type': u'Bearer', u'expires_in': 3600, u'refresh_token': u'1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI'}.
+DEBUG:root:==>
+Access token : ya29.AHES6ZT_5r4GcJxIFpIQyuP8cvg7YJv6BbHezLPPhF71PgSH89QFkw
+Refresh token : 1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI
+DEBUG:root:We have token ya29.AHES6ZT_5r4GcJxIFpIQyuP8cvg7YJv6BbHezLPPhF71PgSH89QFkw
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZT_5r4GcJxIFpIQyuP8cvg7YJv6BbHezLPPhF71PgSH89QFkw.
+DEBUG:root: -      -      -      -      -      -      -      
+DEBUG:root:{'access_token': u'ya29.AHES6ZT_5r4GcJxIFpIQyuP8cvg7YJv6BbHezLPPhF71PgSH89QFkw', 'refresh_token': u'1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZT_5r4GcJxIFpIQyuP8cvg7YJv6BbHezLPPhF71PgSH89QFkw.
+DEBUG:root: -      -      -      -      -      -      -      
+DEBUG:root:{'access_token': u'ya29.AHES6ZT_5r4GcJxIFpIQyuP8cvg7YJv6BbHezLPPhF71PgSH89QFkw', 'refresh_token': u'1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI'}
+DEBUG:root:We have "Authorization" header : Bearer corrupted to test token refresh.
+WARNING:root:Invalidate useless access token
+DEBUG:root:Killing record "dude.awap@gmail.com" for "32686918642.apps.googleusercontent.com"
+DEBUG:root:Refresh the authorization dude.awap@gmail.com gave to 32686918642.apps.googleusercontent.com with token : 1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI.
+DEBUG:root:Calling https://accounts.google.com/o/oauth2/token with : client_secret=WpSlnpIjM6zW8n915ejhN4hj&grant_type=refresh_token&client_id=32686918642.apps.googleusercontent.com&refresh_token=1%2F9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI.
+DEBUG:root:Refreshed access token : ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw.
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw.
+DEBUG:root: -      -      -      -      -      -      -      
+DEBUG:root:{'access_token': u'ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw', 'refresh_token': u'1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw.
+DEBUG:root: -      -      -      -      -      -      -      
+DEBUG:root:{'access_token': u'ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw', 'refresh_token': u'1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw.
+DEBUG:root: -      -      -      -      -      -      -      
+DEBUG:root:{'access_token': u'ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw', 'refresh_token': u'1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw.
+DEBUG:root: -      -      -      -      -      -      -      
+DEBUG:root:{'access_token': u'ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw', 'refresh_token': u'1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw.
+DEBUG:root: -      -      -      -      -      -      -      
+DEBUG:root:{'access_token': u'ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw', 'refresh_token': u'1/9k0ewbAWWUbnVLkEOtaox1RhcY7Z4m0-bMYniVpNZdI'}
+DEBUG:root:We have "Authorization" header : Bearer ya29.AHES6ZQi6zFOBsTlowo-rOyBaiB6jE8qUnJ_L4Awim5fG3UPlvhxtw.
