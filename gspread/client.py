@@ -26,6 +26,14 @@ from .utils import finditem
 from .exceptions import (AuthenticationError, SpreadsheetNotFound,
                          NoValidUrlKeyFound, UpdateCellError,
                          RequestError)
+import os
+import time
+import shelve
+import logging
+import googoauth
+
+store_file = '.tknStore.db'
+store_path = os.path.expanduser('~') + '/' + store_file
 
 
 AUTH_SERVER = 'https://www.google.com'
@@ -40,6 +48,7 @@ class Client(object):
 
     :param auth: A tuple containing an *email* and a *password* used for ClientLogin
                  authentication.
+    :param oauth_token: OAuth2 access token used to authenticate API requests
     :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
                                     Defaults to :class:`~gspread.httpsession.HTTPSession`.
 
@@ -47,12 +56,57 @@ class Client(object):
     >>>
 
     """
-    def __init__(self, auth, http_session=None):
-        self.auth = auth
+    def __init__(self, auth=None, oauth_credentials=None, http_session=None):
+        if auth:
+            self.auth = auth
 
         if not http_session:
             self.session = HTTPSession()
 
+        if oauth_credentials:
+        
+            self.store = None
+            self.store = shelve.open(store_path, writeback = True)
+            
+            self._get_access_token(oauth_credentials, self.store)
+            
+    def _get_access_token(self, credentials, store):
+        
+        oauth_tokens = googoauth.get_auth_tokens(credentials, store)
+        
+        triesLimit = 5
+        tries = triesLimit
+        while tries > 0 :
+            oauth_header = 'Bearer %s' % oauth_tokens['access_token']
+            self.session.add_header('Authorization', oauth_header)
+
+            try :
+                logging.debug('We have "Authorization" header : {}.'.format(
+                                        self.session.headers['Authorization'])
+                                       )
+                feed = self.get_spreadsheets_feed()
+                for elem in feed.findall(_ns('entry')):
+                    pass
+                return
+                
+            except :
+                logging.warn('Invalidate useless access token')
+                googoauth.erase_access_token(credentials, store)
+                print 'Refreshing access token.'
+                oauth_tokens = googoauth.refreshToken(credentials, store)
+ 
+            if tries < triesLimit :
+                time.sleep(6)
+                print 'Trying again to refresh.  {} tries remain.'.format(tries)
+            tries -= 1
+            
+    def disconnect(self):
+        """ Remove the 'shelve' daemon from memory.
+        """
+        if self.store :
+            self.store.close()
+
+        
     def _get_auth_token(self, content):
         for line in content.splitlines():
             if line.startswith('Auth='):
@@ -284,3 +338,20 @@ def login(email, password):
     client = Client(auth=(email, password))
     client.login()
     return client
+    
+
+def connect(credentials):
+    """Connect to Google API using OAuth2 access.
+
+    This is a shortcut function which instantiates :class:`Client`
+    and connects immediately.  OAuth2 access token is acquired if 
+    possible and refresshed as needed.
+
+    :returns: :class:`Client` instance.
+
+    """
+    client = Client(oauth_credentials=credentials)
+    return client
+    
+
+
