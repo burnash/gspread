@@ -34,7 +34,7 @@ import errno
 import sys
 import os
 
-from test_parms import log_file_name, user_email, google_project_id
+from test_parms import log_file_name, log_file_path, user_email, google_project_id
 from test_parms import google_redirect_uri, secret, workbook_key, store_path
 
 def main(stage):
@@ -44,7 +44,9 @@ def main(stage):
         print 'Deleting "shelve" file {}'.format(store_path)
         silentremove(store_path)
         
-    logging.basicConfig(filename=log_file_name,level=logging.DEBUG)
+    if not os.path.exists(log_file_path) :
+        os.makedirs(log_file_path)
+    logging.basicConfig(filename=log_file_path + '/' + log_file_name,level=logging.DEBUG)
 
     logging.debug(' -      -      -      -      -      -      -      ')
     
