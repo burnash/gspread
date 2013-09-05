@@ -1,9 +1,9 @@
 *.pyc
 *~
+logs
+
 tests/tests.config
 
 # tox testrunner support
 .tox/
 gspread.egg-info/
-
-logs
