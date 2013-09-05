@@ -34,8 +34,12 @@ import errno
 import sys
 import os
 
-from test_parms import log_file_name, log_file_path, user_email, google_project_id
-from test_parms import google_redirect_uri, secret, workbook_key, store_path
+try:
+    from test_parms import log_file_name, log_file_path, user_email, google_project_id
+    from test_parms import google_redirect_uri, secret, workbook_key, store_path
+except ImportError:
+    print 'You must edit "test_parms.py.example" and save as "test_parms.py" before running the tests.'
+    exit(-1)
 
 def main(stage):
 
