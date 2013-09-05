@@ -8,7 +8,8 @@ secret = 'WpSlnpIjMxxxxxx15ejhN4hj'
 
 workbook_key = '0Ao882NWHcSjgdHJJSUxxxxxxQVhQRUxTbWJLOHJZT0E'
 
-log_file_name = './logs/gOAuth.log'
+log_file_name = 'gOAuth.log'
+log_file_path = './logs'
 store_file = '.tknStore.db'
 store_path = os.path.expanduser('~') + '/' + store_file
 
