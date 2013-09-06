@@ -41,12 +41,18 @@ except ImportError:
     print 'You must edit "test_parms.py.example" and save as "test_parms.py" before running the tests.'
     exit(-1)
 
+CLEAN = 'clean'
+PREPARE = 'prepare'
+NORMAL = 'normal'
+EXPIRED = 'expired'
+
 def main(stage):
 
     print 'Stage is {}'.format(stage)
-    if stage == 'initial':
+    if stage == CLEAN :
         print 'Deleting "shelve" file {}'.format(store_path)
         silentremove(store_path)
+        exit(0)
         
     if not os.path.exists(log_file_path) :
         os.makedirs(log_file_path)
@@ -54,20 +60,31 @@ def main(stage):
 
     logging.debug(' -      -      -      -      -      -      -      ')
     
-    user_id = user_email
     client_id = google_project_id
     
     now = {}
-    now['user_id'] = user_id
     now['client_id'] = client_id
-    now['debug'] = (stage == 'expired')
+    now['debug'] = (stage == EXPIRED)
+    
+    idxUser = 0
+    try :
+        idxUser = int(sys.argv[2]) - 1
+    except :
+        pass
+        
+    user_id = user_email[idxUser]
+    spreadsheet_key = workbook_key[idxUser]
+        
+    now['user_id'] = user_id
     
     oauth_credentials = {}
     oauth_credentials['now'] = now
         
-    spreadsheet_key = workbook_key
+    print 'Working with :'
+    print '      User : {}'.format(now['user_id'])
+    print '  Workbook : {}'.format(spreadsheet_key)
 
-    if stage == 'initial' :
+    if stage == PREPARE :
     
         app = {}
         user = {}
@@ -112,12 +129,38 @@ def silentremove(filename):
         if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
             raise # re-raise exception if a different error occured
 
+def f(x):
+    msg = '\n        -- "user #" is '
+    return {
+              1: msg + '1 only.'
+            , 2: msg + '1 or 2'
+        }.get(x, msg + '1 through {}'.format(x))
 
 if __name__ == '__main__':
 
-    stages = ['initial', 'normal', 'expired']
-    if sys.argv[1] not in stages :
-        print 'Usage : {} <test stage>\n      (where "test stage" is one of {})'.format(sys.argv[0], stages)
-    else :
-        main(sys.argv[1])
+    '''
+    print f(1)
+    print f(2)
+    print f(7)
+    print f(5)
+    exit(0)
+    '''
+    stages = [CLEAN, PREPARE, NORMAL, EXPIRED]
+    msg = ''
+    msg += 'Usage : {} <test stage> <user #>'.format(sys.argv[0])
+    msg += '\n      Where :'
+    msg += '\n        -- "test stage" is one of {})'.format(stages)
+    
+    
+    if len(sys.argv) > 1 :
+        if sys.argv[1] in stages :
+            main(sys.argv[1])
+            exit(0)
+            
+    print msg
+    idx = 0
+    for user in user_email :
+        idx += 1
+        print '        -- "user #"{} is {}'.format(idx, user)
+
 

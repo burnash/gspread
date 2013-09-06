@@ -1,13 +1,15 @@
 import os
 
-user_email = 'dude.xxxxxx@gmail.com'
-google_project_id = '326xxxxxx42.apps.googleusercontent.com'
-
+# Google Client project parameters
+google_project_id = '32686918642.apps.googleusercontent.com'
 google_redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
-secret = 'WpSlnpIjMxxxxxx15ejhN4hj'
+secret = 'WpSlnpIxxxxxxn915ejhN4hj'
 
-workbook_key = '0Ao882NWHcSjgdHJJSUxxxxxxQVhQRUxTbWJLOHJZT0E'
+# User parameters
+user_email = ['alicia.fxxxxxxpo@gmail.com', 'martxxxxxxxxxll@gmail.com', 'dude.xxxxxx@gmail.com']
+workbook_key = ['0AhgdNB3-bSxxxxxxxWJ3YTAzd015UFJTZ3FwZlc1TlE', '0AolwuF_iap6TdxxxxxxuSFNGLWhQOTFPd0Z6ZkJfRlE', '0Ao882NWHcSjgdHJJSURUSE04QVxxxxxxbWJLOHJZT0E']
 
+# App parameters
 log_file_name = 'gOAuth.log'
 log_file_path = './logs'
 store_file = '.tknStore.db'
