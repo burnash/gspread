@@ -11,6 +11,9 @@ import json
 
 def sanity_check(credentials, store):
 
+    logging.debug('Dump credentials :\n{} \n\nDump store : \n\n{}'
+                                    .format(credentials, store))
+
     assert 'now' in credentials
     assert 'client_id' in credentials['now']
     assert 'user_id' in credentials['now']
@@ -71,13 +74,13 @@ def get_auth_tokens(credentials, store):
                             store[userId][appId]['access_token'] = 'corrupted to test token refresh'
                             print 'DEBUG: Testing refresh.'
                     return store[userId][appId]
-                
-        logging.warn('No access token available.')
-        if 'refresh_token' in store[userId][appId]:
-            refresh_token = store[userId][appId]['refresh_token']
-            if refresh_token :
-                logging.debug('Trying to refresh the access token.')
-                return refreshToken(credentials, store)
+
+            logging.warn('No access token available.')
+            if 'refresh_token' in store[userId][appId]:
+                refresh_token = store[userId][appId]['refresh_token']
+                if refresh_token :
+                    logging.debug('Trying to refresh the access token.')
+                    return refreshToken(credentials, store)
                 
     print 'Need to get a new access token.'
     
