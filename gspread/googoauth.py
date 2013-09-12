@@ -39,7 +39,8 @@ import json
 
 import base64
 import smtplib
-from oauth2 import GeneratePermissionUrl, AuthorizeTokens, RefreshToken, GenerateOAuth2String
+# from oauth2 import GeneratePermissionUrl, AuthorizeTokens
+from goauth2_helper import RefreshToken, GenerateOAuth2String
 
 SCOPE = 'https://spreadsheets.google.com/feeds/'
 

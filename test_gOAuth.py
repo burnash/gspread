@@ -28,15 +28,32 @@
 
 '''
 
+import urllib
+
+try :
+
+    from goauth2_helper import GeneratePermissionUrl, AuthorizeTokens, RefreshToken, GenerateOAuth2String
+    
+except ImportError :
+
+    # Get Google oauth2 helper file
+    webFile = urllib.urlopen('http://google-mail-oauth2-tools.googlecode.com/svn/trunk/python/oauth2.py')
+    localFile = open('goauth2_helper.py', 'w')
+    localFile.write(webFile.read())
+    webFile.close()
+    localFile.close()
+    
+    from goauth2_helper import GeneratePermissionUrl, AuthorizeTokens, RefreshToken, GenerateOAuth2String
+
 import smtplib
-import gspread
 import logging
 import base64
 import errno
 import sys
 import os
 
-from oauth2 import GeneratePermissionUrl, AuthorizeTokens, RefreshToken, GenerateOAuth2String
+import gspread
+
 # TestSmtpAuthentication, 
 # import oauth2
 
@@ -208,7 +225,7 @@ def prep_creds() :
 
     
 def main(stage):
-
+    
     oauth_credentials = prep_creds()
     
     print 'Doing stage : {}'.format(stage)
