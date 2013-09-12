@@ -27,7 +27,6 @@
        This module is the main entry point for running the gOAuth generic client to Google document APIs.
 
 '''
-
 import urllib
 
 try :
@@ -68,8 +67,9 @@ try:
     from test_parms import users
 
 except ImportError:
-    print 'You must edit "%s.example" and save as "%s" before running the tests.' % parameters_file
+    print 'You must edit "{0}.example" and save as "{0}" before running the tests.'.format(parameters_file)
     exit(-1)
+    
 SMTP_ACCESS = 'google_project_client_smtp_access_token'
 SMTP_REFRESH = 'google_project_client_smtp_refresh_token'
 configure_email = False
