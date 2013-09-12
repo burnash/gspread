@@ -1,13 +1,18 @@
 import os
 
 # Google Client project parameters
-google_project_id = '32686918642.apps.googleusercontent.com'
-google_redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
-secret = 'WpSlnpIxxxxxxn915ejhN4hj'
+google_project_redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
+google_project_client_id = '204618981389-tXXXXXXXXXXXXX0ngln7b3j5ppaii0gq.apps.googleusercontent.com'
+google_project_client_secret = '1SYobXXXXXXXXXXXXn9TfBir'
+
+google_project_client_email = 'alicia.factorepo@gmail.com'
 
 # User parameters
-user_email = ['alicia.fxxxxxxpo@gmail.com', 'martxxxxxxxxxll@gmail.com', 'dude.xxxxxx@gmail.com']
-workbook_key = ['0AhgdNB3-bSxxxxxxxWJ3YTAzd015UFJTZ3FwZlc1TlE', '0AolwuF_iap6TdxxxxxxuSFNGLWhQOTFPd0Z6ZkJfRlE', '0Ao882NWHcSjgdHJJSURUSE04QVxxxxxxbWJLOHJZT0E']
+users = {}
+users ['Doowa'] = {'user_email': 'doowa.diddee@gmail.com', 'auth_method': 'InstalledApp', 'workbook_key': '0AqGUFwft5liMdXXXXXXXXXXXXXFxVzhyTDhpXzAzZkE' }
+users ['Alicia'] = {'user_email': 'alicia.factorepo@gmail.com', 'auth_method': 'InstalledApp', 'workbook_key': '0AhgdNB3-bSxAdDFBQWJXXXXXXXXXXXXXZ3FwZlc1TlE' }
+users ['Dude'] = {'user_email': 'dude.awap@gmail.com', 'auth_method': 'ForDevices', 'workbook_key': '0Ao882NWHcSjgXXXXXXXXXXXXXXXXXXXXbWJLOHJZT0E' }
+users ['dieDude'] = {'user_email': 'dude.awap@gmail.com', 'auth_method': 'ToBeDropped', 'workbook_key': '' }
 
 # App parameters
 log_file_name = 'gOAuth.log'
@@ -15,3 +20,4 @@ log_file_path = './logs'
 store_file = '.tknStore.db'
 store_path = os.path.expanduser('~') + '/' + store_file
 
+# smtp (prepared at first launch)
