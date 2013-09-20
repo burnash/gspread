@@ -73,11 +73,19 @@ def sanity_check(credentials, store):
                     exit(0)
                                 
     if clientId in store :
-        assert 'redirect_uri' in store[clientId]
+        for key in ['redirect_uri', 'client_secret', 'client_email', 'smtp_access_token', 'smtp_refresh_token'] :
+            print 'Doing %s!' % key
+            if key in credentials['gclient'][clientId] :
+                store[clientId][key] = credentials['gclient'][clientId][key]
+            else:
+                assert key in store[clientId]
+            
+        '''
         assert 'client_secret' in store[clientId]
         assert 'client_email' in store[clientId]
         assert 'smtp_access_token' in store[clientId]
         assert 'smtp_refresh_token' in store[clientId]
+        '''
         
         if userId in store :
             if clientId in store[userId] :
