@@ -65,7 +65,7 @@ class HTTPSession(object):
         except HTTPError as e:
             if 'Stateless token expired' in str(e) :
                 print '\nHTTP_Session .   .   .   .   .   .   .   .   .   Time to refresh token!'
-                googoauth.refreshToken('xx')
+                googoauth.refreshToken()
             raise e
 
     def get(self, url, **kwargs):
