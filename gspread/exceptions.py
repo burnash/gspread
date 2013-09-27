@@ -40,3 +40,8 @@ class UpdateCellError(GSpreadException):
 
 class RequestError(GSpreadException):
     """Error while sending API request."""
+
+class InvalidUserClientMapping(AuthenticationError):
+    """Client/User tokens mapping deleted or never created."""
+
+
