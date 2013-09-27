@@ -26,14 +26,8 @@ from .utils import finditem
 from .exceptions import (AuthenticationError, SpreadsheetNotFound,
                          NoValidUrlKeyFound, UpdateCellError,
                          RequestError)
-import os
 import time
-import shelve
-import logging
 import googoauth
-
-store_file = '.tknStore.db'
-store_path = os.path.expanduser('~') + '/' + store_file
 
 
 AUTH_SERVER = 'https://www.google.com'
@@ -65,35 +59,28 @@ class Client(object):
 
         if oauth_credentials:
         
-            self.store = None
-            self.store = shelve.open(store_path, writeback = True)
+            self._get_access_token(oauth_credentials)
             
-            self._get_access_token(oauth_credentials, self.store)
-            
-    def _get_access_token(self, credentials, store):
         
-        oauth_tokens = googoauth.get_auth_tokens(credentials, store)
+    def _get_access_token(self, credentials):
+        
+        oauth_tokens = googoauth.get_auth_tokens(credentials)
         
         triesLimit = 5
         tries = triesLimit
         while tries > 0 :
-            oauth_header = 'Bearer %s' % oauth_tokens['access_token']
+            oauth_header = 'Bearer %s' % oauth_tokens.access_token
             self.session.add_header('Authorization', oauth_header)
 
             try :
-                logging.debug('We have "Authorization" header : {}.'.format(
-                                        self.session.headers['Authorization'])
-                                       )
                 feed = self.get_spreadsheets_feed()
                 for elem in feed.findall(_ns('entry')):
                     pass
                 return
                 
             except :
-                logging.warn('Invalidate useless access token')
-                googoauth.erase_access_token(credentials, store)
-                print 'Refreshing access token.'
-                oauth_tokens = googoauth.refreshToken(credentials, store)
+                googoauth.erase_access_token(credentials)
+                oauth_tokens = googoauth.refreshToken()
  
             if tries < triesLimit :
                 time.sleep(6)
@@ -103,8 +90,7 @@ class Client(object):
     def disconnect(self):
         """ Remove the 'shelve' daemon from memory.
         """
-        if self.store :
-            self.store.close()
+        googoauth.close_store()
 
         
     def _get_auth_token(self, content):
@@ -346,6 +332,9 @@ def connect(credentials):
     This is a shortcut function which instantiates :class:`Client`
     and connects immediately.  OAuth2 access token is acquired if 
     possible and refresshed as needed.
+    
+    'credentials' can be prepared calling googoauth.prep_creds()
+    The data structure is explained there.
 
     :returns: :class:`Client` instance.
 
