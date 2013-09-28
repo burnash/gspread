@@ -56,6 +56,9 @@ worksheet = sh.worksheet("January")
 
 # Most common case: Sheet1
 worksheet = sh.sheet1
+
+# Get a list of all worksheets
+worksheet_list = sh.worksheets()
 ```
 
 ### Creating a worksheet
