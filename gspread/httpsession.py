@@ -8,9 +8,14 @@ This module contains a class for working with http sessions.
 
 """
 
-import httplib
-import urlparse
-from urllib import urlencode
+try:
+    import httplib as client
+    from urlparse import urlparse
+    from urllib import urlencode
+except ImportError:
+    from http import client
+    from urllib.parse import urlparse
+    from urllib.parse import urlencode
 
 try:
     unicode
@@ -47,12 +52,12 @@ class HTTPSession(object):
         if data and not headers.get('Content-Type', None):
             headers['Content-Type'] = 'application/x-www-form-urlencoded'
         # If connection for this scheme+location is not established, establish it.
-        uri = urlparse.urlparse(url)
+        uri = urlparse(url)
         if not self.connections.get(uri.scheme+uri.netloc):
             if uri.scheme == 'https':
-                self.connections[uri.scheme+uri.netloc] = httplib.HTTPSConnection(uri.netloc)
+                self.connections[uri.scheme+uri.netloc] = client.HTTPSConnection(uri.netloc)
             else:
-                self.connections[uri.scheme+uri.netloc] = httplib.HTTPConnection(uri.netloc)
+                self.connections[uri.scheme+uri.netloc] = client.HTTPConnection(uri.netloc)
 
         request_headers = self.headers.copy()
 
