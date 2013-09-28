@@ -556,9 +556,10 @@ class Cell(object):
         cell_elem = element.find(_ns1('cell'))
         self._row = int(cell_elem.get('row'))
         self._col = int(cell_elem.get('col'))
+        self.input_value = cell_elem.get('inputValue')
 
         #: Value of the cell.
-        self.value = cell_elem.text
+        self.value = cell_elem.text or ''
 
     @property
     def row(self):
