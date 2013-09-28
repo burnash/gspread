@@ -12,7 +12,7 @@ Features:
 
 ![logo](https://raw.github.com/burnash/gspread/master/gspread.png "")
 
-## Basic usage
+## Basic Usage
 
 ```python
 import gspread
@@ -29,7 +29,7 @@ wks.update_acell('B2', "it's down there somewhere, let me take another look.")
 cell_list = wks.range('A1:B7')
 ```
 
-## More examples
+## More Examples
 
 ### Opening a spreadsheet
 
@@ -131,7 +131,7 @@ row_number = cell.row
 column_number = cell.col
 ```
 
-### Updating
+### Updating cells
 
 ```python
 worksheet.update_acell('B1', 'Bingo!')
@@ -194,6 +194,5 @@ See [#45](https://github.com/burnash/gspread/issues/45) for details.
 
 ## Feedback
 
-The library is in active development so any feedback is *urgently* needed. Please
-don't hesitate to open up a new [github issue](https://github.com/burnash/gspread/issues)
+Please don't hesitate to open up a new [github issue](https://github.com/burnash/gspread/issues)
 or simply drop me a line to <fuss.here@gmail.com>.
