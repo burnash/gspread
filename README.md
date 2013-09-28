@@ -152,6 +152,15 @@ for cell in cell_list:
 worksheet.update_cells(cell_list)
 ```
 
+### Two Factor Authorization
+
+In case your Google Account protected with [Two Factor Authorization](http://support.google.com/accounts/bin/answer.py?hl=en&answer=180744), 
+you have to create [an application-specific password](https://accounts.google.com/b/0/IssuedAuthSubTokens?hl=en_GB) and use your email
+to login as usual.
+
+Otherwise you will get an `AuthenticationError: Unable to authenticate. 403 code` when trying to login.
+
+
 ## Requirements
 
 Python 2.6+ or Python 3+
@@ -177,12 +186,6 @@ If you're on easy_install, it's:
 ```sh
 easy_install gspread
 ```
-
-### Note: Two Factor Authorization
-
-At this time gspread will not work if you have [Two Factor Authorization](http://support.google.com/accounts/bin/answer.py?hl=en&answer=180744) turned on for your account. 
-See [#45](https://github.com/burnash/gspread/issues/45) for details.
-
 
 ## Documentation
 
