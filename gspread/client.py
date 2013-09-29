@@ -47,7 +47,7 @@ class Client(object):
     >>>
 
     """
-    def __init__(self, auth, http_session=None):
+    def __init__(self, auth=None, http_session=None):
         self.auth = auth
 
         if not http_session:
@@ -103,6 +103,10 @@ class Client(object):
             else:
                 raise AuthenticationError(
                     "Unable to authenticate. %s code" % ex.code)
+
+    def oauth2_authorize(self, access_token):
+        auth_header = "Bearer %s" % access_token
+        self.session.add_header('Authorization', auth_header)
 
     def open(self, title):
         """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
@@ -283,4 +287,10 @@ def login(email, password):
     """
     client = Client(auth=(email, password))
     client.login()
+    return client
+
+
+def authorize(access_token):
+    client = Client()
+    client.oauth2_authorize(access_token)
     return client
