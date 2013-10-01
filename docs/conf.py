@@ -12,6 +12,7 @@
 # serve to show the default.
 
 import sys, os
+from datetime import date
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -45,7 +46,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'gspread'
-copyright = u'2011, Anton Burnashev'
+copyright = u'%s, Anton Burnashev' % date.today().year
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -252,7 +253,7 @@ texinfo_documents = [
 epub_title = u'gspread'
 epub_author = u'Anton Burnashev'
 epub_publisher = u'Anton Burnashev'
-epub_copyright = u'2011, Anton Burnashev'
+epub_copyright = u'%s, Anton Burnashev' % date.today().year
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
