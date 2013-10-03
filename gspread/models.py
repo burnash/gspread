@@ -272,6 +272,7 @@ class Worksheet(object):
 
         while div:
             (div, mod) = divmod(div, 26)
+	    mod=26 if mod==0 else mod
             column_label = chr(mod + self._MAGIC_NUMBER) + column_label
 
         label = '%s%s' % (column_label, row)
