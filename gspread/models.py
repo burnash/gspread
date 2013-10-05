@@ -268,11 +268,13 @@ class Worksheet(object):
             raise IncorrectCellLabel('(%s, %s)' % (row, col))
 
         div = col
-        column_label = str()
+        column_label = ''
 
         while div:
             (div, mod) = divmod(div, 26)
-            mod=26 if mod==0 else mod
+            if mod == 0:
+                 mod = 26
+                 div -= 1
             column_label = chr(mod + self._MAGIC_NUMBER) + column_label
 
         label = '%s%s' % (column_label, row)
