@@ -27,7 +27,7 @@
        This module contains routines for OAuth usage of "gspread".
 
 
-'''
+''' 
 import os
 import time
 import shelve
@@ -59,8 +59,6 @@ store_path = os.path.expanduser('~') + '/' + store_file
 
 log_file_name = 'gOAuth.log'
 log_file_path = './logs'
-store_file = '.tknStore.db'
-store_path = os.path.expanduser('~') + '/' + store_file
 
 def close_store():
     """ Remove the 'shelve' daemon from memory.
@@ -74,6 +72,11 @@ def make_store():
     global store
     store = shelve.open(store_path, writeback = True)
     
+def reopen_store():
+    close_store()
+    make_store()
+
+
 
 def sanity_check(credentials):
 
@@ -513,6 +516,7 @@ def getGDataTokens() :
                 )
                 if 'error' in rslt :
                     close_store()
+                    print 'Error is : %s' % rslt
                     raise Exception("Cannot refresh invalid SMTP token. '%s' " % rslt['error'])
                     
                 store[theCurrentOAuthClient].smtp_access_token = rslt['access_token']
