@@ -27,7 +27,7 @@
        This module contains routines for OAuth usage of "gspread".
 
 
-''' 
+'''
 import os
 import time
 import shelve
@@ -40,6 +40,8 @@ import json
 
 import base64
 import smtplib
+
+from prepSMTP import prep_smtp
 
 from .exceptions import InvalidUserClientMapping
 
@@ -75,7 +77,6 @@ def make_store():
 def reopen_store():
     close_store()
     make_store()
-
 
 
 def sanity_check(credentials):
@@ -157,7 +158,11 @@ def request_approval(args) :
     client_secret = args['client_secret']
     
     if store[theCurrentOAuthClient].smtp_access_token is None :
-        prep_smtp(args)
+        args = prep_smtp(args, test_mail = True)
+        store[theCurrentOAuthClient].smtp_access_token = args['sat']
+        store[theCurrentOAuthClient].smtp_refresh_token = args['srt']
+        
+        
 
     # print "Temporary token using %s and %s ."   %  (client_email, store[theCurrentOAuthClient].smtp_access_token)
     auth_string = GenerateOAuth2String(client_email, store[theCurrentOAuthClient].smtp_access_token)
@@ -516,7 +521,6 @@ def getGDataTokens() :
                 )
                 if 'error' in rslt :
                     close_store()
-                    print 'Error is : %s' % rslt
                     raise Exception("Cannot refresh invalid SMTP token. '%s' " % rslt['error'])
                     
                 store[theCurrentOAuthClient].smtp_access_token = rslt['access_token']
