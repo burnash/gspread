@@ -189,7 +189,10 @@ def prep_smtp(test_mail = False) :
                                             , access_token
                                             , base64_encode = False
                                         )
-                                        
+    print ">>>>"
+    print auth_string
+    print ">>>>"
+    
     # Preparing test email envelope . . 
     title = 'Trash this email'
     body = 'Congratulations. You have fully enabled mail transfer through Google SMTP.'
@@ -217,7 +220,16 @@ def prep_smtp(test_mail = False) :
                 access_token = RefreshToken(google_project_client_id, google_project_client_secret, refresh_token)
                 print 'New token : %s' % access_token
                 smtp_conn.docmd('AUTH', 'XOAUTH2 ' + base64.b64encode(auth_string))
-                smtp_conn.sendmail(google_project_client_email, google_project_client_email, envelope)
+                
+                try :
+                        smtp_conn.sendmail(google_project_client_email, google_project_client_email, envelope)
+                except smtplib.SMTPSenderRefused as sr :
+                    print sr
+                    if sr[0] == 535 :
+                        print 'The access token is correct. Maybe the user id is wrong?'
+                        print '¿¿ Are you sure that <[{0}]> authorized <[{0}]> ??'.format(google_project_client_email)
+                        exit(-1)
+
 
     
     else :
