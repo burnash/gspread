@@ -268,10 +268,13 @@ class Worksheet(object):
             raise IncorrectCellLabel('(%s, %s)' % (row, col))
 
         div = col
-        column_label = str()
+        column_label = ''
 
         while div:
             (div, mod) = divmod(div, 26)
+            if mod == 0:
+                 mod = 26
+                 div -= 1
             column_label = chr(mod + self._MAGIC_NUMBER) + column_label
 
         label = '%s%s' % (column_label, row)
@@ -556,9 +559,10 @@ class Cell(object):
         cell_elem = element.find(_ns1('cell'))
         self._row = int(cell_elem.get('row'))
         self._col = int(cell_elem.get('col'))
+        self.input_value = cell_elem.get('inputValue')
 
         #: Value of the cell.
-        self.value = cell_elem.text
+        self.value = cell_elem.text or ''
 
     @property
     def row(self):

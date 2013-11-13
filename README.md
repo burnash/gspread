@@ -12,7 +12,7 @@ Features:
 
 ![logo](https://raw.github.com/burnash/gspread/master/gspread.png "")
 
-## Basic usage
+## Basic Usage
 
 ```python
 import gspread
@@ -29,7 +29,7 @@ wks.update_acell('B2', "it's down there somewhere, let me take another look.")
 cell_list = wks.range('A1:B7')
 ```
 
-## More examples
+## More Examples
 
 ### Opening a spreadsheet
 
@@ -51,8 +51,14 @@ sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
 # Select worksheet by index. Worksheet indexes start from zero
 worksheet = sh.get_worksheet(0)
 
+# By title
+worksheet = sh.worksheet("January")
+
 # Most common case: Sheet1
 worksheet = sh.sheet1
+
+# Get a list of all worksheets
+worksheet_list = sh.worksheets()
 ```
 
 ### Creating a worksheet
@@ -128,7 +134,7 @@ row_number = cell.row
 column_number = cell.col
 ```
 
-### Updating
+### Updating cells
 
 ```python
 worksheet.update_acell('B1', 'Bingo!')
@@ -145,6 +151,15 @@ for cell in cell_list:
 # Update in batch
 worksheet.update_cells(cell_list)
 ```
+
+### Two Factor Authorization
+
+In case your Google Account protected with [Two Factor Authorization](http://support.google.com/accounts/bin/answer.py?hl=en&answer=180744), 
+you have to create [an application-specific password](https://accounts.google.com/b/0/IssuedAuthSubTokens?hl=en_GB) and use your email
+to login as usual.
+
+Otherwise you will get an `AuthenticationError: Unable to authenticate. 403 code` when trying to login.
+
 
 ## Requirements
 
@@ -172,15 +187,9 @@ If you're on easy_install, it's:
 easy_install gspread
 ```
 
-### Note: Two Factor Authorization
-
-At this time gspread will not work if you have [Two Factor Authorization](http://support.google.com/accounts/bin/answer.py?hl=en&answer=180744) turned on for your account. 
-See [#45](https://github.com/burnash/gspread/issues/45) for details.
-
-
 ## Documentation
 
-[Docs on GitHub](http://burnash.github.com/gspread/)
+[API Reference](http://burnash.github.com/gspread/)
 
 ## Suggestions & Code Contribution
 
@@ -191,6 +200,5 @@ See [#45](https://github.com/burnash/gspread/issues/45) for details.
 
 ## Feedback
 
-The library is in active development so any feedback is *urgently* needed. Please
-don't hesitate to open up a new [github issue](https://github.com/burnash/gspread/issues)
+Please don't hesitate to open up a new [github issue](https://github.com/burnash/gspread/issues)
 or simply drop me a line to <fuss.here@gmail.com>.
