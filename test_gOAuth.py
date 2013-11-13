@@ -64,15 +64,14 @@ try:
 
     from test_parms import google_project_client_smtp_access_token
     from test_parms import google_project_client_smtp_refresh_token
-    
+
     gpcsat_len = len(google_project_client_smtp_access_token)
     gpcsrt_len = len(google_project_client_smtp_refresh_token)
-    
-    assert gpcsat_len > 50 and gpcsat_len < 60
+
+    assert gpcsat_len > 50 and gpcsat_len < 80
     assert gpcsrt_len == 45
 
 except :
-
     prepSMTP.prep_smtp(True)
     print "Please repeat the command now."
     exit()
@@ -90,14 +89,13 @@ def main(stage):
     print 'Doing stage : {}'.format(stage)
     if stage == CLEAN :
         print 'Deleting "shelve" file {}'.format(store_path)
-        silentremove(store_path)
-        return
+        return silentremove(store_path)
 
     nickname = 0
     try :
         nickname = sys.argv[2]
     except :
-        pass
+        return False
 
     oauth_credentials = googoauth.prep_creds(
                           nickname
@@ -147,7 +145,7 @@ def main(stage):
             return
         raise exceptions.InvalidUserClientMapping(iucm)
         
-    return
+    return True
 
 
 def silentremove(filename):
@@ -158,6 +156,8 @@ def silentremove(filename):
     except OSError, e:
         if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
             raise # re-raise exception if a different error occured
+            return False
+    return True
 
 
 if __name__ == '__main__':
@@ -168,11 +168,16 @@ if __name__ == '__main__':
     msg = ''
     msg += 'Usage : %s <%s> <%s>' % (sys.argv[0], TEST_STAGE, USER)
     msg += '\n      Where :'
-    msg += '\n        -- "%s" is one of %s)' % (TEST_STAGE, stages)
-    
+    msg += '\n        -- "%s" is one of %s' % (TEST_STAGE, stages)
+    msg += '\n        -- "%s" is a user identified in %s' % (USER, parameters_file)
     
     if len(sys.argv) > 1 :
         if sys.argv[1] in stages :
-            main(sys.argv[1])
+            if main(sys.argv[1]) :
+                print "Success"
+                exit(0)
+
+    print msg
+    
 
 

@@ -83,7 +83,7 @@ try:
     gpcsat_len = len(google_project_client_smtp_access_token)
     gpcsrt_len = len(google_project_client_smtp_refresh_token)
     
-    assert gpcsat_len > 50 and gpcsat_len < 60
+    assert gpcsat_len > 50 and gpcsat_len < 80
     assert gpcsrt_len == 45
 
 except :
