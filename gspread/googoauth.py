@@ -360,6 +360,8 @@ def getAsForDevices(rq) :
             store[theCurrentEndUser][theCurrentOAuthClient].access_token = theJSON['access_token']
             store[theCurrentEndUser][theCurrentOAuthClient].refresh_token = theJSON['refresh_token']
             store[theCurrentEndUser][theCurrentOAuthClient].auth_method = m
+            
+            reopen_store()
 
             logging.debug(
                     '==>\nAccess token : {}\nRefresh token : {}'.format(
