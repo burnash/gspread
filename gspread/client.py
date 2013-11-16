@@ -104,9 +104,10 @@ class Client(object):
                 raise AuthenticationError(
                     "Unable to authenticate. %s code" % ex.code)
 
-    def oauth2_authorize(self, access_token):
+    def oauth2_authorize(self, access_token, credentials):
         auth_header = "Bearer %s" % access_token
         self.session.add_header('Authorization', auth_header)
+        self.session.keep_credentials(credentials)
 
     def open(self, title):
         """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
@@ -290,7 +291,19 @@ def login(email, password):
     return client
 
 
-def authorize(access_token):
+def authorize(access_token, credentials):
+    """Connect to Google API using OAuth2 credentials.
+
+    This is a shortcut function which instantiates :class:`Client`
+
+    NOTE : does NOT connect immediately!
+      - invalid credentials will cause failure on first use.
+
+    Expired access token will be refreshed if all other credentials are valid.
+
+    :returns: :class: `Client` instance.
+
+    """
     client = Client()
-    client.oauth2_authorize(access_token)
+    client.oauth2_authorize(access_token, credentials)
     return client

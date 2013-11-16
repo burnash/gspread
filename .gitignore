@@ -1,5 +1,8 @@
 *.pyc
+*.py~
 tests/tests.config
+build/
+dist/
 
 # tox testrunner support
 .tox/
