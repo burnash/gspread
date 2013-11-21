@@ -1,4 +1,10 @@
 *.pyc
+*~
+logs
+
+goauth2_helper.py
+test_parms.py
+
 tests/tests.config
 
 # tox testrunner support

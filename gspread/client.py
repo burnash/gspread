@@ -26,6 +26,8 @@ from .utils import finditem
 from .exceptions import (AuthenticationError, SpreadsheetNotFound,
                          NoValidUrlKeyFound, UpdateCellError,
                          RequestError)
+import time
+import googoauth
 
 
 AUTH_SERVER = 'https://www.google.com'
@@ -40,6 +42,7 @@ class Client(object):
 
     :param auth: A tuple containing an *email* and a *password* used for ClientLogin
                  authentication.
+    :param oauth_token: OAuth2 access token used to authenticate API requests
     :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
                                     Defaults to :class:`~gspread.httpsession.HTTPSession`.
 
@@ -47,12 +50,49 @@ class Client(object):
     >>>
 
     """
-    def __init__(self, auth, http_session=None):
-        self.auth = auth
+    def __init__(self, auth=None, oauth_credentials=None, http_session=None):
+        if auth:
+            self.auth = auth
 
         if not http_session:
             self.session = HTTPSession()
 
+        if oauth_credentials:
+        
+            self._get_access_token(oauth_credentials)
+            
+        
+    def _get_access_token(self, credentials):
+        
+        oauth_tokens = googoauth.get_auth_tokens(credentials)
+        
+        triesLimit = 5
+        tries = triesLimit
+        while tries > 0 :
+            oauth_header = 'Bearer %s' % oauth_tokens.access_token
+            self.session.add_header('Authorization', oauth_header)
+
+            try :
+                feed = self.get_spreadsheets_feed()
+                for elem in feed.findall(_ns('entry')):
+                    pass
+                return
+                
+            except :
+                googoauth.erase_access_token(credentials)
+                oauth_tokens = googoauth.refreshToken()
+ 
+            if tries < triesLimit :
+                time.sleep(6)
+                print 'Trying again to refresh.  {} tries remain.'.format(tries)
+            tries -= 1
+            
+    def disconnect(self):
+        """ Remove the 'shelve' daemon from memory.
+        """
+        googoauth.close_store()
+
+        
     def _get_auth_token(self, content):
         for line in content.splitlines():
             if line.startswith('Auth='):
@@ -284,3 +324,23 @@ def login(email, password):
     client = Client(auth=(email, password))
     client.login()
     return client
+    
+
+def connect(credentials):
+    """Connect to Google API using OAuth2 access.
+
+    This is a shortcut function which instantiates :class:`Client`
+    and connects immediately.  OAuth2 access token is acquired if 
+    possible and refresshed as needed.
+    
+    'credentials' can be prepared calling googoauth.prep_creds()
+    The data structure is explained there.
+
+    :returns: :class:`Client` instance.
+
+    """
+    client = Client(oauth_credentials=credentials)
+    return client
+    
+
+

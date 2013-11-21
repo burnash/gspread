@@ -1,0 +1,24 @@
+import os
+
+# Google Client project parameters
+google_project_redirect_uri = 'urn:ietf:wg:oauth:2.0:oob'
+google_project_client_id = '204618981389-tXXXXXXXXXXXXX0ngln7b3j5ppaii0gq.apps.googleusercontent.com'
+google_project_client_secret = '1SYobXXXXXXXXXXXXn9TfBir'
+
+google_project_client_email = 'alicia.factorepo@gmail.com'
+
+# User parameters
+users = {}
+users ['Doowa'] = {'user_email': 'doowa.diddee@gmail.com', 'auth_method': 'InstalledApp', 'workbook_key': '0AqGUFwft5liMdXXXXXXXXXXXXXFxVzhyTDhpXzAzZkE' }
+users ['Alicia'] = {'user_email': 'alicia.factorepo@gmail.com', 'auth_method': 'InstalledApp', 'workbook_key': '0AhgdNB3-bSxAdDFBQWJXXXXXXXXXXXXXZ3FwZlc1TlE' }
+users ['Dude'] = {'user_email': 'dude.awap@gmail.com', 'auth_method': 'ForDevices', 'workbook_key': '0Ao882NWHcSjgXXXXXXXXXXXXXXXXXXXXbWJLOHJZT0E' }
+users ['dieDude'] = {'user_email': 'dude.awap@gmail.com', 'auth_method': 'ToBeDropped', 'workbook_key': '' }
+
+# App parameters
+log_file_name = 'gOAuth.log'
+log_file_path = './logs'
+store_file = '.tknStore.db'
+store_path = os.path.expanduser('~') + '/' + store_file
+
+# smtp (the tool prepSMTP.py will fill in the needed parameters below)
+
