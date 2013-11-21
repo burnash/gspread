@@ -133,10 +133,24 @@ class HTTPSession(object):
         self.headers[name] = value
 
     def keep_credentials(self, credentials):
+
+        '''
+        Expects a dict of credentials prepared as follows:
+
+        credentials['grant_type'] = 'refresh_token'
+        credentials['refresh_token'] = refresh_token
+        credentials['client_secret'] = client_secret
+        credentials['client_id'] = client_id
+        '''
         self.credentials = credentials
 
     def refresh_authorization(self):
 
+        '''
+        Performs a token refresh cycle as described here :
+           https://developers.google.com/youtube/v3/guides/authentication#OAuth2_Refreshing_a_Token
+           
+        '''
         parms = urlencode(self.credentials)
         req_hdrs = {'Content-Type': 'application/x-www-form-urlencoded'}
         url = urlparse(GOOGLE_OAUTH_TOKEN_REFRESH_URL).netloc
