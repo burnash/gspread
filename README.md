@@ -219,5 +219,4 @@ easy_install gspread
 
 ## Feedback
 
-Please don't hesitate to open up a new [github issue](https://github.com/burnash/gspread/issues)
-or simply drop me a line to <fuss.here@gmail.com>.
+Please report bugs and suggest features via [GitHub Issues](https://github.com/burnash/gspread/issues).
