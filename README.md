@@ -14,13 +14,31 @@ Features:
 
 ## Basic Usage
 
+### Username and password authentication
+
 ```python
 import gspread
 
 # Login with your Google account
 gc = gspread.login('thedude@abid.es', 'password')
 
-# Connect with your Google OAuth2 credentials as described in [Accessing a Google API](https://developers.google.com/youtube/v3/guides/authentication#OAuth2_Calling_a_Google_API) and [Refreshing an Access Token](https://developers.google.com/youtube/v3/guides/authentication#OAuth2_Refreshing_a_Token)
+# Open a worksheet from spreadsheet with one shot
+wks = gc.open("Where is the money Lebowski?").sheet1
+
+wks.update_acell('B2', "it's down there somewhere, let me take another look.")
+
+# Fetch a cell range
+cell_list = wks.range('A1:B7')
+```
+
+### OAuth authentication
+
+ As described in [Accessing a Google API](https://developers.google.com/youtube/v3/guides/authentication#OAuth2_Calling_a_Google_API) and [Refreshing an Access Token](https://developers.google.com/youtube/v3/guides/authentication#OAuth2_Refreshing_a_Token)
+ 
+```python
+import gspread
+
+# Connect with your Google OAuth2 credentials
 access_token = 'ya29.1.AADtN_Wkaip*************************lDBvFqYBYa6nSFHW1C4Vgc'
 refresh_token = '1/Sfw************************************xq1Y'
 client_secret = 'p3*******************zsh'
