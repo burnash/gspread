@@ -228,6 +228,23 @@ easy_install gspread
 
 [API Reference](http://burnash.github.com/gspread/)
 
+## Testing
+
+1. Go to Google Drive and create an empty spreadsheet you will use for testing.
+2. Create a configuration file from config dummy:
+
+    ```sh
+    cp tests/tests.config.example tests/tests.config
+    ```
+
+3. Open `tests.config` with your favorite editor and fill up config parameters with your testing spreadsheet's info.
+4. Install [Nose](http://nose.readthedocs.org).
+5. Run tests:
+
+    ```sh
+    nosetests
+    ```
+
 ## Suggestions & Code Contribution
 
 - [Javier Candeira](https://github.com/candeira)
