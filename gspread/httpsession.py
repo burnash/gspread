@@ -27,7 +27,15 @@ except NameError:
 
 
 GOOGLE_OAUTH_TOKEN_REFRESH_URL = "https://accounts.google.com/o/oauth2/token"
-GOOGLEZ_TOKEN_EXPIRY_PHRASE = "token expired"
+
+GOOGLEZ_ERROR_REASONS = [
+          "token expired"
+        , "token invalid"
+        , "¿reason?"
+        , "¿reason?"
+        , "¿reason?"
+    ]
+
 DELAY_BETWEEN_REFRESH_ATTEMPTS = 5 # seconds
 NUMBER_OF_REFRESH_ATTEMPTS = 5
 
@@ -91,7 +99,7 @@ class HTTPSession(object):
             return response
 
         # print "Status : {}. Reason : {}.".format(response.status, response.reason)
-        if GOOGLEZ_TOKEN_EXPIRY_PHRASE not in response.reason:
+        if not self.gone_stale(response):
                 raise HTTPError(response)
 
         # print "Force replacement of stored connection : {}://{}".format(uri.scheme, uri.netloc)
@@ -131,6 +139,14 @@ class HTTPSession(object):
 
     def add_header(self, name, value):
         self.headers[name] = value
+
+    def gone_stale(self, response):
+        theReason = response.reason.lower()
+        for aReason in GOOGLEZ_ERROR_REASONS:  
+            if aReason in theReason:
+                return True
+        return False
+
 
     def keep_credentials(self, credentials):
 
