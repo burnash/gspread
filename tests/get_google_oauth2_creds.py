@@ -49,8 +49,13 @@ def main(id, secret, manual=True):
 
     credentials = run_flow(flow, storage, flags)
 
-    print "\n\n"
-    print "[Spreadsheet]"
+    print "\n =    =    =    =    =    =    =    =    =    =    =    =    =    =   "
+    print "\n\n Data for use in gspread 'nose' tests, in file test.config : "
+    print " .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . "
+    print "[Google Account]"    
+    print "# auth_type: UIDPwd"    
+    print "auth_type: OAuth"    
+    print "#"
     print "client_secret: {}".format(secret)
     print "client_id: {}".format(id)
     print "access_token: {}".format(credentials.access_token)
@@ -66,7 +71,6 @@ def main(id, secret, manual=True):
     qiktest.write("\nclient_secret = '{}'".format(secret))
     qiktest.write("\nclient_id = '{}'".format(id))
     qiktest.write("\n#")
-    qiktest.write("\ncred_type = 'oauth'")
     qiktest.write("\nkey_ring = {}")
     qiktest.write("\nkey_ring['grant_type'] = 'refresh_token'")
     qiktest.write("\nkey_ring['refresh_token'] = refresh_token")
@@ -133,14 +137,9 @@ if __name__ == '__main__':
         print '               Client id : {}'.format(client_id)
         print '               Client secret : {}\n'.format(client_secret)
     
-#    spreadsheet_url  = raw_input('Paste the full URL, including the "http://" etc, etc, of the Google spreadsheet you want to use : ')
-#    local_app  = raw_input("Shall we try to open a page in your browser?  (Y/y)  : ")
-    spreadsheet_url  = 'https://docs.google.com/spreadsheet/ccc?key=0Asxy-TdDgbjidEstc3NQZWxMT0FYWWdabHFsMGlCcVE#gid=1'
-    local_app  = 'n'
-    
-
-
-    
-    manual = local_app not in "Yy"
+    print 'Identify the Google spreadsheet you want to use; use the full URL ("http://" etc, etc) '
+    spreadsheet_url  = raw_input('Paste the full URL here : ')
+    #
+    manual = raw_input("Shall we try to open a page in your browser?  (Y/y)  : ") not in "Yy"
     
     main(client_id, client_secret, manual)

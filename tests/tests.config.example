@@ -2,6 +2,14 @@
 email: example@gmail.com
 password: password
 
+auth_type: UIDPwd
+# auth_type: OAuth
+
+client_secret: 
+client_id: 
+access_token: 
+refresh_token: 
+
 [Spreadsheet]
 title:
 key:
