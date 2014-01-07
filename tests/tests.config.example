@@ -8,7 +8,8 @@
 email: example@gmail.com
 password: password
 
-; Uncomment in order to switch to OAuth access authentication. Optional.
+; Toggle the commenting below, in order to switch to OAuth access authentication. Optional.
+auth_type: 
 ; auth_type: OAuth
 
 ; These three values are obligatory for OAuth access, optional for UID/pwd access
