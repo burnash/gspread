@@ -142,6 +142,6 @@ if __name__ == '__main__':
     print 'Identify the Google spreadsheet you want to use; use the full URL ("http://" etc, etc) '
     spreadsheet_url  = raw_input('Paste the full URL here : ')
     #
-    manual = raw_input("\nShall we try to open a page in your browser?  (Y/y)  : ") not in "Yy"
+    manual = raw_input("\n\nShall we try to open a page in your browser?  (Y/y)  : ") not in "Yy"
     
     main(client_id, client_secret, manual)

@@ -30,12 +30,12 @@ url:
 ; Used by  the test "test_open_by_key"
 key:
 ; Used by  the test "test_worksheet"
-sheet1_title:
+sheet1_title: Sheet1
 
 [Worksheet]
-; Used by  the test "test_properties"
-id:
-title:
-row_count:
-col_count:
+; Used by  the test "test_properties".  The values below are Google's defaults on a new spreadsheet.
+id: od6
+title: Sheet1
+row_count: 100
+col_count: 20
 
