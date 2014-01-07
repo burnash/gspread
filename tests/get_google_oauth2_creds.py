@@ -116,9 +116,9 @@ if __name__ == '__main__':
         print '   - APIs & auth '
         print '      - Credentials '
         print '          - Client ID for native application'
-        print '             - [Download JSON]\n\n'
-        client_id = raw_input('Paste your Google "Client ID" : ')
-        client_secret = raw_input('Paste your Google "Client Secret" : ')
+        print '             - [Download JSON]'
+        client_id = raw_input('\nPaste your Google "Client ID" : ')
+        client_secret = raw_input('\nPaste your Google "Client Secret" : ')
         
     else:
         theFile = json_files[0]
