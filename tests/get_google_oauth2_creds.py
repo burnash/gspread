@@ -52,15 +52,17 @@ def main(id, secret, manual=True):
     print "\n =    =    =    =    =    =    =    =    =    =    =    =    =    =   "
     print "\n\n Data for use in gspread 'nose' tests, in file test.config : "
     print " .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . "
-    print "[Google Account]"    
-    print "# auth_type: UIDPwd"    
+    print ""
     print "auth_type: OAuth"    
     print "#"
+    print "; These three values are obligatory for OAuth access, optional for UID/pwd access"
+    print '; The "wizard" get_google_oauth2_creds.py will you guide through the necessary steps and provide the values to paste here.'
     print "client_secret: {}".format(secret)
     print "client_id: {}".format(id)
-    print "access_token: {}".format(credentials.access_token)
     print "refresh_token: {}".format(credentials.refresh_token)
     print ""
+    print "; This value is optional but will make the tests start sooner if the token is less than 60 minutes old."
+    print "access_token: {}".format(credentials.access_token)
 
     qiktest = open('qiktest.py', 'w')
     qiktest.write("# - - - - - - - - - - - - - - - - - - - - - - - - - - -")
