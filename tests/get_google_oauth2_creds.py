@@ -54,7 +54,7 @@ def main(id, secret, manual=True):
     print " .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . "
     print ""
     print "auth_type: OAuth"    
-    print "#"
+    print ";"
     print "; These three values are obligatory for OAuth access, optional for UID/pwd access"
     print '; The "wizard" get_google_oauth2_creds.py will you guide through the necessary steps and provide the values to paste here.'
     print "client_secret: {}".format(secret)
@@ -63,6 +63,8 @@ def main(id, secret, manual=True):
     print ""
     print "; This value is optional but will make the tests start sooner if the token is less than 60 minutes old."
     print "access_token: {}".format(credentials.access_token)
+    print ""
+    print " .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . "
 
     qiktest = open('qiktest.py', 'w')
     qiktest.write("# - - - - - - - - - - - - - - - - - - - - - - - - - - -")
