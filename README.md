@@ -244,6 +244,10 @@ easy_install gspread
     ```sh
     nosetests
     ```
+    
+Detailed step-by-step instructions for installation and test are available in the Wiki:
+ - [Installation and test procedure](https://github.com/FleetingClouds/gspread/wiki/Installation-and-test-procedure)
+ - [How to get, use and refresh OAuth access tokens for gspread.](https://github.com/FleetingClouds/gspread/wiki/How-to-get,-use-and-refresh-OAuth-access-tokens-for-gspread.)
 
 ## Suggestions & Code Contribution
 
