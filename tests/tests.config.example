@@ -1,23 +1,40 @@
+; These are the settings for "nose" testing of gspread
+; From the root directory of gspread run the command :
+;    nosetests
+
 [Google Account]
+
+; These two values are obligatory for UID/pwd access, optional for OAuth access
 email: example@gmail.com
 password: password
 
-auth_type: UIDPwd
-# auth_type: OAuth
+; Uncomment in order to switch to OAuth access authentication. Optional.
+; auth_type: OAuth
 
+; These three values are obligatory for OAuth access, optional for UID/pwd access
+; The "wizard" get_google_oauth2_creds.py will you guide through the necessary steps and provide the values to paste here.
 client_secret: 
 client_id: 
-access_token: 
 refresh_token: 
 
+; This value is optional but will make the tests start sooner if the token is less than 60 minutes old.
+access_token: 
+
 [Spreadsheet]
+
+; Used by  the test "open" 
 title:
-key:
+; Used by  the test "test_open_by_url" 
 url:
+; Used by  the test "test_open_by_key"
+key:
+; Used by  the test "test_worksheet"
 sheet1_title:
 
 [Worksheet]
+; Used by  the test "test_properties"
 id:
 title:
 row_count:
 col_count:
+
