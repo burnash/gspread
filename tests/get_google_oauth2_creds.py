@@ -66,20 +66,27 @@ def main(id, secret, manual=True):
     print ""
     print " .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . "
 
+
+    creds_oa = open('creds_oa.py', 'w')
+    creds_oa.write("\nrefresh_token = '{}'".format(credentials.refresh_token))
+    creds_oa.write("\nclient_secret = '{}'".format(secret))
+    creds_oa.write("\nclient_id = '{}'".format(id))
+    creds_oa.write("\n#")
+    creds_oa.write("\nkey_ring = {}")
+    creds_oa.write("\nkey_ring['grant_type'] = 'refresh_token'")
+    creds_oa.write("\nkey_ring['refresh_token'] = refresh_token")
+    creds_oa.write("\nkey_ring['client_secret'] = client_secret")
+    creds_oa.write("\nkey_ring['client_id'] = client_id")
+    creds_oa.write("\n#")
+    creds_oa.write("\naccess_token = '{}'".format(credentials.access_token))
+    creds_oa.write("\n#\n")
+    creds_oa.close()
+
     qiktest = open('qiktest.py', 'w')
-    qiktest.write("# - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+    qiktest.write("#!/usr/bin/env python")
     qiktest.write("\n# -*- coding: utf-8 -*-")
     qiktest.write("\nimport gspread")
-    qiktest.write("\n#")
-    qiktest.write("\nrefresh_token = '{}'".format(credentials.refresh_token))
-    qiktest.write("\nclient_secret = '{}'".format(secret))
-    qiktest.write("\nclient_id = '{}'".format(id))
-    qiktest.write("\n#")
-    qiktest.write("\nkey_ring = {}")
-    qiktest.write("\nkey_ring['grant_type'] = 'refresh_token'")
-    qiktest.write("\nkey_ring['refresh_token'] = refresh_token")
-    qiktest.write("\nkey_ring['client_secret'] = client_secret")
-    qiktest.write("\nkey_ring['client_id'] = client_id")
+    qiktest.write("\nfrom creds_oa import access_token, key_ring")
     qiktest.write("\n#")
     qiktest.write("\naccess_token = '{}'".format(credentials.access_token))
     qiktest.write("\ngc = gspread.authorize(access_token, key_ring)")
@@ -90,14 +97,14 @@ def main(id, secret, manual=True):
     qiktest.write("\nfor sheet in wkbk.worksheets():")
     qiktest.write("\n    print ' - Sheet #{}: Id = {}  Title = {}'.format(cnt, sheet.id, sheet.title)")
     qiktest.write("\n    cnt += 1")
-    qiktest.write("\n#")
-    qiktest.write("\n# - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+    qiktest.write("\n#\n")
     qiktest.close()
+    os.chmod('qiktest.py', 0o770)
     #
     print "\n\n   A simple example file called qiktest.py was written to disk."
     print "   It lists the names of the sheets in the target spreadsheet."
     print "   Test it with:"
-    print "      $  python qiktest.py\n\n\n"
+    print "      $  python qiktest.py  ## or possibly just  ./qiktest.py\n\n\n"
 
 if __name__ == '__main__':
 
