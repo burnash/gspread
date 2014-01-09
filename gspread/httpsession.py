@@ -31,7 +31,7 @@ GOOGLE_OAUTH_TOKEN_REFRESH_URL = "https://accounts.google.com/o/oauth2/token"
 GOOGLEZ_ERROR_REASONS = [
           "token expired"
         , "token invalid"
-        , "¿reason?"
+        , "unauthorized"
         , "¿reason?"
         , "¿reason?"
     ]
