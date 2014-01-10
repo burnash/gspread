@@ -79,7 +79,14 @@ def main(id, secret, manual=True):
     creds_oa.write("\nkey_ring['client_id'] = client_id")
     creds_oa.write("\n#")
     creds_oa.write("\naccess_token = '{}'".format(credentials.access_token))
-    creds_oa.write("\n#\n")
+    creds_oa.write("\n#\n#")
+    creds_oa.write("\ncredentials = {")
+    creds_oa.write("\n      'cred_type': 'oauth'")
+    creds_oa.write("\n    , 'key_ring': key_ring")
+    creds_oa.write("\n    , 'access_token': access_token")
+    creds_oa.write("\n}")
+    creds_oa.write("\n#")
+
     creds_oa.close()
 
     qiktest = open('qiktest.py', 'w')
