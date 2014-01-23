@@ -89,7 +89,7 @@ def third_person_auth(credentials):
     credentials.expiry = int(theJSON['expires_in'])
     credentials.device_code = theJSON['device_code']
     
-    credentials.subject = 'Requesting permission for remote access your Google Spreadheets.'
+    credentials.subject = 'Requesting permission for remote access to your Google Spreadheets.'
     credentials.text = 'To give {} access to your spreadsheets, please copy this code [ {} ] to your clipboard, turn to {} and enter it in the field provided. You have {} minutes to do so.'.format(credentials.client_email, credentials.user_code, credentials.verification_url, credentials.expiry / 60)
     
     sending = True
@@ -175,36 +175,6 @@ def getAsForDevices(credentials) :
     print "Too late.  You'll have to repeat it all."
     exit(-1)    
 
-
-
-
-    
-    '''
-    while tries > 0 :
-    
-        theJSON = json.loads(urllib2.urlopen(request).read())
-        # print 'Response as json : {}.'.format(theJSON)
-
-        if 'access_token' in theJSON :
-            print ' * * * Authorized ! * * * '
-            
-            credentials.oauth_access_token = theJSON['access_token']
-            credentials.oauth_refresh_token = theJSON['refresh_token']
-
-            return credentials
-            
-        elif 'error' in theJSON :
-            if tries < triesLimit :
-                time.sleep(delay)
-                print 'Trying again to get tokens.  {} tries remain. ({})'.format(tries, theJSON['error'])
-        else :
-            print ' * * *  Uh oh ! * * * %s ' % theJSON
-            
-        tries -= 1
-        
-    print "Too late.  You'll have to repeat it all."
-    exit(-1)    
-    '''
 
 def first_person_auth(credentials, manual=True):
 
@@ -323,7 +293,7 @@ def prep_smtp(credentials, test_mail = False) :
         print '\n\nServer reported   %s' % response
         print ' - Did you get the *latest* verification code?'
         print ' - Did you get all of it?'
-        print ' - Did you use exactly the right ID and Secret for "Client for Installed Applications" from the Google API Console?\n(https://www.google.ca/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&ved=0CC4QFjAA&url=http%3A%2F%2Fcode.google.com%2Fapis%2Fconsole&ei=RgdEUvu-GM754AOeh4GgAQ&usg=AFQjCNFikY2jzXn9SOuZu0UcyS-59LlsTw&sig2=hpYvu7CrTb8royXO9f3nyQ&bvm=bv.53217764,d.dmg)'
+        print ' - Did you use exactly the right ID and Secret for "Client for Installed Applications" from the Google API Console?'
         exit(-1)
     
     expiry = (datetime.datetime.now() + datetime.timedelta(0,response['expires_in'])).strftime('%Y-%m-%d %H:%M')
@@ -506,18 +476,15 @@ if __name__ == '__main__':
         print '               Client secret : {}\n'.format(credentials.google_project_client_secret)
 
     personal = False
-    # personal = raw_input("\n\nDo you want to:\n\n (1) authorize just yourself in a browser or, \n (2) email an authorization request code to a user and ask them to tell Google to let you in?\n\n        (1 or 2)  : ") in ("1")
+    personal = raw_input("\n\nDo you want to:\n\n (1) authorize just yourself in a browser or, \n (2) email an authorization request code to a user and ask them to tell Google to let you in?\n\n        (1 or 2)  : ") in ("1")
     
     if personal:
         manual = raw_input("\n\nShall we try to open a page in your browser?  (Y/y)  : ") not in "Yy"
         credentials = first_person_auth(credentials, manual)
     else:
     
-        credentials.end_user_email = "martinhbramwell@gmail.com"
-        credentials.client_email = "mhb.warehouseman@gmail.com"
-
-        # credentials.client_email = raw_input("\n\nEnter a GMail address to be used as an SMTP server : ")
-        # credentials.end_user_email = raw_input("\n\nEnter the GMail address of the person who requested spreadsheet work : ")
+        credentials.client_email = raw_input("\n\nEnter a GMail address to be used as an SMTP server : ")
+        credentials.end_user_email = raw_input("\n\nEnter the GMail address of the person who requested spreadsheet work : ")
 
         credentials = third_person_auth(credentials)
         
