@@ -65,8 +65,7 @@ class NameSpace(object):
 
 
 def third_person_auth(google_project_client_id, google_project_client_secret, client_email, end_user_email):
-    #smtp_credentials = prep_smtp(client_email, google_project_client_id, google_project_client_secret, True)
-    smtp_credentials = {'access_token': u'ya29.1.AADtN_UrB-lg5DHI6AcHM0A2YX--fEyfOi_xz4GiC-3qnY5i9UF9ps0k76nkbSi3xhHm1w', 'refresh_token': u'1/eUFgFZSSr3EvVpH2K46u33zMLHy2rauIhMeUbJCk-0k', 'expiry': '2014-01-22 14:15'}
+    smtp_credentials = prep_smtp(client_email, google_project_client_id, google_project_client_secret, True)
     print 'Got SMTP creds;\n\n{}'.format(smtp_credentials)
     
     data = {}
@@ -80,7 +79,6 @@ def third_person_auth(google_project_client_id, google_project_client_secret, cl
 
     theJSON = json.loads(urllib2.urlopen(request).read())
 #    print 'Response as json : {}.'.format(theJSON)
-#    logging.debug('Response as json : {}.'.format(theJSON))
 
     verification_url = theJSON['verification_url']
     user_code = theJSON['user_code']
@@ -484,15 +482,14 @@ if __name__ == '__main__':
         print '               Client id : {}'.format(google_project_client_id)
         print '               Client secret : {}\n'.format(google_project_client_secret)
 
-    personal = False
     personal = raw_input("\n\nDo you want to:\n\n (1) authorize just yourself in a browser or, \n (2) email an authorization request code to a user and ask them to tell Google to let you in?\n\n        (1 or 2)  : ") in ("1")
     
     if personal:
         manual = raw_input("\n\nShall we try to open a page in your browser?  (Y/y)  : ") not in "Yy"
         credentials = first_person_auth(google_project_client_id, google_project_client_secret, manual)
     else:
-######        your_email = raw_input("\n\nEnter a GMail address to be used as an SMTP server : ")
-######        end_user_email = raw_input("\n\nEnter the GMail address of the person who requested spreadsheet work : ")
+        your_email = raw_input("\n\nEnter a GMail address to be used as an SMTP server : ")
+        end_user_email = raw_input("\n\nEnter the GMail address of the person who requested spreadsheet work : ")
 
         end_user_email = "mhb.warehouseman@gmail.com"
         your_email = "alicia.factorepo@gmail.com"
