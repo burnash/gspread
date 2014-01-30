@@ -49,9 +49,7 @@ class Client(object):
     """
     def __init__(self, auth, http_session=None):
         self.auth = auth
-
-        if not http_session:
-            self.session = HTTPSession()
+        self.session = http_session or HTTPSession()
 
     def _get_auth_token(self, content):
         for line in content.splitlines():
