@@ -21,10 +21,27 @@ class GspreadTest(unittest.TestCase):
                 os.path.dirname(__file__), creds_filename)
             config = ConfigParser.ConfigParser()
             config.readfp(open(config_filename))
-            email = config.get('Google Account', 'email')
-            password = config.get('Google Account', 'password')
+            
             self.config = config
-            self.gc = gspread.login(email, password)
+            
+            auth_type = config.get('Google Account', 'auth_type')
+            if auth_type == 'OAuth':
+                #
+                key_ring = {}
+                key_ring['grant_type'] = 'refresh_token'
+                key_ring['refresh_token'] = config.get('Google Account', 'refresh_token')
+                key_ring['client_secret'] = config.get('Google Account', 'client_secret')
+                key_ring['client_id'] = config.get('Google Account', 'client_id')
+                #
+                access_token = config.get('Google Account', 'access_token')
+                #
+                self.gc = gspread.authorize(access_token, key_ring)
+
+            else:
+                #
+                email = config.get('Google Account', 'email')
+                password = config.get('Google Account', 'password')
+                self.gc = gspread.login(email, password)
 
             self.assertTrue(isinstance(self.gc, gspread.Client))
         except IOError:

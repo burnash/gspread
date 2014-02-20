@@ -8,6 +8,9 @@ This module contains a class for working with http sessions.
 
 """
 
+import time
+from json import loads
+
 try:
     import httplib as client
     from urlparse import urlparse
@@ -22,6 +25,19 @@ try:
 except NameError:
     basestring = unicode = str
 
+
+GOOGLE_OAUTH_TOKEN_REFRESH_URL = "https://accounts.google.com/o/oauth2/token"
+
+GOOGLEZ_ERROR_REASONS = [
+          "token expired"
+        , "token invalid"
+        , "unauthorized"
+        , "¿reason?"
+        , "¿reason?"
+    ]
+
+DELAY_BETWEEN_REFRESH_ATTEMPTS = 5 # seconds
+NUMBER_OF_REFRESH_ATTEMPTS = 5
 
 class HTTPError(Exception):
     def __init__(self, response):
@@ -41,7 +57,7 @@ class HTTPSession(object):
         self.headers = headers or {}
         self.connections = {}
 
-    def request(self, method, url, data=None, headers=None):
+    def _reqst_(self, method, url, data=None, headers=None):
         if data and not isinstance(data, basestring):
             data = urlencode(data)
 
@@ -71,9 +87,43 @@ class HTTPSession(object):
         self.connections[uri.scheme+uri.netloc].request(method, url, data, headers=request_headers)
         response = self.connections[uri.scheme+uri.netloc].getresponse()
 
-        if response.status > 399:
-            raise HTTPError(response)
         return response
+
+    def request(self, method, url, data=None, headers=None):
+
+        uri = urlparse(url)
+        # print "Calling Anton's request handler."
+        response = self._reqst_(method, url, data, headers)
+
+        if response.status < 400:
+            return response
+
+        # print "Status : {}. Reason : {}.".format(response.status, response.reason)
+        if not self.gone_stale(response):
+                raise HTTPError(response)
+
+        # print "Force replacement of stored connection : {}://{}".format(uri.scheme, uri.netloc)
+        self.connections[uri.scheme+uri.netloc] = None
+
+        tries = NUMBER_OF_REFRESH_ATTEMPTS
+        while tries > 0 :
+
+            access_token = self.refresh_authorization()
+            print "Remember new access token : {}.".format(access_token)
+            self.headers['Authorization'] = 'Bearer %s' % access_token
+
+            # print "Calling Anton's request handler."
+            response = self._reqst_(method, url, data, headers)
+
+            if response.status < 400:
+                return response
+
+            if tries < NUMBER_OF_REFRESH_ATTEMPTS :
+                time.sleep(DELAY_BETWEEN_REFRESH_ATTEMPTS)
+                # print 'Trying again to refresh. {} tries remain.'.format(tries - 1)
+            tries -= 1
+
+        raise HTTPError(response)
 
     def get(self, url, **kwargs):
         return self.request('GET', url, **kwargs)
@@ -89,3 +139,41 @@ class HTTPSession(object):
 
     def add_header(self, name, value):
         self.headers[name] = value
+
+    def gone_stale(self, response):
+        theReason = response.reason.lower()
+        for aReason in GOOGLEZ_ERROR_REASONS:  
+            if aReason in theReason:
+                return True
+        return False
+
+
+    def keep_credentials(self, credentials):
+
+        '''
+        Expects a dict of credentials prepared as follows:
+
+        credentials['grant_type'] = 'refresh_token'
+        credentials['refresh_token'] = refresh_token
+        credentials['client_secret'] = client_secret
+        credentials['client_id'] = client_id
+        '''
+        self.credentials = credentials
+
+    def refresh_authorization(self):
+
+        '''
+        Performs a token refresh cycle as described here :
+           https://developers.google.com/youtube/v3/guides/authentication#OAuth2_Refreshing_a_Token
+           
+        '''
+        parms = urlencode(self.credentials)
+        req_hdrs = {'Content-Type': 'application/x-www-form-urlencoded'}
+        url = urlparse(GOOGLE_OAUTH_TOKEN_REFRESH_URL).netloc
+
+        conn = client.HTTPSConnection(url)
+        conn.request('POST', GOOGLE_OAUTH_TOKEN_REFRESH_URL, parms, headers=req_hdrs)
+        response = conn.getresponse()
+
+        return loads(response.read().decode())['access_token']
+
