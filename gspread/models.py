@@ -334,6 +334,8 @@ class Worksheet(object):
 
         # we return a whole rectangular region worth of cells, including
         # empties
+        if len(rows) == 0:
+            return []
         all_row_keys = chain.from_iterable(row.keys() for row in rows.values())
         rect_cols = range(1, max(all_row_keys) + 1)
         rect_rows = range(1, max(rows.keys()) + 1)
