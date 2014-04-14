@@ -36,11 +36,7 @@ class HTTPError(Exception):
 
 # urllib defines some functions to detect and extract proxies for different
 # systems. Importing urllib does the job of setting 2 commodity functions
-from urllib import getproxies
-from urllib import proxy_bypass
-from urllib import splitport
-from urllib import splittype
-from urllib import splithost
+import urllib
 
 
 class HTTPSession(object):
@@ -66,10 +62,6 @@ class HTTPSession(object):
         uri = urlparse(url)
         if not self.connections.get(uri.scheme+uri.netloc):
             self._setup_connection(uri.scheme, uri.netloc)
-            #if uri.scheme == 'https':
-                #self.connections[uri.scheme+uri.netloc] = client.HTTPSConnection(uri.netloc)
-            #else:
-                #self.connections[uri.scheme+uri.netloc] = client.HTTPConnection(uri.netloc)
 
         request_headers = self.headers.copy()
 
@@ -119,14 +111,14 @@ class HTTPSession(object):
         HTTP(S)Session
             properly set up in case of proxies
         """
-        proxies = getproxies()
+        proxies = urllib.getproxies()
         # We process proxy if a proxy is defined for this protocol and the
         # netloc to connect to is not in the bypass list.
-        if protocol in proxies and proxy_bypass(netloc) == 0:
+        if protocol in proxies and urllib.proxy_bypass(netloc) == 0:
             proxy = proxies[protocol]
-            urltype, proxyhost = splittype(proxy)
-            host, selector = splithost(proxyhost)
-            host, port = splitport(host)
+            urltype, proxyhost = urllib.splittype(proxy)
+            host, selector = urllib.splithost(proxyhost)
+            host, port = urllib.splitport(host)
             if protocol == 'https':
                 self.connections[protocol+netloc] = client.HTTPSConnection(host, port)
                 self.connections[protocol+netloc].set_tunnel(netloc, 443)
