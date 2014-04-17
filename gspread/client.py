@@ -9,6 +9,7 @@ Google Data API.
 
 """
 import re
+import getpass
 
 try:
     from urllib import urlencode
@@ -270,7 +271,7 @@ class Client(object):
         return ElementTree.fromstring(r.read())
 
 
-def login(email, password):
+def login(email=None, password=None):
     """Login to Google API using `email` and `password`.
 
     This is a shortcut function which instantiates :class:`Client`
@@ -279,6 +280,10 @@ def login(email, password):
     :returns: :class:`Client` instance.
 
     """
+    if email == None:
+        email = raw_input("Email: ")
+    if password == None:
+        password = getpass.getpass()
     client = Client(auth=(email, password))
     client.login()
     return client
