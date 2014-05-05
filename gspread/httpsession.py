@@ -48,6 +48,12 @@ class HTTPSession(object):
         if data is not None:
             data = data.encode()
 
+        if headers is None:
+            headers = {}
+        
+        if method in ['PUT', 'POST']:
+            headers['If-Match'] = '*'
+            
         # If we have data and Content-Type is not set, set it...
         if data and not headers.get('Content-Type', None):
             headers['Content-Type'] = 'application/x-www-form-urlencoded'
