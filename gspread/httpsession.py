@@ -42,12 +42,20 @@ class HTTPSession(object):
             data = urlencode(data)
 
         if data is not None:
+<<<<<<< HEAD
             data = data.encode('utf8')
+=======
+            data = data.encode()
+>>>>>>> # This is a combination of 2 commits.
 
         # If we have data and Content-Type is not set, set it...
         if data and not headers.get('Content-Type', None):
             headers['Content-Type'] = 'application/x-www-form-urlencoded'
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 =======
         # If connection for this scheme+location is not established, establish
         # it.
@@ -70,7 +78,11 @@ class HTTPSession(object):
                 else:
                     request_headers[k] = v
 
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
         try:
             func = getattr(self.requests_session, method.lower())
         except AttributeError:
@@ -82,19 +94,25 @@ class HTTPSession(object):
             raise HTTPError(response.status_code, "{0}: {1}".format(
                 response.status_code, response.content))
 =======
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
         if response.status > 399:
             raise HTTPError(response.status, "%s: %s" % (response.status, response.read()))
 >>>>>>> Squashing all the commits to simpy things for merge
 =======
+=======
+>>>>>>> # This is a combination of 2 commits.
         self.connections[
             uri.scheme + uri.netloc].request(method, url, data, headers=request_headers)
         response = self.connections[uri.scheme + uri.netloc].getresponse()
 
         if response.status > 399:
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
             raise HTTPError("%s: %s" % (response.status, response.read()))
 >>>>>>> # This is a combination of 2 commits.
 =======
+=======
+>>>>>>> # This is a combination of 2 commits.
             raise HTTPError(response.status, "%s: %s" % (response.status, response.read()))
 >>>>>>> # This is a combination of 2 commits.
         return response

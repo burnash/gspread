@@ -1,6 +1,7 @@
 Release History
 ===============
 
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 0.5.0 (2016-12-12)
 ------------------
@@ -30,6 +31,9 @@ Release History
 * Removed deprecated ClientLogin
 
 
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 0.3.0 (2015-12-15)
 ------------------
 

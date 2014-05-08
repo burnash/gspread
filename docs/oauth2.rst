@@ -23,7 +23,11 @@ Using Signed Credentials
 .. image:: https://cloud.githubusercontent.com/assets/264674/7033107/72b75938-dd80-11e4-9a9f-54fb10820976.png
     :alt: Enabled APIs
 
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 3. Go to "Credentials" and choose "New Credentials > Service Account Key".
 
 .. image:: https://cloud.githubusercontent.com/assets/1297699/12098271/1616f908-b319-11e5-92d8-767e8e5ec757.png
@@ -69,11 +73,19 @@ You'll need *client_email* and *private_key*.
 ::
 
     pip install --upgrade oauth2client
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
 
 =======
     
 >>>>>>> small date fix in changelog from commit 0a06735a4d
+=======
+<<<<<<< HEAD
+
+=======
+    
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> # This is a combination of 2 commits.
 Depending on your system setup you may need to install PyOpenSSL:
 
 ::
@@ -85,6 +97,7 @@ Depending on your system setup you may need to install PyOpenSSL:
 
 ::
 
+<<<<<<< HEAD
     import gspread
     from oauth2client.service_account import ServiceAccountCredentials
 
@@ -105,6 +118,8 @@ If using oauth2client < 2.0.0
 
 ::
 
+=======
+>>>>>>> # This is a combination of 2 commits.
     import json
     import gspread
     from oauth2client.client import SignedJwtAssertionCredentials
@@ -112,7 +127,11 @@ If using oauth2client < 2.0.0
     json_key = json.load(open('gspread-april-2cd … ba4.json'))
     scope = ['https://spreadsheets.google.com/feeds']
 
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
     credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
 
 =======
@@ -125,8 +144,12 @@ If using oauth2client < 2.0.0
 
     wks = gc.open("Where is the money Lebowski?").sheet1
 
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 **Note**: Python2 users do not need to encode ``json_key['private_key']`` due to ``str`` and ``bytes`` not being differentiated.
 
 
@@ -160,6 +183,21 @@ oauth2client.client.CryptoUnavailableError: No crypto library available
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you're getting the "No crypto library available" exception, make sure you have ``PyOpenSSL`` library installed in your environment.
+=======
+<<<<<<< HEAD
+6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+
+=======
+**Note**: Python 3 users need to cast ``json_key['private_key']`` to ``bytes``. Otherwise you'll get ``TypeError: expected bytes, not str`` exception. Replace the line with ``SignedJwtAssertionCredentials`` call with this:
+
+::
+
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+
+
+7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+>>>>>>> bd23436... Added requirements to the instruction #236
+>>>>>>> # This is a combination of 2 commits.
 
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 =======
@@ -180,7 +218,11 @@ If you have another method of authenicating you can easily hack a custom credent
       def refresh (self, http):
         # get new access_token
         # this only gets called if access_token is None
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 =======
 
 >>>>>>> # This is a combination of 2 commits.

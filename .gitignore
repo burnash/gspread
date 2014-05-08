@@ -1,14 +1,21 @@
 *.pyc
 tests/tests.config
 tests/creds.json
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 
 # virtualenv
 env/
 =======
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 >>>>>>> Squashing all the commits to simpy things for merge
 =======
+=======
+>>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
 
 # tox testrunner support

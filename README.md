@@ -243,7 +243,11 @@ Please report bugs and suggest features via the [GitHub Issues](https://github.c
 
 Before opening an issue, search the tracker for possible duplicates. If you find a duplicate, please add a comment saying that you encountered the problem as well.
 
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 ### Contribute code
 =======
 [All contributors](https://github.com/burnash/gspread/graphs/contributors)

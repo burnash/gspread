@@ -4,8 +4,12 @@ import re
 import random
 import unittest
 import itertools
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 import uuid
 try:
     import ConfigParser
@@ -14,6 +18,7 @@ except ImportError:
 
 from oauth2client.service_account import ServiceAccountCredentials
 =======
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 =======
 >>>>>>> # This is a combination of 2 commits.
 import json
@@ -30,6 +35,11 @@ from oauth2client.client import SignedJwtAssertionCredentials
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 >>>>>>> Squashing all the commits to simpy things for merge
 =======
+=======
+import json
+
+from oauth2client.client import SignedJwtAssertionCredentials
+>>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
 
 import gspread
@@ -85,6 +95,7 @@ def read_credentials(filename):
                                          SCOPE)
 
 
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 def gen_value(prefix=None):
     if prefix:
         return u'%s %s' % (prefix, gen_value())
@@ -121,6 +132,8 @@ def gen_value(prefix=None):
         return unicode(uuid.uuid4())
 
 
+=======
+>>>>>>> # This is a combination of 2 commits.
 class GspreadTest(unittest.TestCase):
 <<<<<<< HEAD
 
@@ -254,9 +267,13 @@ class WorksheetTest(GspreadTest):
     def test_get_addr_int(self):
         self.assertEqual(self.sheet.get_addr_int(3, 731), 'ABC3')
         self.assertEqual(self.sheet.get_addr_int(1, 104), 'CZ1')
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 358c39a5513a0d4983c3302e15bb78acca66481b
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 
     def test_get_updated(self):
         RFC_3339 = (r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?'
@@ -264,6 +281,7 @@ class WorksheetTest(GspreadTest):
         has_match = re.match(RFC_3339, self.sheet.updated) is not None
         self.assertTrue(has_match)
 =======
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 =======
 >>>>>>> # This is a combination of 2 commits.
 =======
@@ -291,6 +309,9 @@ class WorksheetTest(GspreadTest):
         self.assertRegexpMatches(self.sheet.updated, RFC_3339)
 >>>>>>> e676183... added test for Worksheet "updated" property
 >>>>>>> small date fix in changelog from commit 0a06735a4d
+=======
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> # This is a combination of 2 commits.
 
     def test_addr_converters(self):
         for row in range(1, 257):
@@ -520,9 +541,13 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_records[1], d1)
 
     def test_get_all_records_different_header(self):
+<<<<<<< HEAD
         self.sheet.resize(6, 4)
 =======
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
     def test_get_all_records_different_header(self):
+=======
+>>>>>>> # This is a combination of 2 commits.
         # make a new, clean worksheet
         # same as for test_all_values, find a way to refactor it
         self.spreadsheet.add_worksheet('get_all_records', 10, 5)
@@ -536,7 +561,11 @@ class WorksheetTest(GspreadTest):
                 [1, "b2", 1.45, ""],
                 ["", "", "", ""],
                 ["A4", 0.4, "", 4]]
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
         cell_list = self.sheet.range('A1:D6')
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
@@ -566,11 +595,16 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_records[2], d2)
 
         # then, read empty strings to zeros
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
         read_records = self.sheet.get_all_records(empty2zero=True, head=3)
         d1 = dict(zip(rows[2], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
 
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
         # then, read empty strings to None
         read_records = self.sheet.get_all_records(default_blank=None, head=3)
         d1 = dict(zip(rows[2], (None, None, None, None)))
@@ -581,13 +615,20 @@ class WorksheetTest(GspreadTest):
         d1 = dict(zip(rows[2], ('foo', 'foo', 'foo', 'foo')))
         self.assertEqual(read_records[1], d1)
 =======
+>>>>>>> # This is a combination of 2 commits.
+=======
         read_records = sheet.get_all_records(empty2zero=True, head=3)
         d1 = dict(zip(rows[2], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
 
         self.gc.del_worksheet(sheet)
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 >>>>>>> # This is a combination of 2 commits.
 
+=======
+
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> # This is a combination of 2 commits.
     def test_append_row(self):
         num_rows = self.sheet.row_count
         num_cols = self.sheet.col_count
@@ -780,6 +821,36 @@ class WorksheetDeleteTest(GspreadTest):
         self.spreadsheet.del_worksheet(self.ws1)
         self.spreadsheet.del_worksheet(self.ws2)
 
+    def test_insert_row(self):
+        num_rows = self.sheet.row_count
+        num_cols = self.sheet.col_count
+        values = ['o_0'] * (num_cols + 4)
+        self.sheet.insert_row(values, 1)
+        self.assertEqual(self.sheet.row_count, num_rows + 1)
+        self.assertEqual(self.sheet.col_count, num_cols + 4)
+        read_values = self.sheet.row_values(1)
+        self.assertEqual(values, read_values)
+
+        # undo the appending and resizing
+        # self.sheet.resize(num_rows, num_cols)
+
+
+
+class WorksheetDeleteTest(GspreadTest):
+
+    def setUp(self):
+        super(WorksheetDeleteTest, self).setUp()
+        title = self.config.get('Spreadsheet', 'title')
+        self.spreadsheet = self.gc.open(title)
+        ws1_name = self.config.get('WorksheetDelete', 'ws1_name')
+        ws2_name = self.config.get('WorksheetDelete', 'ws2_name')
+        self.ws1 = self.spreadsheet.add_worksheet(ws1_name, 1, 1)
+        self.ws2 = self.spreadsheet.add_worksheet(ws2_name, 1, 1)
+
+    def test_delete_multiple_worksheets(self):
+        self.spreadsheet.del_worksheet(self.ws1)
+        self.spreadsheet.del_worksheet(self.ws2)
+
 
 class CellTest(GspreadTest):
 
@@ -788,7 +859,11 @@ class CellTest(GspreadTest):
     def setUp(self):
         super(CellTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
         self.sheet = self.gc.open(title).sheet1
 
     def test_properties(self):
@@ -798,11 +873,16 @@ class CellTest(GspreadTest):
         self.sheet = sheet
 
     def test_properties(self):
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
         update_value = hashlib.md5(str(time.time())).hexdigest()
 >>>>>>> # This is a combination of 2 commits.
 =======
         update_value = gen_value()
+>>>>>>> # This is a combination of 2 commits.
+=======
+        update_value = hashlib.md5(str(time.time())).hexdigest()
+>>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
         self.sheet.update_acell('A1', update_value)
         cell = self.sheet.acell('A1')
@@ -816,7 +896,11 @@ class CellTest(GspreadTest):
         self.sheet.update_acell('A1', '= 1 / 1024')
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, numeric_value)
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
         self.assertTrue(isinstance(cell.numeric_value, float))
         self.sheet.update_acell('A1', 'Non-numeric value')
         cell = self.sheet.acell('A1')

@@ -18,6 +18,14 @@ except:
     from xml.etree import ElementTree
 =======
 import warnings
+<<<<<<< HEAD
+=======
+
+try:
+    from urllib import urlencode
+except ImportError:
+    from urllib.parse import urlencode
+>>>>>>> # This is a combination of 2 commits.
 
 from xml.etree import ElementTree
 >>>>>>> # This is a combination of 2 commits.
@@ -58,11 +66,21 @@ class Client(object):
     >>> c = gspread.Client(auth=OAuthCredentialObject)
 =======
     >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
+<<<<<<< HEAD
 
     or
 
     >>> c = gspread.Client(auth=OAuthCredentialObject)
 
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+=======
+=======
+    
+    or
+    
+    >>> c = gspread.Client(auth=OAuthCredentialObject)
+    
+>>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
 
     """
@@ -100,10 +118,30 @@ class Client(object):
 >>>>>>> # This is a combination of 2 commits.
 
     def login(self):
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
         """Authorize client."""
         if not self.auth.access_token or \
                 (hasattr(self.auth, 'access_token_expired') and self.auth.access_token_expired):
             import httplib2
+=======
+        warnings.warn("""
+            ClientLogin is deprecated:
+            https://developers.google.com/identity/protocols/AuthForInstalledApps?csw=1
+
+            Authorization with email and password will stop working on April 20, 2015.
+
+            Please use oAuth2 authorization instead:
+            http://gspread.readthedocs.org/en/latest/oauth2.html
+
+        """, Warning)
+
+        """Authorize client using ClientLogin protocol.
+
+        The credentials provided in `auth` parameter to class' constructor will be used.
+
+        This method is using API described at:
+        http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html
+>>>>>>> # This is a combination of 2 commits.
 
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
             http = httplib2.Http()
@@ -115,6 +153,7 @@ class Client(object):
             if not self.auth.access_token or \
                     (hasattr(self.auth, 'access_token_expired') and self.auth.access_token_expired):
                 import httplib2
+<<<<<<< HEAD
 
                 http = httplib2.Http()
                 self.auth.refresh(http)
@@ -124,11 +163,21 @@ class Client(object):
         else:
             self._deprecation_warning()
 
+=======
+                
+                http = httplib2.Http()
+                self.auth.refresh(http)
+                
+            self.session.add_header('Authorization', "Bearer " + self.auth.access_token)
+            
+        else:
+>>>>>>> # This is a combination of 2 commits.
             data = {'Email': self.auth[0],
                     'Passwd': self.auth[1],
                     'accountType': 'HOSTED_OR_GOOGLE',
                     'service': service,
                     'source': source}
+<<<<<<< HEAD
 
             url = AUTH_SERVER + '/accounts/ClientLogin'
 
@@ -145,6 +194,32 @@ class Client(object):
                 else:
                     raise AuthenticationError(
                         "Unable to authenticate. %s" % ex.message)
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+=======
+=======
+    
+            url = AUTH_SERVER + '/accounts/ClientLogin'
+    
+            try:
+                r = self.session.post(url, data)
+                content = r.read().decode()
+                token = self._get_auth_token(content)
+                auth_header = "GoogleLogin auth=%s" % token
+                self.session.add_header('Authorization', auth_header)
+    
+            except HTTPError as ex:
+                if ex.code == 403:
+                    content = ex.read().decode()
+                    if content.strip() == 'Error=BadAuthentication':
+                        raise AuthenticationError("Incorrect username or password")
+                    else:
+                        raise AuthenticationError(
+                            "Unable to authenticate. %s code" % ex.code)
+    
+                else:
+                    raise AuthenticationError(
+                        "Unable to authenticate. %s code" % ex.code)
+>>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
 
     def open(self, title):
@@ -284,10 +359,19 @@ class Client(object):
         url = construct_url(
             'worksheet', worksheet, 'private', 'full', worksheet_version=worksheet.version)
         r = self.session.delete(url)
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> # This is a combination of 2 commits.
         # Even though there is nothing interesting in the response body
         # we have to read it or the next request from this session will get a
         # httplib.ResponseNotReady error.
         r.read()
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+=======
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> # This is a combination of 2 commits.
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
                                visibility='private', projection='full'):
@@ -300,11 +384,16 @@ class Client(object):
     def put_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml',
                    'If-Match': '*'}
+<<<<<<< HEAD
         data = self._ensure_xml_header(data)
+=======
+        data = self._add_xml_header(data)
+>>>>>>> # This is a combination of 2 commits.
 
         try:
             r = self.session.put(url, data, headers=headers)
         except HTTPError as ex:
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
             if getattr(ex, 'code', None) == 403:
 =======
@@ -312,6 +401,12 @@ class Client(object):
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 >>>>>>> Squashing all the commits to simpy things for merge
 =======
+=======
+<<<<<<< HEAD
+            if getattr(ex, 'code', None) == 403:
+=======
+            if ex.code == 403:
+>>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
                 raise UpdateCellError(ex.message)
             else:
@@ -333,7 +428,11 @@ class Client(object):
     def post_cells(self, worksheet, data):
         headers = {'Content-Type': 'application/atom+xml',
                    'If-Match': '*'}
+<<<<<<< HEAD
         data = self._ensure_xml_header(data)
+=======
+        data = self._add_xml_header(data)
+>>>>>>> # This is a combination of 2 commits.
         url = construct_url('cells_batch', worksheet)
         r = self.session.post(url, data, headers=headers)
 
@@ -388,7 +487,11 @@ def authorize(credentials):
     client = Client(auth=credentials)
     client.login()
     return client
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> # This is a combination of 2 commits.
 def authorize(credentials):
     """Login to Google API using OAuth2 credentials.
 
@@ -402,6 +505,7 @@ def authorize(credentials):
     client.login()
     return client
 <<<<<<< HEAD
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< HEAD
 <<<<<<< HEAD
     
@@ -412,3 +516,8 @@ def authorize(credentials):
 >>>>>>> 120bad7... Squashing all the commits to simpy things for merge
 =======
 >>>>>>> d078bae... Fix bug:
+=======
+=======
+    
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> # This is a combination of 2 commits.

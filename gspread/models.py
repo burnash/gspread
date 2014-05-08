@@ -198,8 +198,12 @@ class Spreadsheet(object):
     @property
     def title(self):
         return self._feed_entry.find(_ns('title')).text
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
 
     def __iter__(self):
         for sheet in self.worksheets():
@@ -207,8 +211,11 @@ class Spreadsheet(object):
 
 =======
 >>>>>>> # This is a combination of 2 commits.
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 =======
 >>>>>>> Removing merge conflicts
+=======
+>>>>>>> # This is a combination of 2 commits.
 
 class Worksheet(object):
 
@@ -593,8 +600,11 @@ class Worksheet(object):
         
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+=======
+>>>>>>> # This is a combination of 2 commits.
 
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
