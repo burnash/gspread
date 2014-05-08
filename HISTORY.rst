@@ -1,5 +1,13 @@
-History
-=======
+Release History
+===============
+
+0.2.0 (2013-07-09)
+------------------
+
+* New Google Sheets support.
+* Fixed get_all_values() on empty worksheet.
+* Bugfix in get_int_addr().
+* Changed the HTTP connectivity from urllib to httlib for persistent http connections.
 
 0.1.0 (2013-07-09)
 ------------------
@@ -39,7 +47,7 @@ History
 0.0.6 (2011-12-13)
 ------------------
 
-* Batch cells update
+* Batch cells update.
 
 
 0.0.2 (2011-12-12)
@@ -54,11 +62,11 @@ History
 0.0.1 (2011-12-12)
 ------------------
 
-* Got rid of the wrapper
-* Support for pluggable http session object
+* Got rid of the wrapper.
+* Support for pluggable http session object.
 
 
 pre 0.0.1 (2011-12-02)
 ----------------------
 
-* Hacked a wrapper around Google's Python client library
+* Hacked a wrapper around Google's Python client library.
