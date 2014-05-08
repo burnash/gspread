@@ -31,7 +31,8 @@ from .exceptions import (AuthenticationError, SpreadsheetNotFound,
 AUTH_SERVER = 'https://www.google.com'
 SPREADSHEETS_SERVER = 'spreadsheets.google.com'
 
-_url_key_re = re.compile(r'key=([^&#]+)')
+_url_key_re_v1 = re.compile(r'key=([^&#]+)')
+_url_key_re_v2 = re.compile(r'spreadsheets/d/([^&#]+)/edit')
 
 
 class Client(object):
@@ -144,9 +145,14 @@ class Client(object):
         for elem in feed.findall(_ns('entry')):
             alter_link = finditem(lambda x: x.get('rel') == 'alternate',
                                   elem.findall(_ns('link')))
-            m = _url_key_re.search(alter_link.get('href'))
+            m = _url_key_re_v1.search(alter_link.get('href'))
             if m and m.group(1) == key:
                 return Spreadsheet(self, elem)
+                
+            m = _url_key_re_v2.search(alter_link.get('href'))
+            if m and m.group(1) == key:
+                return Spreadsheet(self, elem)
+                
         else:
             raise SpreadsheetNotFound
 
@@ -164,12 +170,18 @@ class Client(object):
         >>> c.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
 
         """
-        m = _url_key_re.search(url)
-        if m:
-            return self.open_by_key(m.group(1))
+        m1 = _url_key_re_v1.search(url)
+        if m1:
+            return self.open_by_key(m1.group(1))
+            
         else:
-            raise NoValidUrlKeyFound
-
+            m2 = _url_key_re_v2.search(url)
+            if m2:
+                return self.open_by_key(m2.group(1))
+                
+            else:
+                raise NoValidUrlKeyFound
+                
     def openall(self, title=None):
         """Opens all available spreadsheets,
            returning a list of a :class:`~gspread.Spreadsheet` instances.
