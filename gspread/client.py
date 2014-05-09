@@ -40,12 +40,17 @@ class Client(object):
     """An instance of this class communicates with Google Data API.
 
     :param auth: A tuple containing an *email* and a *password* used for ClientLogin
-                 authentication.
+                 authentication or an OAuth2 credential object. Credential objects are those created by the
+                 oauth2client library. https://github.com/google/oauth2client
     :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
                                     Defaults to :class:`~gspread.httpsession.HTTPSession`.
 
     >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
-    >>>
+    
+    or
+    
+    >>> c = gspread.Client(auth=OAuthCredentialObject)
+    
 
     """
     def __init__(self, auth, http_session=None):
@@ -75,33 +80,43 @@ class Client(object):
         source = 'burnash-gspread-%s' % __version__
         service = 'wise'
 
-        data = {'Email': self.auth[0],
-                'Passwd': self.auth[1],
-                'accountType': 'HOSTED_OR_GOOGLE',
-                'service': service,
-                'source': source}
-
-        url = AUTH_SERVER + '/accounts/ClientLogin'
-
-        try:
-            r = self.session.post(url, data)
-            content = r.read().decode()
-            token = self._get_auth_token(content)
-            auth_header = "GoogleLogin auth=%s" % token
-            self.session.add_header('Authorization', auth_header)
-
-        except HTTPError as ex:
-            if ex.code == 403:
-                content = ex.read().decode()
-                if content.strip() == 'Error=BadAuthentication':
-                    raise AuthenticationError("Incorrect username or password")
+        if hasattr(self.auth, 'access_token'):
+            if not self.auth.access_token:
+                import httplib2
+                
+                http = httplib2.Http()
+                self.auth.refresh(http)
+                
+            self.session.add_header('Authorization', "Bearer " + self.auth.access_token)
+            
+        else:
+            data = {'Email': self.auth[0],
+                    'Passwd': self.auth[1],
+                    'accountType': 'HOSTED_OR_GOOGLE',
+                    'service': service,
+                    'source': source}
+    
+            url = AUTH_SERVER + '/accounts/ClientLogin'
+    
+            try:
+                r = self.session.post(url, data)
+                content = r.read().decode()
+                token = self._get_auth_token(content)
+                auth_header = "GoogleLogin auth=%s" % token
+                self.session.add_header('Authorization', auth_header)
+    
+            except HTTPError as ex:
+                if ex.code == 403:
+                    content = ex.read().decode()
+                    if content.strip() == 'Error=BadAuthentication':
+                        raise AuthenticationError("Incorrect username or password")
+                    else:
+                        raise AuthenticationError(
+                            "Unable to authenticate. %s code" % ex.code)
+    
                 else:
                     raise AuthenticationError(
                         "Unable to authenticate. %s code" % ex.code)
-
-            else:
-                raise AuthenticationError(
-                    "Unable to authenticate. %s code" % ex.code)
 
     def open(self, title):
         """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
@@ -294,3 +309,17 @@ def login(email, password):
     client = Client(auth=(email, password))
     client.login()
     return client
+    
+def authorize(credentials):
+    """Login to Google API using OAuth2 credentials.
+
+    This is a shortcut function which instantiates :class:`Client`
+    and performes login right away.
+
+    :returns: :class:`Client` instance.
+
+    """
+    client = Client(auth=credentials)
+    client.login()
+    return client
+    

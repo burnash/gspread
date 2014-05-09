@@ -29,6 +29,22 @@ wks.update_acell('B2', "it's down there somewhere, let me take another look.")
 cell_list = wks.range('A1:B7')
 ```
 
+## Alternate authorization using OAuth2
+
+```python
+import gspread
+
+# Login with your Google account
+gc = gspread.authorize(OAuth2Credentials)
+
+# Open a worksheet from spreadsheet with one shot
+wks = gc.open("Where is the money Lebowski?").sheet1
+
+```
+
+Note: You probably need to have oauth2client and httplib2 installed to create OAuth2 Credential objects. See ["Using OAuth2 for Authorization"](http://burnash.github.com/gspread/oauth2.html) for more information.
+
+
 ## More Examples
 
 ### Opening a spreadsheet
