@@ -466,7 +466,24 @@ class Worksheet(object):
         feed = self._create_update_feed(cell_list)
         self.client.post_cells(self, ElementTree.tostring(feed))
 
+    def rename_sheet(self, title):
+        self_uri = self._get_link('self', self._element).get('href')
+        feed = self.client.get_feed(self_uri)
+        uri = self._get_link('edit', feed).get('href')
+        
+        elem = feed.find(_ns('title'))
+        elem.text = str(title)
+        # Send request and store result
+        self._element = self.client.put_feed(uri, ElementTree.tostring(feed))
+        self._title = title
+
+    def get_row_element(self, row):
+        import ipdb; ipdb.set_trace()
+        cell_feed = self.client.get_cells_feed(self, params={'min-row': row, 'max-row': row + 1})
+        elem = feed.find(_ns1('cell'))
+        
     def resize(self, rows=None, cols=None):
+        import ipdb; ipdb.set_trace()
         """Resizes the worksheet.
 
         :param rows: New rows number.
