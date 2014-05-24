@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 
 import os.path
+import sys
+
 import gspread
 
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
+
+if sys.argv[-1] == 'publish':
+    os.system('python setup.py sdist upload')
+    sys.exit()
 
 def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()

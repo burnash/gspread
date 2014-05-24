@@ -155,7 +155,7 @@ worksheet.update_cells(cell_list)
 ### Two Factor Authorization
 
 In case your Google Account protected with [Two Factor Authorization](http://support.google.com/accounts/bin/answer.py?hl=en&answer=180744), 
-you have to create [an application-specific password](https://accounts.google.com/b/0/IssuedAuthSubTokens?hl=en_GB) and use your email
+you have to create [an application-specific password](https://accounts.google.com/b/0/IssuedAuthSubTokens?hide_authsub=1) and use your email
 to login as usual.
 
 Otherwise you will get an `AuthenticationError: Unable to authenticate. 403 code` when trying to login.
