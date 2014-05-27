@@ -163,11 +163,11 @@ class Client(object):
             m = _url_key_re_v1.search(alter_link.get('href'))
             if m and m.group(1) == key:
                 return Spreadsheet(self, elem)
-                
+
             m = _url_key_re_v2.search(alter_link.get('href'))
             if m and m.group(1) == key:
                 return Spreadsheet(self, elem)
-                
+
         else:
             raise SpreadsheetNotFound
 
@@ -188,15 +188,15 @@ class Client(object):
         m1 = _url_key_re_v1.search(url)
         if m1:
             return self.open_by_key(m1.group(1))
-            
+
         else:
             m2 = _url_key_re_v2.search(url)
             if m2:
                 return self.open_by_key(m2.group(1))
-                
+
             else:
                 raise NoValidUrlKeyFound
-                
+
     def openall(self, title=None):
         """Opens all available spreadsheets,
            returning a list of a :class:`~gspread.Spreadsheet` instances.
@@ -262,7 +262,8 @@ class Client(object):
         return ElementTree.fromstring(r.read())
 
     def put_feed(self, url, data):
-        headers = {'Content-Type': 'application/atom+xml'}
+        headers = {'Content-Type': 'application/atom+xml',
+                   'If-Match': '*'}
         data = self._add_xml_header(data)
 
         try:
@@ -289,7 +290,8 @@ class Client(object):
         return ElementTree.fromstring(r.read())
 
     def post_cells(self, worksheet, data):
-        headers = {'Content-Type': 'application/atom+xml'}
+        headers = {'Content-Type': 'application/atom+xml',
+                   'If-Match': '*'}
         data = self._add_xml_header(data)
         url = construct_url('cells_batch', worksheet)
         r = self.session.post(url, data, headers=headers)
