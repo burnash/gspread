@@ -43,6 +43,9 @@ class RequestError(GSpreadException):
 
 class HTTPError(RequestError):
     """DEPRECATED. Error while sending API request."""
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
     def __init__(self, code, msg):
         super(HTTPError, self).__init__(msg)
         self.code = code
+=======
+>>>>>>> # This is a combination of 2 commits.

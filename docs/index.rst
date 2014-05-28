@@ -19,6 +19,8 @@ Main Interface
 
 .. autofunction:: authorize
 
+.. autofunction:: authorize
+
 .. autoclass:: Client
    :members:
 

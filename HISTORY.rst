@@ -1,6 +1,7 @@
 Release History
 ===============
 
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 0.5.0 (2016-12-12)
 ------------------
 
@@ -73,6 +74,8 @@ Release History
 * Fixed export test
 * Switched tests to oauth
 
+=======
+>>>>>>> # This is a combination of 2 commits.
 0.2.5 (2015-04-22)
 ------------------
 

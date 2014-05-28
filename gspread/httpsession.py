@@ -47,6 +47,19 @@ class HTTPSession(object):
         # If we have data and Content-Type is not set, set it...
         if data and not headers.get('Content-Type', None):
             headers['Content-Type'] = 'application/x-www-form-urlencoded'
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+        # If connection for this scheme+location is not established, establish
+        # it.
+        uri = urlparse(url)
+        if not self.connections.get(uri.scheme + uri.netloc):
+            if uri.scheme == 'https':
+                self.connections[
+                    uri.scheme + uri.netloc] = client.HTTPSConnection(uri.netloc)
+            else:
+                self.connections[
+                    uri.scheme + uri.netloc] = client.HTTPConnection(uri.netloc)
+>>>>>>> # This is a combination of 2 commits.
 
         request_headers = self.headers.copy()
 
@@ -57,6 +70,7 @@ class HTTPSession(object):
                 else:
                     request_headers[k] = v
 
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
         try:
             func = getattr(self.requests_session, method.lower())
         except AttributeError:
@@ -71,6 +85,14 @@ class HTTPSession(object):
         if response.status > 399:
             raise HTTPError(response.status, "%s: %s" % (response.status, response.read()))
 >>>>>>> Squashing all the commits to simpy things for merge
+=======
+        self.connections[
+            uri.scheme + uri.netloc].request(method, url, data, headers=request_headers)
+        response = self.connections[uri.scheme + uri.netloc].getresponse()
+
+        if response.status > 399:
+            raise HTTPError("%s: %s" % (response.status, response.read()))
+>>>>>>> # This is a combination of 2 commits.
         return response
 
     def get(self, url, **kwargs):

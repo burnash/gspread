@@ -20,6 +20,11 @@ import gspread
 
 gc = gspread.authorize(credentials)
 
+# WARNING: The code above uses ClientLogin and was disabled 
+# on April 20, 2015.
+
+# Please use OAuth2 authorization to access Google Sheets.
+
 # Open a worksheet from spreadsheet with one shot
 wks = gc.open("Where is the money Lebowski?").sheet1
 
@@ -28,6 +33,21 @@ wks.update_acell('B2', "it's down there somewhere, let me take another look.")
 # Fetch a cell range
 cell_list = wks.range('A1:B7')
 ```
+
+## Authorization Using OAuth2
+
+```python
+import gspread
+
+# Login with your Google account
+gc = gspread.authorize(OAuth2Credentials)
+
+# Open a worksheet from spreadsheet with one shot
+wks = gc.open("Where is the money Lebowski?").sheet1
+
+```
+
+OAuth2Credentials must be an object with a valid `access_token` attribute, such as one created with the oauth2client library from Google. See ["Using OAuth2 for Authorization"](http://gspread.readthedocs.org/en/latest/oauth2.html) for more information.
 
 ## More Examples
 
@@ -156,6 +176,13 @@ for cell in cell_list:
 worksheet.update_cells(cell_list)
 ```
 
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+## Requirements
+
+Python 2.6+ or Python 3+
+
+>>>>>>> # This is a combination of 2 commits.
 ## Installation
 
 ### Requirements
@@ -177,8 +204,13 @@ python setup.py install
 ```
 
 ## Documentation
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 * [Getting Google API's credentials](http://gspread.readthedocs.io/en/latest/oauth2.html)
 * [gspread API Reference](http://gspread.readthedocs.org/)
+=======
+
+[API Reference](http://gspread.readthedocs.org/)
+>>>>>>> # This is a combination of 2 commits.
 
 ## Testing
 
@@ -211,7 +243,13 @@ Please report bugs and suggest features via the [GitHub Issues](https://github.c
 
 Before opening an issue, search the tracker for possible duplicates. If you find a duplicate, please add a comment saying that you encountered the problem as well.
 
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 ### Contribute code
+=======
+[All contributors](https://github.com/burnash/gspread/graphs/contributors)
+
+## Feedback
+>>>>>>> # This is a combination of 2 commits.
 
 * Check the [GitHub Issues](https://github.com/burnash/gspread/issues) for open issues that need attention.
 * Follow the [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/) Guide.
