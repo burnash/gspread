@@ -166,8 +166,12 @@ class Worksheet(object):
         self._id = element.find(_ns('id')).text.split('/')[-1]
         self._title = element.find(_ns('title')).text
         self._element = element
-        self.version = self._get_link(
-            'edit', element).get('href').split('/')[-1]
+        try:
+            self.version = self._get_link(
+                'edit', element).get('href').split('/')[-1]
+        except:
+            # not relevant for read-only spreadsheets
+            self.version = None
 
     def __repr__(self):
         return '<%s %s id:%s>' % (self.__class__.__name__,
