@@ -8,7 +8,6 @@ This module contains common spreadsheets' models
 
 """
 
-
 import re
 from collections import defaultdict
 from itertools import chain
@@ -44,11 +43,11 @@ def _escape_attrib(text, encoding=None, replace=None):
         text = text.replace(key, value)
     return text
 
+
 ElementTree._escape_attrib = _escape_attrib
 
 
 class Spreadsheet(object):
-
     """ A class for a spreadsheet object."""
 
     def __init__(self, client, feed_entry):
@@ -277,8 +276,8 @@ class Worksheet(object):
         while div:
             (div, mod) = divmod(div, 26)
             if mod == 0:
-                 mod = 26
-                 div -= 1
+                mod = 26
+                div -= 1
             column_label = chr(mod + self._MAGIC_NUMBER) + column_label
 
         label = '%s%s' % (column_label, row)
@@ -340,7 +339,7 @@ class Worksheet(object):
         # empties
         if not rows:
             return []
-            
+
         all_row_keys = chain.from_iterable(row.keys() for row in rows.values())
         rect_cols = range(1, max(all_row_keys) + 1)
         rect_rows = range(1, max(rows.keys()) + 1)
@@ -561,6 +560,7 @@ class Cell(object):
     in a :class:`worksheet <Worksheet>`.
 
     """
+
     def __init__(self, worksheet, element):
         self.element = element
         cell_elem = element.find(_ns1('cell'))
@@ -568,7 +568,7 @@ class Cell(object):
         self._col = int(cell_elem.get('col'))
         self.input_value = cell_elem.get('inputValue')
 
-        #: Value of the cell.
+        # : Value of the cell.
         self.value = cell_elem.text or ''
 
     @property
