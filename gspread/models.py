@@ -364,6 +364,12 @@ class Worksheet(object):
 
         return [dict(zip(keys, row)) for row in values]
 
+    def get_headings(self):
+        """Returns a list with the contens of the spreadsheet's first row of cell"""
+        feed = self.client.get_cells_feed(self, params={'min-row': 1, 'max-row': 1,
+                                                        'return-empty': 'true'})
+        return [Cell(self, elem).value for elem in feed.findall(_ns('entry'))]
+
     def _list_values(self, index, cell_tuple, position):
         cells_list = self._fetch_cells()
         cells = dict(map(cell_tuple, filter(position, cells_list)))
