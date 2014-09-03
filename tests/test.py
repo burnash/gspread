@@ -324,6 +324,22 @@ class WorksheetTest(GspreadTest):
         self.sheet.resize(num_rows, num_cols)
 
 
+class WorksheetDeleteTest(GspreadTest):
+
+    def setUp(self):
+        super(WorksheetDeleteTest, self).setUp()
+        title = self.config.get('Spreadsheet', 'title')
+        self.spreadsheet = self.gc.open(title)
+        ws1_name = self.config.get('WorksheetDelete', 'ws1_name')
+        ws2_name = self.config.get('WorksheetDelete', 'ws2_name')
+        self.ws1 = self.spreadsheet.add_worksheet(ws1_name, 1, 1)
+        self.ws2 = self.spreadsheet.add_worksheet(ws2_name, 1, 1)
+
+    def test_delete_multiple_worksheets(self):
+        self.spreadsheet.del_worksheet(self.ws1)
+        self.spreadsheet.del_worksheet(self.ws2)
+
+
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
 

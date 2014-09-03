@@ -13,3 +13,8 @@ id:
 title:
 row_count:
 col_count:
+
+[WorksheetDelete]
+ws1_name:
+ws2_name:
+

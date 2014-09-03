@@ -251,7 +251,11 @@ class Client(object):
     def del_worksheet(self, worksheet):
         url = construct_url(
             'worksheet', worksheet, 'private', 'full', worksheet_version=worksheet.version)
-        self.session.delete(url)
+        r = self.session.delete(url)
+        # Even though there is nothing interesting in the response body
+        # we have to read it or the next request from this session will get a
+        # httplib.ResponseNotReady error.
+        r.read()
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
                                visibility='private', projection='full'):
