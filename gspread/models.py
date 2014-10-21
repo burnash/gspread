@@ -158,6 +158,7 @@ class Spreadsheet(object):
 
 
 class Worksheet(object):
+
     """A class for worksheet object."""
 
     def __init__(self, spreadsheet, element):
@@ -277,8 +278,8 @@ class Worksheet(object):
         while div:
             (div, mod) = divmod(div, 26)
             if mod == 0:
-                 mod = 26
-                 div -= 1
+                mod = 26
+                div -= 1
             column_label = chr(mod + self._MAGIC_NUMBER) + column_label
 
         label = '%s%s' % (column_label, row)
@@ -340,7 +341,7 @@ class Worksheet(object):
         # empties
         if not rows:
             return []
-            
+
         all_row_keys = chain.from_iterable(row.keys() for row in rows.values())
         rect_cols = range(1, max(all_row_keys) + 1)
         rect_rows = range(1, max(rows.keys()) + 1)
@@ -540,15 +541,15 @@ class Worksheet(object):
             self.resize(cols=data_width)
 
         all_cells = self.get_all_values()
-        rows_after_insert = all_cells[index-1:self.row_count]
+        rows_after_insert = all_cells[index - 1:self.row_count]
 
         rows_after_insert.insert(0, values)
 
-        updated_cell_list=[]
+        updated_cell_list = []
         for r, row in enumerate(rows_after_insert, start=1):
             for c, cell in enumerate(row, start=1):
-                newcell = self.cell(r+(index-1), c)
-                newcell.value = rows_after_insert[r-1][c-1]
+                newcell = self.cell(r + (index - 1), c)
+                newcell.value = rows_after_insert[r - 1][c - 1]
                 updated_cell_list.append(newcell)
         self.update_cells(updated_cell_list)
 
@@ -581,10 +582,12 @@ class Worksheet(object):
 
 
 class Cell(object):
+
     """An instance of this class represents a single cell
     in a :class:`worksheet <Worksheet>`.
 
     """
+
     def __init__(self, worksheet, element):
         self.element = element
         cell_elem = element.find(_ns1('cell'))
