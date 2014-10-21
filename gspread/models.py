@@ -528,6 +528,30 @@ class Worksheet(object):
 
         self.update_cells(cell_list)
 
+    def insert_row(self, values, index=1):
+        """"Adds a row to the worksheet at the specified index and populates it with values.
+        Widens the worksheet if there are more values than columns.
+
+        :param values: List of values for the new row.
+        """
+        self.add_rows(1)
+        data_width = len(values)
+        if self.col_count < data_width:
+            self.resize(cols=data_width)
+
+        all_cells = self.get_all_values()
+        rows_after_insert = all_cells[index-1:self.row_count]
+
+        rows_after_insert.insert(0, values)
+
+        updated_cell_list=[]
+        for r, row in enumerate(rows_after_insert, start=1):
+            for c, cell in enumerate(row, start=1):
+                newcell = self.cell(r+(index-1), c)
+                newcell.value = rows_after_insert[r-1][c-1]
+                updated_cell_list.append(newcell)
+        self.update_cells(updated_cell_list)
+
     def _finder(self, func, query):
         cells = self._fetch_cells()
 
