@@ -231,6 +231,8 @@ easy_install gspread
 - [ptlu](https://github.com/ptlu)
 - [aginor](https://github.com/aginor)
 
+[All contributors](https://github.com/burnash/gspread/graphs/contributors)
+
 ## Feedback
 
 Please report bugs and suggest features via [GitHub Issues](https://github.com/burnash/gspread/issues).
