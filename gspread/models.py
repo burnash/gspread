@@ -8,7 +8,6 @@ This module contains common spreadsheets' models
 
 """
 
-
 import re
 from collections import defaultdict
 from itertools import chain
@@ -44,11 +43,11 @@ def _escape_attrib(text, encoding=None, replace=None):
         text = text.replace(key, value)
     return text
 
+
 ElementTree._escape_attrib = _escape_attrib
 
 
 class Spreadsheet(object):
-
     """ A class for a spreadsheet object."""
 
     def __init__(self, client, feed_entry):
@@ -366,6 +365,12 @@ class Worksheet(object):
 
         return [dict(zip(keys, row)) for row in values]
 
+    def get_headings(self):
+        """Returns a list with the contens of the spreadsheet's first row of cell"""
+        feed = self.client.get_cells_feed(self, params={'min-row': 1, 'max-row': 1,
+                                                        'return-empty': 'true'})
+        return [Cell(self, elem).value for elem in feed.findall(_ns('entry'))]
+
     def _list_values(self, index, cell_tuple, position):
         cells_list = self._fetch_cells()
         cells = dict(map(cell_tuple, filter(position, cells_list)))
@@ -595,7 +600,7 @@ class Cell(object):
         self._col = int(cell_elem.get('col'))
         self.input_value = cell_elem.get('inputValue')
 
-        #: Value of the cell.
+        # : Value of the cell.
         self.value = cell_elem.text or ''
 
     @property

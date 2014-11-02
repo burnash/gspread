@@ -12,7 +12,6 @@ import gspread
 
 
 class GspreadTest(unittest.TestCase):
-
     def setUp(self):
         creds_filename = "tests.config"
         try:
@@ -108,7 +107,12 @@ class WorksheetTest(GspreadTest):
 
     def test_get_addr_int(self):
         self.assertEqual(self.sheet.get_addr_int(3, 731), 'ABC3')
-        self.assertEqual(self.sheet.get_addr_int(1, 104),'CZ1')
+        self.assertEqual(self.sheet.get_addr_int(1, 104), 'CZ1')
+
+    def test_get_updated(self):
+        RFC_3339 = '(\d\d\d\d)(-)?(\d\d)(-)?(\d\d)(T)?(\d\d)(:)?(\d\d)(:)?(\d\d)(\.\d+)?(Z|([+-])(\d\d)(:)?(\d\d))'
+        print self.sheet.updated
+        self.assertRegexpMatches(self.sheet.updated, RFC_3339)
 
     def test_addr_converters(self):
         for row in range(1, 257):
@@ -308,6 +312,28 @@ class WorksheetTest(GspreadTest):
         read_records = sheet.get_all_records(empty2zero=True)
         d1 = dict(zip(rows[0], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
+
+    def test_get_headings(self):
+        # make a new, clean worksheet
+        # same as for test_all_values, find a way to refactor it
+        self.spreadsheet.add_worksheet('my_headings', 10, 3)
+        sheet = self.spreadsheet.worksheet('my_headings')
+
+        # put in new values, made from three lists
+        rows = [["id", "foo", "bar"],
+                [1, "foo1", "bar1"],
+                [2, "foo2", "bar2"],
+                [3, "foo3", "bar3"]]
+        cell_list = sheet.range('A1:C1')
+        cell_list.extend(sheet.range('A2:C2'))
+        cell_list.extend(sheet.range('A3:C3'))
+        cell_list.extend(sheet.range('A4:C4'))
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        sheet.update_cells(cell_list)
+
+        headings = sheet.get_headings()
+        self.assertEqual(headings, rows[0])
 
     def test_append_row(self):
         num_rows = self.sheet.row_count
