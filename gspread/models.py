@@ -53,9 +53,12 @@ class Spreadsheet(object):
 
     def __init__(self, client, feed_entry):
         self.client = client
-        id_parts = feed_entry.find(_ns('id')).text.split('/')
-        self.id = id_parts[-1]
         self._sheet_list = []
+        self._feed_entry = feed_entry
+
+    @property
+    def id(self):
+        return self._feed_entry.find(_ns('id')).text.split('/')[-1]
 
     def get_id_fields(self):
         return {'spreadsheet_id': self.id}
@@ -156,6 +159,9 @@ class Spreadsheet(object):
         """Shortcut property for getting the first worksheet."""
         return self.get_worksheet(0)
 
+    @property
+    def title(self):
+        return self._feed_entry.find(_ns('title')).text
 
 class Worksheet(object):
 
