@@ -348,9 +348,9 @@ class Worksheet(object):
 
         return [[rows[i][j] for j in rect_cols] for i in rect_rows]
 
-    def get_all_records(self, empty2zero=False):
+    def get_all_records(self, empty2zero=False, head=1):
         """Returns a list of dictionaries, all of them having:
-            - the contents of the spreadsheet's first row of cells as keys,
+            - the contents of the spreadsheet's with the head row as keys,
             And each of these dictionaries holding
             - the contents of subsequent rows of cells as values.
 
@@ -358,11 +358,15 @@ class Worksheet(object):
         Cell values are numericised (strings that can be read as ints
         or floats are converted).
 
-        :param empty2zero: determines whether empty cells are converted to zeros."""
+        :param empty2zero: determines whether empty cells are converted to zeros.
+        :param head: determines wich row to use as keys, starting from 1
+            following the numeration of the spreadsheet."""
+
+        idx = head - 1
 
         data = self.get_all_values()
-        keys = data[0]
-        values = [numericise_all(row, empty2zero) for row in data[1:]]
+        keys = data[idx]
+        values = [numericise_all(row, empty2zero) for row in data[idx + 1:]]
 
         return [dict(zip(keys, row)) for row in values]
 

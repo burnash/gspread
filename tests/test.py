@@ -309,6 +309,45 @@ class WorksheetTest(GspreadTest):
         d1 = dict(zip(rows[0], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
 
+    def test_get_all_records_different_header(self):
+        # make a new, clean worksheet
+        # same as for test_all_values, find a way to refactor it
+        self.spreadsheet.add_worksheet('get_all_records', 10, 5)
+        sheet = self.spreadsheet.worksheet('get_all_records')
+
+        # put in new values, made from three lists
+        rows = [["", "", "", ""],
+                ["", "", "", ""],
+                ["A1", "B1", "", "D1"],
+                [1, "b2", 1.45, ""],
+                ["", "", "", ""],
+                ["A4", 0.4, "", 4]]
+        cell_list = sheet.range('A1:D1')
+        cell_list.extend(sheet.range('A2:D2'))
+        cell_list.extend(sheet.range('A3:D3'))
+        cell_list.extend(sheet.range('A4:D4'))
+        cell_list.extend(sheet.range('A5:D5'))
+        cell_list.extend(sheet.range('A6:D6'))
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        sheet.update_cells(cell_list)
+
+        # first, read empty strings to empty strings
+        read_records = sheet.get_all_records(head=3)
+        d0 = dict(zip(rows[2], rows[3]))
+        d1 = dict(zip(rows[2], rows[4]))
+        d2 = dict(zip(rows[2], rows[5]))
+        self.assertEqual(read_records[0], d0)
+        self.assertEqual(read_records[1], d1)
+        self.assertEqual(read_records[2], d2)
+
+        # then, read empty strings to zeros
+        read_records = sheet.get_all_records(empty2zero=True, head=3)
+        d1 = dict(zip(rows[2], (0, 0, 0, 0)))
+        self.assertEqual(read_records[1], d1)
+
+        self.gc.del_worksheet(sheet)
+
     def test_append_row(self):
         num_rows = self.sheet.row_count
         num_cols = self.sheet.col_count
