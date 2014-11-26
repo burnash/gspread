@@ -16,6 +16,7 @@ from itertools import chain
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
+from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
 from .utils import finditem, numericise_all
@@ -583,6 +584,25 @@ class Worksheet(object):
         :param query: A text string or compiled regular expression.
         """
         return self._finder(filter, query)
+
+    def export(self, format='csv'):
+        """Export the worksheet in specified format.
+
+        :param format: A format of the output.
+        """
+        export_link = self._get_link(
+            'http://schemas.google.com/spreadsheets/2006#exportcsv',
+            self._element).get('href')
+
+        url, qs = export_link.split('?')
+        params = dict(param.split('=') for param in  qs.split('&'))
+
+        params['format'] = format
+
+        params = urlencode(params)
+        export_link = '%s?%s' % (url, params)
+
+        return self.client.session.get(export_link)
 
 
 class Cell(object):

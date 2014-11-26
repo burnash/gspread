@@ -374,6 +374,30 @@ class WorksheetTest(GspreadTest):
         # undo the appending and resizing
         # self.sheet.resize(num_rows, num_cols)
 
+    def test_export(self):
+        list_len = 10
+        time_md5 = hashlib.md5(str(time.time())).hexdigest()
+        wks_name = 'export_test_%s' % time_md5
+
+        self.spreadsheet.add_worksheet(wks_name, list_len, 5)
+        sheet = self.spreadsheet.worksheet(wks_name)
+
+        value_list = [hashlib.md5(str(time.time() + i)).hexdigest()
+                      for i in range(list_len)]
+
+        range_label = 'A1:A%s' % list_len
+        cell_list = sheet.range(range_label)
+
+        for c, v in zip(cell_list, value_list):
+            c.value = v
+
+        sheet.update_cells(cell_list)
+
+        exported_data = sheet.export(format='csv').read()
+
+        csv_value = '\n'.join(value_list)
+
+        self.assertEqual(exported_data, csv_value)
 
 class WorksheetDeleteTest(GspreadTest):
 
