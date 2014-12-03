@@ -428,12 +428,23 @@ class CellTest(GspreadTest):
         super(CellTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
         sheet = self.gc.open(title).sheet1
-        self.update_value = hashlib.md5(str(time.time())).hexdigest()
-        sheet.update_acell('A1', self.update_value)
-        self.cell = sheet.acell('A1')
+        self.sheet = sheet
 
     def test_properties(self):
-        cell = self.cell
-        self.assertEqual(cell.value, self.update_value)
+        update_value = hashlib.md5(str(time.time())).hexdigest()
+        self.sheet.update_acell('A1', update_value)
+        cell = self.sheet.acell('A1')
+        self.assertEqual(cell.value, update_value)
         self.assertEqual(cell.row, 1)
         self.assertEqual(cell.col, 1)
+
+    def test_numeric_value(self):
+        numeric_value = 1.0 / 1024
+        # Use a formula here to avoid issues with differing decimal marks:
+        self.sheet.update_acell('A1', '= 1 / 1024')
+        cell = self.sheet.acell('A1')
+        self.assertEqual(cell.numeric_value, numeric_value)
+        self.assertIsInstance(cell.numeric_value, float)
+        self.sheet.update_acell('A1', 'Non-numeric value')
+        cell = self.sheet.acell('A1')
+        self.assertIs(cell.numeric_value, None)
