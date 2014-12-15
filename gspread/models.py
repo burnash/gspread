@@ -624,6 +624,8 @@ class Cell(object):
         self._row = int(cell_elem.get('row'))
         self._col = int(cell_elem.get('col'))
         self.input_value = cell_elem.get('inputValue')
+        numeric_value = cell_elem.get('numericValue')
+        self.numeric_value = float(numeric_value) if numeric_value else None
 
         #: Value of the cell.
         self.value = cell_elem.text or ''
