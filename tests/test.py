@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import os
 import re
 import time
@@ -69,6 +68,12 @@ class SpreadsheetTest(GspreadTest):
         super(SpreadsheetTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
         self.spreadsheet = self.gc.open(title)
+
+    def test_properties(self):
+        self.assertEqual(self.config.get('Spreadsheet', 'id'),
+                         self.spreadsheet.id)
+        self.assertEqual(self.config.get('Spreadsheet', 'title'),
+                         self.spreadsheet.title)
 
     def test_sheet1(self):
         sheet1 = self.spreadsheet.sheet1
@@ -314,6 +319,45 @@ class WorksheetTest(GspreadTest):
         d1 = dict(zip(rows[0], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
 
+    def test_get_all_records_different_header(self):
+        # make a new, clean worksheet
+        # same as for test_all_values, find a way to refactor it
+        self.spreadsheet.add_worksheet('get_all_records', 10, 5)
+        sheet = self.spreadsheet.worksheet('get_all_records')
+
+        # put in new values, made from three lists
+        rows = [["", "", "", ""],
+                ["", "", "", ""],
+                ["A1", "B1", "", "D1"],
+                [1, "b2", 1.45, ""],
+                ["", "", "", ""],
+                ["A4", 0.4, "", 4]]
+        cell_list = sheet.range('A1:D1')
+        cell_list.extend(sheet.range('A2:D2'))
+        cell_list.extend(sheet.range('A3:D3'))
+        cell_list.extend(sheet.range('A4:D4'))
+        cell_list.extend(sheet.range('A5:D5'))
+        cell_list.extend(sheet.range('A6:D6'))
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        sheet.update_cells(cell_list)
+
+        # first, read empty strings to empty strings
+        read_records = sheet.get_all_records(head=3)
+        d0 = dict(zip(rows[2], rows[3]))
+        d1 = dict(zip(rows[2], rows[4]))
+        d2 = dict(zip(rows[2], rows[5]))
+        self.assertEqual(read_records[0], d0)
+        self.assertEqual(read_records[1], d1)
+        self.assertEqual(read_records[2], d2)
+
+        # then, read empty strings to zeros
+        read_records = sheet.get_all_records(empty2zero=True, head=3)
+        d1 = dict(zip(rows[2], (0, 0, 0, 0)))
+        self.assertEqual(read_records[1], d1)
+
+        self.gc.del_worksheet(sheet)
+
     def test_append_row(self):
         num_rows = self.sheet.row_count
         num_cols = self.sheet.col_count
@@ -327,6 +371,59 @@ class WorksheetTest(GspreadTest):
         # undo the appending and resizing
         self.sheet.resize(num_rows, num_cols)
 
+    def test_insert_row(self):
+        num_rows = self.sheet.row_count
+        num_cols = self.sheet.col_count
+        values = ['o_0'] * (num_cols + 4)
+        self.sheet.insert_row(values, 1)
+        self.assertEqual(self.sheet.row_count, num_rows + 1)
+        self.assertEqual(self.sheet.col_count, num_cols + 4)
+        read_values = self.sheet.row_values(1)
+        self.assertEqual(values, read_values)
+
+        # undo the appending and resizing
+        # self.sheet.resize(num_rows, num_cols)
+
+    def test_export(self):
+        list_len = 10
+        time_md5 = hashlib.md5(str(time.time())).hexdigest()
+        wks_name = 'export_test_%s' % time_md5
+
+        self.spreadsheet.add_worksheet(wks_name, list_len, 5)
+        sheet = self.spreadsheet.worksheet(wks_name)
+
+        value_list = [hashlib.md5(str(time.time() + i)).hexdigest()
+                      for i in range(list_len)]
+
+        range_label = 'A1:A%s' % list_len
+        cell_list = sheet.range(range_label)
+
+        for c, v in zip(cell_list, value_list):
+            c.value = v
+
+        sheet.update_cells(cell_list)
+
+        exported_data = sheet.export(format='csv').read()
+
+        csv_value = '\n'.join(value_list)
+
+        self.assertEqual(exported_data, csv_value)
+
+class WorksheetDeleteTest(GspreadTest):
+
+    def setUp(self):
+        super(WorksheetDeleteTest, self).setUp()
+        title = self.config.get('Spreadsheet', 'title')
+        self.spreadsheet = self.gc.open(title)
+        ws1_name = self.config.get('WorksheetDelete', 'ws1_name')
+        ws2_name = self.config.get('WorksheetDelete', 'ws2_name')
+        self.ws1 = self.spreadsheet.add_worksheet(ws1_name, 1, 1)
+        self.ws2 = self.spreadsheet.add_worksheet(ws2_name, 1, 1)
+
+    def test_delete_multiple_worksheets(self):
+        self.spreadsheet.del_worksheet(self.ws1)
+        self.spreadsheet.del_worksheet(self.ws2)
+
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
@@ -335,12 +432,23 @@ class CellTest(GspreadTest):
         super(CellTest, self).setUp()
         title = self.config.get('Spreadsheet', 'title')
         sheet = self.gc.open(title).sheet1
-        self.update_value = hashlib.md5(str(time.time())).hexdigest()
-        sheet.update_acell('A1', self.update_value)
-        self.cell = sheet.acell('A1')
+        self.sheet = sheet
 
     def test_properties(self):
-        cell = self.cell
-        self.assertEqual(cell.value, self.update_value)
+        update_value = hashlib.md5(str(time.time())).hexdigest()
+        self.sheet.update_acell('A1', update_value)
+        cell = self.sheet.acell('A1')
+        self.assertEqual(cell.value, update_value)
         self.assertEqual(cell.row, 1)
         self.assertEqual(cell.col, 1)
+
+    def test_numeric_value(self):
+        numeric_value = 1.0 / 1024
+        # Use a formula here to avoid issues with differing decimal marks:
+        self.sheet.update_acell('A1', '= 1 / 1024')
+        cell = self.sheet.acell('A1')
+        self.assertEqual(cell.numeric_value, numeric_value)
+        self.assertIsInstance(cell.numeric_value, float)
+        self.sheet.update_acell('A1', 'Non-numeric value')
+        cell = self.sheet.acell('A1')
+        self.assertIs(cell.numeric_value, None)

@@ -3,6 +3,7 @@ email: example@gmail.com
 password: password
 
 [Spreadsheet]
+id:
 title:
 key:
 url:
@@ -13,3 +14,8 @@ id:
 title:
 row_count:
 col_count:
+
+[WorksheetDelete]
+ws1_name:
+ws2_name:
+

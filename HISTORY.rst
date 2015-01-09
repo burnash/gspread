@@ -1,6 +1,17 @@
 Release History
 ===============
 
+0.2.2 (2014-08-26)
+------------------
+
+* Fixed version not available for read-only spreadsheets bug
+
+0.2.1 (2014-05-10)
+------------------
+
+* Added OAuth2 support
+* Fixed regression bug #130. Not every POST needs If-Match header
+
 0.2.0 (2014-05-09)
 ------------------
 
