@@ -54,13 +54,10 @@ Otherwise you will get an `AuthenticationError: Unable to authenticate. 403 code
 
 ### Authorization Problems
 
-If you get
-```
-gspread.exceptions.AuthenticationError: Unable to authenticate. 403 code
-```
-while trying to logon with gspread, do this:
+If you're not using Two Factor Authorization and you get `gspread.exceptions.AuthenticationError: Unable to authenticate. 403 code` while trying to logon with gspread, do this:
 
-In your webbrowser logon to gmail/google with the account you're using in gspread. Then visit the URLs https://www.google.com/settings/security/lesssecureapps and https://accounts.google.com/DisplayUnlockCaptcha and follow the instructions on those pages.
+1. In your webbrowser logon to gmail/google with the account you're using in gspread. 
+2. Visit the URLs https://www.google.com/settings/security/lesssecureapps and https://accounts.google.com/DisplayUnlockCaptcha and follow the instructions on those pages.
 
 ## More Examples
 
