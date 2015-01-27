@@ -44,6 +44,15 @@ wks = gc.open("Where is the money Lebowski?").sheet1
 
 Note: You probably need to have oauth2client and httplib2 installed to create OAuth2 Credential objects. See ["Using OAuth2 for Authorization"](http://burnash.github.com/gspread/oauth2.html) for more information.
 
+## Authorization problems
+
+If you get
+```
+gspread.exceptions.AuthenticationError: Unable to authenticate. 403 code
+```
+while trying to logon with gspread, do this:
+
+In your webbrowser logon to gmail/google with the account you're using in gspread. Then visit the URLs https://www.google.com/settings/security/lesssecureapps and https://accounts.google.com/DisplayUnlockCaptcha and follow the instructions on those pages.
 
 ## More Examples
 
