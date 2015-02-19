@@ -210,7 +210,7 @@ easy_install gspread
 
 ## Documentation
 
-[API Reference](http://burnash.github.com/gspread/)
+[API Reference](http://gspread.readthedocs.org/)
 
 ## Testing
 
