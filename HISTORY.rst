@@ -1,6 +1,18 @@
 Release History
 ===============
 
+0.2.3 (2015-03-11)
+------------------
+
+* Fixed issue with `Spreadsheet.del_worksheet`.
+* Automatically refresh OAuth2 token when it has expired.
+* Added an `insert_row` method to `Worksheet`.
+* Moved docs to Read The Docs.
+* Added the `numeric_value` attribute to `Cell`.
+* Added title property to `Spreadsheet`.
+* Support for exporting worksheets.
+* Added row selection for keys in `Worksheet.get_all_records`.
+
 0.2.2 (2014-08-26)
 ------------------
 
