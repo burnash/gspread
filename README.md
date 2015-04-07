@@ -42,7 +42,7 @@ wks = gc.open("Where is the money Lebowski?").sheet1
 
 ```
 
-OAuth2Credentials must be an object with a valid `access_token` attribute, such as one created with the oauth2client library from Google. See ["Using OAuth2 for Authorization"](http://burnash.github.com/gspread/oauth2.html) for more information.
+OAuth2Credentials must be an object with a valid `access_token` attribute, such as one created with the oauth2client library from Google. See ["Using OAuth2 for Authorization"](http://gspread.readthedocs.org/en/latest/oauth2.html) for more information.
 
 ### Two Factor Authorization
 
