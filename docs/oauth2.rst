@@ -19,7 +19,7 @@ Using Signed Credentials
     import gspread
     from oauth2client.client import SignedJwtAssertionCredentials
     
-    scope = ['https://spreadsheets.google.com/feeds', 'https://docs.google.com/feeds']
+    scope = ['https://spreadsheets.google.com/feeds']
     
     credentials = SignedJwtAssertionCredentials('developer@example.com', SIGNED_KEY, scope)
     
