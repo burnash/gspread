@@ -8,6 +8,8 @@ This module contains a class for working with http sessions.
 
 """
 
+import os
+
 try:
     import httplib as client
     from urlparse import urlparse
@@ -32,6 +34,11 @@ class HTTPError(Exception):
         return self.response.read()
 
 
+# urllib defines some functions to detect and extract proxies for different
+# systems. Importing urllib does the job of setting 2 commodity functions
+import urllib
+
+
 class HTTPSession(object):
     """Handles HTTP activity while keeping headers persisting across requests.
 
@@ -54,10 +61,7 @@ class HTTPSession(object):
         # If connection for this scheme+location is not established, establish it.
         uri = urlparse(url)
         if not self.connections.get(uri.scheme+uri.netloc):
-            if uri.scheme == 'https':
-                self.connections[uri.scheme+uri.netloc] = client.HTTPSConnection(uri.netloc)
-            else:
-                self.connections[uri.scheme+uri.netloc] = client.HTTPConnection(uri.netloc)
+            self._setup_connection(uri.scheme, uri.netloc)
 
         request_headers = self.headers.copy()
 
@@ -89,3 +93,40 @@ class HTTPSession(object):
 
     def add_header(self, name, value):
         self.headers[name] = value
+
+    def _setup_connection(self, protocol, netloc):
+        """Takes care of managing proxies if any. This is a first attempt to
+        manage proxies. Authentication is not yet taken into account. This all
+        stuff is not tested yet.
+
+        Parameters
+        ----------
+        protocol: str
+            http or https
+        netloc: str
+            url to connect to
+
+        Returns
+        -------
+        HTTP(S)Session
+            properly set up in case of proxies
+        """
+        proxies = urllib.getproxies()
+        # We process proxy if a proxy is defined for this protocol and the
+        # netloc to connect to is not in the bypass list.
+        if protocol in proxies and urllib.proxy_bypass(netloc) == 0:
+            proxy = proxies[protocol]
+            urltype, proxyhost = urllib.splittype(proxy)
+            host, selector = urllib.splithost(proxyhost)
+            host, port = urllib.splitport(host)
+            if protocol == 'https':
+                self.connections[protocol+netloc] = client.HTTPSConnection(host, port)
+                self.connections[protocol+netloc].set_tunnel(netloc, 443)
+            else:
+                self.connections[protocol+netloc] = client.HTTPSConnection(host, port)
+                self.connections[protocol+netloc].set_tunnel(netloc, 80)
+        else:
+            if protocol == 'https':
+                self.connections[protocol+netloc] = client.HTTPSConnection(netloc)
+            else:
+                self.connections[protocol+netloc] = client.HTTPConnection(netloc)
