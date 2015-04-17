@@ -40,3 +40,6 @@ class UpdateCellError(GSpreadException):
 
 class RequestError(GSpreadException):
     """Error while sending API request."""
+
+class HTTPError(RequestError):
+    """DEPRECATED. Error while sending API request."""
