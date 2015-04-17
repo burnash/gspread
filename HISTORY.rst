@@ -1,6 +1,12 @@
 Release History
 ===============
 
+0.2.4 (2015-04-17)
+------------------
+
+* Output error response #219 #170 #194.
+* Added instructions on how to get oAuth credentials to docs.
+
 0.2.3 (2015-03-11)
 ------------------
 
