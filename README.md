@@ -20,6 +20,11 @@ import gspread
 # Login with your Google account
 gc = gspread.login('thedude@abid.es', 'password')
 
+# WARNING: The code above uses ClientLogin which will be deprecated 
+# on April 20, 2015.
+
+# Please use OAuth2 authorization to access Google Sheets.
+
 # Open a worksheet from spreadsheet with one shot
 wks = gc.open("Where is the money Lebowski?").sheet1
 
@@ -29,7 +34,7 @@ wks.update_acell('B2', "it's down there somewhere, let me take another look.")
 cell_list = wks.range('A1:B7')
 ```
 
-## Alternate Authorization Using OAuth2
+## Authorization Using OAuth2
 
 ```python
 import gspread
