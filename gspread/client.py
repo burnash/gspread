@@ -9,6 +9,7 @@ Google Data API.
 
 """
 import re
+import warnings
 
 from xml.etree import ElementTree
 
@@ -63,6 +64,17 @@ class Client(object):
         return "<?xml version='1.0' encoding='UTF-8'?>%s" % data.decode()
 
     def login(self):
+        warnings.warn("""
+            ClientLogin is deprecated:
+            https://developers.google.com/identity/protocols/AuthForInstalledApps?csw=1
+
+            Authorization with email and password will stop working on April 20, 2015.
+
+            Please use oAuth2 authorization instead:
+            http://gspread.readthedocs.org/en/latest/oauth2.html
+
+        """, Warning)
+
         """Authorize client using ClientLogin protocol.
 
         The credentials provided in `auth` parameter to class' constructor will be used.
