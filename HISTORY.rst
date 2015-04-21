@@ -1,6 +1,13 @@
 Release History
 ===============
 
+0.2.5 (2015-04-22)
+------------------
+
+* Deprecation warning for ClientLogin #210
+* Redirect github pages to ReadTheDocs
+* Bugfixes
+
 0.2.4 (2015-04-17)
 ------------------
 
