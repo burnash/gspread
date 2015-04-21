@@ -60,10 +60,7 @@ class Client(object):
                 return line[5:]
         return None
 
-    def _add_xml_header(self, data):
-        return "<?xml version='1.0' encoding='UTF-8'?>%s" % data.decode()
-
-    def login(self):
+    def _deprecation_warning(self):
         warnings.warn("""
             ClientLogin is deprecated:
             https://developers.google.com/identity/protocols/AuthForInstalledApps?csw=1
@@ -75,6 +72,10 @@ class Client(object):
 
         """, Warning)
 
+    def _add_xml_header(self, data):
+        return "<?xml version='1.0' encoding='UTF-8'?>%s" % data.decode()
+
+    def login(self):
         """Authorize client using ClientLogin protocol.
 
         The credentials provided in `auth` parameter to class' constructor will be used.
@@ -99,6 +100,8 @@ class Client(object):
             self.session.add_header('Authorization', "Bearer " + self.auth.access_token)
 
         else:
+            self._deprecation_warning()
+
             data = {'Email': self.auth[0],
                     'Passwd': self.auth[1],
                     'accountType': 'HOSTED_OR_GOOGLE',
@@ -115,17 +118,11 @@ class Client(object):
                 self.session.add_header('Authorization', auth_header)
 
             except HTTPError as ex:
-                if ex.code == 403:
-                    content = ex.read().decode()
-                    if content.strip() == 'Error=BadAuthentication':
-                        raise AuthenticationError("Incorrect username or password")
-                    else:
-                        raise AuthenticationError(
-                            "Unable to authenticate. %s code" % ex.code)
-
+                if ex.message.strip() == '403: Error=BadAuthentication':
+                    raise AuthenticationError("Incorrect username or password")
                 else:
                     raise AuthenticationError(
-                        "Unable to authenticate. %s code" % ex.code)
+                        "Unable to authenticate. %s" % ex.message)
 
     def open(self, title):
         """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
