@@ -14,6 +14,7 @@ try:
     from urllib import urlencode
 except ImportError:
     from http import client
+    import ssl
     from urllib.parse import urlparse
     from urllib.parse import urlencode
 
@@ -53,7 +54,7 @@ class HTTPSession(object):
         if not self.connections.get(uri.scheme + uri.netloc):
             if uri.scheme == 'https':
                 self.connections[
-                    uri.scheme + uri.netloc] = client.HTTPSConnection(uri.netloc)
+                    uri.scheme + uri.netloc] = client.HTTPSConnection(uri.netloc, context=ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH))
             else:
                 self.connections[
                     uri.scheme + uri.netloc] = client.HTTPConnection(uri.netloc)
