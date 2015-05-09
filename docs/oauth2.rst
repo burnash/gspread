@@ -16,19 +16,19 @@ Using Signed Credentials
 ------------------------
 ::
 
-Head to `Google Developers Console <https://console.developers.google.com/project>`_ and create a new project (or select the one you have.)
+1. Head to `Google Developers Console <https://console.developers.google.com/project>`_ and create a new project (or select the one you have.)
 
-Under "API & auth", in the API enable "Drive API". 
+2. Under "API & auth", in the API enable "Drive API". 
 
 .. image:: https://cloud.githubusercontent.com/assets/264674/7033107/72b75938-dd80-11e4-9a9f-54fb10820976.png
     :alt: Enabled APIs
 
-Go to "Credentials" and hit "Create new Client ID".
+3. Go to "Credentials" and hit "Create new Client ID".
 
 .. image:: https://cloud.githubusercontent.com/assets/264674/7033101/5d335e4a-dd80-11e4-96c0-fce81919ec2d.png
     :alt: Google Developers Console 
 
-Select "Service account". Hitting "Create Client ID" will generate a new Public/Private key pair.
+4. Select "Service account". Hitting "Create Client ID" will generate a new Public/Private key pair.
 
 .. image:: https://cloud.githubusercontent.com/assets/264674/7032990/6dfaceb2-dd7f-11e4-8071-1490a5b19c8e.png
     :alt: Create Client ID in Developers Console
@@ -38,7 +38,7 @@ You will automatically download a JSON file with this data.
 .. image:: https://cloud.githubusercontent.com/assets/264674/7033081/3810ddae-dd80-11e4-8945-34b4ba12f9fa.png
     :alt: Download Credentials JSON from Developers Console
 
-This is how this file looks like:
+This is how this file may look like:
 
 ::
 
@@ -52,7 +52,7 @@ This is how this file looks like:
     
 You'll need *client_email* and *private_key*.
 
-Now you can read this file, and use the data when constructing your credentials:
+5. Now you can read this file, and use the data when constructing your credentials:
 
 ::
 
@@ -68,7 +68,7 @@ Now you can read this file, and use the data when constructing your credentials:
     
     wks = gc.open("Where is the money Lebowski?").sheet1
 
-That's it. Don't forget to share your spreadsheet with an email you have in your json_key['client_email'].
+6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
     
     
 Custom Credentials Objects
