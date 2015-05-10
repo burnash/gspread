@@ -313,7 +313,7 @@ def login(email, password):
     """Login to Google API using `email` and `password`.
 
     This is a shortcut function which instantiates :class:`Client`
-    and performes login right away.
+    and performs login right away.
 
     :returns: :class:`Client` instance.
 
