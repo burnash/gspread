@@ -326,7 +326,7 @@ def authorize(credentials):
     """Login to Google API using OAuth2 credentials.
 
     This is a shortcut function which instantiates :class:`Client`
-    and performes login right away.
+    and performs login right away.
 
     :returns: :class:`Client` instance.
 
