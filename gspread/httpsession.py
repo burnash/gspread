@@ -14,7 +14,6 @@ try:
     from urllib import urlencode
 except ImportError:
     from http import client
-    import ssl
     from urllib.parse import urlparse
     from urllib.parse import urlencode
 
@@ -24,6 +23,7 @@ except NameError:
     basestring = unicode = str
 
 
+import ssl
 from .exceptions import HTTPError
 
 
