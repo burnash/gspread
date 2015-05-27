@@ -4,9 +4,9 @@ Using OAuth2 for Authorization
 OAuth Credentials
 -----------------
 
-OAuth credentials can be generated in several different ways using the 
+OAuth credentials can be generated in several different ways using the
 `oauth2client <https://github.com/google/oauth2client>`_ library provided by Google. If you are
-editing spreadsheets for yourself then the easiest way to generate credentials is to use 
+editing spreadsheets for yourself then the easiest way to generate credentials is to use
 *Signed Credentials* stored in your application (see example below). If you plan to edit
 spreadsheets on behalf of others then visit the
 `Google OAuth2 documentation <https://developers.google.com/accounts/docs/OAuth2>`_ for more
@@ -18,7 +18,7 @@ Using Signed Credentials
 
 1. Head to `Google Developers Console <https://console.developers.google.com/project>`_ and create a new project (or select the one you have.)
 
-2. Under "API & auth", in the API enable "Drive API". 
+2. Under "API & auth", in the API enable "Drive API".
 
 .. image:: https://cloud.githubusercontent.com/assets/264674/7033107/72b75938-dd80-11e4-9a9f-54fb10820976.png
     :alt: Enabled APIs
@@ -26,7 +26,7 @@ Using Signed Credentials
 3. Go to "Credentials" and hit "Create new Client ID".
 
 .. image:: https://cloud.githubusercontent.com/assets/264674/7033101/5d335e4a-dd80-11e4-96c0-fce81919ec2d.png
-    :alt: Google Developers Console 
+    :alt: Google Developers Console
 
 4. Select "Service account". Hitting "Create Client ID" will generate a new Public/Private key pair.
 
@@ -49,7 +49,7 @@ This is how this file may look like:
         "client_id": "473 … hd.apps.googleusercontent.com",
         "type": "service_account"
     }
-    
+
 You'll need *client_email* and *private_key*.
 
 5. Now you can read this file, and use the data when constructing your credentials:
@@ -62,15 +62,18 @@ You'll need *client_email* and *private_key*.
 
     json_key = json.load(open('gspread-april-2cd … ba4.json'))
     scope = ['https://spreadsheets.google.com/feeds']
-    
-    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+
+    try:
+        credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+    except TypeError:
+        credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
     gc = gspread.authorize(credentials)
-    
+
     wks = gc.open("Where is the money Lebowski?").sheet1
 
 6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
-    
-    
+
+
 Custom Credentials Objects
 --------------------------
 
@@ -81,8 +84,8 @@ If you have another method of authenicating you can easily hack a custom credent
     class Credentials (object):
       def __init__ (self, access_token=None):
         self.access_token = access_token
-        
+
       def refresh (self, http):
         # get new access_token
         # this only gets called if access_token is None
-        
+
