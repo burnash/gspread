@@ -56,6 +56,7 @@ def _escape_attrib(text, encoding=None, replace=None):
 ElementTree._escape_attrib = _escape_attrib
 
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 def cast_to_a1_notation(method):
     """
@@ -84,6 +85,8 @@ def cast_to_a1_notation(method):
 
 =======
 >>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> Update README.md
 class Spreadsheet(object):
     """ A class for a spreadsheet object."""
 
@@ -198,13 +201,24 @@ class Spreadsheet(object):
     @property
     def title(self):
         return self._feed_entry.find(_ns('title')).text
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 =======
 <<<<<<< HEAD
 >>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+    def __iter__(self):
+        for sheet in self.worksheets():
+            yield(sheet)
+>>>>>>> Update README.md
+
+<<<<<<< HEAD
     def __iter__(self):
         for sheet in self.worksheets():
             yield(sheet)
@@ -217,6 +231,12 @@ class Spreadsheet(object):
 =======
 >>>>>>> # This is a combination of 2 commits.
 
+=======
+=======
+>>>>>>> # This is a combination of 2 commits.
+
+>>>>>>> efe8f2e... Added __iter__ method to Spreadsheet class
+>>>>>>> Update README.md
 class Worksheet(object):
 
     """A class for worksheet object."""
@@ -598,6 +618,7 @@ class Worksheet(object):
         """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
         
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
 <<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
@@ -605,6 +626,16 @@ class Worksheet(object):
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 =======
 >>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+=======
+        Note that a new Google Sheet has 100 or 1000 rows by default. You
+        may need to scroll down to find the new row.
+
+>>>>>>> 02c23fc... # This is a combination of 2 commits.
+        Note that a new Google Sheet has 100 or 1000 rows by default. You
+        may need to scroll down to find the new row.
+>>>>>>> Update README.md
 
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.

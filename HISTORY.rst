@@ -1,6 +1,7 @@
 Release History
 ===============
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 0.5.0 (2016-12-12)
@@ -23,6 +24,9 @@ Release History
 * Fix exception format to support Python 2.6
 
 
+=======
+<<<<<<< HEAD
+>>>>>>> Update README.md
 0.4.0 (2016-06-30)
 ------------------
 
@@ -33,7 +37,11 @@ Release History
 
 =======
 <<<<<<< HEAD
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 >>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> Update README.md
+>>>>>>> Update README.md
 0.3.0 (2015-12-15)
 ------------------
 
@@ -78,8 +86,16 @@ Release History
 * Fixed export test
 * Switched tests to oauth
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 =======
 >>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> Update README.md
+>>>>>>> Update README.md
 0.2.5 (2015-04-22)
 ------------------
 

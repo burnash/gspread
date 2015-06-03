@@ -9,6 +9,7 @@ Google Data API.
 
 """
 import re
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 import json
 
@@ -16,6 +17,9 @@ try:
     import xml.etree.cElementTree as ElementTree
 except:
     from xml.etree import ElementTree
+=======
+<<<<<<< HEAD
+>>>>>>> Update README.md
 =======
 import warnings
 <<<<<<< HEAD
@@ -26,6 +30,10 @@ try:
 except ImportError:
     from urllib.parse import urlencode
 >>>>>>> # This is a combination of 2 commits.
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+=======
+>>>>>>> Update README.md
+>>>>>>> Update README.md
 
 from xml.etree import ElementTree
 >>>>>>> # This is a combination of 2 commits.
@@ -62,7 +70,11 @@ class Client(object):
     :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
                                     Defaults to :class:`~gspread.httpsession.HTTPSession`.
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> Update README.md
     >>> c = gspread.Client(auth=OAuthCredentialObject)
 =======
     >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
@@ -83,12 +95,53 @@ class Client(object):
 >>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
 
+=======
+    >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
+<<<<<<< HEAD
+
+    or
+
+    >>> c = gspread.Client(auth=OAuthCredentialObject)
+
+=======
+    
+    or
+    
+    >>> c = gspread.Client(auth=OAuthCredentialObject)
+    
+>>>>>>> # This is a combination of 2 commits.
+
+>>>>>>> Update README.md
     """
     def __init__(self, auth, http_session=None):
         self.auth = auth
         self.session = http_session or HTTPSession()
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+=======
+    def _get_auth_token(self, content):
+        for line in content.splitlines():
+            if line.startswith('Auth='):
+                return line[5:]
+        return None
+
+    def _deprecation_warning(self):
+        warnings.warn("""
+            ClientLogin is deprecated:
+            https://developers.google.com/identity/protocols/AuthForInstalledApps?csw=1
+
+            Authorization with email and password will stop working on April 20, 2015.
+
+            Please use oAuth2 authorization instead:
+            http://gspread.readthedocs.org/en/latest/oauth2.html
+
+        """, Warning)
+
+>>>>>>> Update README.md
+>>>>>>> Update README.md
     def _ensure_xml_header(self, data):
         if data.startswith(b'<?xml'):
             return data
@@ -118,7 +171,11 @@ class Client(object):
 >>>>>>> # This is a combination of 2 commits.
 
     def login(self):
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+=======
+<<<<<<< HEAD
+>>>>>>> Update README.md
         """Authorize client."""
         if not self.auth.access_token or \
                 (hasattr(self.auth, 'access_token_expired') and self.auth.access_token_expired):
@@ -149,6 +206,33 @@ class Client(object):
 
         self.session.add_header('Authorization', "Bearer " + self.auth.access_token)
 =======
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+=======
+        warnings.warn("""
+            ClientLogin is deprecated:
+            https://developers.google.com/identity/protocols/AuthForInstalledApps?csw=1
+
+            Authorization with email and password will stop working on April 20, 2015.
+
+            Please use oAuth2 authorization instead:
+            http://gspread.readthedocs.org/en/latest/oauth2.html
+
+        """, Warning)
+
+        """Authorize client using ClientLogin protocol.
+
+        The credentials provided in `auth` parameter to class' constructor will be used.
+
+        This method is using API described at:
+        http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html
+
+        :raises AuthenticationError: if login attempt fails.
+
+        """
+        source = 'burnash-gspread-%s' % __version__
+        service = 'wise'
+
+>>>>>>> Update README.md
         if hasattr(self.auth, 'access_token'):
             if not self.auth.access_token or \
                     (hasattr(self.auth, 'access_token_expired') and self.auth.access_token_expired):
@@ -183,8 +267,12 @@ class Client(object):
 
             try:
                 r = self.session.post(url, data)
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
                 content = r.read().decode()
                 token = self._get_auth_token(content)
+=======
+                token = self._get_auth_token(r.content)
+>>>>>>> Update README.md
                 auth_header = "GoogleLogin auth=%s" % token
                 self.session.add_header('Authorization', auth_header)
 
@@ -194,8 +282,11 @@ class Client(object):
                 else:
                     raise AuthenticationError(
                         "Unable to authenticate. %s" % ex.message)
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 =======
+=======
+>>>>>>> Update README.md
 =======
     
             url = AUTH_SERVER + '/accounts/ClientLogin'
@@ -220,7 +311,11 @@ class Client(object):
                     raise AuthenticationError(
                         "Unable to authenticate. %s code" % ex.code)
 >>>>>>> # This is a combination of 2 commits.
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 >>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> Update README.md
+>>>>>>> Update README.md
 
     def open(self, title):
         """Opens a spreadsheet.
@@ -358,20 +453,34 @@ class Client(object):
     def del_worksheet(self, worksheet):
         url = construct_url(
             'worksheet', worksheet, 'private', 'full', worksheet_version=worksheet.version)
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
         r = self.session.delete(url)
 <<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 =======
 <<<<<<< HEAD
 =======
 >>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+        self.session.delete(url)
+=======
+        r = self.session.delete(url)
+<<<<<<< HEAD
+=======
+>>>>>>> Update README.md
         # Even though there is nothing interesting in the response body
         # we have to read it or the next request from this session will get a
         # httplib.ResponseNotReady error.
         r.read()
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 =======
 >>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> Update README.md
+>>>>>>> Update README.md
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
                                visibility='private', projection='full'):
@@ -385,14 +494,25 @@ class Client(object):
         headers = {'Content-Type': 'application/atom+xml',
                    'If-Match': '*'}
 <<<<<<< HEAD
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+=======
+        data = self._ensure_xml_header(data)
+=======
+<<<<<<< HEAD
+>>>>>>> Update README.md
         data = self._ensure_xml_header(data)
 =======
         data = self._add_xml_header(data)
 >>>>>>> # This is a combination of 2 commits.
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+=======
+>>>>>>> Update README.md
+>>>>>>> Update README.md
 
         try:
             r = self.session.put(url, data, headers=headers)
         except HTTPError as ex:
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
             if getattr(ex, 'code', None) == 403:
@@ -408,6 +528,17 @@ class Client(object):
             if ex.code == 403:
 >>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+            if getattr(ex, 'code', None) == 403:
+=======
+<<<<<<< HEAD
+            if getattr(ex, 'code', None) == 403:
+=======
+            if ex.code == 403:
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> Update README.md
+>>>>>>> Update README.md
                 raise UpdateCellError(ex.message)
             else:
                 raise
@@ -431,12 +562,24 @@ class Client(object):
 <<<<<<< HEAD
         data = self._ensure_xml_header(data)
 =======
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
         data = self._add_xml_header(data)
 >>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+        data = self._ensure_xml_header(data)
+=======
+        data = self._add_xml_header(data)
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> Update README.md
+>>>>>>> Update README.md
         url = construct_url('cells_batch', worksheet)
         r = self.session.post(url, data, headers=headers)
 
         return ElementTree.fromstring(r.content)
+<<<<<<< HEAD
+
+=======
 
     def create(self, title):
         """Creates a new spreadsheet.
@@ -489,6 +632,24 @@ def authorize(credentials):
     return client
 <<<<<<< HEAD
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+=======
+def login(email, password):
+    """Login to Google API using `email` and `password`.
+
+    This is a shortcut function which instantiates :class:`Client`
+    and performs login right away.
+
+    :returns: :class:`Client` instance.
+
+    """
+    client = Client(auth=(email, password))
+    client.login()
+    return client
+<<<<<<< HEAD
+>>>>>>> Update README.md
+
+>>>>>>> Update README.md
 =======
     
 >>>>>>> # This is a combination of 2 commits.
@@ -505,6 +666,7 @@ def authorize(credentials):
     client.login()
     return client
 <<<<<<< HEAD
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
 <<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -521,3 +683,11 @@ def authorize(credentials):
     
 >>>>>>> # This is a combination of 2 commits.
 >>>>>>> # This is a combination of 2 commits.
+=======
+=======
+<<<<<<< HEAD
+=======
+    
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> Update README.md
+>>>>>>> Update README.md
