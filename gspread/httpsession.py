@@ -31,11 +31,14 @@ class HTTPSession(object):
     """Handles HTTP activity while keeping headers persisting across requests.
 
        :param headers: A dict with initial headers.
+       :param ssl_context: The ssl context to be passed to the HTTPS connection
+       client, if non-default
     """
 
-    def __init__(self, headers=None):
+    def __init__(self, headers=None, ssl_context=None):
         self.headers = headers or {}
         self.connections = {}
+        self.ssl_context = ssl_context
 
     def request(self, method, url, data=None, headers=None):
         if data and not isinstance(data, basestring):
@@ -53,7 +56,8 @@ class HTTPSession(object):
         if not self.connections.get(uri.scheme + uri.netloc):
             if uri.scheme == 'https':
                 self.connections[
-                    uri.scheme + uri.netloc] = client.HTTPSConnection(uri.netloc)
+                    uri.scheme + uri.netloc] = client.HTTPSConnection(
+                        uri.netloc, context=self.ssl_context)
             else:
                 self.connections[
                     uri.scheme + uri.netloc] = client.HTTPConnection(uri.netloc)
