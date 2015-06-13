@@ -10,6 +10,7 @@ Google Data API.
 """
 import re
 import warnings
+import json
 
 from xml.etree import ElementTree
 
@@ -307,6 +308,15 @@ class Client(object):
         r = self.session.post(url, data, headers=headers)
 
         return ElementTree.fromstring(r.read())
+
+    def new(self, title):
+        create_url = 'https://www.googleapis.com/drive/v2/files'
+        headers = {'Content-Type':'application/json'}
+        data = {'title':title,'mimeType':'application/vnd.google-apps.spreadsheet'}
+        r = self.session.request('POST',upload_url,headers=headers, data=json.dumps(data))
+        resp = json.loads(r.read().decode('utf-8'))
+        sheet_id = resp['id']
+        return self.open_by_key(sheet_id)
 
 
 def login(email, password):
