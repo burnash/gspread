@@ -63,16 +63,28 @@ You'll need *client_email* and *private_key*.
     json_key = json.load(open('gspread-april-2cd … ba4.json'))
     scope = ['https://spreadsheets.google.com/feeds']
 
-    try:
-        credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
-    except TypeError:
-        credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+
     gc = gspread.authorize(credentials)
 
     wks = gc.open("Where is the money Lebowski?").sheet1
 
+**Note**: Python 3 users need to cast ``json_key['private_key']`` to ``bytes``. Otherwise you'll get ``TypeError: expected bytes, not str`` exception. Replace the line with ``SignedJwtAssertionCredentials`` call with this:
+
+::
+
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+
+
 6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
 
+Troubleshooting
+---------------
+
+oauth2client.client.CryptoUnavailableError: No crypto library available
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you're getting the "No crypto library available" exception, make sure you have ``PyOpenSSL`` library installed in your environment.
 
 Custom Credentials Objects
 --------------------------

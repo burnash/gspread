@@ -20,7 +20,7 @@ import gspread
 # Login with your Google account
 gc = gspread.login('thedude@abid.es', 'password')
 
-# WARNING: The code above uses ClientLogin which will be deprecated 
+# WARNING: The code above uses ClientLogin and was disabled 
 # on April 20, 2015.
 
 # Please use OAuth2 authorization to access Google Sheets.
