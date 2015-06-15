@@ -377,6 +377,19 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(1)
         self.assertEqual(values, read_values)
 
+        # test if len(values) < num_cols
+        num_rows = self.sheet.row_count
+        num_cols = self.sheet.col_count
+        if num_cols >= 1:
+            values = ['o_0'] * (num_cols - 1)
+            self.sheet.insert_row(values, 1)
+            self.assertEqual(self.sheet.row_count, num_rows + 1)
+            self.assertEqual(self.sheet.col_count, num_cols)
+            read_values = self.sheet.row_values(1)
+            self.assertEqual(values, read_values[:-1])
+            paddle_value = read_values[-1]
+            self.assertEqual(paddle_value, '')
+
         # undo the appending and resizing
         # self.sheet.resize(num_rows, num_cols)
 
