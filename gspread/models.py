@@ -550,6 +550,8 @@ class Worksheet(object):
         data_width = len(values)
         if self.col_count < data_width:
             self.resize(cols=data_width)
+        else:
+            values += [''] * (self.col_count - data_width)
 
         all_cells = self.get_all_values()
         rows_after_insert = all_cells[index - 1:self.row_count]
