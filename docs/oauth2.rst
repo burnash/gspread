@@ -70,6 +70,14 @@ You'll need *client_email* and *private_key*.
 
 6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
     
+Troubleshooting
+---------------
+
+oauth2client.client.CryptoUnavailableError: No crypto library available
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you're getting the "No crypto library available" exception, make sure you have ``PyOpenSSL`` library installed in your environment.
+
     
 Custom Credentials Objects
 --------------------------
