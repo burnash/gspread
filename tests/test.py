@@ -90,6 +90,11 @@ class ClientTest(GspreadTest):
         for s in spreadsheet_list:
             self.assertTrue(isinstance(s, gspread.Spreadsheet))
 
+    def test_new(self):
+        title = self.config.get('Spreadsheet', 'new_spreadsheet_title')
+        new_spreadsheet = self.gc.new(title)
+        self.assertTrue(isinstance(new_spreadsheet, gspread.Spreadsheet))
+   
 
 class SpreadsheetTest(GspreadTest):
 
