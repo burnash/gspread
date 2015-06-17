@@ -313,7 +313,7 @@ class Client(object):
         create_url = 'https://www.googleapis.com/drive/v2/files'
         headers = {'Content-Type':'application/json'}
         data = {'title':title,'mimeType':'application/vnd.google-apps.spreadsheet'}
-        r = self.session.request('POST',upload_url,headers=headers, data=json.dumps(data))
+        r = self.session.request('POST',create_url,headers=headers, data=json.dumps(data))
         resp = json.loads(r.read().decode('utf-8'))
         sheet_id = resp['id']
         return self.open_by_key(sheet_id)
