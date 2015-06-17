@@ -256,7 +256,7 @@ class Client(object):
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
         r = self.session.request(
-            'POST', upload_url, headers=headers, data=json.dumps(data)
+            'POST', create_url, headers=headers, data=json.dumps(data)
         )
         resp = json.loads(r.read().decode('utf-8'))
         sheet_id = resp['id']
