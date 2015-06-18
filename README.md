@@ -49,21 +49,6 @@ wks = gc.open("Where is the money Lebowski?").sheet1
 
 OAuth2Credentials must be an object with a valid `access_token` attribute, such as one created with the oauth2client library from Google. See ["Using OAuth2 for Authorization"](http://gspread.readthedocs.org/en/latest/oauth2.html) for more information.
 
-### Two Factor Authorization
-
-In case your Google Account protected with [Two Factor Authorization](http://support.google.com/accounts/bin/answer.py?hl=en&answer=180744), 
-you have to create [an application-specific password](https://accounts.google.com/b/0/IssuedAuthSubTokens?hide_authsub=1) and use your email
-to login as usual.
-
-Otherwise you will get an `AuthenticationError: Unable to authenticate. 403 code` when trying to login.
-
-### Authorization Problems
-
-If you're not using Two Factor Authorization and you get `gspread.exceptions.AuthenticationError: Unable to authenticate. 403 code` while trying to logon with gspread, do this:
-
-1. In your webbrowser logon to gmail/google with the account you're using in gspread. 
-2. Visit the URLs https://www.google.com/settings/security/lesssecureapps and https://accounts.google.com/DisplayUnlockCaptcha and follow the instructions on those pages.
-
 ## More Examples
 
 ### Opening a Spreadsheet
