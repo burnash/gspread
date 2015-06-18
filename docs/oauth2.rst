@@ -52,7 +52,19 @@ This is how this file may look like:
 
 You'll need *client_email* and *private_key*.
 
-5. Now you can read this file, and use the data when constructing your credentials:
+5. Install `oauth2client <https://github.com/google/oauth2client>`_:
+
+::
+
+    pip install --upgrade oauth2client
+    
+Depending on your system setup you may need to install PyOpenSSL:
+
+::
+
+    pip install PyOpenSSL
+
+6. Now you can read this file, and use the data when constructing your credentials:
 
 ::
 
@@ -76,7 +88,7 @@ You'll need *client_email* and *private_key*.
     credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
 
 
-6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
 
 Troubleshooting
 ---------------
