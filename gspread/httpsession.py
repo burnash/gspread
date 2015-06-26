@@ -53,27 +53,23 @@ class HTTPSession(object):
         uri = urlparse(url)
         
         # A utility method to acquire the connection/client on demand.
-        def acquire_connection(uri_scheme):
-            if uri_scheme == 'https':
+        def get_connection():
+            if uri.scheme == 'https':
                 return client.HTTPSConnection(uri.netloc)
             else:
                 return client.HTTPConnection(uri.netloc)
-
-        # The connection object with global scope in this method.
-        conn = None
-
-        # Acquire the connection for this uri if not already acquired, and store in session connections.
-        if not self.connections.get(uri.scheme + uri.netloc):
-            conn = acquire_connection(uri.scheme)
-            self.connections[uri.scheme + uri.netloc] = conn
             
-        # A utility method to call a spreadsheet/worksheet/cell method a second time, in case of an initial
+        # Get the connection for this uri if not already acquired, and store in session connections.
+        if not self.connections.get(uri.scheme + uri.netloc):
+            self.connections[uri.scheme + uri.netloc] = get_connection()
+            
+        # A utility method to call client methods a second time, in case of an initial
         # failure, by re-acquiring the connection.
         def try_again(func, *args, **kwargs):
           try:
               return func(*args, **kwargs)
           except:
-              acquire_connection(uri.scheme)
+              self.connections[uri.scheme + uri.netloc] = get_connection()
               return func(*args, **kwargs)
 
         request_headers = self.headers.copy()
@@ -86,7 +82,7 @@ class HTTPSession(object):
                     request_headers[k] = v
         
         try_again(self.connections[uri.scheme + uri.netloc].request, method, url, data, headers=request_headers)
-        thisresponse = self.connections[uri.scheme + uri.netloc].getresponse()
+        getattr(self.connections[uri.scheme + uri.netloc], 'getresponse')()
 
         if thisresponse.status > 399:
             raise HTTPError("%s: %s" % (thisresponse.status, thisresponse.read()))
