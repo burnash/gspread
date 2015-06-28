@@ -12,6 +12,7 @@ try:
     import httplib as client
     from urlparse import urlparse
     from urllib import urlencode
+    from time import sleep
 except ImportError:
     from http import client
     from urllib.parse import urlparse
@@ -36,6 +37,7 @@ class HTTPSession(object):
     def __init__(self, headers=None):
         self.headers = headers or {}
         self.connections = {}
+        self.lastresponse = None
 
     def request(self, method, url, data=None, headers=None):
         if data and not isinstance(data, basestring):
@@ -50,13 +52,27 @@ class HTTPSession(object):
         # If connection for this scheme+location is not established, establish
         # it.
         uri = urlparse(url)
-        if not self.connections.get(uri.scheme + uri.netloc):
+        
+        # A utility method to acquire the connection/client on demand.
+        def get_connection():
             if uri.scheme == 'https':
-                self.connections[
-                    uri.scheme + uri.netloc] = client.HTTPSConnection(uri.netloc)
+                return client.HTTPSConnection(uri.netloc)
             else:
-                self.connections[
-                    uri.scheme + uri.netloc] = client.HTTPConnection(uri.netloc)
+                return client.HTTPConnection(uri.netloc)
+            
+        # Get the connection for this uri if not already acquired, and store in session connections.
+        if not self.connections.get(uri.scheme + uri.netloc):
+            self.connections[uri.scheme + uri.netloc] = get_connection()
+            
+        # A utility method to call client methods a second time, in case of an initial
+        # failure, by re-acquiring the connection.
+        def try_request(func, *args, **kwargs):
+          try:
+              return func(*args, **kwargs)
+          except:
+              sleep(3)
+              self.connections[uri.scheme + uri.netloc] = get_connection()
+              return self.connections[uri.scheme + uri.netloc].request(*args, **kwargs)
 
         request_headers = self.headers.copy()
 
@@ -66,18 +82,25 @@ class HTTPSession(object):
                     del request_headers[k]
                 else:
                     request_headers[k] = v
+        
+        try_request(self.connections[uri.scheme + uri.netloc].request, method, url, data, headers=request_headers)
+        thisresponse = self.connections[uri.scheme + uri.netloc].getresponse()
 
-        self.connections[
-            uri.scheme + uri.netloc].request(method, url, data, headers=request_headers)
-        response = self.connections[uri.scheme + uri.netloc].getresponse()
+        if thisresponse.status > 399:
+            raise HTTPError("%s: %s" % (thisresponse.status, thisresponse.read()))
+        else:
+            # Store this response as an attribute representing the last response.
+            self.lastresponse = thisresponse
 
-        if response.status > 399:
-            raise HTTPError("%s: %s" % (response.status, response.read()))
-        return response
+        if thisresponse.status > 399:
+            raise HTTPError("%s: %s" % (thisresponse.status, thisresponse.read()))
+        # Store this response as an attribute representing the last response.
+        self.lastresponse = thisresponse
+        return thisresponse
 
     def get(self, url, **kwargs):
         return self.request('GET', url, **kwargs)
-
+                
     def delete(self, url, **kwargs):
         return self.request('DELETE', url, **kwargs)
 
