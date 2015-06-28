@@ -12,6 +12,7 @@ try:
     import httplib as client
     from urlparse import urlparse
     from urllib import urlencode
+    from time import sleep
 except ImportError:
     from http import client
     from urllib.parse import urlparse
@@ -69,6 +70,7 @@ class HTTPSession(object):
           try:
               return func(*args, **kwargs)
           except:
+              sleep(3)
               self.connections[uri.scheme + uri.netloc] = get_connection()
               return func(*args, **kwargs)
 
