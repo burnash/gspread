@@ -91,6 +91,11 @@ class HTTPSession(object):
         else:
             # Store this response as an attribute representing the last response.
             self.lastresponse = thisresponse
+
+        if thisresponse.status > 399:
+            raise HTTPError("%s: %s" % (thisresponse.status, thisresponse.read()))
+        # Store this response as an attribute representing the last response.
+        self.lastresponse = thisresponse
         return thisresponse
 
     def get(self, url, **kwargs):
