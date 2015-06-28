@@ -82,7 +82,7 @@ class HTTPSession(object):
                     request_headers[k] = v
         
         try_again(self.connections[uri.scheme + uri.netloc].request, method, url, data, headers=request_headers)
-        getattr(self.connections[uri.scheme + uri.netloc], 'getresponse')()
+        thisresponse = getattr(self.connections[uri.scheme + uri.netloc], 'getresponse')()
 
         if thisresponse.status > 399:
             raise HTTPError("%s: %s" % (thisresponse.status, thisresponse.read()))
