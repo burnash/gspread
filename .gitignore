@@ -1,9 +1,12 @@
 *.pyc
 tests/tests.config
 tests/creds.json
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
 
 # virtualenv
 env/
+=======
+>>>>>>> Squashing all the commits to simpy things for merge
 
 # tox testrunner support
 .tox/

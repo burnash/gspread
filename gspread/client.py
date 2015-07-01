@@ -221,7 +221,11 @@ class Client(object):
         try:
             r = self.session.put(url, data, headers=headers)
         except HTTPError as ex:
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
             if getattr(ex, 'code', None) == 403:
+=======
+            if ex.code == 403:
+>>>>>>> Squashing all the commits to simpy things for merge
                 raise UpdateCellError(ex.message)
             else:
                 raise

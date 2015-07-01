@@ -63,9 +63,14 @@ class HTTPSession(object):
             raise Exception("HTTP method '{0}' is not supported".format(method))
         response = func(url, data=data, headers=request_headers)
 
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
         if response.status_code > 399:
             raise HTTPError(response.status_code, "{0}: {1}".format(
                 response.status_code, response.content))
+=======
+        if response.status > 399:
+            raise HTTPError(response.status, "%s: %s" % (response.status, response.read()))
+>>>>>>> Squashing all the commits to simpy things for merge
         return response
 
     def get(self, url, **kwargs):

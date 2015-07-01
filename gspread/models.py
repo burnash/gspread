@@ -8,6 +8,10 @@ This module contains common spreadsheets' models
 
 """
 
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
+=======
+import re
+>>>>>>> Squashing all the commits to simpy things for merge
 from collections import defaultdict
 from itertools import chain
 from functools import wraps
@@ -75,7 +79,6 @@ def cast_to_a1_notation(method):
 
 
 class Spreadsheet(object):
-
     """ A class for a spreadsheet object."""
 
     def __init__(self, client, feed_entry):
@@ -393,8 +396,13 @@ class Worksheet(object):
         Empty cells in this list will be rendered as :const:`None`.
 
         """
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
         start_cell = rowcol_to_a1(row, 1)
         end_cell = rowcol_to_a1(row, self.col_count)
+=======
+        start_cell = self.get_addr_int(row, 1)
+        end_cell = self.get_addr_int(row, self.col_count)
+>>>>>>> Squashing all the commits to simpy things for merge
 
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
@@ -405,8 +413,13 @@ class Worksheet(object):
         Empty cells in this list will be rendered as :const:`None`.
 
         """
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
         start_cell = rowcol_to_a1(1, col)
         end_cell = rowcol_to_a1(self.row_count, col)
+=======
+        start_cell = self.get_addr_int(1, col)
+        end_cell = self.get_addr_int(self.row_count, col)
+>>>>>>> Squashing all the commits to simpy things for merge
 
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
@@ -521,6 +534,9 @@ class Worksheet(object):
     def append_row(self, values):
         """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
+        
+        Note that a new Google Sheet has 100 or 1000 rows by default. You
+        may need to scroll down to find the new row.
 
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
@@ -560,6 +576,7 @@ class Worksheet(object):
             self.resize(cols=data_width)
 
         # Retrieve all Cells at or below `index` using a single batch query
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
         top_left = rowcol_to_a1(index, 1)
         bottom_right = rowcol_to_a1(self.row_count, self.col_count)
         range_str = '%s:%s' % (top_left, bottom_right)
@@ -601,6 +618,63 @@ class Worksheet(object):
 
         # Remove last row
         self.resize(rows=self.row_count - 1)
+=======
+        top_left = self.get_addr_int(index, 1)
+        bottom_right = self.get_addr_int(self.row_count, self.col_count)
+        range_str = '%s:%s' % (top_left, bottom_right)
+
+        cells_after_insert = self.range(range_str)
+
+        for ind, cell in reversed(list(enumerate(cells_after_insert))):
+            if ind < self.col_count:
+                # For the first row, take the cell values from `values`
+                new_val = values[ind] if ind < len(values) else ''
+            else:
+                # For all other rows, take the cell values from the row above
+                new_val = cells_after_insert[ind - self.col_count].value
+            cell.value = new_val
+	
+	self.update_cells(cells_after_insert)
+    
+    def insert_column(self, values, index=1):
+    	""" Adds a column to the worksheet at the specified index (must be integer not char) and populates it with the values.
+    	Widens the worksheet if there are more values than columns
+    	
+    	:param values: List of values for the column.
+    	"""
+        self.add_cols(1)
+        data_width = len(values)
+        if self.row_count < data_width:
+            self.resize(rows=data_width)
+	
+	all_cells = self.get_all_values()
+	
+	""" Arranging the values in a list of sublists-column wise.""" 
+	
+        j=0
+	if not all_cells:
+	    columns_after_insert = [[]]
+	else:
+	    columns_before_insert = [[] for k in range(len(all_cells[0]))]
+            while j<len(all_cells[0]):
+                i=0
+                while i<len(all_cells):
+                    columns_before_insert[j].append(all_cells[i][j])
+                    i += 1
+                j += 1
+            columns_after_insert = columns_before_insert[index-1:] 
+	
+	columns_after_insert.insert(0, values)
+        
+        new_cell_list = []
+        for col, column in enumerate(columns_after_insert, start=1):
+            for c, cell in enumerate(column, start=1):
+                newcell = self.cell(c, col + (index - 1))
+                newcell.value = columns_after_insert[col - 1][c - 1]
+                new_cell_list.append(newcell)
+        self.update_cells(new_cell_list)
+
+>>>>>>> Squashing all the commits to simpy things for merge
 
     def _finder(self, func, query):
         cells = self._fetch_cells()
@@ -673,7 +747,7 @@ class Cell(object):
         numeric_value = cell_elem.get('numericValue')
         self.numeric_value = float(numeric_value) if numeric_value else None
 
-        #: Value of the cell.
+        # : Value of the cell.
         self.value = cell_elem.text or ''
 
     @property
