@@ -521,8 +521,11 @@ class Worksheet(object):
         self.resize(cols=self.col_count + cols)
 
     def append_row(self, values):
-        """"Adds a row to the worksheet and populates it with values.
+        """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
+        
+        Note that a new Google Sheet has 100 or 1000 rows by default. You
+        may need to scroll down to find the new row.
 
         :param values: List of values for the new row.
         """
