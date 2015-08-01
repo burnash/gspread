@@ -7,32 +7,49 @@ import hashlib
 import unittest
 import ConfigParser
 import itertools
+import json
+
+from oauth2client.client import SignedJwtAssertionCredentials
 
 import gspread
 
 
+CONFIG_FILENAME = os.path.join(os.path.dirname(__file__), 'tests.config')
+CREDS_FILENAME = os.path.join(os.path.dirname(__file__), 'creds.json')
+SCOPE = ['https://spreadsheets.google.com/feeds']
+
+
+def read_config(filename):
+    config = ConfigParser.ConfigParser()
+    config.readfp(open(filename))
+    return config
+
+
+def read_credentials(filename):
+    creds_data = json.load(open(filename))
+    return SignedJwtAssertionCredentials(creds_data['client_email'],
+                                         creds_data['private_key'],
+                                         SCOPE)
+
+
 class GspreadTest(unittest.TestCase):
 
-    def setUp(self):
-        creds_filename = "tests.config"
+    @classmethod
+    def setUpClass(cls):
         try:
-            config_filename = os.path.join(
-                os.path.dirname(__file__), creds_filename)
-            config = ConfigParser.ConfigParser()
-            config.readfp(open(config_filename))
-            email = config.get('Google Account', 'email')
-            password = config.get('Google Account', 'password')
-            self.config = config
-            self.gc = gspread.login(email, password)
+            cls.config = read_config(CONFIG_FILENAME)
+            credentials = read_credentials(CREDS_FILENAME)
+            cls.gc = gspread.authorize(credentials)
+        except IOError as e:
+            msg = "Can't find %s for reading test configuration. "
+            raise Exception(msg % e.filename)
 
-            self.assertTrue(isinstance(self.gc, gspread.Client))
-        except IOError:
-            msg = "Can't find %s for reading google account credentials. " \
-                  "You can create it from %s.example in tests/ directory."
-            raise Exception(msg % (creds_filename, creds_filename))
+    def setUp(self):
+        self.assertTrue(isinstance(self.gc, gspread.Client))
 
 
 class ClientTest(GspreadTest):
+
     """Test for gspread.client."""
 
     def test_open(self):
@@ -63,6 +80,7 @@ class ClientTest(GspreadTest):
 
 
 class SpreadsheetTest(GspreadTest):
+
     """Test for gspread.Spreadsheet."""
 
     def setUp(self):
@@ -91,6 +109,7 @@ class SpreadsheetTest(GspreadTest):
 
 
 class WorksheetTest(GspreadTest):
+
     """Test for gspread.Worksheet."""
 
     def setUp(self):
@@ -114,7 +133,7 @@ class WorksheetTest(GspreadTest):
 
     def test_get_addr_int(self):
         self.assertEqual(self.sheet.get_addr_int(3, 731), 'ABC3')
-        self.assertEqual(self.sheet.get_addr_int(1, 104),'CZ1')
+        self.assertEqual(self.sheet.get_addr_int(1, 104), 'CZ1')
 
     def test_addr_converters(self):
         for row in range(1, 257):
@@ -405,6 +424,7 @@ class WorksheetTest(GspreadTest):
 
         self.assertEqual(exported_data, csv_value)
 
+
 class WorksheetDeleteTest(GspreadTest):
 
     def setUp(self):
@@ -422,6 +442,7 @@ class WorksheetDeleteTest(GspreadTest):
 
 
 class CellTest(GspreadTest):
+
     """Test for gspread.Cell."""
 
     def setUp(self):

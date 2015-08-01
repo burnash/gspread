@@ -1,5 +1,6 @@
 *.pyc
 tests/tests.config
+tests/creds.json
 
 # tox testrunner support
 .tox/
