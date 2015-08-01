@@ -420,9 +420,9 @@ class WorksheetTest(GspreadTest):
 
         exported_data = sheet.export(format='csv').read()
 
-        csv_value = '\n'.join(value_list)
+        exported_values = exported_data.split()
 
-        self.assertEqual(exported_data, csv_value)
+        self.assertEqual(exported_values, value_list)
 
 
 class WorksheetDeleteTest(GspreadTest):
