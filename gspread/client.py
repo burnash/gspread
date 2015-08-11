@@ -294,8 +294,7 @@ class Client(object):
         try:
             r = self.session.post(url, data, headers=headers)
         except HTTPError as ex:
-            message = ex.read().decode()
-            raise RequestError(message)
+            raise RequestError(ex.message)
 
         return ElementTree.fromstring(r.read())
 
@@ -334,4 +333,3 @@ def authorize(credentials):
     client = Client(auth=credentials)
     client.login()
     return client
-
