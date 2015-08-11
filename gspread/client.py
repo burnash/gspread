@@ -280,8 +280,7 @@ class Client(object):
             r = self.session.put(url, data, headers=headers)
         except HTTPError as ex:
             if ex.code == 403:
-                message = ex.read().decode()
-                raise UpdateCellError(message)
+                raise UpdateCellError(ex.message)
             else:
                 raise ex
 
