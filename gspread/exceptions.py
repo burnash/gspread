@@ -43,3 +43,6 @@ class RequestError(GSpreadException):
 
 class HTTPError(RequestError):
     """DEPRECATED. Error while sending API request."""
+    def __init__(self, code, msg):
+        super(HTTPError, self).__init__(msg)
+        self.code = code
