@@ -135,6 +135,11 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(self.sheet.get_addr_int(3, 731), 'ABC3')
         self.assertEqual(self.sheet.get_addr_int(1, 104), 'CZ1')
 
+    def test_get_updated(self):
+        RFC_3339 = ('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?'
+                    '(Z|[+-]\d{2}:\d{2})')
+        self.assertRegexpMatches(self.sheet.updated, RFC_3339)
+
     def test_addr_converters(self):
         for row in range(1, 257):
             for col in range(1, 512):

@@ -8,7 +8,6 @@ This module contains common spreadsheets' models
 
 """
 
-
 import re
 from collections import defaultdict
 from itertools import chain
@@ -44,6 +43,7 @@ def _escape_attrib(text, encoding=None, replace=None):
     for key, value in entities.items():
         text = text.replace(key, value)
     return text
+
 
 ElementTree._escape_attrib = _escape_attrib
 
@@ -163,6 +163,7 @@ class Spreadsheet(object):
     @property
     def title(self):
         return self._feed_entry.find(_ns('title')).text
+
 
 class Worksheet(object):
 
@@ -523,7 +524,7 @@ class Worksheet(object):
     def append_row(self, values):
         """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
-        
+
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
 
