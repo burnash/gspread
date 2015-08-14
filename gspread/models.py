@@ -550,23 +550,33 @@ class Worksheet(object):
 
         :param values: List of values for the new row.
         """
+        if index == self.row_count + 1:
+            return self.append_row(values)
+        elif index > self.row_count + 1:
+            raise IndexError('Row index out of range')
+
         self.add_rows(1)
         data_width = len(values)
         if self.col_count < data_width:
             self.resize(cols=data_width)
 
-        all_cells = self.get_all_values()
-        rows_after_insert = all_cells[index - 1:self.row_count]
+        # Retrieve all Cells at or below `index` using a single batch query
+        top_left = self.get_addr_int(index, 1)
+        bottom_right = self.get_addr_int(self.row_count, self.col_count)
+        range_str = '%s:%s' % (top_left, bottom_right)
 
-        rows_after_insert.insert(0, values)
+        cells_after_insert = self.range(range_str)
 
-        updated_cell_list = []
-        for r, row in enumerate(rows_after_insert, start=1):
-            for c, cell in enumerate(row, start=1):
-                newcell = self.cell(r + (index - 1), c)
-                newcell.value = rows_after_insert[r - 1][c - 1]
-                updated_cell_list.append(newcell)
-        self.update_cells(updated_cell_list)
+        for ind, cell in reversed(list(enumerate(cells_after_insert))):
+            if ind < self.col_count:
+                # For the first row, take the cell values from `values`
+                new_val = values[ind] if ind < len(values) else ''
+            else:
+                # For all other rows, take the cell values from the row above
+                new_val = cells_after_insert[ind - self.col_count].value
+            cell.value = new_val
+
+        self.update_cells(cells_after_insert)
 
     def _finder(self, func, query):
         cells = self._fetch_cells()
