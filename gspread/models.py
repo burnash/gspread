@@ -378,31 +378,17 @@ class Worksheet(object):
 
         return [dict(zip(keys, row)) for row in values]
 
-    def _list_values(self, index, cell_tuple, position):
-        cells_list = self._fetch_cells()
-        cells = dict(map(cell_tuple, filter(position, cells_list)))
-
-        try:
-            last_index = max(cells.keys())
-        except ValueError:
-            return []
-
-        vals = []
-        for i in range(1, last_index + 1):
-            c = cells.get(i)
-            vals.append(c.value if c else None)
-
-        return vals
-
     def row_values(self, row):
         """Returns a list of all values in a `row`.
 
         Empty cells in this list will be rendered as :const:`None`.
 
         """
-        return self._list_values(row,
-                                 lambda cell: (cell.col, cell),
-                                 lambda cell: cell.row == row)
+        start_cell = self.get_addr_int(row, 1)
+        end_cell = self.get_addr_int(row, self.col_count)
+
+        row_cells = self.range('%s:%s' % (start_cell, end_cell))
+        return [cell.value for cell in row_cells]
 
     def col_values(self, col):
         """Returns a list of all values in column `col`.
@@ -410,9 +396,11 @@ class Worksheet(object):
         Empty cells in this list will be rendered as :const:`None`.
 
         """
-        return self._list_values(col,
-                                 lambda cell: (cell.row, cell),
-                                 lambda cell: cell.col == col)
+        start_cell = self.get_addr_int(1, col)
+        end_cell = self.get_addr_int(self.row_count, col)
+
+        row_cells = self.range('%s:%s' % (start_cell, end_cell))
+        return [cell.value for cell in row_cells]
 
     def update_acell(self, label, val):
         """Sets the new value to a cell.
