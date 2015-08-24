@@ -112,7 +112,6 @@ class Client(object):
 
             try:
                 r = self.session.post(url, data)
-                #content = r.read().decode()
                 token = self._get_auth_token(r.content)
                 auth_header = "GoogleLogin auth=%s" % token
                 self.session.add_header('Authorization', auth_header)
