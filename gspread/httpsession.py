@@ -57,7 +57,10 @@ class HTTPSession(object):
                 else:
                     request_headers[k] = v
 
-        func = getattr(requests, method.lower())
+        try:
+            func = getattr(requests, method.lower())
+        except AttributeError:
+            raise Exception("HTTP method '{}' is not supported".format(method))
         response = func(url, data=data, headers=request_headers)
 
         if response.status_code > 399:
