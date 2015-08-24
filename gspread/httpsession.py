@@ -10,6 +10,7 @@ This module contains a class for working with http sessions.
 
 try:
     import httplib as client
+    import requests
     from urlparse import urlparse
     from urllib import urlencode
 except ImportError:
@@ -38,6 +39,7 @@ class HTTPSession(object):
         self.connections = {}
 
     def request(self, method, url, data=None, headers=None):
+        import pdb; pdb.set_trace()
         if data and not isinstance(data, basestring):
             data = urlencode(data)
 
@@ -76,13 +78,15 @@ class HTTPSession(object):
         return response
 
     def get(self, url, **kwargs):
-        return self.request('GET', url, **kwargs)
+        #return self.request('GET', url, **kwargs)
+        return requests.get(url, headers=self.headers, **kwargs)
 
     def delete(self, url, **kwargs):
         return self.request('DELETE', url, **kwargs)
 
     def post(self, url, data=None, headers={}):
-        return self.request('POST', url, data=data, headers=headers)
+        #return self.request('POST', url, data=data, headers=headers)
+        return requests.post(url, data=data, headers=headers)
 
     def put(self, url, data=None, **kwargs):
         return self.request('PUT', url, data=data, **kwargs)

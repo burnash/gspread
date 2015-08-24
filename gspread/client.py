@@ -112,8 +112,8 @@ class Client(object):
 
             try:
                 r = self.session.post(url, data)
-                content = r.read().decode()
-                token = self._get_auth_token(content)
+                #content = r.read().decode()
+                token = self._get_auth_token(r.content)
                 auth_header = "GoogleLogin auth=%s" % token
                 self.session.add_header('Authorization', auth_header)
 
@@ -227,7 +227,8 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.read())
+        import pdb; pdb.set_trace()
+        return ElementTree.fromstring(r.content)
 
     def get_worksheets_feed(self, spreadsheet,
                             visibility='private', projection='full'):
@@ -235,7 +236,7 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.read())
+        return ElementTree.fromstring(r.content)
 
     def get_cells_feed(self, worksheet,
                        visibility='private', projection='full', params=None):
@@ -248,11 +249,11 @@ class Client(object):
             url = '%s?%s' % (url, params)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.read())
+        return ElementTree.fromstring(r.content)
 
     def get_feed(self, url):
         r = self.session.get(url)
-        return ElementTree.fromstring(r.read())
+        return ElementTree.fromstring(r.content)
 
     def del_worksheet(self, worksheet):
         url = construct_url(
@@ -261,7 +262,7 @@ class Client(object):
         # Even though there is nothing interesting in the response body
         # we have to read it or the next request from this session will get a
         # httplib.ResponseNotReady error.
-        r.read()
+        r.content
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
                                visibility='private', projection='full'):
@@ -269,7 +270,7 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.read())
+        return ElementTree.fromstring(r.content)
 
     def put_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml',
@@ -284,7 +285,7 @@ class Client(object):
             else:
                 raise ex
 
-        return ElementTree.fromstring(r.read())
+        return ElementTree.fromstring(r.content)
 
     def post_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml'}
@@ -295,7 +296,7 @@ class Client(object):
         except HTTPError as ex:
             raise RequestError(ex.message)
 
-        return ElementTree.fromstring(r.read())
+        return ElementTree.fromstring(r.content)
 
     def post_cells(self, worksheet, data):
         headers = {'Content-Type': 'application/atom+xml',
@@ -304,7 +305,7 @@ class Client(object):
         url = construct_url('cells_batch', worksheet)
         r = self.session.post(url, data, headers=headers)
 
-        return ElementTree.fromstring(r.read())
+        return ElementTree.fromstring(r.content)
 
 
 def login(email, password):
