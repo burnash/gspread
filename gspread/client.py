@@ -227,7 +227,6 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        import pdb; pdb.set_trace()
         return ElementTree.fromstring(r.content)
 
     def get_worksheets_feed(self, spreadsheet,
@@ -259,10 +258,6 @@ class Client(object):
         url = construct_url(
             'worksheet', worksheet, 'private', 'full', worksheet_version=worksheet.version)
         r = self.session.delete(url)
-        # Even though there is nothing interesting in the response body
-        # we have to read it or the next request from this session will get a
-        # httplib.ResponseNotReady error.
-        r.content
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
                                visibility='private', projection='full'):
