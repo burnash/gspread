@@ -401,7 +401,6 @@ class WorksheetTest(GspreadTest):
         num_rows = self.sheet.row_count
         num_cols = self.sheet.col_count
         values = [gen_value(i) for i in range(num_cols + 4)]
-        print values
         self.sheet.insert_row(values, 1)
         self.assertEqual(self.sheet.row_count, num_rows + 1)
         self.assertEqual(self.sheet.col_count, num_cols + 4)
