@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-import time
 import random
-import hashlib
 import unittest
 import ConfigParser
 import itertools
 import json
+import uuid
 
 from oauth2client.client import SignedJwtAssertionCredentials
 
@@ -30,6 +29,13 @@ def read_credentials(filename):
     return SignedJwtAssertionCredentials(creds_data['client_email'],
                                          creds_data['private_key'],
                                          SCOPE)
+
+
+def gen_value(prefix=None):
+    if prefix:
+        return u'%s %s' % (prefix, gen_value())
+    else:
+        return unicode(uuid.uuid4())
 
 
 class GspreadTest(unittest.TestCase):
@@ -161,12 +167,12 @@ class WorksheetTest(GspreadTest):
             self.assertTrue(isinstance(c, gspread.Cell))
 
     def test_update_acell(self):
-        value = hashlib.md5(str(time.time())).hexdigest()
+        value = gen_value()
         self.sheet.update_acell('A2', value)
         self.assertEqual(self.sheet.acell('A2').value, value)
 
     def test_update_cell(self):
-        value = hashlib.md5(str(time.time())).hexdigest()
+        value = gen_value()
         self.sheet.update_cell(1, 2, value)
         self.assertEqual(self.sheet.cell(1, 2).value, value)
 
@@ -183,15 +189,15 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(self.sheet.cell(1, 2).value, u'Артур')
 
     def test_update_cell_multiline(self):
-        value = hashlib.md5(str(time.time())).hexdigest()
+        value = gen_value()
         value = "%s\n%s" % (value, value)
         self.sheet.update_cell(1, 2, value)
         self.assertEqual(self.sheet.cell(1, 2).value, value)
 
     def test_update_cells(self):
         list_len = 10
-        value_list = [hashlib.md5(str(time.time() + i)).hexdigest()
-                      for i in range(list_len)]
+        value_list = [gen_value(i) for i in range(list_len)]
+
         # Test multiline
         value_list[0] = "%s\n%s" % (value_list[0], value_list[0])
 
@@ -228,7 +234,7 @@ class WorksheetTest(GspreadTest):
 
     def test_find(self):
         sheet = self.sheet
-        value = hashlib.md5(str(time.time())).hexdigest()
+        value = gen_value()
 
         sheet.update_cell(2, 10, value)
         sheet.update_cell(2, 11, value)
@@ -236,7 +242,7 @@ class WorksheetTest(GspreadTest):
         cell = sheet.find(value)
         self.assertEqual(cell.value, value)
 
-        value2 = hashlib.md5(str(time.time())).hexdigest()
+        value2 = gen_value()
         value = "%so_O%s" % (value, value2)
         sheet.update_cell(2, 11, value)
 
@@ -251,7 +257,7 @@ class WorksheetTest(GspreadTest):
         list_len = 10
         range_label = 'A1:A%s' % list_len
         cell_list = sheet.range(range_label)
-        value = hashlib.md5(str(time.time())).hexdigest()
+        value = gen_value()
 
         for c in cell_list:
             c.value = value
@@ -266,7 +272,7 @@ class WorksheetTest(GspreadTest):
 
         cell_list = sheet.range(range_label)
 
-        value = hashlib.md5(str(time.time())).hexdigest()
+        value = gen_value()
         for c in cell_list:
             char = chr(random.randrange(ord('a'), ord('z')))
             c.value = "%s%s_%s%s" % (c.value, char, char.upper(), value)
@@ -394,7 +400,8 @@ class WorksheetTest(GspreadTest):
     def test_insert_row(self):
         num_rows = self.sheet.row_count
         num_cols = self.sheet.col_count
-        values = ['o_0'] * (num_cols + 4)
+        values = [gen_value(i) for i in range(num_cols + 4)]
+        print values
         self.sheet.insert_row(values, 1)
         self.assertEqual(self.sheet.row_count, num_rows + 1)
         self.assertEqual(self.sheet.col_count, num_cols + 4)
@@ -406,14 +413,13 @@ class WorksheetTest(GspreadTest):
 
     def test_export(self):
         list_len = 10
-        time_md5 = hashlib.md5(str(time.time())).hexdigest()
+        time_md5 = gen_value()
         wks_name = 'export_test_%s' % time_md5
 
         self.spreadsheet.add_worksheet(wks_name, list_len, 5)
         sheet = self.spreadsheet.worksheet(wks_name)
 
-        value_list = [hashlib.md5(str(time.time() + i)).hexdigest()
-                      for i in range(list_len)]
+        value_list = [gen_value(i) for i in range(list_len)]
 
         range_label = 'A1:A%s' % list_len
         cell_list = sheet.range(range_label)
@@ -457,7 +463,7 @@ class CellTest(GspreadTest):
         self.sheet = sheet
 
     def test_properties(self):
-        update_value = hashlib.md5(str(time.time())).hexdigest()
+        update_value = gen_value()
         self.sheet.update_acell('A1', update_value)
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.value, update_value)
