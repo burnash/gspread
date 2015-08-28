@@ -23,6 +23,7 @@ except NameError:
     basestring = unicode = str
 
 
+import ssl
 from .exceptions import HTTPError
 
 
@@ -53,7 +54,7 @@ class HTTPSession(object):
         if not self.connections.get(uri.scheme + uri.netloc):
             if uri.scheme == 'https':
                 self.connections[
-                    uri.scheme + uri.netloc] = client.HTTPSConnection(uri.netloc)
+                    uri.scheme + uri.netloc] = client.HTTPSConnection(uri.netloc, context=ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH))
             else:
                 self.connections[
                     uri.scheme + uri.netloc] = client.HTTPConnection(uri.netloc)
