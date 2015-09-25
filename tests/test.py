@@ -113,6 +113,10 @@ class SpreadsheetTest(GspreadTest):
         sheet = self.spreadsheet.worksheet(sheet_title)
         self.assertTrue(isinstance(sheet, gspread.Worksheet))
 
+    def test_worksheet_iteration(self):
+        self.assertEqual(self.spreadsheet.worksheets(), 
+            [sheet for sheet in self.spreadsheet])
+
 
 class WorksheetTest(GspreadTest):
 

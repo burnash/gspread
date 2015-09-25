@@ -164,6 +164,10 @@ class Spreadsheet(object):
     def title(self):
         return self._feed_entry.find(_ns('title')).text
 
+    def __iter__(self):
+        for sheet in self.worksheets():
+            yield(sheet)
+
 
 class Worksheet(object):
 
