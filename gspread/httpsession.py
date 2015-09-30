@@ -82,9 +82,15 @@ class HTTPSession(object):
                         method, url, data, headers=request_headers)
                 response = self.connections[
                     uri.scheme + uri.netloc].getresponse()
+                if response.status > 399:
+                    attempts +=1
+                    if attempts == self.tries:
+                        break
+                    # No exception, but still want to retry
+                    continue                
             except client.HTTPException as e:
                 attempts += 1
-                if attempts == self.tries:
+                if attempts >= self.tries:
                     raise
             else:
                 break
