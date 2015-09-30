@@ -31,11 +31,16 @@ class HTTPSession(object):
     """Handles HTTP activity while keeping headers persisting across requests.
 
        :param headers: A dict with initial headers.
+
+       :param tries: (optional) If > 1, try again until that number of times
+                                is reached.
+
     """
 
-    def __init__(self, headers=None):
+    def __init__(self, headers=None, tries=1):
         self.headers = headers or {}
         self.connections = {}
+        self.tries = tries
 
     def request(self, method, url, data=None, headers=None):
         if data and not isinstance(data, basestring):
@@ -67,10 +72,23 @@ class HTTPSession(object):
                 else:
                     request_headers[k] = v
 
-        self.connections[
-            uri.scheme + uri.netloc].request(method, url, data, headers=request_headers)
-        response = self.connections[uri.scheme + uri.netloc].getresponse()
-
+        attempts = 0
+        while True:
+            # Either we'll break out (if no Exception) or we'll reach
+            #  the max number of tries and raise an Exception
+            try:
+                self.connections[
+                    uri.scheme + uri.netloc].request(
+                        method, url, data, headers=request_headers)
+                response = self.connections[
+                    uri.scheme + uri.netloc].getresponse()
+            except client.HTTPException as e:
+                attempts += 1
+                if attempts == self.tries:
+                    raise
+            else:
+                break
+            
         if response.status > 399:
             raise HTTPError(response.status, "%s: %s" % (response.status, response.read()))
         return response
