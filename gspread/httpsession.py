@@ -87,8 +87,14 @@ class HTTPSession(object):
                     if attempts == self.tries:
                         break
                     # No exception, but still want to retry
+                    # Since we got a response, we don't need to close
+                    #  the connection (as we do below if there's an exception)
                     continue                
             except client.HTTPException as e:
+                # In the case where no response was received, 
+                #  We need to close the connection before we retry
+                # See https://docs.python.org/2/library/httplib.html
+                self.connections[uri.scheme + uri.netloc].close()
                 attempts += 1
                 if attempts >= self.tries:
                     raise
