@@ -22,6 +22,7 @@ try:
 except NameError:
     basestring = unicode = str
 
+import time
 
 from .exceptions import HTTPError
 
@@ -84,6 +85,7 @@ class HTTPSession(object):
                     uri.scheme + uri.netloc].getresponse()
                 if response.status > 399:
                     attempts +=1
+                    time.sleep(1)
                     if attempts == self.tries:
                         break
                     # No exception, but still want to retry
@@ -96,6 +98,7 @@ class HTTPSession(object):
                 # See https://docs.python.org/2/library/httplib.html
                 self.connections[uri.scheme + uri.netloc].close()
                 attempts += 1
+                time.sleep(1)
                 if attempts >= self.tries:
                     raise
             else:
