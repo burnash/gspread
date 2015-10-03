@@ -551,6 +551,8 @@ class Worksheet(object):
         data_width = len(values)
         if self.col_count < data_width:
             self.resize(cols=data_width)
+        else:
+            values += [''] * (self.col_count - data_width)
 
         # Retrieve all Cells at or below `index` using a single batch query
         top_left = self.get_addr_int(index, 1)
