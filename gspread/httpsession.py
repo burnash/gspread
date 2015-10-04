@@ -86,6 +86,10 @@ class HTTPSession(object):
                 if response.status > 399:
                     attempts +=1
                     time.sleep(1)
+                    if attempts > 3:
+                        print "Failed %d times...sleeping for 10 secs now." % \
+                            attempts
+                        time.sleep(10)
                     if attempts == self.tries:
                         break
                     # No exception, but still want to retry
@@ -99,7 +103,12 @@ class HTTPSession(object):
                 self.connections[uri.scheme + uri.netloc].close()
                 attempts += 1
                 time.sleep(1)
+                if attempts > 3:
+                    time.sleep(10)
+
                 if attempts >= self.tries:
+                    if attempts > 1:
+                        print "Failing after %d attempts." % attempts 
                     raise
             else:
                 break
