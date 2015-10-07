@@ -88,6 +88,9 @@ class HTTPSession(object):
                     time.sleep(1)
                     if self.tries > 1:
                         print "response.raw on try %d:" % attempts
+                        print response.status
+                        print response.reason
+                        print response.msg
                         print "dir(response):"
                         print dir(response)
                     if attempts > 2:
