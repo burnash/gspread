@@ -86,10 +86,13 @@ class HTTPSession(object):
                 if response.status > 399:
                     attempts +=1
                     time.sleep(1)
+                    if self.tries > 1:
+                        print "response on try %d:" % attempts
+                        print response
                     if attempts > 2:
                         print "Failed %d times...sleeping for 10 secs now." % \
                             attempts
-                        time.sleep(10)
+                        time.sleep(9)
                     if attempts == self.tries:
                         if attempts > 1:
                             print "Failing after %d attempts." % attempts 
@@ -105,12 +108,17 @@ class HTTPSession(object):
                 self.connections[uri.scheme + uri.netloc].close()
                 attempts += 1
                 time.sleep(1)
+                if self.tries > 1:
+                    print "Exception on try %d:" % attempts
+                    import traceback;traceback.print_exc()
                 if attempts > 2:
-                    time.sleep(10)
+                    print "Failed %d times...sleeping for 10 secs now." % \
+                        attempts
+                    time.sleep(9)
 
                 if attempts >= self.tries:
                     if attempts > 1:
-                        print "Failing after %d attempts." % attempts 
+                        print "Failing after %d attempts." % attempts
                     raise
             else:
                 break
