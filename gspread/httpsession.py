@@ -1,4 +1,4 @@
-: utf-8 -*-
+#: utf-8 -*-
 
 """
 gspread.httpsession
