@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+: utf-8 -*-
 
 """
 gspread.httpsession
@@ -121,6 +121,8 @@ class HTTPSession(object):
                         print "Failing after %d attempts." % attempts
                     raise
             else:
+                if attempts > 1 and self.tries > 1:
+                    print "Succeeded after %d tries!" % attempts
                 break
             
         if response.status > 399:
