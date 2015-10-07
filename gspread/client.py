@@ -279,7 +279,7 @@ class Client(object):
         try:
             r = self.session.put(url, data, headers=headers)
         except HTTPError as ex:
-            if ex.code == 403:
+            if getattr(ex, 'code', None) == 403:
                 raise UpdateCellError(ex.message)
             else:
                 raise ex
