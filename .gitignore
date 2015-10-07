@@ -5,3 +5,6 @@ tests/creds.json
 # tox testrunner support
 .tox/
 gspread.egg-info/
+
+.env
+venv/
