@@ -87,8 +87,10 @@ class HTTPSession(object):
                     attempts +=1
                     time.sleep(1)
                     if self.tries > 1:
-                        print "response on try %d:" % attempts
-                        print response
+                        print "response.raw on try %d:" % attempts
+                        print response.raw
+                        print "dir(response):"
+                        print dir(response)
                     if attempts > 2:
                         print "Failed %d times...sleeping for 10 secs now." % \
                             attempts
@@ -109,10 +111,11 @@ class HTTPSession(object):
                 attempts += 1
                 time.sleep(1)
                 if self.tries > 1:
-                    print "Pre TB call."
-                    print "Exception on try %d:" % attempts
-                    import traceback;traceback.print_exc()
-                    print "Post TB call."
+                    print "client.HTTPException (as e) on try %d:" % attempts
+                    #import traceback;traceback.print_exc()
+                    print e
+                    print "dir(e):"
+                    print dir(e)
                 if attempts > 2:
                     print "Failed %d times...sleeping for 10 secs now." % \
                         attempts
