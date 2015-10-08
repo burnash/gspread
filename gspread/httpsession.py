@@ -85,18 +85,17 @@ class HTTPSession(object):
                     uri.scheme + uri.netloc].getresponse()
                 if response.status > 399:
                     attempts +=1
-                    time.sleep(1)
                     if self.tries > 1:
+                        self.connections[uri.scheme + uri.netloc].close()
                         print "response.raw on try %d:" % attempts
                         print response.status
                         print response.reason
                         print response.msg
-                        print "dir(response):"
-                        print dir(response)
                     if attempts > 2:
-                        print "Failed %d times...sleeping for 10 secs now." % \
-                            attempts
-                        time.sleep(9)
+                        wait_time = attempts * 5
+                        print "Failed %d times...sleeping for %d secs now." % \
+                            wait_time
+                        time.sleep(wait_time)
                     if attempts == self.tries:
                         if attempts > 1:
                             print "Failing after %d attempts." % attempts 
@@ -111,17 +110,14 @@ class HTTPSession(object):
                 # See https://docs.python.org/2/library/httplib.html
                 self.connections[uri.scheme + uri.netloc].close()
                 attempts += 1
-                time.sleep(1)
                 if self.tries > 1:
                     print "client.HTTPException (as e) on try %d:" % attempts
-                    #import traceback;traceback.print_exc()
-                    print e
-                    print "dir(e):"
-                    print dir(e)
+                    print e.message
                 if attempts > 2:
-                    print "Failed %d times...sleeping for 10 secs now." % \
-                        attempts
-                    time.sleep(9)
+                    wait_time = attempts * 5
+                    print "Failed %d times...sleeping for %d secs now." % \
+                        wait_time
+                    time.sleep(wait_time)
 
                 if attempts >= self.tries:
                     if attempts > 1:
