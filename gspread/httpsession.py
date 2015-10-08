@@ -105,6 +105,7 @@ class HTTPSession(object):
                     #  the connection (as we do below if there's an exception)
                     continue                
             except client.HTTPException as e:
+                import traceback;traceback.print_exc()
                 # In the case where no response was received, 
                 #  We need to close the connection before we retry
                 # See https://docs.python.org/2/library/httplib.html
