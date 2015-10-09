@@ -7,8 +7,9 @@ gspread
 Google Spreadsheets client library.
 
 """
+from pkg_resources import get_distribution
 
-__version__ = '0.2.5'
+__version__ = get_distribution('gspread').version
 __author__ = 'Anton Burnashev'
 
 

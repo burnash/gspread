@@ -3,8 +3,6 @@
 import os.path
 import sys
 
-import gspread
-
 try:
     from setuptools import setup
 except ImportError:
@@ -37,7 +35,7 @@ setup(
     packages=['gspread'],
     description=description,
     long_description=long_description,
-    version=gspread.__version__,
+    version='0.2.6',
     author='Anton Burnashev',
     author_email='fuss.here@gmail.com',
     url='https://github.com/burnash/gspread',
@@ -54,5 +52,6 @@ setup(
         "Topic :: Office/Business :: Financial :: Spreadsheet",
         "Topic :: Software Development :: Libraries :: Python Modules"
         ],
-    license='MIT'
+    license='MIT',
+    install_requires=['requests']
     )
