@@ -57,7 +57,7 @@ You'll need *client_email* and *private_key*.
 ::
 
     pip install --upgrade oauth2client
-    
+
 Depending on your system setup you may need to install PyOpenSSL:
 
 ::
@@ -75,17 +75,13 @@ Depending on your system setup you may need to install PyOpenSSL:
     json_key = json.load(open('gspread-april-2cd … ba4.json'))
     scope = ['https://spreadsheets.google.com/feeds']
 
-    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
 
     gc = gspread.authorize(credentials)
 
     wks = gc.open("Where is the money Lebowski?").sheet1
 
-**Note**: Python 3 users need to cast ``json_key['private_key']`` to ``bytes``. Otherwise you'll get ``TypeError: expected bytes, not str`` exception. Replace the line with ``SignedJwtAssertionCredentials`` call with this:
-
-::
-
-    credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+**Note**: Python2 users do not need to encode ``json_key['private_key']`` due to ``str`` and ``bytes`` not being differentiated.
 
 
 7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
@@ -112,4 +108,3 @@ If you have another method of authenicating you can easily hack a custom credent
       def refresh (self, http):
         # get new access_token
         # this only gets called if access_token is None
-
