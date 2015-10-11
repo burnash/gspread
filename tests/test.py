@@ -17,6 +17,8 @@ CONFIG_FILENAME = os.path.join(os.path.dirname(__file__), 'tests.config')
 CREDS_FILENAME = os.path.join(os.path.dirname(__file__), 'creds.json')
 SCOPE = ['https://spreadsheets.google.com/feeds']
 
+I18N_STR = u'Iñtërnâtiônàlizætiøn'#.encode('utf8')
+
 
 def read_config(filename):
     config = ConfigParser.ConfigParser()
@@ -199,6 +201,12 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cell(1, 2, value)
         self.assertEqual(self.sheet.cell(1, 2).value, value)
 
+    def test_update_cell_unicode(self):
+        self.sheet.update_cell(1, 1, I18N_STR)
+
+        cell = self.sheet.cell(1, 1)
+        self.assertEqual(cell.value, I18N_STR)
+
     def test_update_cells(self):
         list_len = 10
         value_list = [gen_value(i) for i in range(list_len)]
@@ -218,6 +226,14 @@ class WorksheetTest(GspreadTest):
 
         for c, v in zip(cell_list, value_list):
             self.assertEqual(c.value, v)
+
+    def test_update_cells_unicode(self):
+        cell = self.sheet.cell(1, 1)
+        cell.value = I18N_STR
+        self.sheet.update_cells([cell])
+
+        cell = self.sheet.cell(1, 1)
+        self.assertEqual(cell.value, I18N_STR)
 
     def test_resize(self):
         add_num = 10

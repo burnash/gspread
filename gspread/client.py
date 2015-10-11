@@ -72,8 +72,11 @@ class Client(object):
 
         """, Warning)
 
-    def _add_xml_header(self, data):
-        return "<?xml version='1.0' encoding='UTF-8'?>%s" % data.decode()
+    def _ensure_xml_header(self, data):
+        if data.startswith('<?xml'):
+            return data
+        else:
+            return "<?xml version='1.0' encoding='utf8'?>%s" % data
 
     def login(self):
         """Authorize client using ClientLogin protocol.
@@ -274,7 +277,7 @@ class Client(object):
     def put_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml',
                    'If-Match': '*'}
-        data = self._add_xml_header(data)
+        data = self._ensure_xml_header(data)
 
         try:
             r = self.session.put(url, data, headers=headers)
@@ -288,7 +291,7 @@ class Client(object):
 
     def post_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml'}
-        data = self._add_xml_header(data)
+        data = self._ensure_xml_header(data)
 
         try:
             r = self.session.post(url, data, headers=headers)
@@ -300,7 +303,7 @@ class Client(object):
     def post_cells(self, worksheet, data):
         headers = {'Content-Type': 'application/atom+xml',
                    'If-Match': '*'}
-        data = self._add_xml_header(data)
+        data = self._ensure_xml_header(data)
         url = construct_url('cells_batch', worksheet)
         r = self.session.post(url, data, headers=headers)
 
