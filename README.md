@@ -1,5 +1,5 @@
 # Google Spreadsheets Python API
-[![Downloads](https://pypip.in/d/gspread/badge.png)](https://crate.io/packages/gspread)
+[![Downloads](https://img.shields.io/pypi/dm/gspread.svg)](https://pypi.python.org/pypi/gspread)
 
 Manage your spreadsheets with _gspread_ in Python.
 
@@ -10,20 +10,16 @@ Features:
 * Independent of Google Data Python client library.
 * Python 3 support.
 
-![logo](https://raw.github.com/burnash/gspread/master/gspread.png "")
-
 ## Basic Usage
+
+1. [Obtain OAuth2 credentials from Google Developers Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
+
+2. Start using gspread:
 
 ```python
 import gspread
 
-# Login with your Google account
-gc = gspread.login('thedude@abid.es', 'password')
-
-# WARNING: The code above uses ClientLogin and was disabled 
-# on April 20, 2015.
-
-# Please use OAuth2 authorization to access Google Sheets.
+gc = gspread.authorize(credentials)
 
 # Open a worksheet from spreadsheet with one shot
 wks = gc.open("Where is the money Lebowski?").sheet1
@@ -33,21 +29,6 @@ wks.update_acell('B2', "it's down there somewhere, let me take another look.")
 # Fetch a cell range
 cell_list = wks.range('A1:B7')
 ```
-
-## Authorization Using OAuth2
-
-```python
-import gspread
-
-# Login with your Google account
-gc = gspread.authorize(OAuth2Credentials)
-
-# Open a worksheet from spreadsheet with one shot
-wks = gc.open("Where is the money Lebowski?").sheet1
-
-```
-
-OAuth2Credentials must be an object with a valid `access_token` attribute, such as one created with the oauth2client library from Google. See ["Using OAuth2 for Authorization"](http://gspread.readthedocs.org/en/latest/oauth2.html) for more information.
 
 ## More Examples
 
