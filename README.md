@@ -14,7 +14,9 @@ Features:
 
 1. [Obtain OAuth2 credentials from Google Developers Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
 
-2. Start using gspread:
+2. Share your spreadsheet with the `client_email` found in the downloaded .json-file from the Developer Console. 
+
+3. Start using gspread:
 
 ```python
 import gspread
