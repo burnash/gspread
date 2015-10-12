@@ -87,52 +87,28 @@ class HTTPSession(object):
                     attempts +=1
                     if self.tries > 1:
                         self.connections[uri.scheme + uri.netloc].close()
-                        """
-                        print "response.raw on try %d:" % attempts
-                        print response.status
-                        print response.reason
-                        print response.msg
-                        """
                     if attempts > 2:
                         wait_time = attempts * 5
-                        #print "Failed %d times...sleeping for %d secs now." % \
-                        #    wait_time
                         time.sleep(wait_time)
                     if attempts == self.tries:
-                        if attempts > 1:
-                            #print "Failing after %d attempts." % attempts
-                            pass
                         break
                     # No exception, but still want to retry
                     # Since we got a response, we don't need to close
                     #  the connection (as we do below if there's an exception)
                     continue                
             except client.HTTPException as e:
-                #import traceback;traceback.print_exc()
                 # In the case where no response was received, 
                 #  We need to close the connection before we retry
                 # See https://docs.python.org/2/library/httplib.html
                 self.connections[uri.scheme + uri.netloc].close()
                 attempts += 1
-                if self.tries > 1:
-                    #print "client.HTTPException (as e) on try %d:" % attempts
-                    #print e.message
-                    pass
                 if attempts > 2:
                     wait_time = attempts * 5
-                    #print "Failed %d times...sleeping for %d secs now." % \
-                    #    wait_time
                     time.sleep(wait_time)
 
                 if attempts >= self.tries:
-                    if attempts > 1:
-                        #print "Failing after %d attempts." % attempts
-                        pass
                     raise
             else:
-                if attempts > 1 and self.tries > 1:
-                    #print "Succeeded after %d tries!" % attempts
-                    pass
                 break
             
         if response.status > 399:
