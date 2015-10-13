@@ -186,7 +186,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cell(1, 2, 42)
         self.assertEqual(self.sheet.cell(1, 2).value, '42')
 
-        self.sheet.update_cell(1, 2, 42)
+        self.sheet.update_cell(1, 2, '0042')
         self.assertEqual(self.sheet.cell(1, 2).value, '42')
 
         self.sheet.update_cell(1, 2, 42.01)
@@ -381,7 +381,7 @@ class WorksheetTest(GspreadTest):
     def test_append_row(self):
         num_rows = self.sheet.row_count
         num_cols = self.sheet.col_count
-        values = ['o_0'] * (num_cols + 4)
+        values = [I18N_STR] * (num_cols + 4)
         self.sheet.append_row(values)
         self.assertEqual(self.sheet.row_count, num_rows + 1)
         self.assertEqual(self.sheet.col_count, num_cols + 4)
