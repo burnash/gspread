@@ -41,18 +41,20 @@ class Client(object):
                  oauth2client library. https://github.com/google/oauth2client
     :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
                                     Defaults to :class:`~gspread.httpsession.HTTPSession`.
-
+    :param tries: (optional) If > 1, the HTTPSession that's created will try again 
+                             until that number of tries upon failure.
+    
     >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
 
     or
 
     >>> c = gspread.Client(auth=OAuthCredentialObject)
 
-
+    
     """
-    def __init__(self, auth, http_session=None):
+    def __init__(self, auth, http_session=None, tries=1):
         self.auth = auth
-        self.session = http_session or HTTPSession()
+        self.session = http_session or HTTPSession(tries=tries)
 
     def _get_auth_token(self, content):
         for line in content.splitlines():
@@ -310,7 +312,7 @@ class Client(object):
         return ElementTree.fromstring(r.read())
 
 
-def login(email, password):
+def login(email, password, tries=1):
     """Login to Google API using `email` and `password`.
 
     This is a shortcut function which instantiates :class:`Client`
@@ -319,11 +321,11 @@ def login(email, password):
     :returns: :class:`Client` instance.
 
     """
-    client = Client(auth=(email, password))
+    client = Client(auth=(email, password), tries=tries)
     client.login()
     return client
 
-def authorize(credentials):
+def authorize(credentials, tries=1):
     """Login to Google API using OAuth2 credentials.
 
     This is a shortcut function which instantiates :class:`Client`
@@ -332,6 +334,6 @@ def authorize(credentials):
     :returns: :class:`Client` instance.
 
     """
-    client = Client(auth=credentials)
+    client = Client(auth=credentials, tries=tries)
     client.login()
     return client

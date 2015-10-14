@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#: utf-8 -*-
 
 """
 gspread.httpsession
@@ -22,6 +22,7 @@ try:
 except NameError:
     basestring = unicode = str
 
+import time
 
 from .exceptions import HTTPError
 
@@ -31,11 +32,16 @@ class HTTPSession(object):
     """Handles HTTP activity while keeping headers persisting across requests.
 
        :param headers: A dict with initial headers.
+
+       :param tries: (optional) If > 1, try again until that number of times
+                                is reached.
+
     """
 
-    def __init__(self, headers=None):
+    def __init__(self, headers=None, tries=1):
         self.headers = headers or {}
         self.connections = {}
+        self.tries = tries
 
     def request(self, method, url, data=None, headers=None):
         if data and not isinstance(data, basestring):
@@ -67,10 +73,44 @@ class HTTPSession(object):
                 else:
                     request_headers[k] = v
 
-        self.connections[
-            uri.scheme + uri.netloc].request(method, url, data, headers=request_headers)
-        response = self.connections[uri.scheme + uri.netloc].getresponse()
+        attempts = 0
+        while True:
+            # Either we'll break out (if no Exception) or we'll reach
+            #  the max number of tries and raise an Exception
+            try:
+                self.connections[
+                    uri.scheme + uri.netloc].request(
+                        method, url, data, headers=request_headers)
+                response = self.connections[
+                    uri.scheme + uri.netloc].getresponse()
+                if response.status > 399:
+                    attempts +=1
+                    if self.tries > 1:
+                        self.connections[uri.scheme + uri.netloc].close()
+                    if attempts > 2:
+                        wait_time = attempts * 5
+                        time.sleep(wait_time)
+                    if attempts == self.tries:
+                        break
+                    # No exception, but still want to retry
+                    # Since we got a response, we don't need to close
+                    #  the connection (as we do below if there's an exception)
+                    continue                
+            except client.HTTPException as e:
+                # In the case where no response was received, 
+                #  We need to close the connection before we retry
+                # See https://docs.python.org/2/library/httplib.html
+                self.connections[uri.scheme + uri.netloc].close()
+                attempts += 1
+                if attempts > 2:
+                    wait_time = attempts * 5
+                    time.sleep(wait_time)
 
+                if attempts >= self.tries:
+                    raise
+            else:
+                break
+            
         if response.status > 399:
             raise HTTPError(response.status, "%s: %s" % (response.status, response.read()))
         return response
