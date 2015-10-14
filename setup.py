@@ -3,8 +3,6 @@
 import os.path
 import sys
 
-import gspread
-
 try:
     from setuptools import setup
 except ImportError:
@@ -54,5 +52,6 @@ setup(
         "Topic :: Office/Business :: Financial :: Spreadsheet",
         "Topic :: Software Development :: Libraries :: Python Modules"
         ],
-    license='MIT'
+    license='MIT',
+    install_requires=['requests']
     )

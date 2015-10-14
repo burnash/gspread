@@ -6,3 +6,4 @@ python:
   - "3.3"
   - "3.4"
 script: nosetests
+install: "pip install -r requirements.txt"

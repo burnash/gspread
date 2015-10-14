@@ -200,6 +200,12 @@ easy_install gspread
     nosetests
     ```
 
+## Testing environment setup
+
+    pip install nose
+    pip install requests['security']
+    pip install oath2client
+
 ## Suggestions & Code Contribution
 
 - [Javier Candeira](https://github.com/candeira)
