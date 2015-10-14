@@ -35,7 +35,7 @@ setup(
     packages=['gspread'],
     description=description,
     long_description=long_description,
-    version='0.2.6',
+    version=gspread.__version__,
     author='Anton Burnashev',
     author_email='fuss.here@gmail.com',
     url='https://github.com/burnash/gspread',

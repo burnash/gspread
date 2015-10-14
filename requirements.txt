@@ -13,4 +13,4 @@ pycparser==2.14
 pyOpenSSL==0.15.1
 requests==2.8.0
 rsa==3.2
-six==1.9.0
+six==1.10.0
