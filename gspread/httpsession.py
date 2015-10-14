@@ -66,9 +66,13 @@ class HTTPSession(object):
                     del request_headers[k]
                 else:
                     request_headers[k] = v
+        try:
+            self.connections[uri.scheme + uri.netloc].request(
+                method, url, data, headers=request_headers)
+        except client.CannotSendRequest:
+            self.connections[uri.scheme + uri.netloc] = None
+            raise
 
-        self.connections[
-            uri.scheme + uri.netloc].request(method, url, data, headers=request_headers)
         response = self.connections[uri.scheme + uri.netloc].getresponse()
 
         if response.status > 399:
