@@ -3,11 +3,20 @@
 
 from textwrap import dedent
 from xml.etree import ElementTree
+import time
+import datetime
+import calendar
+
+
+def to_utc(a_datetime):
+    timestamp = time.mktime(a_datetime.timetuple())
+    return datetime.datetime.utcfromtimestamp(timestamp)
 
 
 def to_rfc3339(a_datetime):
-    # TODO(msuozzo)
-    raise NotImplementedError
+    utc_dt = to_utc(a_datetime)
+    ms = utc_dt.microsecond / 10000
+    return utc_dt.strftime('%Y-%m-%dT%H:%M:%S') + '.%02dZ' % ms
 
 
 class SpreadsheetFeed(object):
@@ -42,7 +51,7 @@ class SpreadsheetFeed(object):
         {entries}
 
         </ns0:feed>
-    """)
+    """).strip('\n')
 
     ENTRY = dedent("""
       <ns0:entry>
@@ -66,7 +75,7 @@ class SpreadsheetFeed(object):
           <ns0:email>{email}</ns0:email>
         </ns0:author>
       </ns0:entry>
-    """)
+    """).strip('\n')
 
     def __init__(self, updated_dt, dev_email):
         self.updated = to_rfc3339(updated_dt)
@@ -96,12 +105,12 @@ class SpreadsheetFeed(object):
         })
 
     def to_xml(self):
-        return ElementTree.parse(str(self))
+        return ElementTree.fromstring(str(self))
 
     def __str__(self):
         entry_strs = [self.ENTRY.format(**entry_dict)
                       for entry_dict in self.entries]
-        return self.SPREADSHEET_FEED.format({
+        return self.SPREADSHEET_FEED.format(**{
             'updated': self.updated,
             'dev_email': self.dev_email,
             'num_results': len(self.entries),
