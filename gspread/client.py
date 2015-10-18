@@ -73,10 +73,10 @@ class Client(object):
         """, Warning)
 
     def _ensure_xml_header(self, data):
-        if data.startswith('<?xml'):
+        if data.startswith(b'<?xml'):
             return data
         else:
-            return "<?xml version='1.0' encoding='utf8'?>%s" % data
+            return b'<?xml version="1.0" encoding="utf8"?>' + data
 
     def login(self):
         """Authorize client using ClientLogin protocol.
@@ -115,7 +115,7 @@ class Client(object):
 
             try:
                 r = self.session.post(url, data)
-                token = self._get_auth_token(r.text)
+                token = self._get_auth_token(r.content)
                 auth_header = "GoogleLogin auth=%s" % token
                 self.session.add_header('Authorization', auth_header)
 
@@ -229,7 +229,7 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.text)
+        return ElementTree.fromstring(r.content)
 
     def get_worksheets_feed(self, spreadsheet,
                             visibility='private', projection='full'):
@@ -237,7 +237,7 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.text)
+        return ElementTree.fromstring(r.content)
 
     def get_cells_feed(self, worksheet,
                        visibility='private', projection='full', params=None):
@@ -250,11 +250,11 @@ class Client(object):
             url = '%s?%s' % (url, params)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.text)
+        return ElementTree.fromstring(r.content)
 
     def get_feed(self, url):
         r = self.session.get(url)
-        return ElementTree.fromstring(r.text)
+        return ElementTree.fromstring(r.content)
 
     def del_worksheet(self, worksheet):
         url = construct_url(
@@ -267,7 +267,7 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.text)
+        return ElementTree.fromstring(r.content)
 
     def put_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml',
@@ -282,7 +282,7 @@ class Client(object):
             else:
                 raise ex
 
-        return ElementTree.fromstring(r.text)
+        return ElementTree.fromstring(r.content)
 
     def post_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml'}
@@ -293,7 +293,7 @@ class Client(object):
         except HTTPError as ex:
             raise RequestError(ex.message)
 
-        return ElementTree.fromstring(r.text)
+        return ElementTree.fromstring(r.content)
 
     def post_cells(self, worksheet, data):
         headers = {'Content-Type': 'application/atom+xml',
@@ -302,7 +302,7 @@ class Client(object):
         url = construct_url('cells_batch', worksheet)
         r = self.session.post(url, data, headers=headers)
 
-        return ElementTree.fromstring(r.text)
+        return ElementTree.fromstring(r.content)
 
 
 def login(email, password):

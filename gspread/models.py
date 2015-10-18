@@ -595,7 +595,7 @@ class Worksheet(object):
 
         :param query: A text string or compiled regular expression.
         """
-        return self._finder(filter, query)
+        return list(self._finder(filter, query))
 
     def export(self, format='csv'):
         """Export the worksheet in specified format.
@@ -614,7 +614,7 @@ class Worksheet(object):
         params = urlencode(params)
         export_link = '%s?%s' % (url, params)
 
-        return self.client.session.get(export_link)
+        return self.client.session.get(export_link).content
 
 
 class Cell(object):

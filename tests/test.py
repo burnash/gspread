@@ -3,14 +3,22 @@ import os
 import re
 import random
 import unittest
-import ConfigParser
 import itertools
 import json
 import uuid
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 
 from oauth2client.client import SignedJwtAssertionCredentials
 
 import gspread
+
+try:
+    unicode
+except NameError:
+    basestring = unicode = str
 
 
 CONFIG_FILENAME = os.path.join(os.path.dirname(__file__), 'tests.config')
@@ -29,7 +37,7 @@ def read_config(filename):
 def read_credentials(filename):
     creds_data = json.load(open(filename))
     return SignedJwtAssertionCredentials(creds_data['client_email'],
-                                         creds_data['private_key'],
+                                         creds_data['private_key'].encode(),
                                          SCOPE)
 
 
@@ -151,7 +159,8 @@ class WorksheetTest(GspreadTest):
     def test_get_updated(self):
         RFC_3339 = (r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?'
                     r'(Z|[+-]\d{2}:\d{2})')
-        self.assertRegexpMatches(self.sheet.updated, RFC_3339)
+        has_match = re.match(RFC_3339, self.sheet.updated) is not None
+        self.assertTrue(has_match)
 
     def test_addr_converters(self):
         for row in range(1, 257):
@@ -411,8 +420,9 @@ class WorksheetTest(GspreadTest):
 
         self.sheet.update_cells(cell_list)
 
-        exported_data = self.sheet.export(format='csv').read()
-        exported_values = map(unicode, exported_data.splitlines())
+        exported_data = self.sheet.export(format='csv')
+        exported_values = [unicode(line.decode())
+                           for line in exported_data.splitlines()]
 
         self.assertEqual(exported_values, value_list)
 
@@ -456,7 +466,7 @@ class CellTest(GspreadTest):
         self.sheet.update_acell('A1', '= 1 / 1024')
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, numeric_value)
-        self.assertIsInstance(cell.numeric_value, float)
+        self.assertTrue(isinstance(cell.numeric_value, float))
         self.sheet.update_acell('A1', 'Non-numeric value')
         cell = self.sheet.acell('A1')
-        self.assertIs(cell.numeric_value, None)
+        self.assertEqual(cell.numeric_value, None)

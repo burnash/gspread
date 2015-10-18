@@ -38,11 +38,14 @@ class HTTPSession(object):
         self.headers = headers or {}
 
     def request(self, method, url, data=None, headers=None):
+        if data and isinstance(data, bytes):
+            data = data.decode()
+
         if data and not isinstance(data, basestring):
             data = urlencode(data)
 
         if data is not None:
-            data = data.encode()
+            data = data.encode('utf8')
 
         # If we have data and Content-Type is not set, set it...
         if data and not headers.get('Content-Type', None):
