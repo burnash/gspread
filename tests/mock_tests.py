@@ -25,7 +25,6 @@ class MockGspreadTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         try:
-            cls.config = test.read_config(test.CONFIG_FILENAME)
             cls.gc = gspread.client.Client(auth={})
         except IOError as e:
             msg = "Can't find %s for reading test configuration. "
@@ -41,13 +40,12 @@ class MockClientTest(MockGspreadTest, test.ClientTest):
         dev_email = 'foobar@developer.gserviceaccount.com'
         feed_obj = test_utils.SpreadsheetFeed(updated, dev_email)
 
-        key = self.config.get('Spreadsheet', 'key')
-        title = self.config.get('Spreadsheet', 'title')
+        key = '0123456789ABCDEF'
+        title = 'This is a spreadsheet title'
         user_name = 'First Last'
         user_email = 'real_email@gmail.com'
         feed_obj.add_entry(key, title, user_name, user_email, updated)
 
         feed = feed_obj.to_xml()
         self.gc.get_spreadsheets_feed = mock.Mock(return_value=feed)
-
 
