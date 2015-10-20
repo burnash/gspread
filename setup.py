@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
 import os.path
+import re
 import sys
-
-import gspread
 
 try:
     from setuptools import setup
@@ -32,12 +31,15 @@ Download
 
 long_description = long_description.lstrip("\n").format(index=read('docs/index.txt'))
 
+version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                    read('gspread/__init__.py'), re.MULTILINE).group(1)
+
 setup(
     name='gspread',
     packages=['gspread'],
     description=description,
     long_description=long_description,
-    version=gspread.__version__,
+    version=version,
     author='Anton Burnashev',
     author_email='fuss.here@gmail.com',
     url='https://github.com/burnash/gspread',
