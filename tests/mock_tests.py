@@ -6,6 +6,10 @@ internet access is unavailable.
 """
 from datetime import datetime
 import unittest
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 
 import mock
 
@@ -25,6 +29,7 @@ class MockGspreadTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         try:
+            cls.config = ConfigParser.RawConfigParser()
             cls.gc = gspread.client.Client(auth={})
         except IOError as e:
             msg = "Can't find %s for reading test configuration. "
@@ -34,18 +39,26 @@ class MockGspreadTest(unittest.TestCase):
 class MockClientTest(MockGspreadTest, test.ClientTest):
     """Test for gspread.Client that mocks out the server response."""
 
-    def setUp(self):
-        super(MockClientTest, self).setUp()
-        updated = datetime.now()
-        dev_email = 'foobar@developer.gserviceaccount.com'
-        feed_obj = test_utils.SpreadsheetFeed(updated, dev_email)
-
+    @classmethod
+    def setUpClass(cls):
+        super(MockClientTest, cls).setUpClass()
         key = '0123456789ABCDEF'
         title = 'This is a spreadsheet title'
+        url = 'https://docs.google.com/spreadsheet/ccc?key=' + key
+        updated = datetime.now()
+        dev_email = 'foobar@developer.gserviceaccount.com'
         user_name = 'First Last'
         user_email = 'real_email@gmail.com'
+
+        # Initialize mock ConfigParser
+        cls.config.add_section('Spreadsheet')
+        cls.config.set('Spreadsheet', 'key', key)
+        cls.config.set('Spreadsheet', 'title', title)
+        cls.config.set('Spreadsheet', 'url', url)
+
+        # Set up spreadsheet mock
+        feed_obj = test_utils.SpreadsheetFeed(updated, dev_email)
         feed_obj.add_entry(key, title, user_name, user_email, updated)
 
         feed = feed_obj.to_xml()
-        self.gc.get_spreadsheets_feed = mock.Mock(return_value=feed)
-
+        cls.gc.get_spreadsheets_feed = mock.Mock(return_value=feed)
