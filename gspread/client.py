@@ -280,7 +280,7 @@ class Client(object):
             if getattr(ex, 'code', None) == 403:
                 raise UpdateCellError(ex.message)
             else:
-                raise ex
+                raise
 
         return ElementTree.fromstring(r.content)
 
