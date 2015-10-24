@@ -37,7 +37,11 @@ class MockGspreadTest(unittest.TestCase):
 
 
 class MockClientTest(MockGspreadTest, test.ClientTest):
-    """Test for gspread.Client that mocks out the server response."""
+    """Test for gspread.Client that mocks out the server response.
+
+    The tests themselves are inherited from ClientTest so no redefinition is
+    necessary.
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -62,3 +66,47 @@ class MockClientTest(MockGspreadTest, test.ClientTest):
 
         feed = feed_obj.to_xml()
         cls.gc.get_spreadsheets_feed = mock.Mock(return_value=feed)
+
+
+class MockSpreadsheetTest(MockGspreadTest, test.SpreadsheetTest):
+    """Test for gspread.Spreadsheet that mocks out the server response.
+
+    The tests themselves are inherited from SpreadsheetTest so no redefinition
+    is necessary.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super(MockSpreadsheetTest, cls).setUpClass()
+
+        updated = datetime.now()
+        user_name = 'First Last'
+        user_email = 'real_email@gmail.com'
+        key = '0123456789ABCDEF'
+        title = 'This is a spreadsheet title'
+        ws_feed = test_utils.WorksheetFeed(updated, user_name, user_email,
+                                           key, title)
+
+        dev_email = 'foobar@developer.gserviceaccount.com'
+        ss_feed = test_utils.SpreadsheetFeed(updated, dev_email)
+        ss_feed.add_entry(key, title, user_name, user_email, updated)
+
+        ws_key = 'AB64KEY'
+        ws_title = 'WS Title'
+        ws_id = 123456789
+        ws_version = 'avkey'
+        num_cols = 10
+        num_rows = 10
+        ws_updated = updated
+        ws_feed.add_entry(ws_key, ws_title, ws_id, ws_version, num_cols,
+                          num_rows, ws_updated)
+
+        # Initialize mock ConfigParser
+        cls.config.add_section('Spreadsheet')
+        cls.config.set('Spreadsheet', 'id', key)
+        cls.config.set('Spreadsheet', 'title', title)
+        cls.config.set('Spreadsheet', 'sheet1_title', ws_title)
+
+        # Set up mocks
+        cls.gc.get_spreadsheets_feed = mock.Mock(return_value=ss_feed.to_xml())
+        cls.gc.get_worksheets_feed = mock.Mock(return_value=ws_feed.to_xml())
