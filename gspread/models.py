@@ -12,8 +12,12 @@ import re
 from collections import defaultdict
 from itertools import chain
 
-from xml.etree import ElementTree
-from xml.etree.ElementTree import Element, SubElement
+try:
+    from lxml.etree import ElementTree
+    from lxml.etree.ElementTree import Element, SubElement
+except ImportError:
+    from xml.etree import ElementTree
+    from xml.etree.ElementTree import Element, SubElement
 
 from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS

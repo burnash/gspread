@@ -8,7 +8,10 @@ This module contains utility functions.
 
 """
 
-from xml.etree import ElementTree
+try:
+    from lxml.etree import ElementTree
+except ImportError:
+    from xml.etree import ElementTree
 
 
 def finditem(func, seq):
