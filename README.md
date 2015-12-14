@@ -200,15 +200,21 @@ easy_install gspread
     nosetests
     ```
 
-## Suggestions & Code Contribution
+## [Contributors](https://github.com/burnash/gspread/graphs/contributors)
 
-- [Javier Candeira](https://github.com/candeira)
-- [Peter "Mash" Morgan](https://github.com/ac001)
-- [ptlu](https://github.com/ptlu)
-- [aginor](https://github.com/aginor)
+## How to Contribute
 
-[All contributors](https://github.com/burnash/gspread/graphs/contributors)
+### Ask Questions
 
-## Feedback
+The best way to get an answer to a question is to ask on [Stack Overflow with a gspread tag](http://stackoverflow.com/questions/tagged/gspread?sort=votes&pageSize=50)
 
-Please report bugs and suggest features via [GitHub Issues](https://github.com/burnash/gspread/issues).
+### Report Issues
+
+Please report bugs and suggest features via the [GitHub Issues](https://github.com/burnash/gspread/issues).
+
+Before opening an issue, search the tracker for possible duplicates. If you find a duplicate, please add a comment saying that you encountered the problem as well.
+
+### Contribute code
+
+* Check the [GitHub Issues](https://github.com/burnash/gspread/issues) for open issues that need attention.
+* Follow the [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/) Guide.
