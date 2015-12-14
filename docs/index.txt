@@ -10,9 +10,3 @@ Features
 * Extract range, entire row or column values.
 * Independent of Google Data Python client library.
 * Python 3 support.
-
-
-Code and documentation
-----------------------
-
-Check `gspread on GitHub <https://github.com/burnash/gspread>`_.
