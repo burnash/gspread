@@ -206,7 +206,7 @@ easy_install gspread
 
 ### Ask Questions
 
-The best way to get an answer to a question is to ask on [Stack Overflow with a gspread tag](http://stackoverflow.com/questions/tagged/gspread?sort=votes&pageSize=50)
+The best way to get an answer to a question is to ask on [Stack Overflow with a gspread tag](http://stackoverflow.com/questions/tagged/gspread?sort=votes&pageSize=50).
 
 ### Report Issues
 
