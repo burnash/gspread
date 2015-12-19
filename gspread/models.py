@@ -565,7 +565,7 @@ class Worksheet(object):
                 new_val = values[ind] if ind < len(values) else ''
             else:
                 # For all other rows, take the cell values from the row above
-                new_val = cells_after_insert[ind - self.col_count].value
+                new_val = cells_after_insert[ind - self.col_count].input_value
             cell.value = new_val
 
         self.update_cells(cells_after_insert)
