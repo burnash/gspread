@@ -124,8 +124,13 @@ class SpreadsheetTest(GspreadTest):
         self.assertTrue(isinstance(sheet, gspread.Worksheet))
 
     def test_worksheet_iteration(self):
-        self.assertEqual(self.spreadsheet.worksheets(), 
-            [sheet for sheet in self.spreadsheet])
+        self.assertEqual(self.spreadsheet.worksheets(),
+                         [sheet for sheet in self.spreadsheet])
+
+    def test_get_worksheet_by_key(self):
+        sheet1_name = self.spreadsheet.sheet1.title
+        self.assertEqual(self.spreadsheet.sheet1,
+                         self.spreadsheet[sheet1_name])
 
 
 class WorksheetTest(GspreadTest):
