@@ -25,7 +25,7 @@ from .urls import (
     DRIVE_FILES_API_V2_URL,
     DRIVE_FILES_UPLOAD_API_V2_URL
 )
-from .utils import finditem, extract_id_from_url
+from .utils import finditem, extract_id_from_url, is_public_url
 from .exceptions import (SpreadsheetNotFound, UpdateCellError)
 
 
@@ -35,6 +35,9 @@ class Client(object):
 
     :param auth: An OAuth2 credential object. Credential objects are those created by the
                  oauth2client library. https://github.com/google/oauth2client
+                 To access public, published spreadsheets, set auth to None.  Be careful,
+                 it is insufficient for the spreadsheet to simply be public, it must
+                 also be published (in the sense of File->Publish to the web->Entire Document->Publish)
     :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
                                     Defaults to :class:`~gspread.httpsession.HTTPSession`.
 
@@ -102,13 +105,17 @@ class Client(object):
         >>> c.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
 
         """
-        feed = self.get_spreadsheets_feed()
+        feed = self.get_spreadsheets_feed(hint=key)
         for elem in feed.findall(_ns('entry')):
             alter_link = finditem(lambda x: x.get('rel') == 'alternate',
                                   elem.findall(_ns('link')))
             spreadsheet_id = extract_id_from_url(alter_link.get('href'))
             if spreadsheet_id == key:
                 return Spreadsheet(self, elem)
+
+            if is_public_url(alter_link.get('href')):
+                return Spreadsheet(self, elem)
+
         else:
             raise SpreadsheetNotFound
 
@@ -146,9 +153,32 @@ class Client(object):
                     continue
             result.append(Spreadsheet(self, elem))
 
+        if self.auth is None:
+            raise SpreadsheetNotFound
+
         return result
 
-    def get_spreadsheets_feed(self, visibility='private', projection='full'):
+    def get_spreadsheets_feed(self, visibility='private', projection='full', hint=None):
+        if not self.auth:
+            # If we have a spreadsheet key, we can try public route
+            if not hint:
+                # No joy, back out
+                return ElementTree.Element('feed')
+            url = construct_url('worksheets', spreadsheet_id=hint,
+                                visibility='public', projection='full')
+            r = self.session.get(url)
+            # Construct a single-entry feed in the expected format
+            feed = ElementTree.Element('feed')
+            try:
+                entry = ElementTree.Element(_ns('entry'))
+                for elem in ElementTree.fromstring(r.content):
+                    entry.append(elem)
+                feed.append(entry)
+            except ElementTree.ParseError:
+                # we get a html error page if sheet is public-but-not-published
+                return ElementTree.Element('feed')
+            return feed
+
         url = construct_url('spreadsheets',
                             visibility=visibility, projection=projection)
 
@@ -157,6 +187,9 @@ class Client(object):
 
     def get_worksheets_feed(self, spreadsheet,
                             visibility='private', projection='full'):
+        if not self.auth:
+            # fall back to public
+            visibility = 'public'
         url = construct_url('worksheets', spreadsheet,
                             visibility=visibility, projection=projection)
 
@@ -166,6 +199,9 @@ class Client(object):
     def get_cells_feed(self, worksheet,
                        visibility='private', projection='full', params=None):
 
+        if not self.auth:
+            # fall back to public
+            visibility = 'public'
         url = construct_url('cells', worksheet,
                             visibility=visibility, projection=projection)
 
@@ -401,3 +437,15 @@ def authorize(credentials):
     client = Client(auth=credentials)
     client.login()
     return client
+
+
+def public():
+    """Prepare to access public, published spreadsheets.
+
+    No private spreadsheets will be accessible , for that you
+    need to authorize or login instead.
+
+    :returns: :class:`Client` instance.
+
+    """
+    return Client(auth=None)

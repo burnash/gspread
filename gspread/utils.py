@@ -18,6 +18,7 @@ CELL_ADDR_RE = re.compile(r'([A-Za-z]+)([1-9]\d*)')
 
 URL_KEY_V1_RE = re.compile(r'key=([^&#]+)')
 URL_KEY_V2_RE = re.compile(r'/spreadsheets/d/([a-zA-Z0-9-_]+)')
+URL_KEY_V2_PUBLIC_RE = re.compile(r'spreadsheets/d/([a-zA-Z0-9-_]+)/pubhtml')
 
 
 def finditem(func, seq):
@@ -188,6 +189,11 @@ def wid_to_gid(wid):
     widval = wid[1:] if len(wid) > 3 else wid
     xorval = 474 if len(wid) > 3 else 31578
     return str(int(str(widval), 36) ^ xorval)
+
+
+def is_public_url(url):
+    m = URL_KEY_V2_PUBLIC_RE.search(url)
+    return bool(m)
 
 
 if __name__ == '__main__':

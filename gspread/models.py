@@ -82,6 +82,9 @@ class Spreadsheet(object):
         self._sheet_list = []
         self._feed_entry = feed_entry
         self._id = feed_entry.find(_ns('id')).text.split('/')[-1]
+        if self._id == 'full':
+            # public sheet case, id is elsewhere
+            self._id = feed_entry.find(_ns('id')).text.split('/')[-3]
         self._title = feed_entry.find(_ns('title')).text
         self._updated = feed_entry.find(_ns('updated')).text
 

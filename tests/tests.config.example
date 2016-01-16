@@ -10,6 +10,12 @@ url: full url of this spreadsheet
 sheet1_title: title of the first worksheet
 new_spreadsheet_title: could be anything you like
 
+[PublicSpreadsheet]
+title:
+key:
+url:
+sheet1_title:
+
 [Worksheet]
 id: string following "#gid="
 title: title of this worksheet

@@ -120,6 +120,21 @@ class GspreadTest(unittest.TestCase):
         self.assertTrue(isinstance(self.gc, gspread.Client))
 
 
+class PublicGspreadTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        try:
+            cls.config = read_config(CONFIG_FILENAME)
+            cls.gc = gspread.public()
+        except IOError as e:
+            msg = "Can't find %s for reading test configuration. "
+            raise Exception(msg % e.filename)
+
+    def setUp(self):
+        self.assertTrue(isinstance(self.gc, gspread.Client))
+
+
 class ClientTest(GspreadTest):
 
     """Test for gspread.client."""
@@ -156,6 +171,31 @@ class ClientTest(GspreadTest):
         self.assertTrue(isinstance(new_spreadsheet, gspread.Spreadsheet))
 
 
+class PublicClientTest(PublicGspreadTest):
+
+    """Test for gspread.client without authorization."""
+
+    def test_open(self):
+        title = self.config.get('PublicSpreadsheet', 'title')
+        self.assertRaises(gspread.SpreadsheetNotFound,
+                          self.gc.open,
+                          title)
+
+    def test_open_by_key(self):
+        key = self.config.get('PublicSpreadsheet', 'key')
+        spreadsheet = self.gc.open_by_key(key)
+        self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+
+    def test_open_by_url(self):
+        url = self.config.get('PublicSpreadsheet', 'url')
+        spreadsheet = self.gc.open_by_url(url)
+        self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+
+    def test_openall(self):
+        self.assertRaises(gspread.SpreadsheetNotFound,
+                          self.gc.openall)
+
+
 class SpreadsheetTest(GspreadTest):
 
     """Test for gspread.Spreadsheet."""
@@ -187,6 +227,37 @@ class SpreadsheetTest(GspreadTest):
     def test_worksheet_iteration(self):
         self.assertEqual(self.spreadsheet.worksheets(),
                          [sheet for sheet in self.spreadsheet])
+
+
+class PublicSpreadsheetTest(PublicGspreadTest):
+
+    """Test for gspread.Spreadsheet without authorization."""
+
+    def setUp(self):
+        super(PublicSpreadsheetTest, self).setUp()
+        key = self.config.get('PublicSpreadsheet', 'key')
+        self.spreadsheet = self.gc.open_by_key(key)
+
+    def test_properties(self):
+        self.assertEqual(self.config.get('PublicSpreadsheet', 'title'),
+                         self.spreadsheet.title)
+
+    def test_sheet1(self):
+        sheet1 = self.spreadsheet.sheet1
+        self.assertTrue(isinstance(sheet1, gspread.Worksheet))
+
+    def test_get_worksheet(self):
+        sheet1 = self.spreadsheet.get_worksheet(0)
+        self.assertTrue(isinstance(sheet1, gspread.Worksheet))
+
+    def test_worksheet(self):
+        sheet_title = self.config.get('Spreadsheet', 'sheet1_title')
+        sheet = self.spreadsheet.worksheet(sheet_title)
+        self.assertTrue(isinstance(sheet, gspread.Worksheet))
+
+    def test_worksheet_iteration(self):
+        self.assertEqual(self.spreadsheet.worksheets(),
+            [sheet for sheet in self.spreadsheet])
 
 
 class WorksheetTest(GspreadTest):
@@ -529,6 +600,21 @@ class WorksheetTest(GspreadTest):
                            for line in exported_data.splitlines()]
 
         self.assertEqual(exported_values, value_list)
+
+
+class PublicWorksheetTest(PublicGspreadTest):
+
+    """Test for gspread.Worksheet without authorization."""
+
+    def setUp(self):
+        super(PublicWorksheetTest, self).setUp()
+        key = self.config.get('PublicSpreadsheet', 'key')
+        self.spreadsheet = self.gc.open_by_key(key)
+        self.sheet = self.spreadsheet.sheet1
+
+    def test_get_all_values(self):
+        read_data = self.sheet.get_all_values()
+        self.assertTrue(len(read_data) > 0)
 
 
 class WorksheetDeleteTest(GspreadTest):
