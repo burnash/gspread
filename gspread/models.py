@@ -168,6 +168,9 @@ class Spreadsheet(object):
         for sheet in self.worksheets():
             yield(sheet)
 
+    def __getitem__(self, key):
+        return self.worksheet(key)
+
 
 class Worksheet(object):
 
