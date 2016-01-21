@@ -11,7 +11,10 @@ Google Data API.
 import re
 import warnings
 
-from xml.etree import ElementTree
+try:
+    import xml.etree.cElementTree as ElementTree
+except:
+    from xml.etree import ElementTree
 
 from . import __version__
 from . import urlencode
