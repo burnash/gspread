@@ -11,7 +11,8 @@ try:
 except ImportError:
     import configparser as ConfigParser
 
-from oauth2client.client import SignedJwtAssertionCredentials
+from oauth2client.service_account import ServiceAccountCredentials
+
 
 import gspread
 
@@ -35,10 +36,7 @@ def read_config(filename):
 
 
 def read_credentials(filename):
-    creds_data = json.load(open(filename))
-    return SignedJwtAssertionCredentials(creds_data['client_email'],
-                                         creds_data['private_key'].encode(),
-                                         SCOPE)
+    return ServiceAccountCredentials.from_json_keyfile_name(filename, SCOPE)
 
 
 def gen_value(prefix=None):
