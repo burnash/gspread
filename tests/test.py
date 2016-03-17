@@ -11,6 +11,7 @@ except ImportError:
     import configparser as ConfigParser
 
 from oauth2client.service_account import ServiceAccountCredentials
+from oauth2client.client import OAuth2Credentials
 
 import gspread
 
@@ -33,8 +34,12 @@ def read_config(filename):
     return config
 
 
-def read_credentials(filename):
+def read_service_account_credentials(filename):
     return ServiceAccountCredentials.from_json_keyfile_name(filename, SCOPE)
+
+
+def read_oauth2_credentials(filename):
+    return OAuth2Credentials.from_json(open(filename).read())
 
 
 def gen_value(prefix=None):
@@ -50,7 +55,11 @@ class GspreadTest(unittest.TestCase):
     def setUpClass(cls):
         try:
             cls.config = read_config(CONFIG_FILENAME)
-            credentials = read_credentials(CREDS_FILENAME)
+            if cls.config.has_option('Authorization', 'credentials_file'):
+                oauth2_credentials_file = cls.config.get('Authorization', 'credentials_file')
+                credentials = read_oauth2_credentials(oauth2_credentials_file)
+            else:
+                credentials = read_service_account_credentials(CREDS_FILENAME)
             cls.gc = gspread.authorize(credentials)
         except IOError as e:
             msg = "Can't find %s for reading test configuration. "

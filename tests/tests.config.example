@@ -1,6 +1,5 @@
-[Google Account]
-email: example@gmail.com
-password: password
+[Authorization]
+credentials_file:
 
 [Spreadsheet]
 id:
