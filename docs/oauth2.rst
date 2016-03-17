@@ -61,6 +61,19 @@ Depending on your system setup you may need to install PyOpenSSL:
 
 6. Now you can read this file, and use the data when constructing your credentials:
 
+::
+
+    import gspread
+    from oauth2client.service_account import ServiceAccountCredentials
+
+    scope = ['https://spreadsheets.google.com/feeds']
+
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('gspread-april-2cd … ba4.json', scope)
+
+    gc = gspread.authorize(credentials)
+
+    wks = gc.open("Where is the money Lebowski?").sheet1
+
 If using oauth2client < 2.0.0
 
 ::
@@ -73,21 +86,6 @@ If using oauth2client < 2.0.0
     scope = ['https://spreadsheets.google.com/feeds']
 
     credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
-
-    gc = gspread.authorize(credentials)
-
-    wks = gc.open("Where is the money Lebowski?").sheet1
-
-If using oauth2client >= 2.0.0
-
-::
-
-    import gspread
-    from oauth2client.service_account import ServiceAccountCredentials
-
-    scope = ['https://spreadsheets.google.com/feeds']
-
-    credentials = ServiceAccountCredentials.from_json_keyfile_name('gspread-april-2cd … ba4.json', scope)
 
     gc = gspread.authorize(credentials)
 
