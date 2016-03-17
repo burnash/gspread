@@ -9,12 +9,12 @@ This module contains a class for working with http sessions.
 """
 
 import requests
+import time
+
 try:
-    import httplib as client
     from urlparse import urlparse
     from urllib import urlencode
 except ImportError:
-    from http import client
     from urllib.parse import urlparse
     from urllib.parse import urlencode
 
@@ -25,6 +25,9 @@ except NameError:
 
 
 from .exceptions import HTTPError
+
+
+MAX_RETRIES = 4
 
 
 class HTTPSession(object):
@@ -61,15 +64,28 @@ class HTTPSession(object):
                 else:
                     request_headers[k] = v
 
-        try:
-            func = getattr(self.requests_session, method.lower())
-        except AttributeError:
-            raise Exception("HTTP method '{}' is not supported".format(method))
-        response = func(url, data=data, headers=request_headers)
+        done = False
+        tries = 0
+        while not done:
+            tries += 1
+            try:
+                func = getattr(self.requests_session, method.lower())
+            except AttributeError:
+                raise Exception("HTTP method '{}' is not supported".format(method))
+            response = func(url, data=data, headers=request_headers)
 
-        if response.status_code > 399:
-            raise HTTPError(response.status_code, "{}: {}".format(
-                response.status_code, response.content))
+            if response.status_code == 500 and tries <= MAX_RETRIES:
+                # Usually a transient error, let's try exponential backoff
+                time_sleep = 2 ** tries
+                time.sleep(time_sleep)
+
+            elif response.status_code > 399:
+                raise HTTPError(response.status_code, "{}: {}".format(
+                    response.status_code, response.content))
+
+            else:
+                done = True
+
         return response
 
     def get(self, url, **kwargs):
@@ -78,7 +94,8 @@ class HTTPSession(object):
     def delete(self, url, **kwargs):
         return self.request('DELETE', url, **kwargs)
 
-    def post(self, url, data=None, headers={}):
+    def post(self, url, data=None, headers=None):
+        headers = headers or {}
         return self.request('POST', url, data=data, headers=headers)
 
     def put(self, url, data=None, **kwargs):
