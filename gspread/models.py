@@ -18,7 +18,7 @@ from xml.etree.ElementTree import Element, SubElement
 from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
-from .utils import finditem, numericise_all
+from .utils import finditem, numericise_all, number_to_column
 
 from .exceptions import IncorrectCellLabel, WorksheetNotFound, CellNotFound
 
@@ -615,6 +615,34 @@ class Worksheet(object):
         export_link = '%s?%s' % (url, params)
 
         return self.client.session.get(export_link).content
+
+    def import_dataframe(self, df):
+        """Import a pandas dataframe to a worksheet.
+
+        :param df: a pandas dataframe with < 25,000 rows
+        """
+        limit=25000
+        
+        df_columns = []
+        for col in df:
+            full_col = list(df[col])
+            full_col.insert(0,str(col))
+            df_columns.append(full_col)
+
+        if len(df) > limit:
+            df_columns = [col[:limit] for col in df_columns]
+
+        df_len = len(df) + 1
+
+        self.resize(df_len, len(df_columns))
+
+        for i, col in enumerate(df_columns):
+            col_name = number_to_column(i)
+            cell_range = '{0}1:{0}{1}'.format(col_name, str(df_len))
+            cell_list = self.range(cell_range)
+            for i, cell in enumerate(cell_list):
+                cell.value = col[i]
+            self.update_cells(cell_list)
 
 
 class Cell(object):

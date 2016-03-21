@@ -10,7 +10,6 @@ This module contains utility functions.
 
 from xml.etree import ElementTree
 
-
 def finditem(func, seq):
     """Finds and returns first item in iterable for which func(item) is True.
 
@@ -87,6 +86,17 @@ def numericise_all(input, empty2zero=False):
     """Returns a list of numericised values from strings"""
     return [numericise(s, empty2zero) for s in input]
 
+def number_to_column(col_number):
+    """Returns spreadsheet column label given a column number
+
+    i.e. 3 -> C, 27 -> AA
+    """
+    if col_number > 26:
+        char1 = chr((col_number // 26)+97).upper()
+        char2 = chr((col_number % 26)+97).upper()
+        return(char1+char2)
+    else:
+        return(chr(col_number+97).upper())
 
 if __name__ == '__main__':
     import doctest

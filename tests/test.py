@@ -6,6 +6,7 @@ import unittest
 import itertools
 import json
 import uuid
+from pandas import DataFrame
 try:
     import ConfigParser
 except ImportError:
@@ -422,6 +423,20 @@ class WorksheetTest(GspreadTest):
                            for line in exported_data.splitlines()]
 
         self.assertEqual(exported_values, value_list)
+
+    def test_df_import(self):
+        headers = [gen_value(),gen_value()]
+        test_data = [[gen_value(),gen_value()],
+                     [gen_value(),gen_value()],
+                     [gen_value(),gen_value()]]
+
+        test_df = DataFrame(test_data,
+                            columns=headers)
+
+        self.sheet.import_dataframe(test_df)
+        self.assertEqual([headers]+test_data,self.sheet.get_all_values())
+
+
 
 
 class WorksheetDeleteTest(GspreadTest):
