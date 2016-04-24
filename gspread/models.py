@@ -64,12 +64,12 @@ class Spreadsheet(object):
     def get_id_fields(self):
         return {'spreadsheet_id': self.id}
 
-    def _fetch_sheets(self):
-        feed = self.client.get_worksheets_feed(self)
+    def _fetch_sheets(self, timeout=None):
+        feed = self.client.get_worksheets_feed(self, timeout=timeout)
         for elem in feed.findall(_ns('entry')):
             self._sheet_list.append(Worksheet(self, elem))
 
-    def add_worksheet(self, title, rows, cols):
+    def add_worksheet(self, title, rows, cols, timeout=None):
         """Adds a new worksheet to a spreadsheet.
 
         :param title: A title of a new worksheet.
@@ -86,20 +86,20 @@ class Spreadsheet(object):
         SubElement(feed, 'gs:colCount').text = str(cols)
 
         url = construct_url('worksheets', self)
-        elem = self.client.post_feed(url, ElementTree.tostring(feed))
+        elem = self.client.post_feed(url, ElementTree.tostring(feed), timeout=timeout)
 
         worksheet = Worksheet(self, elem)
         self._sheet_list.append(worksheet)
 
         return worksheet
 
-    def del_worksheet(self, worksheet):
+    def del_worksheet(self, worksheet, timeout=None):
         """Deletes a worksheet from a spreadsheet.
 
         :param worksheet: The worksheet to be deleted.
 
         """
-        self.client.del_worksheet(worksheet)
+        self.client.del_worksheet(worksheet, timeout=timeout)
         self._sheet_list.remove(worksheet)
 
     def worksheets(self):
@@ -227,8 +227,8 @@ class Worksheet(object):
         return finditem(lambda x: x.get('rel') == link_type,
                         feed.findall(_ns('link')))
 
-    def _fetch_cells(self):
-        feed = self.client.get_cells_feed(self)
+    def _fetch_cells(self, timeout=None):
+        feed = self.client.get_cells_feed(self, timeout=timeout)
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
     _MAGIC_NUMBER = 64
@@ -297,7 +297,7 @@ class Worksheet(object):
         label = '%s%s' % (column_label, row)
         return label
 
-    def acell(self, label):
+    def acell(self, label, timeout=None):
         """Returns an instance of a :class:`Cell`.
 
         :param label: String with cell label in common format, e.g. 'B1'.
@@ -309,9 +309,9 @@ class Worksheet(object):
         <Cell R1C1 "I'm cell A1">
 
         """
-        return self.cell(*(self.get_int_addr(label)))
+        return self.cell(*(self.get_int_addr(label)), timeout=timeout)
 
-    def cell(self, row, col):
+    def cell(self, row, col, timeout=None):
         """Returns an instance of a :class:`Cell` positioned in `row`
            and `col` column.
 
@@ -325,10 +325,10 @@ class Worksheet(object):
 
         """
         feed = self.client.get_cells_cell_id_feed(self,
-                                                  self._cell_addr(row, col))
+                                                  self._cell_addr(row, col), timeout=timeout)
         return Cell(self, feed)
 
-    def range(self, alphanum):
+    def range(self, alphanum, timeout=None):
         """Returns a list of :class:`Cell` objects from specified range.
 
         :param alphanum: A string with range value in common format,
@@ -336,12 +336,12 @@ class Worksheet(object):
 
         """
         feed = self.client.get_cells_feed(self, params={'range': alphanum,
-                                                        'return-empty': 'true'})
+                                                        'return-empty': 'true'}, timeout=timeout)
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
-    def get_all_values(self):
+    def get_all_values(self, timeout=None):
         """Returns a list of lists containing all cells' values as strings."""
-        cells = self._fetch_cells()
+        cells = self._fetch_cells(timeout=timeout)
 
         # defaultdicts fill in gaps for empty rows/cells not returned by gdocs
         rows = defaultdict(lambda: defaultdict(str))
@@ -360,7 +360,7 @@ class Worksheet(object):
 
         return [[rows[i][j] for j in rect_cols] for i in rect_rows]
 
-    def get_all_records(self, empty2zero=False, head=1):
+    def get_all_records(self, empty2zero=False, head=1, timeout=None):
         """Returns a list of dictionaries, all of them having:
             - the contents of the spreadsheet's with the head row as keys,
             And each of these dictionaries holding
@@ -376,7 +376,7 @@ class Worksheet(object):
 
         idx = head - 1
 
-        data = self.get_all_values()
+        data = self.get_all_values(timeout=timeout)
         keys = data[idx]
         values = [numericise_all(row, empty2zero) for row in data[idx + 1:]]
 
@@ -394,7 +394,7 @@ class Worksheet(object):
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
 
-    def col_values(self, col):
+    def col_values(self, col, timeout=None):
         """Returns a list of all values in column `col`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -403,10 +403,10 @@ class Worksheet(object):
         start_cell = self.get_addr_int(1, col)
         end_cell = self.get_addr_int(self.row_count, col)
 
-        row_cells = self.range('%s:%s' % (start_cell, end_cell))
+        row_cells = self.range('%s:%s' % (start_cell, end_cell), timeout=timeout)
         return [cell.value for cell in row_cells]
 
-    def update_acell(self, label, val):
+    def update_acell(self, label, val, timeout=None):
         """Sets the new value to a cell.
 
         :param label: String with cell label in common format, e.g. 'B1'.
@@ -419,9 +419,9 @@ class Worksheet(object):
         <Cell R1C1 "I'm cell A1">
 
         """
-        return self.update_cell(*(self.get_int_addr(label)), val=val)
+        return self.update_cell(*(self.get_int_addr(label)), val=val, timeout=timeout)
 
-    def update_cell(self, row, col, val):
+    def update_cell(self, row, col, val, timeout=None):
         """Sets the new value to a cell.
 
         :param row: Row number.
@@ -430,12 +430,12 @@ class Worksheet(object):
 
         """
         feed = self.client.get_cells_cell_id_feed(self,
-                                                  self._cell_addr(row, col))
+                                                  self._cell_addr(row, col), timeout=timeout)
         cell_elem = feed.find(_ns1('cell'))
         cell_elem.set('inputValue', unicode(val))
         uri = self._get_link('edit', feed).get('href')
 
-        self.client.put_feed(uri, ElementTree.tostring(feed))
+        self.client.put_feed(uri, ElementTree.tostring(feed), timeout=timeout)
 
     def _create_update_feed(self, cell_list):
         feed = Element('feed', {'xmlns': ATOM_NS,
@@ -466,16 +466,16 @@ class Worksheet(object):
                                           'inputValue': unicode(cell.value)})
         return feed
 
-    def update_cells(self, cell_list):
+    def update_cells(self, cell_list, timeout=None):
         """Updates cells in batch.
 
         :param cell_list: List of a :class:`Cell` objects to update.
 
         """
         feed = self._create_update_feed(cell_list)
-        self.client.post_cells(self, ElementTree.tostring(feed))
+        self.client.post_cells(self, ElementTree.tostring(feed), timeout=timeout)
 
-    def resize(self, rows=None, cols=None):
+    def resize(self, rows=None, cols=None, timeout=None):
         """Resizes the worksheet.
 
         :param rows: New rows number.
@@ -485,7 +485,7 @@ class Worksheet(object):
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
         self_uri = self._get_link('self', self._element).get('href')
-        feed = self.client.get_feed(self_uri)
+        feed = self.client.get_feed(self_uri, timeout=timeout)
         uri = self._get_link('edit', feed).get('href')
 
         if rows:
@@ -497,23 +497,23 @@ class Worksheet(object):
             elem.text = str(cols)
 
         # Send request and store result
-        self._element = self.client.put_feed(uri, ElementTree.tostring(feed))
+        self._element = self.client.put_feed(uri, ElementTree.tostring(feed), timeout=timeout)
 
-    def add_rows(self, rows):
+    def add_rows(self, rows, timeout=None):
         """Adds rows to worksheet.
 
         :param rows: Rows number to add.
         """
-        self.resize(rows=self.row_count + rows)
+        self.resize(rows=self.row_count + rows, timeout=timeout)
 
-    def add_cols(self, cols):
+    def add_cols(self, cols, timeout=None):
         """Adds colums to worksheet.
 
         :param cols: Columns number to add.
         """
-        self.resize(cols=self.col_count + cols)
+        self.resize(cols=self.col_count + cols, timeout=timeout)
 
-    def append_row(self, values):
+    def append_row(self, values, timeout=None):
         """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
 
@@ -522,7 +522,7 @@ class Worksheet(object):
 
         :param values: List of values for the new row.
         """
-        self.add_rows(1)
+        self.add_rows(1, timeout=timeout)
         new_row = self.row_count
         data_width = len(values)
         if self.col_count < data_width:
@@ -534,9 +534,9 @@ class Worksheet(object):
             cell.value = value
             cell_list.append(cell)
 
-        self.update_cells(cell_list)
+        self.update_cells(cell_list, timeout=timeout)
 
-    def insert_row(self, values, index=1):
+    def insert_row(self, values, index=1, timeout=None):
         """"Adds a row to the worksheet at the specified index and populates it with values.
         Widens the worksheet if there are more values than columns.
 
@@ -547,7 +547,7 @@ class Worksheet(object):
         elif index > self.row_count + 1:
             raise IndexError('Row index out of range')
 
-        self.add_rows(1)
+        self.add_rows(1, timeout=timeout)
         data_width = len(values)
         if self.col_count < data_width:
             self.resize(cols=data_width)
@@ -557,7 +557,7 @@ class Worksheet(object):
         bottom_right = self.get_addr_int(self.row_count, self.col_count)
         range_str = '%s:%s' % (top_left, bottom_right)
 
-        cells_after_insert = self.range(range_str)
+        cells_after_insert = self.range(range_str, timeout=timeout)
 
         for ind, cell in reversed(list(enumerate(cells_after_insert))):
             if ind < self.col_count:
@@ -568,7 +568,7 @@ class Worksheet(object):
                 new_val = cells_after_insert[ind - self.col_count].value
             cell.value = new_val
 
-        self.update_cells(cells_after_insert)
+        self.update_cells(cells_after_insert, timeout=timeout)
 
     def _finder(self, func, query):
         cells = self._fetch_cells()
@@ -597,7 +597,7 @@ class Worksheet(object):
         """
         return list(self._finder(filter, query))
 
-    def export(self, format='csv'):
+    def export(self, format='csv', timeout=None):
         """Export the worksheet in specified format.
 
         :param format: A format of the output.
@@ -614,7 +614,7 @@ class Worksheet(object):
         params = urlencode(params)
         export_link = '%s?%s' % (url, params)
 
-        return self.client.session.get(export_link).content
+        return self.client.session.get(export_link, timeout=timeout).content
 
 
 class Cell(object):
