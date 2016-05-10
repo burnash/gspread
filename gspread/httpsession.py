@@ -36,6 +36,7 @@ class HTTPSession(object):
 
     def __init__(self, headers=None):
         self.headers = headers or {}
+        self.requests_session = requests.Session()
 
     def request(self, method, url, data=None, headers=None):
         if data and isinstance(data, bytes):
@@ -61,7 +62,7 @@ class HTTPSession(object):
                     request_headers[k] = v
 
         try:
-            func = getattr(requests, method.lower())
+            func = getattr(self.requests_session, method.lower())
         except AttributeError:
             raise Exception("HTTP method '{}' is not supported".format(method))
         response = func(url, data=data, headers=request_headers)
