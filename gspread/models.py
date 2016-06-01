@@ -472,8 +472,12 @@ class Worksheet(object):
         :param cell_list: List of a :class:`Cell` objects to update.
 
         """
-        feed = self._create_update_feed(cell_list)
-        self.client.post_cells(self, ElementTree.tostring(feed))
+        batch_limit = 50000
+        batches = [cell_list[x:x+batch_limit]
+                for x in xrange(0, len(cell_list), batch_limit)]
+        for batch in batches:
+            feed = self._create_update_feed(batch)
+            self.client.post_cells(self, ElementTree.tostring(feed))
 
     def resize(self, rows=None, cols=None):
         """Resizes the worksheet.
