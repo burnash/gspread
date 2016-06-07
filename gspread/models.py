@@ -20,14 +20,12 @@ from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
 from .utils import finditem, numericise_all
 
-from .exceptions import IncorrectCellLabel, WorksheetNotFound, CellNotFound
-
+from .exceptions import IncorrectCellLabel, WorksheetNotFound, CellNotFound, SpreadsheetNotCreated, ImportException
 
 try:
     unicode
 except NameError:
     basestring = unicode = str
-
 
 # Patch ElementTree._escape_attrib
 _elementtree_escape_attrib = ElementTree._escape_attrib
@@ -49,7 +47,6 @@ ElementTree._escape_attrib = _escape_attrib
 
 
 class Spreadsheet(object):
-
     """ A class for a spreadsheet object."""
 
     def __init__(self, client, feed_entry):
@@ -68,6 +65,21 @@ class Spreadsheet(object):
         feed = self.client.get_worksheets_feed(self)
         for elem in feed.findall(_ns('entry')):
             self._sheet_list.append(Worksheet(self, elem))
+
+    def share(self, target, target_id=None, role='reader', type='user', notify=True, email_message=None):
+        """Shares the current spreadsheet to a user, domain, group, or anyone.
+
+        :param target: An email or domain (Ignored if targetId is specified).
+        :param target_id: A user's ID; overrides target.
+        :param role: The shared user's role ('reader', 'writer', 'owner').
+        :param type: The target's type ('user', 'domain', 'group', 'anyone'; Ignored if targetId is specified)
+        :param notify: Whether to send an email to the target user/domain.
+        :param email_message: The email to be sent if notify=True
+
+        Returns True if sharing was successful
+        """
+        return self.client.share_spreadsheet(self, target, target_id=None, role=role, type=type, notify=notify,
+                                             email_message=email_message)
 
     def add_worksheet(self, title, rows, cols):
         """Adds a new worksheet to a spreadsheet.
@@ -154,6 +166,53 @@ class Spreadsheet(object):
             return self._sheet_list[index]
         except IndexError:
             return None
+
+    def import_csv(self, data):
+        """Imports data into the first page of the spreadsheet.
+
+        :param data: A CSV string of data.
+
+        :return: True if the import was successful
+        """
+        headers = dict()
+        headers['Content-Type'] = 'text/csv'
+        return self.client.session.put('https://www.googleapis.com/upload/drive/v2/files/' + self.id,
+                                params=dict(uploadType='media', convert=True),
+                                headers=headers,
+                                data=data).status_code < 300
+
+    def import_csv_as_new_worksheet(self, title, data):
+        """Imports CSV data as a new worksheet in the spreadsheet.
+
+        :param title: The title of the worksheet.
+        :param data: A CSV string.
+        :return: True if the request is successful
+
+        :raises ImportException: If the import failed.
+        """
+        # Create a temp sheet
+        try:
+            temp_sheet = self.client.create(title)
+        except SpreadsheetNotCreated as ex:
+            raise ImportException()
+
+        # Import the data to the temp sheet
+        if not temp_sheet.import_csv(data):
+            raise ImportException()
+
+        # Grab the first worksheet
+        temp_worksheet = temp_sheet.sheet1
+
+        # Copy the sheet data over
+        if not temp_worksheet.copy_to(self.id):
+            raise ImportException()
+
+        # Rename the worksheet
+        worksheets = self.worksheets()
+        worksheets[len(worksheets) - 1].update_title(title)
+
+        # Delete the temp sheet
+        return self.client.del_spreadsheet(temp_sheet)
 
     @property
     def sheet1(self):
@@ -499,6 +558,22 @@ class Worksheet(object):
         # Send request and store result
         self._element = self.client.put_feed(uri, ElementTree.tostring(feed))
 
+    def update_title(self, title):
+        """Renames the worksheet.
+
+                :param title: A new title.
+                """
+
+        self_uri = self._get_link('self', self._element).get('href')
+        feed = self.client.get_feed(self_uri)
+        uri = self._get_link('edit', feed).get('href')
+
+        elem = feed.find(_ns('title'))
+        elem.text = title
+
+        # Send request and store result
+        self._element = self.client.put_feed(uri, ElementTree.tostring(feed))
+
     def add_rows(self, rows):
         """Adds rows to worksheet.
 
@@ -607,7 +682,7 @@ class Worksheet(object):
             self._element).get('href')
 
         url, qs = export_link.split('?')
-        params = dict(param.split('=') for param in  qs.split('&'))
+        params = dict(param.split('=') for param in qs.split('&'))
 
         params['format'] = format
 
@@ -616,9 +691,36 @@ class Worksheet(object):
 
         return self.client.session.get(export_link).content
 
+    def _get_v4_sheet_id(self):
+        # Determine the worksheet number
+        worksheets = self.spreadsheet.worksheets()
+        page_number = 0
+        for worksheet in worksheets:
+            if worksheet.id == self.id:
+                break
+
+            page_number += 1
+
+        if page_number >= len(worksheets):
+            raise WorksheetNotFound()
+
+        v4_sheet = self.client.session.get('https://sheets.googleapis.com/v4/spreadsheets/' + self.spreadsheet.id)
+        return v4_sheet.json()['sheets'][page_number]['properties']['sheetId']
+
+    def copy_to(self, destination_key):
+        """Copies a worksheet to a spreadsheet.
+
+        :param destination_key: The destination spreadsheet ID
+        :return: True if the copy is successful
+        """
+        sheet_id = self._get_v4_sheet_id()
+
+        # Copy the sheet's spreadsheet over
+        return self.client.session.post(
+            'https://sheets.googleapis.com/v4/spreadsheets/%s/sheets/%s:copyTo' % (self.spreadsheet.id, sheet_id),
+            json=dict(destinationSpreadsheetId=destination_key)).status_code < 300
 
 class Cell(object):
-
     """An instance of this class represents a single cell
     in a :class:`worksheet <Worksheet>`.
 

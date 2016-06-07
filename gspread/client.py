@@ -22,8 +22,7 @@ from .urls import construct_url
 from .utils import finditem
 from .exceptions import (AuthenticationError, SpreadsheetNotFound,
                          NoValidUrlKeyFound, UpdateCellError,
-                         RequestError)
-
+                         RequestError, SpreadsheetNotCreated)
 
 AUTH_SERVER = 'https://www.google.com'
 SPREADSHEETS_SERVER = 'spreadsheets.google.com'
@@ -125,6 +124,31 @@ class Client(object):
                 else:
                     raise AuthenticationError(
                         "Unable to authenticate. %s" % ex.message)
+
+    def create(self, title):
+        """Creates a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
+
+        :param title: A title for the spreadsheet.
+
+        :raises: gspread.SpreadsheetNotCreated: if the spreadsheet couldn't
+                                                be created.
+
+        >>> c = gspread.Client(auth=('user@example.com', 'qwertpassword'))
+        >>> c.login()
+        >>> c.create('My fancy spreadsheet')
+
+        """
+
+        response = self.session.post('https://www.googleapis.com/drive/v2/files',
+                          params=dict(uploadType='multipart',convert=True),
+                          json=dict(title=title, mimeType='application/vnd.google-apps.spreadsheet'))
+
+        key = response.json()['id']
+
+        try:
+            return self.open_by_key(key)
+        except SpreadsheetNotFound as exception:
+            raise SpreadsheetNotCreated()
 
     def open(self, title):
         """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
@@ -256,10 +280,38 @@ class Client(object):
         r = self.session.get(url)
         return ElementTree.fromstring(r.content)
 
+    def del_spreadsheet(self, spreadsheet):
+        """Deletes a spreadsheet.
+
+        :param spreadsheet: The spreadsheet to be deleted.
+        :return: True if the spreadsheet was deleted.
+        """
+        return self.session.delete('https://www.googleapis.com/drive/v2/files/' + spreadsheet.id).status_code < 300
+
     def del_worksheet(self, worksheet):
         url = construct_url(
             'worksheet', worksheet, 'private', 'full', worksheet_version=worksheet.version)
         r = self.session.delete(url)
+
+    def share_spreadsheet(self, spreadsheet, target, target_id=None, role='reader', type='user', notify=True,
+                          email_message=None):
+        """Shares the current spreadsheet to a user, domain, group, or anyone.
+
+        :param target: An email or domain (Ignored if targetId is specified).
+        :param target_id: A user's ID; overrides target.
+        :param role: The shared user's role ('reader', 'writer', 'owner').
+        :param type: The target's type ('user', 'domain', 'group', 'anyone'; Ignored if targetId is specified)
+        :param notify: Whether to send an email to the target user/domain.
+        :param email_message: The email to be sent if notify=True
+
+        :return: True if sharing was successful
+        """
+        if target_id is not None:
+            target = None
+
+        return self.session.post('https://www.googleapis.com/drive/v2/files/%s/permissions' % spreadsheet.id,
+                          params=dict(sendNotificationEmails = notify, emailMessage=email_message),
+                          json=dict(role=role, type=type, value=target, id=target_id)).status_code < 300
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
                                visibility='private', projection='full'):
@@ -275,7 +327,7 @@ class Client(object):
         data = self._ensure_xml_header(data)
 
         try:
-            r = self.session.put(url, data, headers=headers)
+            r = self.session.put(url, data=data, headers=headers)
         except HTTPError as ex:
             if getattr(ex, 'code', None) == 403:
                 raise UpdateCellError(ex.message)
@@ -289,7 +341,7 @@ class Client(object):
         data = self._ensure_xml_header(data)
 
         try:
-            r = self.session.post(url, data, headers=headers)
+            r = self.session.post(url, data=data, headers=headers)
         except HTTPError as ex:
             raise RequestError(ex.message)
 
@@ -300,7 +352,7 @@ class Client(object):
                    'If-Match': '*'}
         data = self._ensure_xml_header(data)
         url = construct_url('cells_batch', worksheet)
-        r = self.session.post(url, data, headers=headers)
+        r = self.session.post(url, data=data, headers=headers)
 
         return ElementTree.fromstring(r.content)
 
