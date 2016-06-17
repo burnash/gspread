@@ -207,6 +207,9 @@ class Spreadsheet(object):
         if not temp_worksheet.copy_to(self.id):
             raise ImportException()
 
+        # Force fetch the new sheets
+        self._fetch_sheets()
+
         # Rename the worksheet
         worksheets = self.worksheets()
         worksheets[len(worksheets) - 1].update_title(title)
@@ -561,8 +564,8 @@ class Worksheet(object):
     def update_title(self, title):
         """Renames the worksheet.
 
-                :param title: A new title.
-                """
+        :param title: A new title.
+        """
 
         self_uri = self._get_link('self', self._element).get('href')
         feed = self.client.get_feed(self_uri)
@@ -716,7 +719,7 @@ class Worksheet(object):
         sheet_id = self._get_v4_sheet_id()
 
         # Copy the sheet's spreadsheet over
-        return self.client.session.post(
+        result = self.client.session.post(
             'https://sheets.googleapis.com/v4/spreadsheets/%s/sheets/%s:copyTo' % (self.spreadsheet.id, sheet_id),
             json=dict(destinationSpreadsheetId=destination_key)).status_code < 300
 
