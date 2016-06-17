@@ -719,7 +719,7 @@ class Worksheet(object):
         sheet_id = self._get_v4_sheet_id()
 
         # Copy the sheet's spreadsheet over
-        result = self.client.session.post(
+        return self.client.session.post(
             'https://sheets.googleapis.com/v4/spreadsheets/%s/sheets/%s:copyTo' % (self.spreadsheet.id, sheet_id),
             json=dict(destinationSpreadsheetId=destination_key)).status_code < 300
 
