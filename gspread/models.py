@@ -63,6 +63,7 @@ class Spreadsheet(object):
 
     def _fetch_sheets(self):
         feed = self.client.get_worksheets_feed(self)
+        self._sheet_list = []
         position = 1
         for elem in feed.findall(_ns('entry')):
             self._sheet_list.append(Worksheet(self, elem, position))
