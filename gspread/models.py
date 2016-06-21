@@ -63,8 +63,10 @@ class Spreadsheet(object):
 
     def _fetch_sheets(self):
         feed = self.client.get_worksheets_feed(self)
+        position = 1
         for elem in feed.findall(_ns('entry')):
-            self._sheet_list.append(Worksheet(self, elem))
+            self._sheet_list.append(Worksheet(self, elem, position))
+            position += 1
 
     def share(self, target, target_id=None, role='reader', type='user', notify=True, email_message=None):
         """Shares the current spreadsheet to a user, domain, group, or anyone.
@@ -235,12 +237,13 @@ class Worksheet(object):
 
     """A class for worksheet object."""
 
-    def __init__(self, spreadsheet, element):
+    def __init__(self, spreadsheet, element, position=1):
         self.spreadsheet = spreadsheet
         self.client = spreadsheet.client
         self._id = element.find(_ns('id')).text.split('/')[-1]
         self._title = element.find(_ns('title')).text
         self._element = element
+        self._position = position
         try:
             self.version = self._get_link(
                 'edit', element).get('href').split('/')[-1]
@@ -280,7 +283,7 @@ class Worksheet(object):
 
     def get_id_fields(self):
         return {'spreadsheet_id': self.spreadsheet.id,
-                'worksheet_id': self.id}
+                'worksheet_id': self._position}
 
     def _cell_addr(self, row, col):
         return 'R%sC%s' % (row, col)
