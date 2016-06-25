@@ -4,7 +4,6 @@ import re
 import random
 import unittest
 import itertools
-import json
 import uuid
 try:
     import ConfigParser
