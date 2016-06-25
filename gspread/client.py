@@ -224,23 +224,23 @@ class Client(object):
 
         return result
 
-    def get_spreadsheets_feed(self, visibility='private', projection='full'):
+    def get_spreadsheets_feed(self, visibility='private', projection='full', timeout=None):
         url = construct_url('spreadsheets',
                             visibility=visibility, projection=projection)
 
-        r = self.session.get(url)
+        r = self.session.get(url, timeout=timeout)
         return ElementTree.fromstring(r.content)
 
     def get_worksheets_feed(self, spreadsheet,
-                            visibility='private', projection='full'):
+                            visibility='private', projection='full', timeout=None):
         url = construct_url('worksheets', spreadsheet,
                             visibility=visibility, projection=projection)
 
-        r = self.session.get(url)
+        r = self.session.get(url, timeout=timeout)
         return ElementTree.fromstring(r.content)
 
     def get_cells_feed(self, worksheet,
-                       visibility='private', projection='full', params=None):
+                       visibility='private', projection='full', params=None, timeout=None):
 
         url = construct_url('cells', worksheet,
                             visibility=visibility, projection=projection)
@@ -249,33 +249,33 @@ class Client(object):
             params = urlencode(params)
             url = '%s?%s' % (url, params)
 
-        r = self.session.get(url)
+        r = self.session.get(url, timeout=timeout)
         return ElementTree.fromstring(r.content)
 
-    def get_feed(self, url):
-        r = self.session.get(url)
+    def get_feed(self, url, timeout=None):
+        r = self.session.get(url, timeout=timeout)
         return ElementTree.fromstring(r.content)
 
-    def del_worksheet(self, worksheet):
+    def del_worksheet(self, worksheet, timeout=None):
         url = construct_url(
             'worksheet', worksheet, 'private', 'full', worksheet_version=worksheet.version)
-        r = self.session.delete(url)
+        r = self.session.delete(url, timeout=timeout)
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
-                               visibility='private', projection='full'):
+                               visibility='private', projection='full', timeout=None):
         url = construct_url('cells_cell_id', worksheet, cell_id=cell_id,
                             visibility=visibility, projection=projection)
 
-        r = self.session.get(url)
+        r = self.session.get(url, timeout=timeout)
         return ElementTree.fromstring(r.content)
 
-    def put_feed(self, url, data):
+    def put_feed(self, url, data, timeout=None):
         headers = {'Content-Type': 'application/atom+xml',
                    'If-Match': '*'}
         data = self._ensure_xml_header(data)
 
         try:
-            r = self.session.put(url, data, headers=headers)
+            r = self.session.put(url, data, headers=headers, timeout=timeout)
         except HTTPError as ex:
             if getattr(ex, 'code', None) == 403:
                 raise UpdateCellError(ex.message)
@@ -284,23 +284,23 @@ class Client(object):
 
         return ElementTree.fromstring(r.content)
 
-    def post_feed(self, url, data):
+    def post_feed(self, url, data, timeout=None):
         headers = {'Content-Type': 'application/atom+xml'}
         data = self._ensure_xml_header(data)
 
         try:
-            r = self.session.post(url, data, headers=headers)
+            r = self.session.post(url, data, headers=headers, timeout=timeout)
         except HTTPError as ex:
             raise RequestError(ex.message)
 
         return ElementTree.fromstring(r.content)
 
-    def post_cells(self, worksheet, data):
+    def post_cells(self, worksheet, data, timeout=None):
         headers = {'Content-Type': 'application/atom+xml',
                    'If-Match': '*'}
         data = self._ensure_xml_header(data)
         url = construct_url('cells_batch', worksheet)
-        r = self.session.post(url, data, headers=headers)
+        r = self.session.post(url, data, headers=headers, timeout=timeout)
 
         return ElementTree.fromstring(r.content)
 

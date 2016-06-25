@@ -38,7 +38,7 @@ class HTTPSession(object):
         self.headers = headers or {}
         self.requests_session = requests.Session()
 
-    def request(self, method, url, data=None, headers=None):
+    def request(self, method, url, data=None, headers=None, timeout=None):
         if data and isinstance(data, bytes):
             data = data.decode()
 
@@ -65,7 +65,7 @@ class HTTPSession(object):
             func = getattr(self.requests_session, method.lower())
         except AttributeError:
             raise Exception("HTTP method '{}' is not supported".format(method))
-        response = func(url, data=data, headers=request_headers)
+        response = func(url, data=data, headers=request_headers, timeout=timeout)
 
         if response.status_code > 399:
             raise HTTPError(response.status_code, "{}: {}".format(
@@ -78,8 +78,8 @@ class HTTPSession(object):
     def delete(self, url, **kwargs):
         return self.request('DELETE', url, **kwargs)
 
-    def post(self, url, data=None, headers={}):
-        return self.request('POST', url, data=data, headers=headers)
+    def post(self, url, data=None, headers={}, timeout=None):
+        return self.request('POST', url, data=data, headers=headers, timeout=timeout)
 
     def put(self, url, data=None, **kwargs):
         return self.request('PUT', url, data=data, **kwargs)
