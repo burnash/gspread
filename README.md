@@ -1,5 +1,4 @@
 # Google Spreadsheets Python API
-[![Downloads](https://img.shields.io/pypi/dm/gspread.svg)](https://pypi.python.org/pypi/gspread)
 
 Manage your spreadsheets with _gspread_ in Python.
 
