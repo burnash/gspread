@@ -60,13 +60,20 @@ This is how this file may look like:
 
 You'll need *client_email* and *private_key*.
 
+<<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+>>>>>>> small date fix in changelog from commit 0a06735a4d
 5. Install `oauth2client <https://github.com/google/oauth2client>`_:
 
 ::
 
     pip install --upgrade oauth2client
+<<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
 
+=======
+    
+>>>>>>> small date fix in changelog from commit 0a06735a4d
 Depending on your system setup you may need to install PyOpenSSL:
 
 ::
@@ -74,6 +81,7 @@ Depending on your system setup you may need to install PyOpenSSL:
     pip install PyOpenSSL
 
 6. Now you can read this file, and use the data when constructing your credentials:
+<<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
 
 ::
 
@@ -92,6 +100,8 @@ If using oauth2client < 2.0.0
 =======
 5. Now you can read this file, and use the data when constructing your credentials:
 >>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> small date fix in changelog from commit 0a06735a4d
 
 ::
 
@@ -115,6 +125,7 @@ If using oauth2client < 2.0.0
 
     wks = gc.open("Where is the money Lebowski?").sheet1
 
+<<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 **Note**: Python2 users do not need to encode ``json_key['private_key']`` due to ``str`` and ``bytes`` not being differentiated.
 
@@ -122,9 +133,22 @@ If using oauth2client < 2.0.0
 7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
 
 =======
+=======
+<<<<<<< HEAD
+>>>>>>> small date fix in changelog from commit 0a06735a4d
 6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
 <<<<<<< HEAD
 
+=======
+**Note**: Python 3 users need to cast ``json_key['private_key']`` to ``bytes``. Otherwise you'll get ``TypeError: expected bytes, not str`` exception. Replace the line with ``SignedJwtAssertionCredentials`` call with this:
+
+::
+
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+
+
+7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+>>>>>>> bd23436... Added requirements to the instruction #236
 
 =======
     
