@@ -198,6 +198,7 @@ class Spreadsheet(object):
     @property
     def title(self):
         return self._feed_entry.find(_ns('title')).text
+<<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
 
     def __iter__(self):
@@ -206,6 +207,8 @@ class Spreadsheet(object):
 
 =======
 >>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> Removing merge conflicts
 
 class Worksheet(object):
 
@@ -590,12 +593,15 @@ class Worksheet(object):
         
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
+<<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
 =======
 >>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> Removing merge conflicts
 
         :param values: List of values for the new row.
         """
@@ -707,8 +713,12 @@ class Worksheet(object):
                 # For all other rows, take the cell values from the row above
                 new_val = cells_after_insert[ind - self.col_count].value
             cell.value = new_val
+<<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
 <<<<<<< HEAD
 	
+=======
+
+>>>>>>> Removing merge conflicts
 	self.update_cells(cells_after_insert)
     
     def insert_column(self, values, index=1):
@@ -750,6 +760,7 @@ class Worksheet(object):
         self.update_cells(new_cell_list)
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 
+<<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
 >>>>>>> Squashing all the commits to simpy things for merge
 =======
         all_cells = self.get_all_values()
@@ -776,6 +787,8 @@ class Worksheet(object):
 >>>>>>> dba33bb... Altered insert_row semantics to utilize range
 >>>>>>> small date fix in changelog from commit 0a06735a4d
 
+=======
+>>>>>>> Removing merge conflicts
     def _finder(self, func, query):
         cells = self._fetch_cells()
 
