@@ -403,9 +403,12 @@ def authorize(credentials):
     return client
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 =======
 
 >>>>>>> 109de9d... added worksheet export #12
 =======
 >>>>>>> 120bad7... Squashing all the commits to simpy things for merge
+=======
+>>>>>>> d078bae... Fix bug:

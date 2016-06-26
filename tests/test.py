@@ -17,7 +17,14 @@ from oauth2client.service_account import ServiceAccountCredentials
 =======
 >>>>>>> # This is a combination of 2 commits.
 import json
+<<<<<<< HEAD
+<<<<<<< HEAD
 import uuid
+=======
+>>>>>>> bce8213... switched tests to oauth
+=======
+import uuid
+>>>>>>> 10dd72e... use uuid for test values generation
 
 from oauth2client.client import SignedJwtAssertionCredentials
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
@@ -103,6 +110,10 @@ def read_credentials(filename):
                                          SCOPE)
 
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 10dd72e... use uuid for test values generation
 def gen_value(prefix=None):
     if prefix:
         return u'%s %s' % (prefix, gen_value())
@@ -111,7 +122,10 @@ def gen_value(prefix=None):
 
 
 class GspreadTest(unittest.TestCase):
+<<<<<<< HEAD
 
+
+<<<<<<< 358c39a5513a0d4983c3302e15bb78acca66481b
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
 =======
@@ -120,8 +134,18 @@ class GspreadTest(unittest.TestCase):
 =======
 
 >>>>>>> # This is a combination of 2 commits.
+=======
+=======
+class GspreadTest(unittest.TestCase):
+
+>>>>>>> bce8213... switched tests to oauth
+>>>>>>> small date fix in changelog from commit 0a06735a4d
     @classmethod
     def setUpClass(cls):
+=======
+    def setUp(self):
+        creds_filename = "tests.config"
+>>>>>>> e676183... added test for Worksheet "updated" property
         try:
             cls.config = read_config(CONFIG_FILENAME)
             credentials = read_credentials(CREDS_FILENAME)
@@ -230,6 +254,7 @@ class WorksheetTest(GspreadTest):
     def test_get_addr_int(self):
         self.assertEqual(self.sheet.get_addr_int(3, 731), 'ABC3')
         self.assertEqual(self.sheet.get_addr_int(1, 104), 'CZ1')
+<<<<<<< 358c39a5513a0d4983c3302e15bb78acca66481b
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
 
@@ -241,15 +266,31 @@ class WorksheetTest(GspreadTest):
 =======
 =======
 >>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> small date fix in changelog from commit 0a06735a4d
     
     def test_get_updated(self):
         RFC_3339 = ('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?'
 	                    '(Z|[+-]\d{2}:\d{2})')
 	self.assertRegexpMatches(self.sheet.updated, RFC_3339)
+<<<<<<< 358c39a5513a0d4983c3302e15bb78acca66481b
 <<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 >>>>>>> Squashing all the commits to simpy things for merge
 =======
 >>>>>>> # This is a combination of 2 commits.
+=======
+=======
+>>>>>>> bce8213... switched tests to oauth
+=======
+
+    def test_get_updated(self):
+        RFC_3339 = '(\d\d\d\d)(-)?(\d\d)(-)?(\d\d)(T)?(\d\d)(:)?(\d\d)(:)?(\d\d)(\.\d+)?(Z|([+-])(\d\d)(:)?(\d\d))'
+        print self.sheet.updated
+        self.assertRegexpMatches(self.sheet.updated, RFC_3339)
+>>>>>>> e676183... added test for Worksheet "updated" property
+>>>>>>> small date fix in changelog from commit 0a06735a4d
 
     def test_addr_converters(self):
         for row in range(1, 257):
@@ -667,6 +708,10 @@ class WorksheetDeleteTest(GspreadTest):
         num_rows = self.sheet.row_count
         num_cols = self.sheet.col_count
         values = [gen_value(i) for i in range(num_cols + 4)]
+<<<<<<< HEAD
+=======
+        print values
+>>>>>>> 10dd72e... use uuid for test values generation
         self.sheet.insert_row(values, 1)
         self.assertEqual(self.sheet.row_count, num_rows + 1)
         self.assertEqual(self.sheet.col_count, num_cols + 4)
@@ -707,8 +752,14 @@ class WorksheetDeleteTest(GspreadTest):
         exported_data = sheet.export(format='csv').read()
 
         exported_values = exported_data.split()
+<<<<<<< HEAD
 
         self.assertEqual(exported_values, value_list)
+
+=======
+
+        self.assertEqual(exported_values, value_list)
+>>>>>>> a8f40f4... fixed export test
 
 
 class WorksheetDeleteTest(GspreadTest):
