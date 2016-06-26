@@ -8,8 +8,11 @@ This module contains common spreadsheets' models
 
 """
 
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
 =======
+=======
+>>>>>>> # This is a combination of 2 commits.
 import re
 >>>>>>> Squashing all the commits to simpy things for merge
 from collections import defaultdict
@@ -53,6 +56,7 @@ def _escape_attrib(text, encoding=None, replace=None):
 ElementTree._escape_attrib = _escape_attrib
 
 
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 def cast_to_a1_notation(method):
     """
     Decorator function casts wrapped arguments to A1 notation
@@ -78,6 +82,8 @@ def cast_to_a1_notation(method):
     return wrapper
 
 
+=======
+>>>>>>> # This is a combination of 2 commits.
 class Spreadsheet(object):
     """ A class for a spreadsheet object."""
 
@@ -433,6 +439,7 @@ class Worksheet(object):
         Empty cells in this list will be rendered as :const:`None`.
 
         """
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
         start_cell = rowcol_to_a1(row, 1)
         end_cell = rowcol_to_a1(row, self.col_count)
@@ -440,6 +447,10 @@ class Worksheet(object):
         start_cell = self.get_addr_int(row, 1)
         end_cell = self.get_addr_int(row, self.col_count)
 >>>>>>> Squashing all the commits to simpy things for merge
+=======
+        start_cell = self.get_addr_int(row, 1)
+        end_cell = self.get_addr_int(row, self.col_count)
+>>>>>>> # This is a combination of 2 commits.
 
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
@@ -450,6 +461,7 @@ class Worksheet(object):
         Empty cells in this list will be rendered as :const:`None`.
 
         """
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
         start_cell = rowcol_to_a1(1, col)
         end_cell = rowcol_to_a1(self.row_count, col)
@@ -457,6 +469,10 @@ class Worksheet(object):
         start_cell = self.get_addr_int(1, col)
         end_cell = self.get_addr_int(self.row_count, col)
 >>>>>>> Squashing all the commits to simpy things for merge
+=======
+        start_cell = self.get_addr_int(1, col)
+        end_cell = self.get_addr_int(self.row_count, col)
+>>>>>>> # This is a combination of 2 commits.
 
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
@@ -574,9 +590,12 @@ class Worksheet(object):
         
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
+=======
+>>>>>>> # This is a combination of 2 commits.
 
         :param values: List of values for the new row.
         """
@@ -606,12 +625,18 @@ class Worksheet(object):
 
         :param values: List of values for the new row.
         """
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+>>>>>>> # This is a combination of 2 commits.
         if index == self.row_count + 1:
             return self.append_row(values)
         elif index > self.row_count + 1:
             raise IndexError('Row index out of range')
 
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+=======
+>>>>>>> # This is a combination of 2 commits.
 =======
 >>>>>>> # This is a combination of 2 commits.
         self.add_rows(1)
@@ -619,6 +644,7 @@ class Worksheet(object):
         if self.col_count < data_width:
             self.resize(cols=data_width)
 
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
         # Retrieve all Cells at or below `index` using a single batch query
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
@@ -664,6 +690,9 @@ class Worksheet(object):
         # Remove last row
         self.resize(rows=self.row_count - 1)
 =======
+=======
+        # Retrieve all Cells at or below `index` using a single batch query
+>>>>>>> # This is a combination of 2 commits.
         top_left = self.get_addr_int(index, 1)
         bottom_right = self.get_addr_int(self.row_count, self.col_count)
         range_str = '%s:%s' % (top_left, bottom_right)
@@ -718,6 +747,7 @@ class Worksheet(object):
                 newcell.value = columns_after_insert[col - 1][c - 1]
                 new_cell_list.append(newcell)
         self.update_cells(new_cell_list)
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 
 >>>>>>> Squashing all the commits to simpy things for merge
 =======
@@ -733,6 +763,9 @@ class Worksheet(object):
                 newcell.value = rows_after_insert[r - 1][c - 1]
                 updated_cell_list.append(newcell)
         self.update_cells(updated_cell_list)
+>>>>>>> # This is a combination of 2 commits.
+=======
+
 >>>>>>> # This is a combination of 2 commits.
 
     def _finder(self, func, query):

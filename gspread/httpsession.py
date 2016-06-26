@@ -91,7 +91,11 @@ class HTTPSession(object):
         response = self.connections[uri.scheme + uri.netloc].getresponse()
 
         if response.status > 399:
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
             raise HTTPError("%s: %s" % (response.status, response.read()))
+>>>>>>> # This is a combination of 2 commits.
+=======
+            raise HTTPError(response.status, "%s: %s" % (response.status, response.read()))
 >>>>>>> # This is a combination of 2 commits.
         return response
 

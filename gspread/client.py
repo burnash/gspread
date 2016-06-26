@@ -309,7 +309,10 @@ class Client(object):
             if getattr(ex, 'code', None) == 403:
 =======
             if ex.code == 403:
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 >>>>>>> Squashing all the commits to simpy things for merge
+=======
+>>>>>>> # This is a combination of 2 commits.
                 raise UpdateCellError(ex.message)
             else:
                 raise
@@ -399,7 +402,10 @@ def authorize(credentials):
     client.login()
     return client
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 =======
 
 >>>>>>> 109de9d... added worksheet export #12
+=======
+>>>>>>> 120bad7... Squashing all the commits to simpy things for merge

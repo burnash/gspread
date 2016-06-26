@@ -4,6 +4,7 @@ import re
 import random
 import unittest
 import itertools
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
 import uuid
 try:
@@ -13,11 +14,16 @@ except ImportError:
 
 from oauth2client.service_account import ServiceAccountCredentials
 =======
+=======
+>>>>>>> # This is a combination of 2 commits.
 import json
 import uuid
 
 from oauth2client.client import SignedJwtAssertionCredentials
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 >>>>>>> Squashing all the commits to simpy things for merge
+=======
+>>>>>>> # This is a combination of 2 commits.
 
 import gspread
 
@@ -79,12 +85,41 @@ def gen_value(prefix=None):
         return unicode(uuid.uuid4())
 
 
+CONFIG_FILENAME = os.path.join(os.path.dirname(__file__), 'tests.config')
+CREDS_FILENAME = os.path.join(os.path.dirname(__file__), 'creds.json')
+SCOPE = ['https://spreadsheets.google.com/feeds']
+
+
+def read_config(filename):
+    config = ConfigParser.ConfigParser()
+    config.readfp(open(filename))
+    return config
+
+
+def read_credentials(filename):
+    creds_data = json.load(open(filename))
+    return SignedJwtAssertionCredentials(creds_data['client_email'],
+                                         creds_data['private_key'],
+                                         SCOPE)
+
+
+def gen_value(prefix=None):
+    if prefix:
+        return u'%s %s' % (prefix, gen_value())
+    else:
+        return unicode(uuid.uuid4())
+
+
 class GspreadTest(unittest.TestCase):
 
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
 =======
 
 >>>>>>> Squashing all the commits to simpy things for merge
+=======
+
+>>>>>>> # This is a combination of 2 commits.
     @classmethod
     def setUpClass(cls):
         try:
@@ -195,6 +230,7 @@ class WorksheetTest(GspreadTest):
     def test_get_addr_int(self):
         self.assertEqual(self.sheet.get_addr_int(3, 731), 'ABC3')
         self.assertEqual(self.sheet.get_addr_int(1, 104), 'CZ1')
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
 
     def test_get_updated(self):
@@ -203,12 +239,17 @@ class WorksheetTest(GspreadTest):
         has_match = re.match(RFC_3339, self.sheet.updated) is not None
         self.assertTrue(has_match)
 =======
+=======
+>>>>>>> # This is a combination of 2 commits.
     
     def test_get_updated(self):
         RFC_3339 = ('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?'
 	                    '(Z|[+-]\d{2}:\d{2})')
 	self.assertRegexpMatches(self.sheet.updated, RFC_3339)
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 >>>>>>> Squashing all the commits to simpy things for merge
+=======
+>>>>>>> # This is a combination of 2 commits.
 
     def test_addr_converters(self):
         for row in range(1, 257):
@@ -319,7 +360,10 @@ class WorksheetTest(GspreadTest):
 <<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
 =======
         sheet = self.sheet
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 >>>>>>> Squashing all the commits to simpy things for merge
+=======
+>>>>>>> # This is a combination of 2 commits.
         value = gen_value()
 
         self.sheet.update_cell(2, 10, value)
@@ -344,7 +388,10 @@ class WorksheetTest(GspreadTest):
         cell_list = self.sheet.range(range_label)
 =======
         cell_list = sheet.range(range_label)
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 >>>>>>> Squashing all the commits to simpy things for merge
+=======
+>>>>>>> # This is a combination of 2 commits.
         value = gen_value()
 
         for c in cell_list:
@@ -619,7 +666,7 @@ class WorksheetDeleteTest(GspreadTest):
     def test_insert_row(self):
         num_rows = self.sheet.row_count
         num_cols = self.sheet.col_count
-        values = ['o_0'] * (num_cols + 4)
+        values = [gen_value(i) for i in range(num_cols + 4)]
         self.sheet.insert_row(values, 1)
         self.assertEqual(self.sheet.row_count, num_rows + 1)
         self.assertEqual(self.sheet.col_count, num_cols + 4)
@@ -628,17 +675,26 @@ class WorksheetDeleteTest(GspreadTest):
 
         # undo the appending and resizing
         # self.sheet.resize(num_rows, num_cols)
+    
+    def test_insert_column(self):
+    	num_rows = self.sheet.row_count
+    	num_cols = self.sheet.col_count
+    	values = ['o_0'] * (num_rows + 4)
+    	self.sheet.insert_column(values, 1)
+    	self.assertEqual(self.sheet.row_count, num_rows + 4)
+    	self.assertEqual(self.sheet.col_count, num_cols + 1)
+    	read_values = self.sheet.row_values(1)
+    	self.assertEqual(values, read_values)
 
     def test_export(self):
         list_len = 10
-        time_md5 = hashlib.md5(str(time.time())).hexdigest()
+        time_md5 = gen_value()
         wks_name = 'export_test_%s' % time_md5
 
         self.spreadsheet.add_worksheet(wks_name, list_len, 5)
         sheet = self.spreadsheet.worksheet(wks_name)
 
-        value_list = [hashlib.md5(str(time.time() + i)).hexdigest()
-                      for i in range(list_len)]
+        value_list = [gen_value(i) for i in range(list_len)]
 
         range_label = 'A1:A%s' % list_len
         cell_list = sheet.range(range_label)
@@ -650,9 +706,10 @@ class WorksheetDeleteTest(GspreadTest):
 
         exported_data = sheet.export(format='csv').read()
 
-        csv_value = '\n'.join(value_list)
+        exported_values = exported_data.split()
 
-        self.assertEqual(exported_data, csv_value)
+        self.assertEqual(exported_values, value_list)
+
 
 class WorksheetDeleteTest(GspreadTest):
 
@@ -687,7 +744,11 @@ class CellTest(GspreadTest):
         self.sheet = sheet
 
     def test_properties(self):
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
         update_value = hashlib.md5(str(time.time())).hexdigest()
+>>>>>>> # This is a combination of 2 commits.
+=======
+        update_value = gen_value()
 >>>>>>> # This is a combination of 2 commits.
         self.sheet.update_acell('A1', update_value)
         cell = self.sheet.acell('A1')
