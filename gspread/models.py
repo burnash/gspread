@@ -707,6 +707,7 @@ class Worksheet(object):
                 # For all other rows, take the cell values from the row above
                 new_val = cells_after_insert[ind - self.col_count].value
             cell.value = new_val
+<<<<<<< HEAD
 	
 	self.update_cells(cells_after_insert)
     
@@ -756,6 +757,7 @@ class Worksheet(object):
 
         rows_after_insert.insert(0, values)
 
+<<<<<<< fa8451df8add7631c0798ec33931da4b98972efd
         updated_cell_list = []
         for r, row in enumerate(rows_after_insert, start=1):
             for c, cell in enumerate(row, start=1):
@@ -767,6 +769,12 @@ class Worksheet(object):
 =======
 
 >>>>>>> # This is a combination of 2 commits.
+=======
+=======
+
+        self.update_cells(cells_after_insert)
+>>>>>>> dba33bb... Altered insert_row semantics to utilize range
+>>>>>>> small date fix in changelog from commit 0a06735a4d
 
     def _finder(self, func, query):
         cells = self._fetch_cells()

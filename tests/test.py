@@ -709,9 +709,12 @@ class WorksheetDeleteTest(GspreadTest):
         num_cols = self.sheet.col_count
         values = [gen_value(i) for i in range(num_cols + 4)]
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         print values
 >>>>>>> 10dd72e... use uuid for test values generation
+=======
+>>>>>>> 1dbdb74... remove print
         self.sheet.insert_row(values, 1)
         self.assertEqual(self.sheet.row_count, num_rows + 1)
         self.assertEqual(self.sheet.col_count, num_cols + 4)
