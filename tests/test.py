@@ -5,6 +5,11 @@ import random
 import unittest
 import itertools
 import uuid
+
+from requests.hooks import default_hooks
+
+from gspread.exceptions import HTTPError
+
 try:
     import ConfigParser
 except ImportError:
@@ -98,6 +103,35 @@ class ClientTest(GspreadTest):
         spreadsheet_list = self.gc.openall()
         for s in spreadsheet_list:
             self.assertTrue(isinstance(s, gspread.Spreadsheet))
+
+    def test_retry_on_error(self):
+
+        # Add a hook to requests so we can simulate a 500 server error.
+        # `max_errors` is a dict to work around the non-availability of the
+        # "nonlocal" keyword in Python 2.
+        def insert_500(response, *args, **kwargs):
+            if max_errors and max_errors['counter'] == 0:
+                return None  # Makes requests use the original response
+            if max_errors:
+                max_errors['counter'] -= 1
+            response.status_code = 500
+            return response
+
+        self.gc.session.requests_session.hooks = dict(response=insert_500)
+
+        # First check if a HTTPError is raised if there's too many retries
+        max_errors = None
+        self.assertRaises(HTTPError, self.test_open_by_key)
+
+        # We retry 4 times, so the following should not raise an error
+        max_errors = {'counter': 3}
+        try:
+            self.test_open_by_key()
+        except HTTPError:
+            self.fail('test_open_by_key() raised HTTPError!')
+
+        # Remove the hook
+        self.gc.session.requests_session.hooks = default_hooks()
 
 
 class SpreadsheetTest(GspreadTest):
