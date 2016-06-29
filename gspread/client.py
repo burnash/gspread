@@ -9,7 +9,6 @@ Google Data API.
 
 """
 import re
-import warnings
 
 from xml.etree import ElementTree
 
@@ -20,9 +19,8 @@ from .httpsession import HTTPSession, HTTPError
 from .models import Spreadsheet
 from .urls import construct_url
 from .utils import finditem
-from .exceptions import (AuthenticationError, SpreadsheetNotFound,
-                         NoValidUrlKeyFound, UpdateCellError,
-                         RequestError)
+from .exceptions import (SpreadsheetNotFound, NoValidUrlKeyFound,
+                         UpdateCellError, RequestError)
 
 
 AUTH_SERVER = 'https://www.google.com'
@@ -36,41 +34,17 @@ class Client(object):
 
     """An instance of this class communicates with Google Data API.
 
-    :param auth: A tuple containing an *email* and a *password* used for ClientLogin
-                 authentication or an OAuth2 credential object. Credential objects are those created by the
+    :param auth: An OAuth2 credential object. Credential objects are those created by the
                  oauth2client library. https://github.com/google/oauth2client
     :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
                                     Defaults to :class:`~gspread.httpsession.HTTPSession`.
 
-    >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
-
-    or
-
     >>> c = gspread.Client(auth=OAuthCredentialObject)
-
 
     """
     def __init__(self, auth, http_session=None):
         self.auth = auth
         self.session = http_session or HTTPSession()
-
-    def _get_auth_token(self, content):
-        for line in content.splitlines():
-            if line.startswith('Auth='):
-                return line[5:]
-        return None
-
-    def _deprecation_warning(self):
-        warnings.warn("""
-            ClientLogin is deprecated:
-            https://developers.google.com/identity/protocols/AuthForInstalledApps?csw=1
-
-            Authorization with email and password will stop working on April 20, 2015.
-
-            Please use oAuth2 authorization instead:
-            http://gspread.readthedocs.org/en/latest/oauth2.html
-
-        """, Warning)
 
     def _ensure_xml_header(self, data):
         if data.startswith(b'<?xml'):
@@ -79,52 +53,15 @@ class Client(object):
             return b'<?xml version="1.0" encoding="utf8"?>' + data
 
     def login(self):
-        """Authorize client using ClientLogin protocol.
+        """Authorize client."""
+        if not self.auth.access_token or \
+                (hasattr(self.auth, 'access_token_expired') and self.auth.access_token_expired):
+            import httplib2
 
-        The credentials provided in `auth` parameter to class' constructor will be used.
+            http = httplib2.Http()
+            self.auth.refresh(http)
 
-        This method is using API described at:
-        http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html
-
-        :raises AuthenticationError: if login attempt fails.
-
-        """
-        source = 'burnash-gspread-%s' % __version__
-        service = 'wise'
-
-        if hasattr(self.auth, 'access_token'):
-            if not self.auth.access_token or \
-                    (hasattr(self.auth, 'access_token_expired') and self.auth.access_token_expired):
-                import httplib2
-
-                http = httplib2.Http()
-                self.auth.refresh(http)
-
-            self.session.add_header('Authorization', "Bearer " + self.auth.access_token)
-
-        else:
-            self._deprecation_warning()
-
-            data = {'Email': self.auth[0],
-                    'Passwd': self.auth[1],
-                    'accountType': 'HOSTED_OR_GOOGLE',
-                    'service': service,
-                    'source': source}
-
-            url = AUTH_SERVER + '/accounts/ClientLogin'
-
-            try:
-                r = self.session.post(url, data)
-                token = self._get_auth_token(r.content)
-                auth_header = "GoogleLogin auth=%s" % token
-                self.session.add_header('Authorization', auth_header)
-
-            except HTTPError as ex:
-                if ex.message.strip() == '403: Error=BadAuthentication':
-                    raise AuthenticationError("Incorrect username or password")
-                else:
-                    raise AuthenticationError(
-                        "Unable to authenticate. %s" % ex.message)
+        self.session.add_header('Authorization', "Bearer " + self.auth.access_token)
 
     def open(self, title):
         """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
@@ -137,8 +74,7 @@ class Client(object):
         :raises gspread.SpreadsheetNotFound: if no spreadsheet with
                                              specified `title` is found.
 
-        >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
-        >>> c.login()
+        >>> c = gspread.authorize(credentials)
         >>> c.open('My fancy spreadsheet')
 
         """
@@ -159,8 +95,7 @@ class Client(object):
         :raises gspread.SpreadsheetNotFound: if no spreadsheet with
                                              specified `key` is found.
 
-        >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
-        >>> c.login()
+        >>> c = gspread.authorize(credentials)
         >>> c.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
 
         """
@@ -188,8 +123,7 @@ class Client(object):
         :raises gspread.SpreadsheetNotFound: if no spreadsheet with
                                              specified `url` is found.
 
-        >>> c = gspread.Client(auth=('user@example.com', 'qwertypassword'))
-        >>> c.login()
+        >>> c = gspread.authorize(credentials)
         >>> c.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
 
         """
@@ -259,7 +193,7 @@ class Client(object):
     def del_worksheet(self, worksheet):
         url = construct_url(
             'worksheet', worksheet, 'private', 'full', worksheet_version=worksheet.version)
-        r = self.session.delete(url)
+        self.session.delete(url)
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
                                visibility='private', projection='full'):
@@ -304,19 +238,6 @@ class Client(object):
 
         return ElementTree.fromstring(r.content)
 
-
-def login(email, password):
-    """Login to Google API using `email` and `password`.
-
-    This is a shortcut function which instantiates :class:`Client`
-    and performs login right away.
-
-    :returns: :class:`Client` instance.
-
-    """
-    client = Client(auth=(email, password))
-    client.login()
-    return client
 
 def authorize(credentials):
     """Login to Google API using OAuth2 credentials.

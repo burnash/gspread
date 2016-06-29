@@ -17,8 +17,6 @@ gspread API Reference
 Main Interface
 --------------
 
-.. autofunction:: login
-
 .. autofunction:: authorize
 
 .. autoclass:: Client
