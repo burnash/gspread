@@ -152,11 +152,17 @@ for cell in cell_list:
 worksheet.update_cells(cell_list)
 ```
 
-## Requirements
+## Installation
+
+### Requirements
 
 Python 2.6+ or Python 3+
 
-## Installation
+### From PyPI
+
+```sh
+pip install gspread
+```
 
 ### From GitHub
 
@@ -166,21 +172,9 @@ cd gspread
 python setup.py install
 ```
 
-### From PyPI
-
-```sh
-pip install gspread
-```
-
-If you're on easy_install, it's:
-
-```sh
-easy_install gspread
-```
-
 ## Documentation
-
-[API Reference](http://gspread.readthedocs.org/)
+* [Getting Google API's credentials](http://gspread.readthedocs.io/en/latest/oauth2.html)
+* [gspread API Reference](http://gspread.readthedocs.org/)
 
 ## Testing
 
