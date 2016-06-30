@@ -1,6 +1,13 @@
 Release History
 ===============
 
+0.4.0 (2016-06-30)
+
+* Use request session's connection pool in HTTPSession
+
+* Removed deprecated ClientLogin
+
+
 0.3.0 (2015-12-15)
 ------------------
 
