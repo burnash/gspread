@@ -16,7 +16,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
 from . import urlencode
-from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
+from .ns import _ns, _ns1, _ns2, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
 from .utils import finditem, numericise_all
 
@@ -570,6 +570,42 @@ class Worksheet(object):
 
         self.update_cells(cells_after_insert)
 
+    def list_rows(self):
+        """List rows in current spreadsheet."""
+        rows = self.client.list_rows(self)
+        for row in rows:
+            yield Row(row)
+
+    def delete_row(self, row):
+        """Deletes given row.
+        :param row: int/:class:`row <Row>`.
+        """
+        if type(row) == int:
+            if row < 2:
+                raise IndexError('Row 1 is the header row')
+            else:
+                for index, row_obj in enumerate(self.list_rows()):
+                    if index+2 == row:
+                        self.client.delete_row(row_obj.edit_link)
+                        break
+                else:
+                    raise IndexError('Row not found')
+        else:
+            self.client.delete_row(row.edit_link)
+
+    def delete_rows(self, rows):
+        """
+        Deletes a given list's worth of row objects or row indexes from a sheet
+        :param rows:
+        """
+        # This is definitely not the most intuitive way to do this,
+        # but so far it's the only one I've found that actually works.
+        # just iterating through with a for loop means that there's a
+        # chance that google will just stop deleting stuff for you for no reason.
+        while bool(rows) is not False:
+            self.delete_row(rows[-1])
+            rows.pop()
+
     def _finder(self, func, query):
         cells = self._fetch_cells()
 
@@ -607,7 +643,7 @@ class Worksheet(object):
             self._element).get('href')
 
         url, qs = export_link.split('?')
-        params = dict(param.split('=') for param in  qs.split('&'))
+        params = dict(param.split('=') for param in qs.split('&'))
 
         params['format'] = format
 
@@ -617,13 +653,33 @@ class Worksheet(object):
         return self.client.session.get(export_link).content
 
 
-class Cell(object):
+class Row(object):
+    """An instance of this class represents a single row
+    in a :class:`worksheet <Worksheet>`.
+    """
+    def __init__(self, element):
+        self.element = element
+        self.id = self.element.find(_ns('id')).text
+        self.title = self.element.find(_ns('title')).text
+        self.value = self.element.find(_ns('content')).text
+        for link in self.element.findall(_ns('link')):
+            if link.get('rel') == 'self':
+                self.view_link = link.get('href')
+            elif link.get('rel') == 'edit':
+                self.edit_link = link.get('href')
 
+    def __getattr__(self, name):
+        return self.element.find(_ns2(name)).text
+
+    def __repr__(self):
+        return '<%s %s>' % (self.__class__.__name__, repr(self.title))
+
+
+class Cell(object):
     """An instance of this class represents a single cell
     in a :class:`worksheet <Worksheet>`.
 
     """
-
     def __init__(self, worksheet, element):
         self.element = element
         cell_elem = element.find(_ns1('cell'))

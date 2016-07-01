@@ -403,6 +403,27 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(1)
         self.assertEqual(values, read_values)
 
+    def test_list_rows(self):
+        records = self.sheet.get_all_values()
+        for index, row in self.sheet.list_rows():
+            self.assertIn(row.title, records[index+1].values())
+
+    def test_delete_row(self):
+        for i in range(3):
+            insert_vals = [gen_value(i) for i in range(self.sheet.col_count)]
+            self.sheet.insert_row(insert_vals, 1)
+        first_values = self.sheet.get_all_values()
+        first_num_records = len(first_values)
+        first_row3_vals = first_values[2]
+        self.assertRaises(IndexError, self.sheet.delete_row, 1)
+        self.assertRaises(IndexError, self.sheet.delete_row, first_num_records+1)
+        self.sheet.delete_row(2)
+        second_values = self.sheet.get_all_values()
+        second_num_records = len(second_values)
+        second_row2_values = second_values[1]
+        self.assertEqual(second_num_records, first_num_records-1)
+        self.assertEqual(first_row3_vals, second_row2_values)
+
     def test_export(self):
         list_len = 10
 
