@@ -39,7 +39,7 @@ class Client(object):
     :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
                                     Defaults to :class:`~gspread.httpsession.HTTPSession`.
 
-    >>> c = gspread.Client(auth=OAuthCredentialObject)>
+    >>> c = gspread.Client(auth=OAuthCredentialObject)
 
     """
     def __init__(self, auth, http_session=None):
@@ -212,7 +212,7 @@ class Client(object):
             r = self.session.put(url, data, headers=headers)
         except HTTPError as ex:
             if getattr(ex, 'code', None) == 403:
-                raise UpdateCellError(str(ex))
+                raise UpdateCellError(ex.message)
             else:
                 raise
 
@@ -225,7 +225,7 @@ class Client(object):
         try:
             r = self.session.post(url, data, headers=headers)
         except HTTPError as ex:
-            raise RequestError(str(ex))
+            raise RequestError(ex.message)
 
         return ElementTree.fromstring(r.content)
 
