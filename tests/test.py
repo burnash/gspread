@@ -5,12 +5,19 @@ import random
 import unittest
 import itertools
 import uuid
+
+from requests.hooks import default_hooks
+
+from gspread.exceptions import HTTPError
+from gspread.httpsession import HTTPSession
+
 try:
     import ConfigParser
 except ImportError:
     import configparser as ConfigParser
 
 from oauth2client.service_account import ServiceAccountCredentials
+from oauth2client.client import OAuth2Credentials
 
 import gspread
 
@@ -33,8 +40,12 @@ def read_config(filename):
     return config
 
 
-def read_credentials(filename):
+def read_service_account_credentials(filename):
     return ServiceAccountCredentials.from_json_keyfile_name(filename, SCOPE)
+
+
+def read_oauth2_credentials(filename):
+    return OAuth2Credentials.from_json(open(filename).read())
 
 
 def gen_value(prefix=None):
@@ -50,7 +61,11 @@ class GspreadTest(unittest.TestCase):
     def setUpClass(cls):
         try:
             cls.config = read_config(CONFIG_FILENAME)
-            credentials = read_credentials(CREDS_FILENAME)
+            if cls.config.has_option('Authorization', 'credentials_file'):
+                oauth2_credentials_file = cls.config.get('Authorization', 'credentials_file')
+                credentials = read_oauth2_credentials(oauth2_credentials_file)
+            else:
+                credentials = read_service_account_credentials(CREDS_FILENAME)
             cls.gc = gspread.authorize(credentials)
         except IOError as e:
             msg = "Can't find %s for reading test configuration. "
@@ -89,6 +104,55 @@ class ClientTest(GspreadTest):
         spreadsheet_list = self.gc.openall()
         for s in spreadsheet_list:
             self.assertTrue(isinstance(s, gspread.Spreadsheet))
+
+    def test_retry_on_error(self):
+
+        # Add a hook to requests so we can simulate a 500 server error.
+        # `max_errors` is a dict to work around the non-availability of the
+        # "nonlocal" keyword in Python 2.
+        def insert_500(response, *args, **kwargs):
+            if max_errors and max_errors['counter'] == 0:
+                return None  # Makes requests use the original response
+            if max_errors:
+                max_errors['counter'] -= 1
+            response.status_code = 500
+            return response
+
+        self.gc.session.requests_session.hooks = dict(response=insert_500)
+
+        # First check if a HTTPError is raised if there's too many retries
+        max_errors = None
+        self.assertRaises(HTTPError, self.test_open_by_key)
+
+        # By default, we retry 4 times, so this should not raise an error
+        max_errors = {'counter': 4}
+        try:
+            self.test_open_by_key()
+        except HTTPError:
+            self.fail('test_open_by_key() raised HTTPError!')
+
+        # Remove the hook so it doesn't interfere with other tests
+        self.gc.session.requests_session.hooks = default_hooks()
+
+        # Here we test the `max_retries` param of the session, for this we
+        # create a new session and copy headers for authentication
+        old_session = self.gc.session
+        self.gc.session = HTTPSession(max_retries=0)
+        self.gc.session.headers = old_session.headers.copy()
+        self.gc.session.requests_session.hooks = dict(response=insert_500)
+        max_errors = {'counter': 0}
+        try:
+            self.test_open_by_key()
+        except HTTPError:
+            self.fail('test_open_by_key() raised HTTPError!')
+
+        max_errors = {'counter': 1}
+        self.assertRaises(HTTPError, self.test_open_by_key)
+
+        # Restore the old session instance
+        self.gc.session = old_session
+
+
 
 
 class SpreadsheetTest(GspreadTest):

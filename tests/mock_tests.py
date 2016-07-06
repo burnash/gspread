@@ -67,6 +67,10 @@ class MockClientTest(MockGspreadTest, test.ClientTest):
         feed = feed_obj.to_xml()
         cls.gc.get_spreadsheets_feed = mock.Mock(return_value=feed)
 
+    def test_retry_on_error(self):
+        # This test should not run when we're mocking.
+        pass
+
 
 class MockSpreadsheetTest(MockGspreadTest, test.SpreadsheetTest):
     """Test for gspread.Spreadsheet that mocks out the server response.

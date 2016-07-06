@@ -38,13 +38,16 @@ class Client(object):
                  oauth2client library. https://github.com/google/oauth2client
     :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
                                     Defaults to :class:`~gspread.httpsession.HTTPSession`.
+    :param max_retries: (optional) If using the default `http_session`, how many times to retry a
+                                   request when encountering internal server error responses.
+                                   Default is to retry four times.
 
     >>> c = gspread.Client(auth=OAuthCredentialObject)
 
     """
-    def __init__(self, auth, http_session=None):
+    def __init__(self, auth, http_session=None, max_retries=None):
         self.auth = auth
-        self.session = http_session or HTTPSession()
+        self.session = http_session or HTTPSession(max_retries=max_retries)
 
     def _ensure_xml_header(self, data):
         if data.startswith(b'<?xml'):
@@ -239,7 +242,7 @@ class Client(object):
         return ElementTree.fromstring(r.content)
 
 
-def authorize(credentials):
+def authorize(credentials, max_retries=None):
     """Login to Google API using OAuth2 credentials.
 
     This is a shortcut function which instantiates :class:`Client`
@@ -248,6 +251,6 @@ def authorize(credentials):
     :returns: :class:`Client` instance.
 
     """
-    client = Client(auth=credentials)
+    client = Client(auth=credentials, max_retries=max_retries)
     client.login()
     return client
