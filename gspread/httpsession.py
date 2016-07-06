@@ -27,7 +27,7 @@ except NameError:
 from .exceptions import HTTPError
 
 
-MAX_RETRIES = 4
+DEFAULT_MAX_RETRIES = 4
 
 
 class HTTPSession(object):
@@ -35,11 +35,15 @@ class HTTPSession(object):
     """Handles HTTP activity while keeping headers persisting across requests.
 
        :param headers: A dict with initial headers.
+       :param max_retries: How many times to retry a request when encountering
+                           HTTP status code 500 error responses. Default is 4.
+
     """
 
-    def __init__(self, headers=None):
+    def __init__(self, headers=None, max_retries=None):
         self.headers = headers or {}
         self.requests_session = requests.Session()
+        self.max_retries = DEFAULT_MAX_RETRIES if max_retries is None else max_retries
 
     def request(self, method, url, data=None, headers=None):
         if data and isinstance(data, bytes):
@@ -74,7 +78,7 @@ class HTTPSession(object):
                 raise Exception("HTTP method '{}' is not supported".format(method))
             response = func(url, data=data, headers=request_headers)
 
-            if response.status_code == 500 and tries <= MAX_RETRIES:
+            if response.status_code == 500 and tries <= self.max_retries:
                 # Usually a transient error, let's try exponential backoff
                 time_sleep = 2 ** tries
                 time.sleep(time_sleep)

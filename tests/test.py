@@ -9,6 +9,7 @@ import uuid
 from requests.hooks import default_hooks
 
 from gspread.exceptions import HTTPError
+from gspread.httpsession import HTTPSession
 
 try:
     import ConfigParser
@@ -123,15 +124,35 @@ class ClientTest(GspreadTest):
         max_errors = None
         self.assertRaises(HTTPError, self.test_open_by_key)
 
-        # We retry 4 times, so the following should not raise an error
-        max_errors = {'counter': 3}
+        # By default, we retry 4 times, so this should not raise an error
+        max_errors = {'counter': 4}
         try:
             self.test_open_by_key()
         except HTTPError:
             self.fail('test_open_by_key() raised HTTPError!')
 
-        # Remove the hook
+        # Remove the hook so it doesn't interfere with other tests
         self.gc.session.requests_session.hooks = default_hooks()
+
+        # Here we test the `max_retries` param of the session, for this we
+        # create a new session and copy headers for authentication
+        old_session = self.gc.session
+        self.gc.session = HTTPSession(max_retries=0)
+        self.gc.session.headers = old_session.headers.copy()
+        self.gc.session.requests_session.hooks = dict(response=insert_500)
+        max_errors = {'counter': 0}
+        try:
+            self.test_open_by_key()
+        except HTTPError:
+            self.fail('test_open_by_key() raised HTTPError!')
+
+        max_errors = {'counter': 1}
+        self.assertRaises(HTTPError, self.test_open_by_key)
+
+        # Restore the old session instance
+        self.gc.session = old_session
+
+
 
 
 class SpreadsheetTest(GspreadTest):
