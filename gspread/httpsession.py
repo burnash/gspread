@@ -64,11 +64,11 @@ class HTTPSession(object):
         try:
             func = getattr(self.requests_session, method.lower())
         except AttributeError:
-            raise Exception("HTTP method '{}' is not supported".format(method))
+            raise Exception("HTTP method '{0}' is not supported".format(method))
         response = func(url, data=data, headers=request_headers)
 
         if response.status_code > 399:
-            raise HTTPError(response.status_code, "{}: {}".format(
+            raise HTTPError(response.status_code, "{0}: {1}".format(
                 response.status_code, response.content))
         return response
 
