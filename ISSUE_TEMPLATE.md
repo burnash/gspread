@@ -1,6 +1,6 @@
 **GitHub Issues are for bugs and feature requests.**
 
-Please do not post usage questions here. For general support from the community, see [StackOverflow](http://stackoverflow.com/questions/tagged/gspread).
+Please do not post usage questions here. For general support from the community, see StackOverflow: http://stackoverflow.com/questions/tagged/gspread
 
 Issues with usage questions will be closed.
 
