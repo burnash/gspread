@@ -1,6 +1,11 @@
 Release History
 ===============
 
+0.4.1 (2016-07-17)
+
+* Fix exception format to support Python 2.6
+
+
 0.4.0 (2016-06-30)
 
 * Use request session's connection pool in HTTPSession
