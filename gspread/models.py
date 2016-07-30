@@ -232,7 +232,7 @@ class Worksheet(object):
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
     _MAGIC_NUMBER = 64
-    _cell_addr_re = re.compile(r'([A-Za-z]+)(\d+)')
+    _cell_addr_re = re.compile(r'([A-Za-z]+)([1-9]\d*)')
 
     def get_int_addr(self, label):
         """Translates cell's label address to a tuple of integers.
