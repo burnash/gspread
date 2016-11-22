@@ -5,6 +5,7 @@ import random
 import unittest
 import itertools
 import uuid
+
 try:
     import ConfigParser
 except ImportError:
@@ -26,7 +27,6 @@ SCOPE = ['https://spreadsheets.google.com/feeds']
 
 I18N_STR = u'Iñtërnâtiônàlizætiøn'#.encode('utf8')
 
-
 def read_config(filename):
     config = ConfigParser.ConfigParser()
     config.readfp(open(filename))
@@ -43,6 +43,13 @@ def gen_value(prefix=None):
     else:
         return unicode(uuid.uuid4())
 
+def ensure_worksheet_removed(spreadsheet, worksheet_title):
+    existing_wksht = [
+        w for w in spreadsheet.worksheets()
+        if w.title == worksheet_title
+        ]
+    if existing_wksht:
+        spreadsheet.del_worksheet(existing_wksht[0])
 
 class GspreadTest(unittest.TestCase):
 
@@ -69,7 +76,7 @@ class ClientTest(GspreadTest):
         spreadsheet = self.gc.open(title)
         self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
 
-    def test_no_found_exeption(self):
+    def test_not_found_exception(self):
         noexistent_title = "Please don't use this phrase as a name of a sheet."
         self.assertRaises(gspread.SpreadsheetNotFound,
                           self.gc.open,
@@ -87,6 +94,7 @@ class ClientTest(GspreadTest):
 
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
+        self.assertTrue(spreadsheet_list)
         for s in spreadsheet_list:
             self.assertTrue(isinstance(s, gspread.Spreadsheet))
 
@@ -133,13 +141,10 @@ class WorksheetTest(GspreadTest):
         super(WorksheetTest, cls).setUpClass()
         title = cls.config.get('Spreadsheet', 'title')
         cls.spreadsheet = cls.gc.open(title)
+        ensure_worksheet_removed(cls.spreadsheet, 'wksht_test')
 
     def setUp(self):
         super(WorksheetTest, self).setUp()
-        #NOTE(msuozzo): Here, a new worksheet is created for each test.
-        # This was determined to be faster than reusing a single sheet and
-        # having to clear its contents after each test.
-        # Basically: Time(add_wks + del_wks) < Time(range + update_cells)
         self.sheet = self.spreadsheet.add_worksheet('wksht_test', 20, 20)
 
     def tearDown(self):
@@ -431,6 +436,8 @@ class WorksheetDeleteTest(GspreadTest):
         self.spreadsheet = self.gc.open(title)
         ws1_name = self.config.get('WorksheetDelete', 'ws1_name')
         ws2_name = self.config.get('WorksheetDelete', 'ws2_name')
+        ensure_worksheet_removed(self.spreadsheet, ws1_name)
+        ensure_worksheet_removed(self.spreadsheet, ws2_name)
         self.ws1 = self.spreadsheet.add_worksheet(ws1_name, 1, 1)
         self.ws2 = self.spreadsheet.add_worksheet(ws2_name, 1, 1)
 
@@ -466,3 +473,78 @@ class CellTest(GspreadTest):
         self.sheet.update_acell('A1', 'Non-numeric value')
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, None)
+
+DataFrameTest = None
+
+try:
+    import pandas as pd
+    import numpy as np
+except ImportError:
+    pd = None
+
+if pd is not None:
+    from gspread.dataframe import get_as_dataframe, set_with_dataframe
+
+    class DataFrameTest(GspreadTest):
+        """Test for gspread.dataframe."""
+
+        @classmethod
+        def setUpClass(cls):
+            super(DataFrameTest, cls).setUpClass()
+            title = cls.config.get('Spreadsheet', 'title')
+            cls.spreadsheet = cls.gc.open(title)
+            ensure_worksheet_removed(cls.spreadsheet, 'df_test')
+
+        def setUp(self):
+            super(DataFrameTest, self).setUp()
+            title = self.config.get('Spreadsheet', 'title')
+            self.sheet = self.spreadsheet.add_worksheet('df_test', 20, 20)
+
+        def tearDown(self):
+            self.spreadsheet.del_worksheet(self.sheet)
+
+        def assert_dataframes_are_equal(self, df1, df2):
+            self.assertTrue((df1.columns == df2.columns).all(),
+                "DataFrame column names are different")
+            if df1.equals(df2):
+                return None
+            # need to account for np.nan != np.nan returning True
+            diff_mask = (df1 != df2) & ~(df1.isnull() & df2.isnull())
+            ne_stacked = diff_mask.stack()
+            changed = ne_stacked[ne_stacked]
+            changed.index.names = ['id', 'col']
+            difference_locations = np.where(diff_mask)
+            changed_from = df1.values[difference_locations]
+            changed_to = df2.values[difference_locations]
+            diff = pd.DataFrame({'from': changed_from, 'to': changed_to},
+                            index=changed.index)
+            self.assertTrue(diff.empty, "DataFrames differ:\n%s" % diff)
+
+        def test_set_with_dataframe_roundtrip(self):
+            df = pd.DataFrame.from_dict([
+                { 'abc': i, 'def': 'label %d' % i,
+                  'ghi': i ** 2, 'jkl': i ** 3 }
+                for i in range(1, 500) ])
+            df.index = list(range(1,len(df)+1))
+            set_with_dataframe(self.sheet,
+                           df,
+                           resize=True,
+                           include_index=False,
+                           include_column_header=True)
+            return_df = get_as_dataframe(self.sheet, has_column_header=True)
+            self.assert_dataframes_are_equal(df, return_df)
+
+        def test_set_with_dataframe_roundtrip_batching(self):
+            df = pd.DataFrame.from_dict([
+                { 'abc': i, 'def': 'label %d' % i,
+                  'ghi': i ** 2, 'jkl': i ** 3 }
+                for i in range(1, 20000) ])
+            df.index = list(range(1,len(df)+1))
+            set_with_dataframe(self.sheet,
+                           df,
+                           resize=True,
+                           include_index=False,
+                           include_column_header=True)
+            return_df = get_as_dataframe(self.sheet, has_column_header=True)
+            self.assert_dataframes_are_equal(df, return_df)
+
