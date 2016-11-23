@@ -360,7 +360,7 @@ class Worksheet(object):
 
         return [[rows[i][j] for j in rect_cols] for i in rect_rows]
 
-    def get_all_records(self, empty2zero=False, head=1):
+    def get_all_records(self, empty2zero=False, head=1, **kwargs):
         """Returns a list of dictionaries, all of them having:
             - the contents of the spreadsheet's with the head row as keys,
             And each of these dictionaries holding
@@ -372,13 +372,17 @@ class Worksheet(object):
 
         :param empty2zero: determines whether empty cells are converted to zeros.
         :param head: determines wich row to use as keys, starting from 1
-            following the numeration of the spreadsheet."""
+            following the numeration of the spreadsheet.
+        :param default_blank: determines whether empty cells are converted to
+            something else. Lack of parameter will not convert them, any value
+            (including None) will be used for conversion."""
 
         idx = head - 1
 
         data = self.get_all_values()
         keys = data[idx]
-        values = [numericise_all(row, empty2zero) for row in data[idx + 1:]]
+        values = [numericise_all(row, empty2zero, **kwargs)
+                  for row in data[idx + 1:]]
 
         return [dict(zip(keys, row)) for row in values]
 

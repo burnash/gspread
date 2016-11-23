@@ -355,6 +355,16 @@ class WorksheetTest(GspreadTest):
         d1 = dict(zip(rows[0], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
 
+        # then, read empty strings to None
+        read_records = self.sheet.get_all_records(default_blank=None)
+        d1 = dict(zip(rows[0], (None, None, None, None)))
+        self.assertEqual(read_records[1], d1)
+
+        # then, read empty strings to something else
+        read_records = self.sheet.get_all_records(default_blank='foo')
+        d1 = dict(zip(rows[0], ('foo', 'foo', 'foo', 'foo')))
+        self.assertEqual(read_records[1], d1)
+
     def test_get_all_records_different_header(self):
         self.sheet.resize(6, 4)
         # put in new values, made from three lists
@@ -381,6 +391,16 @@ class WorksheetTest(GspreadTest):
         # then, read empty strings to zeros
         read_records = self.sheet.get_all_records(empty2zero=True, head=3)
         d1 = dict(zip(rows[2], (0, 0, 0, 0)))
+        self.assertEqual(read_records[1], d1)
+
+        # then, read empty strings to None
+        read_records = self.sheet.get_all_records(default_blank=None)
+        d1 = dict(zip(rows[2], (None, None, None, None)))
+        self.assertEqual(read_records[1], d1)
+
+        # then, read empty strings to something else
+        read_records = self.sheet.get_all_records(default_blank='foo')
+        d1 = dict(zip(rows[2], ('foo', 'foo', 'foo', 'foo')))
         self.assertEqual(read_records[1], d1)
 
     def test_append_row(self):

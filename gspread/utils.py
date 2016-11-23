@@ -46,7 +46,7 @@ def _ds(elem):
     return ElementTree.tostring(elem)
 
 
-def numericise(value, empty2zero=False):
+def numericise(value, empty2zero=False, **kwargs):
     """Returns a value that depends on the input string:
         - Float if input can be converted to Float
         - Integer if input can be converted to integer
@@ -77,15 +77,18 @@ def numericise(value, empty2zero=False):
             try:
                 value = float(value)
             except ValueError:
-                if value == "" and empty2zero:
-                    value = 0
+                if value == "":
+                    if empty2zero:
+                        value = 0
+                    elif kwargs.get('default_blank'):
+                        value = kwargs['default_blank']
 
     return value
 
 
-def numericise_all(input, empty2zero=False):
+def numericise_all(input, empty2zero=False, **kwargs):
     """Returns a list of numericised values from strings"""
-    return [numericise(s, empty2zero) for s in input]
+    return [numericise(s, empty2zero, **kwargs) for s in input]
 
 
 if __name__ == '__main__':
