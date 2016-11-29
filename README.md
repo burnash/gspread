@@ -81,6 +81,10 @@ val = worksheet.acell('B1').value
 
 # With coords
 val = worksheet.cell(1, 2).value
+
+# To get a cell formula
+cell = worksheet.acell('B1') # or .cell(1, 2)
+cell.input_value
 ```
 
 ### Getting All Values From a Row or a Column
