@@ -169,6 +169,13 @@ set_with_dataframe(worksheet, df)
 df2 = get_as_dataframe(worksheet)
 ```
 
+You can install Pandas as part of the gspread installation using the `pandas`
+extra:
+
+```sh
+pip install gspread[pandas]
+```
+
 ## Installation
 
 ### Requirements
