@@ -1,3 +1,20 @@
+# -*- coding: utf-8 -*-
+
+"""
+gspread.dataframe
+~~~~~~~~~~~~~~
+
+This module contains functions to retrieve a worksheet as a
+`pandas.DataFrame`, and to set the contents of a worksheet
+using a `pandas.DataFrame`. To use these functions, have
+Pandas 0.14.0 or greater installed. You can install gspread with
+the extra `pandas` to ensure Pandas's presence:
+
+::
+
+    pip install gspread[pandas]
+
+"""
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .utils import finditem, numericise as num
 

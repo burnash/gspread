@@ -60,6 +60,8 @@ Following modules are for internal use only.
    :members: HTTPSession
 .. automodule:: gspread.urls
    :members: construct_url
+.. automodule:: gspread.dataframe
+   :members: get_as_dataframe, set_with_dataframe
 
 .. _github issue: https://github.com/burnash/gspread/issues
 

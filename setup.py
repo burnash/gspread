@@ -45,6 +45,9 @@ setup(
     url='https://github.com/burnash/gspread',
     keywords=['spreadsheets', 'google-spreadsheets'],
     install_requires=['requests>=2.2.1'],
+    extras_require={
+        'pandas': ['pandas>=0.14.0']
+    },
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
