@@ -101,7 +101,7 @@ def get_as_dataframe(worksheet,
     :param worksheet: the worksheet.
     :param index_column_number: if >0, the worksheet column number to use
             as the DataFrame index. (First column in worksheet is column 1.)
-            If absent or false, the DataFrame index will be
+            If absent or false, the DataFrame index will be used.
             Defaults to None.
     :param has_column_header: if True, interpret the first row of
             the worksheet as containing the names of columns for the
