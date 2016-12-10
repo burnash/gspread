@@ -174,9 +174,14 @@ class WorksheetTest(GspreadTest):
         self.assertTrue(isinstance(cell, gspread.Cell))
 
     def test_range(self):
-        cell_range = self.sheet.range('A1:A5')
-        for c in cell_range:
-            self.assertTrue(isinstance(c, gspread.Cell))
+        cell_range1 = self.sheet.range('A1:A5')
+        cell_range2 = self.sheet.range((1, 1, 5, 1))
+        for c1, c2 in zip(cell_range1, cell_range2):
+            self.assertTrue(isinstance(c1, gspread.Cell))
+            self.assertTrue(isinstance(c2, gspread.Cell))
+            self.assertTrue(c1.col == c2.col)
+            self.assertTrue(c1.row == c2.row)
+            self.assertTrue(c1.value == c2.value)
 
     def test_update_acell(self):
         value = gen_value()
