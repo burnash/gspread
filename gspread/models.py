@@ -328,13 +328,20 @@ class Worksheet(object):
                                                   self._cell_addr(row, col))
         return Cell(self, feed)
 
-    def range(self, alphanum):
+    def range(self, alphanumorrowcol):
         """Returns a list of :class:`Cell` objects from specified range.
 
-        :param alphanum: A string with range value in common format,
-                         e.g. 'A1:A5'.
+        :param alphanumorrowcol: A string with range value in common format,
+                                 e.g. 'A1:A5', or a sequence of integers
+                                 ``(startrow, startcol, endrow, endcol)``
 
         """
+        if isinstance(alphanumorrowcol, basestring):
+            alphanum = alphanumorrowcol
+        else:
+            startalphanum = self.get_addr_int(*alphanumorrowcol[:2])
+            endalphanum = self.get_addr_int(*alphanumorrowcol[-2:])
+            alphanum = ':'.join((startalphanum, endalphanum))
         feed = self.client.get_cells_feed(self, params={'range': alphanum,
                                                         'return-empty': 'true'})
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
