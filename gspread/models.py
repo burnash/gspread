@@ -102,7 +102,7 @@ class Spreadsheet(object):
         :param rows: Number of rows.
         :param cols: Number of columns.
 
-        Returns a newly created :class:`worksheets <Worksheet>`.
+        :returns: a newly created :class:`worksheets <Worksheet>`.
         """
         feed = Element('entry', {'xmlns': ATOM_NS,
                                  'xmlns:gs': SPREADSHEET_NS})
@@ -165,14 +165,14 @@ class Spreadsheet(object):
 
         :param index: An index of a worksheet. Indexes start from zero.
 
-        :returns: an instance of :class:`Worksheet`.
+        :returns: an instance of :class:`Worksheet`
+                  or `None` if the worksheet is not found.
 
         Example. To get first worksheet of a spreadsheet:
 
         >>> sht = client.open('My fancy spreadsheet')
         >>> worksheet = sht.get_worksheet(0)
 
-        Returns `None` if the worksheet is not found.
         """
         if not self._sheet_list:
             self._fetch_sheets()
@@ -346,8 +346,8 @@ class Worksheet(object):
         :param first_col: Integer row number
         :param last_row: Integer row number
         :param last_col: Integer row number
-        """
 
+        """
         feed = self.client.get_cells_feed(
             self,
             params={'range': name, 'return-empty': 'true'}
@@ -355,7 +355,8 @@ class Worksheet(object):
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
     def get_all_values(self):
-        """Returns a list of lists containing all cells' values as strings."""
+        """Returns a list of lists containing all cells' values as strings.
+        """
         cells = self._fetch_cells()
 
         # defaultdicts fill in gaps for empty rows/cells not returned by gdocs
@@ -389,8 +390,9 @@ class Worksheet(object):
         :param head: determines wich row to use as keys, starting from 1
             following the numeration of the spreadsheet.
         :param default_blank: determines whether empty cells are converted to
-            something else except empty string or zero."""
+            something else except empty string or zero.
 
+        """
         idx = head - 1
 
         data = self.get_all_values()
