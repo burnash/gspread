@@ -5,7 +5,6 @@ from textwrap import dedent
 from xml.etree import ElementTree
 import time
 import datetime
-import calendar
 
 
 def to_utc(a_datetime):
