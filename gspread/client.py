@@ -278,9 +278,7 @@ class Client(object):
             'title': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
-        r = self.session.request(
-            'POST', create_url, headers=headers, data=json.dumps(data)
-        )
+        r = self.session.post(create_url, json.dumps(data), headers=headers)
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
