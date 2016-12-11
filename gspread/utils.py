@@ -145,7 +145,7 @@ def a1_to_rowcol(label):
                   Letter case is ignored.
 
     :returns: a tuple containing `row` and `column` numbers. Both indexed
-    from 1 (one).
+              from 1 (one).
 
     Example:
 
