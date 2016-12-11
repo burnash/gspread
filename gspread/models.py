@@ -577,7 +577,7 @@ class Worksheet(object):
 
         self.update_cells(cells_after_insert)
 
-    def del_row(self, index):
+    def delete_row(self, index):
         """"Deletes a row from the worksheet at the specified index
 
         :param index: Index of a row for deletion
@@ -586,11 +586,9 @@ class Worksheet(object):
             raise IndexError('Row index out of range')
 
         # Retrieve all Cells at or below `index` using a single batch query
-        top_left = self.get_addr_int(index, 1)
-        bottom_right = self.get_addr_int(self.row_count, self.col_count)
-        range_str = '%s:%s' % (top_left, bottom_right)
-
-        cells_after_delete = self.range(range_str)
+        cells_after_delete = self.range(
+            index, 1, self.row_count, self.col_count
+        )
 
         # Shift rows up
         for ind, cell in enumerate(cells_after_delete):
@@ -602,7 +600,7 @@ class Worksheet(object):
         self.update_cells(cells_after_delete)
 
         # Remove last row
-        self.resize(rows = self.row_count - 1)
+        self.resize(rows=self.row_count - 1)
 
     def _finder(self, func, query):
         cells = self._fetch_cells()

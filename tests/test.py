@@ -428,12 +428,12 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(1)
         self.assertEqual(values, read_values)
 
-    def test_del_row(self):
+    def test_delete_row(self):
         num_rows = self.sheet.row_count
 
         prev = self.sheet.row_values(1)
         next = self.sheet.row_values(3)
-        self.sheet.del_row(2)
+        self.sheet.delete_row(2)
         self.assertEqual(self.sheet.row_count, num_rows - 1)
         self.assertEqual(self.sheet.row_values(1), prev)
         self.assertEqual(self.sheet.row_values(2), next)
