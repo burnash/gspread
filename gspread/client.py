@@ -150,7 +150,7 @@ class Client(object):
         :param title: (optional) If specified can be used to filter
                       spreadsheets by title.
 
-        :returns: a list of a :class:`~gspread.Spreadsheet` instances.
+        :returns: a list of :class:`~gspread.Spreadsheet` instances.
 
         """
         feed = self.get_spreadsheets_feed()
