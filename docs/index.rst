@@ -40,6 +40,12 @@ The models represent common spreadsheet objects: :class:`a spreadsheet <Spreadsh
 .. autoclass:: Cell
    :members:
 
+Utils
+-----
+
+.. automodule:: gspread.utils
+   :members: rowcol_to_a1
+
 Exceptions
 ----------
 
