@@ -11,6 +11,7 @@ This module contains common spreadsheets' models
 import re
 from collections import defaultdict
 from itertools import chain
+from functools import wraps
 
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
@@ -18,7 +19,7 @@ from xml.etree.ElementTree import Element, SubElement
 from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
-from .utils import finditem, numericise_all
+from .utils import finditem, numericise_all, rowcol_to_a1
 
 from .exceptions import IncorrectCellLabel, WorksheetNotFound, CellNotFound
 
@@ -46,6 +47,31 @@ def _escape_attrib(text, encoding=None, replace=None):
 
 
 ElementTree._escape_attrib = _escape_attrib
+
+
+def cast_to_a1_notation(method):
+    """
+    Decorator function casts wrapped arguments to A1 notation
+    in range method calls.
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        try:
+            if len(args):
+                int(args[0])
+
+            # Convert to A1 notation
+            range_start = rowcol_to_a1(*args[:2])
+            range_end = rowcol_to_a1(*args[-2:])
+            range_name = ':'.join((range_start, range_end))
+
+            args = (range_name,) + args[4:]
+        except ValueError:
+            pass
+
+        return method(self, *args, **kwargs)
+
+    return wrapper
 
 
 class Spreadsheet(object):
@@ -278,24 +304,13 @@ class Worksheet(object):
         A1
 
         """
-        row = int(row)
-        col = int(col)
-
-        if row < 1 or col < 1:
-            raise IncorrectCellLabel('(%s, %s)' % (row, col))
-
-        div = col
-        column_label = ''
-
-        while div:
-            (div, mod) = divmod(div, 26)
-            if mod == 0:
-                mod = 26
-                div -= 1
-            column_label = chr(mod + self._MAGIC_NUMBER) + column_label
-
-        label = '%s%s' % (column_label, row)
-        return label
+        import warnings
+        warnings.warn(
+            "Worksheet.get_addr_int() is deprecated, "
+            "use utils.rowcol_to_a1() instead",
+            DeprecationWarning
+        )
+        return rowcol_to_a1(row, col)
 
     def acell(self, label):
         """Returns an instance of a :class:`Cell`.
@@ -328,22 +343,29 @@ class Worksheet(object):
                                                   self._cell_addr(row, col))
         return Cell(self, feed)
 
-    def range(self, alphanumorrowcol):
-        """Returns a list of :class:`Cell` objects from specified range.
+    @cast_to_a1_notation
+    def range(self, name):
+        """Returns a list of :class:`Cell` objects from a specified range.
 
-        :param alphanumorrowcol: A string with range value in common format,
-                                 e.g. 'A1:A5', or a sequence of integers
-                                 ``(startrow, startcol, endrow, endcol)``
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param first_row: Integer row number
+        :param first_col: Integer row number
+        :param last_row: Integer row number
+        :param last_col: Integer row number
+
+        A string with range value in A1 notation,
+                     e.g. 'A1:A5'., or a sequence of integers
+                     ``(startrow, startcol, endrow, endcol)``
 
         """
-        if isinstance(alphanumorrowcol, basestring):
-            alphanum = alphanumorrowcol
-        else:
-            startalphanum = self.get_addr_int(*alphanumorrowcol[:2])
-            endalphanum = self.get_addr_int(*alphanumorrowcol[-2:])
-            alphanum = ':'.join((startalphanum, endalphanum))
-        feed = self.client.get_cells_feed(self, params={'range': alphanum,
-                                                        'return-empty': 'true'})
+        feed = self.client.get_cells_feed(
+            self,
+            params={'range': name, 'return-empty': 'true'}
+        )
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
     def get_all_values(self):
@@ -398,8 +420,8 @@ class Worksheet(object):
         Empty cells in this list will be rendered as :const:`None`.
 
         """
-        start_cell = self.get_addr_int(row, 1)
-        end_cell = self.get_addr_int(row, self.col_count)
+        start_cell = rowcol_to_a1(row, 1)
+        end_cell = rowcol_to_a1(row, self.col_count)
 
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
@@ -410,8 +432,8 @@ class Worksheet(object):
         Empty cells in this list will be rendered as :const:`None`.
 
         """
-        start_cell = self.get_addr_int(1, col)
-        end_cell = self.get_addr_int(self.row_count, col)
+        start_cell = rowcol_to_a1(1, col)
+        end_cell = rowcol_to_a1(self.row_count, col)
 
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
@@ -563,8 +585,8 @@ class Worksheet(object):
             self.resize(cols=data_width)
 
         # Retrieve all Cells at or below `index` using a single batch query
-        top_left = self.get_addr_int(index, 1)
-        bottom_right = self.get_addr_int(self.row_count, self.col_count)
+        top_left = rowcol_to_a1(index, 1)
+        bottom_right = rowcol_to_a1(self.row_count, self.col_count)
         range_str = '%s:%s' % (top_left, bottom_right)
 
         cells_after_insert = self.range(range_str)
