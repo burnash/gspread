@@ -44,7 +44,7 @@ Utils
 -----
 
 .. automodule:: gspread.utils
-   :members: rowcol_to_a1
+   :members: rowcol_to_a1, a1_to_rowcol
 
 Exceptions
 ----------
