@@ -248,7 +248,7 @@ class Client(object):
 
         return ElementTree.fromstring(r.content)
 
-    def new(self, title):
+    def create(self, title):
         create_url = 'https://www.googleapis.com/drive/v2/files'
         headers = {'Content-Type': 'application/json'}
         data = {
@@ -258,9 +258,8 @@ class Client(object):
         r = self.session.request(
             'POST', create_url, headers=headers, data=json.dumps(data)
         )
-        resp = json.loads(r.read().decode('utf-8'))
-        sheet_id = resp['id']
-        return self.open_by_key(sheet_id)
+        spreadsheet_id = r.json()['id']
+        return self.open_by_key(spreadsheet_id)
 
 
 def authorize(credentials):
