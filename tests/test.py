@@ -428,6 +428,13 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(1)
         self.assertEqual(values, read_values)
 
+        formula = '=1+1'
+        self.sheet.update_acell('B2', formula)
+        values = [gen_value(i) for i in range(num_cols + 4)]
+        self.sheet.insert_row(values, 1)
+        b3 = self.sheet.acell('B3')
+        self.assertEqual(b3.input_value, formula)
+
     def test_delete_row(self):
         num_rows = self.sheet.row_count
 
