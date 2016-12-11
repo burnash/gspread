@@ -648,23 +648,21 @@ class Worksheet(object):
 
         return self.client.session.get(export_link).content
 
-    def clear(self, value=''):
+    def clear(self):
         """Clears all cells in the worksheet.
-
-        :param value: Text to set values to (default '').
         """
-        values = worksheet.get_all_values()
+        values = self.get_all_values()
         if not values:
             return
         num_columns = len(values[0])
         num_rows = len(values)
-        bottom_right_cell = worksheet.get_addr_int(num_rows, num_columns)
+        bottom_right_cell = self.get_addr_int(num_rows, num_columns)
         cell_range = 'A1:{}'.format(bottom_right_cell)
 
-        cells = worksheet.range(cell_range)
+        cells = self.range(cell_range)
         for cell in cells:
-            cell.value = value
-        worksheet.update_cells(cells)
+            cell.value = ''
+        self.update_cells(cells)
 
 
 class Cell(object):
