@@ -94,7 +94,7 @@ class ClientTest(GspreadTest):
             self.assertTrue(isinstance(s, gspread.Spreadsheet))
 
     def test_create(self):
-        title = self.config.get('Spreadsheet', 'new_spreadsheet_title')
+        title = gen_value('TestSpreadsheet')
         new_spreadsheet = self.gc.create(title)
         self.assertTrue(isinstance(new_spreadsheet, gspread.Spreadsheet))
 
