@@ -290,18 +290,8 @@ class Worksheet(object):
     def get_addr_int(self, row, col):
         """Translates cell's tuple of integers to a cell label.
 
-        The result is a string containing the cell's coordinates in label form.
-
-        :param row: The row of the cell to be converted.
-                    Rows start at index 1.
-
-        :param col: The column of the cell to be converted.
-                    Columns start at index 1.
-
-        Example:
-
-        >>> wks.get_addr_int(1, 1)
-        A1
+        .. deprecated:: 0.5
+           Use :func:`utils.rowcol_to_a1` instead.
 
         """
         import warnings
