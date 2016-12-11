@@ -651,15 +651,7 @@ class Worksheet(object):
     def clear(self):
         """Clears all cells in the worksheet.
         """
-        values = self.get_all_values()
-        if not values:
-            return
-        num_columns = len(values[0])
-        num_rows = len(values)
-        bottom_right_cell = self.get_addr_int(num_rows, num_columns)
-        cell_range = 'A1:{}'.format(bottom_right_cell)
-
-        cells = self.range(cell_range)
+        cells = self.range(1, 1, self.row_count, self.col_count)
         for cell in cells:
             cell.value = ''
         self.update_cells(cells)
