@@ -399,12 +399,12 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to None
-        read_records = self.sheet.get_all_records(default_blank=None)
+        read_records = self.sheet.get_all_records(default_blank=None, head=3)
         d1 = dict(zip(rows[2], (None, None, None, None)))
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to something else
-        read_records = self.sheet.get_all_records(default_blank='foo')
+        read_records = self.sheet.get_all_records(default_blank='foo', head=3)
         d1 = dict(zip(rows[2], ('foo', 'foo', 'foo', 'foo')))
         self.assertEqual(read_records[1], d1)
 
