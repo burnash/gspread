@@ -648,6 +648,14 @@ class Worksheet(object):
 
         return self.client.session.get(export_link).content
 
+    def clear(self):
+        """Clears all cells in the worksheet.
+        """
+        cells = self.range(1, 1, self.row_count, self.col_count)
+        for cell in cells:
+            cell.value = ''
+        self.update_cells(cells)
+
 
 class Cell(object):
 

@@ -445,6 +445,21 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(self.sheet.row_values(1), prev)
         self.assertEqual(self.sheet.row_values(2), next)
 
+    def test_clear(self):
+        rows = [["", "", "", ""],
+                ["", "", "", ""],
+                ["A1", "B1", "", "D1"],
+                [1, "b2", 1.45, ""],
+                ["", "", "", ""],
+                ["A4", 0.4, "", 4]]
+        cell_list = self.sheet.range('A1:D6')
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        self.sheet.clear()
+        self.assertEqual(self.sheet.get_all_values(), [])
+
     def test_export(self):
         list_len = 10
 
