@@ -6,9 +6,9 @@
 gspread API Reference
 =====================
 
-`gspread <https://github.com/burnash/gspread>`_ is a simple `Google Spreadsheets`_ API wrapper.
+`gspread <https://github.com/burnash/gspread>`_ is a Python client library for the `Google Sheets`_ API.
 
-.. _Google Spreadsheets: http://www.google.com/drive/apps.html
+.. _Google Sheets: https://docs.google.com/spreadsheets/
 
 .. module:: gspread
 
