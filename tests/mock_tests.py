@@ -67,6 +67,11 @@ class MockClientTest(MockGspreadTest, test.ClientTest):
         feed = feed_obj.to_xml()
         cls.gc.get_spreadsheets_feed = mock.Mock(return_value=feed)
 
+        post_mock = mock.MagicMock()
+        post_mock.return_value.json.return_value = {'id': key}
+
+        cls.gc.session.post = post_mock
+
 
 class MockSpreadsheetTest(MockGspreadTest, test.SpreadsheetTest):
     """Test for gspread.Spreadsheet that mocks out the server response.
