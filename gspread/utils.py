@@ -10,6 +10,10 @@ This module contains utility functions.
 
 from xml.etree import ElementTree
 
+from .exceptions import IncorrectCellLabel
+
+MAGIC_NUMBER = 64
+
 
 def finditem(func, seq):
     """Finds and returns first item in iterable for which func(item) is True.
@@ -93,6 +97,43 @@ def numericise(value, empty2zero=False, default_blank=""):
 def numericise_all(input, empty2zero=False, default_blank=""):
     """Returns a list of numericised values from strings"""
     return [numericise(s, empty2zero, default_blank) for s in input]
+
+
+def rowcol_to_a1(row, col):
+    """Translates a row and column cell address to A1 notation.
+
+    The result is a string containing the cell's coordinates in A1 notation.
+
+    :param row: The row of the cell to be converted.
+                Rows start at index 1.
+
+    :param col: The column of the cell to be converted.
+                Columns start at index 1.
+
+    Example:
+
+    >>> rowcol_to_a1(1, 1)
+    A1
+
+    """
+    row = int(row)
+    col = int(col)
+
+    if row < 1 or col < 1:
+        raise IncorrectCellLabel('(%s, %s)' % (row, col))
+
+    div = col
+    column_label = ''
+
+    while div:
+        (div, mod) = divmod(div, 26)
+        if mod == 0:
+            mod = 26
+            div -= 1
+        column_label = chr(mod + MAGIC_NUMBER) + column_label
+
+    label = '%s%s' % (column_label, row)
+    return label
 
 
 if __name__ == '__main__':
