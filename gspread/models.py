@@ -356,12 +356,8 @@ class Worksheet(object):
         :param first_col: Integer row number
         :param last_row: Integer row number
         :param last_col: Integer row number
-
-        A string with range value in A1 notation,
-                     e.g. 'A1:A5'., or a sequence of integers
-                     ``(startrow, startcol, endrow, endcol)``
-
         """
+
         feed = self.client.get_cells_feed(
             self,
             params={'range': name, 'return-empty': 'true'}
