@@ -22,7 +22,10 @@ except NameError:
 
 CONFIG_FILENAME = os.path.join(os.path.dirname(__file__), 'tests.config')
 CREDS_FILENAME = os.path.join(os.path.dirname(__file__), 'creds.json')
-SCOPE = ['https://spreadsheets.google.com/feeds']
+SCOPE = [
+    'https://spreadsheets.google.com/feeds',
+    'https://www.googleapis.com/auth/drive.file'
+]
 
 I18N_STR = u'Iñtërnâtiônàlizætiøn'#.encode('utf8')
 
@@ -89,6 +92,11 @@ class ClientTest(GspreadTest):
         spreadsheet_list = self.gc.openall()
         for s in spreadsheet_list:
             self.assertTrue(isinstance(s, gspread.Spreadsheet))
+
+    def test_create(self):
+        title = self.config.get('Spreadsheet', 'new_spreadsheet_title')
+        new_spreadsheet = self.gc.create(title)
+        self.assertTrue(isinstance(new_spreadsheet, gspread.Spreadsheet))
 
 
 class SpreadsheetTest(GspreadTest):

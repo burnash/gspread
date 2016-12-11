@@ -9,6 +9,7 @@ Google Data API.
 
 """
 import re
+import json
 
 try:
     import xml.etree.cElementTree as ElementTree
@@ -247,15 +248,25 @@ class Client(object):
 
         return ElementTree.fromstring(r.content)
 
+    def create(self, title):
+        create_url = 'https://www.googleapis.com/drive/v2/files'
+        headers = {'Content-Type': 'application/json'}
+        data = {
+            'title': title,
+            'mimeType': 'application/vnd.google-apps.spreadsheet'
+        }
+        r = self.session.request(
+            'POST', create_url, headers=headers, data=json.dumps(data)
+        )
+        spreadsheet_id = r.json()['id']
+        return self.open_by_key(spreadsheet_id)
+
 
 def authorize(credentials):
     """Login to Google API using OAuth2 credentials.
-
     This is a shortcut function which instantiates :class:`Client`
     and performs login right away.
-
     :returns: :class:`Client` instance.
-
     """
     client = Client(auth=credentials)
     client.login()
