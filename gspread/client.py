@@ -10,7 +10,12 @@ Google Data API.
 """
 import re
 
-from xml.etree import ElementTree
+try:
+    from lxml import etree
+    fromstring = etree.fromstring # Roughly 3x faster parsing for large worksheets
+except ImportError:
+    from xml.etree import ElementTree
+    fromstring = ElementTree.fromstring
 
 from . import __version__
 from . import urlencode
@@ -163,7 +168,7 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.content)
+        return fromstring(r.content)
 
     def get_worksheets_feed(self, spreadsheet,
                             visibility='private', projection='full'):
@@ -171,7 +176,7 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.content)
+        return fromstring(r.content)
 
     def get_cells_feed(self, worksheet,
                        visibility='private', projection='full', params=None):
@@ -184,11 +189,11 @@ class Client(object):
             url = '%s?%s' % (url, params)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.content)
+        return fromstring(r.content)
 
     def get_feed(self, url):
         r = self.session.get(url)
-        return ElementTree.fromstring(r.content)
+        return fromstring(r.content)
 
     def del_worksheet(self, worksheet):
         url = construct_url(
@@ -201,7 +206,7 @@ class Client(object):
                             visibility=visibility, projection=projection)
 
         r = self.session.get(url)
-        return ElementTree.fromstring(r.content)
+        return fromstring(r.content)
 
     def put_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml',
@@ -216,7 +221,7 @@ class Client(object):
             else:
                 raise
 
-        return ElementTree.fromstring(r.content)
+        return fromstring(r.content)
 
     def post_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml'}
@@ -227,7 +232,7 @@ class Client(object):
         except HTTPError as ex:
             raise RequestError(ex.message)
 
-        return ElementTree.fromstring(r.content)
+        return fromstring(r.content)
 
     def post_cells(self, worksheet, data):
         headers = {'Content-Type': 'application/atom+xml',
@@ -236,7 +241,7 @@ class Client(object):
         url = construct_url('cells_batch', worksheet)
         r = self.session.post(url, data, headers=headers)
 
-        return ElementTree.fromstring(r.content)
+        return fromstring(r.content)
 
 
 def authorize(credentials):

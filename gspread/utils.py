@@ -8,7 +8,10 @@ This module contains utility functions.
 
 """
 
-from xml.etree import ElementTree
+try:
+    from lxml.etree import ElementTree
+except ImportError:
+    from xml.etree import ElementTree
 
 from .exceptions import IncorrectCellLabel
 
