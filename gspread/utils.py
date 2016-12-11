@@ -8,11 +8,13 @@ This module contains utility functions.
 
 """
 
+import re
 from xml.etree import ElementTree
 
 from .exceptions import IncorrectCellLabel
 
 MAGIC_NUMBER = 64
+CELL_ADDR_RE = re.compile(r'([A-Za-z]+)([1-9]\d*)')
 
 
 def finditem(func, seq):
@@ -134,6 +136,35 @@ def rowcol_to_a1(row, col):
 
     label = '%s%s' % (column_label, row)
     return label
+
+
+def a1_to_rowcol(label):
+    """Translates a cell's address in A1 notation to a tuple of integers.
+
+    :param label: String with cell label in A1 notation, e.g. 'B1'.
+                  Letter case is ignored.
+
+    :returns: a tuple containing `row` and `column` numbers. Both indexed
+    from 1 (one).
+
+    Example:
+
+    >>> a1_to_rowcol('A1')
+    (1, 1)
+
+    """
+    m = CELL_ADDR_RE.match(label)
+    if m:
+        column_label = m.group(1).upper()
+        row = int(m.group(2))
+
+        col = 0
+        for i, c in enumerate(reversed(column_label)):
+            col += (ord(c) - MAGIC_NUMBER) * (26 ** i)
+    else:
+        raise IncorrectCellLabel(label)
+
+    return (row, col)
 
 
 if __name__ == '__main__':

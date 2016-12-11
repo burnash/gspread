@@ -8,7 +8,6 @@ This module contains common spreadsheets' models
 
 """
 
-import re
 from collections import defaultdict
 from itertools import chain
 from functools import wraps
@@ -19,9 +18,10 @@ from xml.etree.ElementTree import Element, SubElement
 from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
-from .utils import finditem, numericise_all, rowcol_to_a1
+from .utils import finditem, numericise_all
+from .utils import rowcol_to_a1, a1_to_rowcol
 
-from .exceptions import IncorrectCellLabel, WorksheetNotFound, CellNotFound
+from .exceptions import WorksheetNotFound, CellNotFound
 
 
 try:
@@ -257,35 +257,20 @@ class Worksheet(object):
         feed = self.client.get_cells_feed(self)
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
-    _MAGIC_NUMBER = 64
-    _cell_addr_re = re.compile(r'([A-Za-z]+)([1-9]\d*)')
-
     def get_int_addr(self, label):
         """Translates cell's label address to a tuple of integers.
 
-        The result is a tuple containing `row` and `column` numbers.
-
-        :param label: String with cell label in common format, e.g. 'B1'.
-                      Letter case is ignored.
-
-        Example:
-
-        >>> wks.get_int_addr('A1')
-        (1, 1)
+        .. deprecated:: 0.5
+           Use :func:`utils.a1_to_rowcol` instead.
 
         """
-        m = self._cell_addr_re.match(label)
-        if m:
-            column_label = m.group(1).upper()
-            row = int(m.group(2))
-
-            col = 0
-            for i, c in enumerate(reversed(column_label)):
-                col += (ord(c) - self._MAGIC_NUMBER) * (26 ** i)
-        else:
-            raise IncorrectCellLabel(label)
-
-        return (row, col)
+        import warnings
+        warnings.warn(
+            "Worksheet.get_int_addr() is deprecated, "
+            "use utils.a1_to_rowcol() instead",
+            DeprecationWarning
+        )
+        return a1_to_rowcol(label)
 
     def get_addr_int(self, row, col):
         """Translates cell's tuple of integers to a cell label.
@@ -314,7 +299,7 @@ class Worksheet(object):
         <Cell R1C1 "I'm cell A1">
 
         """
-        return self.cell(*(self.get_int_addr(label)))
+        return self.cell(*(a1_to_rowcol(label)))
 
     def cell(self, row, col):
         """Returns an instance of a :class:`Cell` positioned in `row`
@@ -439,7 +424,7 @@ class Worksheet(object):
         <Cell R1C1 "I'm cell A1">
 
         """
-        return self.update_cell(*(self.get_int_addr(label)), val=val)
+        return self.update_cell(*(a1_to_rowcol(label)), val=val)
 
     def update_cell(self, row, col, val):
         """Sets the new value to a cell.
@@ -557,7 +542,9 @@ class Worksheet(object):
         self.update_cells(cell_list)
 
     def insert_row(self, values, index=1):
-        """"Adds a row to the worksheet at the specified index and populates it with values.
+        """"Adds a row to the worksheet at the specified index
+        and populates it with values.
+
         Widens the worksheet if there are more values than columns.
 
         :param values: List of values for the new row.
@@ -627,7 +614,7 @@ class Worksheet(object):
             self._element).get('href')
 
         url, qs = export_link.split('?')
-        params = dict(param.split('=') for param in  qs.split('&'))
+        params = dict(param.split('=') for param in qs.split('&'))
 
         params['format'] = format
 
