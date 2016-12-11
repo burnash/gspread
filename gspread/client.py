@@ -64,9 +64,11 @@ class Client(object):
         self.session.add_header('Authorization', "Bearer " + self.auth.access_token)
 
     def open(self, title):
-        """Opens a spreadsheet, returning a :class:`~gspread.Spreadsheet` instance.
+        """Opens a spreadsheet.
 
         :param title: A title of a spreadsheet.
+
+        :returns: a :class:`~gspread.Spreadsheet` instance.
 
         If there's more than one spreadsheet with same title the first one
         will be opened.
@@ -88,9 +90,11 @@ class Client(object):
             raise SpreadsheetNotFound
 
     def open_by_key(self, key):
-        """Opens a spreadsheet specified by `key`, returning a :class:`~gspread.Spreadsheet` instance.
+        """Opens a spreadsheet specified by `key`.
 
         :param key: A key of a spreadsheet as it appears in a URL in a browser.
+
+        :returns: a :class:`~gspread.Spreadsheet` instance.
 
         :raises gspread.SpreadsheetNotFound: if no spreadsheet with
                                              specified `key` is found.
@@ -115,10 +119,11 @@ class Client(object):
             raise SpreadsheetNotFound
 
     def open_by_url(self, url):
-        """Opens a spreadsheet specified by `url`,
-           returning a :class:`~gspread.Spreadsheet` instance.
+        """Opens a spreadsheet specified by `url`.
 
         :param url: URL of a spreadsheet as it appears in a browser.
+
+        :returns: a :class:`~gspread.Spreadsheet` instance.
 
         :raises gspread.SpreadsheetNotFound: if no spreadsheet with
                                              specified `url` is found.
@@ -140,11 +145,12 @@ class Client(object):
                 raise NoValidUrlKeyFound
 
     def openall(self, title=None):
-        """Opens all available spreadsheets,
-           returning a list of a :class:`~gspread.Spreadsheet` instances.
+        """Opens all available spreadsheets.
 
         :param title: (optional) If specified can be used to filter
                       spreadsheets by title.
+
+        :returns: a list of a :class:`~gspread.Spreadsheet` instances.
 
         """
         feed = self.get_spreadsheets_feed()

@@ -102,13 +102,13 @@ def numericise_all(input, empty2zero=False, default_blank=""):
 def rowcol_to_a1(row, col):
     """Translates a row and column cell address to A1 notation.
 
-    The result is a string containing the cell's coordinates in A1 notation.
-
     :param row: The row of the cell to be converted.
                 Rows start at index 1.
 
     :param col: The column of the cell to be converted.
                 Columns start at index 1.
+
+    :returns: a string containing the cell's coordinates in A1 notation.
 
     Example:
 

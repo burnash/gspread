@@ -140,11 +140,11 @@ class Spreadsheet(object):
     def worksheet(self, title):
         """Returns a worksheet with specified `title`.
 
-        The returning object is an instance of :class:`Worksheet`.
-
         :param title: A title of a worksheet. If there're multiple
                       worksheets with the same title, first one will
                       be returned.
+
+        :returns: an instance of :class:`Worksheet`.
 
         Example. Getting worksheet named 'Annual bonuses'
 
@@ -163,9 +163,9 @@ class Spreadsheet(object):
     def get_worksheet(self, index):
         """Returns a worksheet with specified `index`.
 
-        The returning object is an instance of :class:`Worksheet`.
-
         :param index: An index of a worksheet. Indexes start from zero.
+
+        :returns: an instance of :class:`Worksheet`.
 
         Example. To get first worksheet of a spreadsheet:
 
