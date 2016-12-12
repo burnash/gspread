@@ -11,6 +11,8 @@ Release History
 * Added `default_blank` parameter to `Worksheet.get_all_records` #423
 * Use xml.etree.cElementTree when available to reduce memory usage #348
 * Fixed losing input_value data from following cells in `Worksheet.insert_row` #338
+* Deprecated `Worksheet.get_int_addr` and `Worksheet.get_addr_int`
+  in favour of `utils.a1_to_rowcol` and `utils.rowcol_to_a1` respectively
 
 
 0.4.1 (2016-07-17)
