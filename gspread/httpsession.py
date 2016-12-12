@@ -10,12 +10,8 @@ This module contains a class for working with http sessions.
 
 import requests
 try:
-    import httplib as client
-    from urlparse import urlparse
     from urllib import urlencode
 except ImportError:
-    from http import client
-    from urllib.parse import urlparse
     from urllib.parse import urlencode
 
 try:
