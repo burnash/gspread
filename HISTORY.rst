@@ -1,12 +1,26 @@
 Release History
 ===============
 
+0.5.0 (2016-12-12)
+------------------
+
+* Added method to create blank spreadsheets #253
+* Added method to clear worksheets #156
+* Added method to delete a row in a worksheet #337
+* Changed `Worksheet.range` method to accept integers as coordinates #142
+* Added `default_blank` parameter to `Worksheet.get_all_records` #423
+* Use xml.etree.cElementTree when available to reduce memory usage #348
+* Fixed losing input_value data from following cells in `Worksheet.insert_row` #338
+
+
 0.4.1 (2016-07-17)
+------------------
 
 * Fix exception format to support Python 2.6
 
 
 0.4.0 (2016-06-30)
+------------------
 
 * Use request session's connection pool in HTTPSession
 
