@@ -1,9 +1,26 @@
 #!/usr/bin/env python
 
 import os.path
+<<<<<<< HEAD
 import re
 import sys
+=======
+import sys
 
+import gspread
+>>>>>>> # This is a combination of 2 commits.
+
+=======
+<<<<<<< HEAD
+import re
+import sys
+=======
+import sys
+
+import gspread
+>>>>>>> # This is a combination of 2 commits.
+
+>>>>>>> Update README.md
 try:
     from setuptools import setup
 except ImportError:

@@ -8,6 +8,13 @@ This module contains common spreadsheets' models
 
 """
 
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
+=======
+=======
+>>>>>>> # This is a combination of 2 commits.
+import re
+>>>>>>> Squashing all the commits to simpy things for merge
 from collections import defaultdict
 from itertools import chain
 from functools import wraps
@@ -49,6 +56,8 @@ def _escape_attrib(text, encoding=None, replace=None):
 ElementTree._escape_attrib = _escape_attrib
 
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
 def cast_to_a1_notation(method):
     """
     Decorator function casts wrapped arguments to A1 notation
@@ -74,8 +83,11 @@ def cast_to_a1_notation(method):
     return wrapper
 
 
+=======
+>>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> Update README.md
 class Spreadsheet(object):
-
     """ A class for a spreadsheet object."""
 
     def __init__(self, client, feed_entry):
@@ -189,12 +201,42 @@ class Spreadsheet(object):
     @property
     def title(self):
         return self._feed_entry.find(_ns('title')).text
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+<<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
 
+<<<<<<< HEAD
+=======
+    def __iter__(self):
+        for sheet in self.worksheets():
+            yield(sheet)
+>>>>>>> Update README.md
+
+<<<<<<< HEAD
     def __iter__(self):
         for sheet in self.worksheets():
             yield(sheet)
 
+=======
+>>>>>>> # This is a combination of 2 commits.
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+=======
+>>>>>>> Removing merge conflicts
+=======
+>>>>>>> # This is a combination of 2 commits.
 
+=======
+=======
+>>>>>>> # This is a combination of 2 commits.
+
+>>>>>>> efe8f2e... Added __iter__ method to Spreadsheet class
+>>>>>>> Update README.md
 class Worksheet(object):
 
     """A class for worksheet object."""
@@ -279,6 +321,7 @@ class Worksheet(object):
            Use :func:`utils.rowcol_to_a1` instead.
 
         """
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
         import warnings
         warnings.warn(
             "Worksheet.get_addr_int() is deprecated, "
@@ -286,6 +329,26 @@ class Worksheet(object):
             DeprecationWarning
         )
         return rowcol_to_a1(row, col)
+=======
+        row = int(row)
+        col = int(col)
+
+        if row < 1 or col < 1:
+            raise IncorrectCellLabel('(%s, %s)' % (row, col))
+
+        div = col
+        column_label = ''
+
+        while div:
+            (div, mod) = divmod(div, 26)
+            if mod == 0:
+                mod = 26
+                div -= 1
+            column_label = chr(mod + self._MAGIC_NUMBER) + column_label
+
+        label = '%s%s' % (column_label, row)
+        return label
+>>>>>>> # This is a combination of 2 commits.
 
     def acell(self, label):
         """Returns an instance of a :class:`Cell`.
@@ -361,7 +424,11 @@ class Worksheet(object):
 
         return [[rows[i][j] for j in rect_cols] for i in rect_rows]
 
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
     def get_all_records(self, empty2zero=False, head=1, default_blank=""):
+=======
+    def get_all_records(self, empty2zero=False, head=1):
+>>>>>>> # This is a combination of 2 commits.
         """Returns a list of dictionaries, all of them having:
             - the contents of the spreadsheet's with the head row as keys,
             And each of these dictionaries holding
@@ -373,17 +440,26 @@ class Worksheet(object):
 
         :param empty2zero: determines whether empty cells are converted to zeros.
         :param head: determines wich row to use as keys, starting from 1
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
             following the numeration of the spreadsheet.
         :param default_blank: determines whether empty cells are converted to
             something else except empty string or zero.
 
         """
+=======
+            following the numeration of the spreadsheet."""
+
+>>>>>>> # This is a combination of 2 commits.
         idx = head - 1
 
         data = self.get_all_values()
         keys = data[idx]
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
         values = [numericise_all(row, empty2zero, default_blank)
                   for row in data[idx + 1:]]
+=======
+        values = [numericise_all(row, empty2zero) for row in data[idx + 1:]]
+>>>>>>> # This is a combination of 2 commits.
 
         return [dict(zip(keys, row)) for row in values]
 
@@ -393,8 +469,18 @@ class Worksheet(object):
         Empty cells in this list will be rendered as :const:`None`.
 
         """
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
         start_cell = rowcol_to_a1(row, 1)
         end_cell = rowcol_to_a1(row, self.col_count)
+=======
+        start_cell = self.get_addr_int(row, 1)
+        end_cell = self.get_addr_int(row, self.col_count)
+>>>>>>> Squashing all the commits to simpy things for merge
+=======
+        start_cell = self.get_addr_int(row, 1)
+        end_cell = self.get_addr_int(row, self.col_count)
+>>>>>>> # This is a combination of 2 commits.
 
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
@@ -405,8 +491,18 @@ class Worksheet(object):
         Empty cells in this list will be rendered as :const:`None`.
 
         """
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
         start_cell = rowcol_to_a1(1, col)
         end_cell = rowcol_to_a1(self.row_count, col)
+=======
+        start_cell = self.get_addr_int(1, col)
+        end_cell = self.get_addr_int(self.row_count, col)
+>>>>>>> Squashing all the commits to simpy things for merge
+=======
+        start_cell = self.get_addr_int(1, col)
+        end_cell = self.get_addr_int(self.row_count, col)
+>>>>>>> # This is a combination of 2 commits.
 
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
@@ -521,9 +617,32 @@ class Worksheet(object):
     def append_row(self, values):
         """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
+        
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+        Note that a new Google Sheet has 100 or 1000 rows by default. You
+        may need to scroll down to find the new row.
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+<<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+=======
+>>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+=======
+        Note that a new Google Sheet has 100 or 1000 rows by default. You
+        may need to scroll down to find the new row.
+
+>>>>>>> 02c23fc... # This is a combination of 2 commits.
+        Note that a new Google Sheet has 100 or 1000 rows by default. You
+        may need to scroll down to find the new row.
+>>>>>>> Update README.md
 
         Note that a new Google Sheet has 100 or 1000 rows by default. You
         may need to scroll down to find the new row.
+=======
+>>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> Removing merge conflicts
 
         :param values: List of values for the new row.
         """
@@ -542,24 +661,40 @@ class Worksheet(object):
         self.update_cells(cell_list)
 
     def insert_row(self, values, index=1):
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
         """"Adds a row to the worksheet at the specified index
         and populates it with values.
 
+=======
+        """"Adds a row to the worksheet at the specified index and populates it with values.
+>>>>>>> # This is a combination of 2 commits.
         Widens the worksheet if there are more values than columns.
 
         :param values: List of values for the new row.
         """
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+>>>>>>> # This is a combination of 2 commits.
         if index == self.row_count + 1:
             return self.append_row(values)
         elif index > self.row_count + 1:
             raise IndexError('Row index out of range')
 
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+=======
+>>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> # This is a combination of 2 commits.
         self.add_rows(1)
         data_width = len(values)
         if self.col_count < data_width:
             self.resize(cols=data_width)
 
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
         # Retrieve all Cells at or below `index` using a single batch query
+<<<<<<< 0f67973a7427fb0d14703e22f8f1308f0dfd6af5
         top_left = rowcol_to_a1(index, 1)
         bottom_right = rowcol_to_a1(self.row_count, self.col_count)
         range_str = '%s:%s' % (top_left, bottom_right)
@@ -601,7 +736,100 @@ class Worksheet(object):
 
         # Remove last row
         self.resize(rows=self.row_count - 1)
+=======
+=======
+        # Retrieve all Cells at or below `index` using a single batch query
+>>>>>>> # This is a combination of 2 commits.
+        top_left = self.get_addr_int(index, 1)
+        bottom_right = self.get_addr_int(self.row_count, self.col_count)
+        range_str = '%s:%s' % (top_left, bottom_right)
 
+        cells_after_insert = self.range(range_str)
+
+        for ind, cell in reversed(list(enumerate(cells_after_insert))):
+            if ind < self.col_count:
+                # For the first row, take the cell values from `values`
+                new_val = values[ind] if ind < len(values) else ''
+            else:
+                # For all other rows, take the cell values from the row above
+                new_val = cells_after_insert[ind - self.col_count].value
+            cell.value = new_val
+<<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
+<<<<<<< HEAD
+	
+=======
+
+>>>>>>> Removing merge conflicts
+	self.update_cells(cells_after_insert)
+    
+    def insert_column(self, values, index=1):
+    	""" Adds a column to the worksheet at the specified index (must be integer not char) and populates it with the values.
+    	Widens the worksheet if there are more values than columns
+    	
+    	:param values: List of values for the column.
+    	"""
+        self.add_cols(1)
+        data_width = len(values)
+        if self.row_count < data_width:
+            self.resize(rows=data_width)
+	
+	all_cells = self.get_all_values()
+	
+	""" Arranging the values in a list of sublists-column wise.""" 
+	
+        j=0
+	if not all_cells:
+	    columns_after_insert = [[]]
+	else:
+	    columns_before_insert = [[] for k in range(len(all_cells[0]))]
+            while j<len(all_cells[0]):
+                i=0
+                while i<len(all_cells):
+                    columns_before_insert[j].append(all_cells[i][j])
+                    i += 1
+                j += 1
+            columns_after_insert = columns_before_insert[index-1:] 
+	
+	columns_after_insert.insert(0, values)
+        
+        new_cell_list = []
+        for col, column in enumerate(columns_after_insert, start=1):
+            for c, cell in enumerate(column, start=1):
+                newcell = self.cell(c, col + (index - 1))
+                newcell.value = columns_after_insert[col - 1][c - 1]
+                new_cell_list.append(newcell)
+        self.update_cells(new_cell_list)
+<<<<<<< 7e91ce60c91237a29536f0b2f609ab27a82d3d68
+
+<<<<<<< 8d1c559c60d37fda250cbd73ceeec82865cf02a8
+>>>>>>> Squashing all the commits to simpy things for merge
+=======
+        all_cells = self.get_all_values()
+        rows_after_insert = all_cells[index - 1:self.row_count]
+
+        rows_after_insert.insert(0, values)
+
+<<<<<<< fa8451df8add7631c0798ec33931da4b98972efd
+        updated_cell_list = []
+        for r, row in enumerate(rows_after_insert, start=1):
+            for c, cell in enumerate(row, start=1):
+                newcell = self.cell(r + (index - 1), c)
+                newcell.value = rows_after_insert[r - 1][c - 1]
+                updated_cell_list.append(newcell)
+        self.update_cells(updated_cell_list)
+>>>>>>> # This is a combination of 2 commits.
+=======
+
+>>>>>>> # This is a combination of 2 commits.
+=======
+=======
+
+        self.update_cells(cells_after_insert)
+>>>>>>> dba33bb... Altered insert_row semantics to utilize range
+>>>>>>> small date fix in changelog from commit 0a06735a4d
+
+=======
+>>>>>>> Removing merge conflicts
     def _finder(self, func, query):
         cells = self._fetch_cells()
 
@@ -656,6 +884,25 @@ class Worksheet(object):
             cell.value = ''
         self.update_cells(cells)
 
+    def export(self, format='csv'):
+        """Export the worksheet in specified format.
+
+        :param format: A format of the output.
+        """
+        export_link = self._get_link(
+            'http://schemas.google.com/spreadsheets/2006#exportcsv',
+            self._element).get('href')
+
+        url, qs = export_link.split('?')
+        params = dict(param.split('=') for param in  qs.split('&'))
+
+        params['format'] = format
+
+        params = urlencode(params)
+        export_link = '%s?%s' % (url, params)
+
+        return self.client.session.get(export_link)
+
 
 class Cell(object):
 
@@ -673,7 +920,7 @@ class Cell(object):
         numeric_value = cell_elem.get('numericValue')
         self.numeric_value = float(numeric_value) if numeric_value else None
 
-        #: Value of the cell.
+        # : Value of the cell.
         self.value = cell_elem.text or ''
 
     @property

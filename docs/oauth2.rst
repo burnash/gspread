@@ -23,11 +23,51 @@ Using Signed Credentials
 .. image:: https://cloud.githubusercontent.com/assets/264674/7033107/72b75938-dd80-11e4-9a9f-54fb10820976.png
     :alt: Enabled APIs
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+>>>>>>> Update README.md
+3. Go to "Credentials" and choose "New Credentials > Service Account Key".
+=======
+<<<<<<< HEAD
 3. Go to "Credentials" and choose "New Credentials > Service Account Key".
 
 .. image:: https://cloud.githubusercontent.com/assets/1297699/12098271/1616f908-b319-11e5-92d8-767e8e5ec757.png
     :alt: Google Developers Console
 
+=======
+3. Go to "Credentials" and hit "Create new Client ID".
+>>>>>>> Update README.md
+
+.. image:: https://cloud.githubusercontent.com/assets/1297699/12098271/1616f908-b319-11e5-92d8-767e8e5ec757.png
+    :alt: Google Developers Console
+
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+=======
+3. Go to "Credentials" and hit "Create new Client ID".
+
+.. image:: https://cloud.githubusercontent.com/assets/264674/7033101/5d335e4a-dd80-11e4-96c0-fce81919ec2d.png
+    :alt: Google Developers Console
+
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> Update README.md
+4. Select "Service account". Hitting "Create Client ID" will generate a new Public/Private key pair.
+
+.. image:: https://cloud.githubusercontent.com/assets/264674/7032990/6dfaceb2-dd7f-11e4-8071-1490a5b19c8e.png
+    :alt: Create Client ID in Developers Console
+
+>>>>>>> # This is a combination of 2 commits.
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+=======
+>>>>>>> Update README.md
+>>>>>>> Update README.md
 You will automatically download a JSON file with this data.
 
 .. image:: https://cloud.githubusercontent.com/assets/264674/7033081/3810ddae-dd80-11e4-8945-34b4ba12f9fa.png
@@ -47,12 +87,38 @@ This is how this file may look like:
 
 You'll need *client_email* and *private_key*.
 
+<<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+>>>>>>> small date fix in changelog from commit 0a06735a4d
 5. Install `oauth2client <https://github.com/google/oauth2client>`_:
 
 ::
 
     pip install --upgrade oauth2client
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+<<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
 
+=======
+    
+>>>>>>> small date fix in changelog from commit 0a06735a4d
+=======
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> Update README.md
+<<<<<<< HEAD
+
+=======
+    
+>>>>>>> # This is a combination of 2 commits.
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+>>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> Update README.md
+>>>>>>> Update README.md
 Depending on your system setup you may need to install PyOpenSSL:
 
 ::
@@ -60,9 +126,17 @@ Depending on your system setup you may need to install PyOpenSSL:
     pip install PyOpenSSL
 
 6. Now you can read this file, and use the data when constructing your credentials:
+<<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
 
 ::
 
+<<<<<<< HEAD
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+=======
+=======
+<<<<<<< HEAD
+>>>>>>> Update README.md
+>>>>>>> Update README.md
     import gspread
     from oauth2client.service_account import ServiceAccountCredentials
 
@@ -75,9 +149,16 @@ Depending on your system setup you may need to install PyOpenSSL:
     wks = gc.open("Where is the money Lebowski?").sheet1
 
 If using oauth2client < 2.0.0
+=======
+5. Now you can read this file, and use the data when constructing your credentials:
+>>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> small date fix in changelog from commit 0a06735a4d
 
 ::
 
+=======
+>>>>>>> # This is a combination of 2 commits.
     import json
     import gspread
     from oauth2client.client import SignedJwtAssertionCredentials
@@ -85,17 +166,98 @@ If using oauth2client < 2.0.0
     json_key = json.load(open('gspread-april-2cd … ba4.json'))
     scope = ['https://spreadsheets.google.com/feeds']
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
     credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
 
+=======
+=======
+<<<<<<< HEAD
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
+
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    try:
+        credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+    except TypeError:
+        credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+=======
+=======
+>>>>>>> 02c23fc... # This is a combination of 2 commits.
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
+=======
+    credentialss = ServiceAccountCredentials.from_json_keyfile_name('gspread-april-2cd … ba4.json', scope)
+>>>>>>> 94b2491... oauth2 documentation update
+=======
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('gspread-april-2cd … ba4.json', scope)
+>>>>>>> 913544c... correct typo
+=======
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
+>>>>>>> 5a04fab... doc update
+
+<<<<<<< HEAD
+>>>>>>> c7292b2... DOC: documentation about encoding private_key
+=======
+=======
+>>>>>>> Update README.md
+    try:
+        credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+    except TypeError:
+        credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+>>>>>>> # This is a combination of 2 commits.
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+=======
+>>>>>>> 02c23fc... # This is a combination of 2 commits.
+>>>>>>> Update README.md
+>>>>>>> Update README.md
     gc = gspread.authorize(credentials)
 
     wks = gc.open("Where is the money Lebowski?").sheet1
 
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+<<<<<<< 1b18616bc077716ba1c8ab38db2951f62389eb60
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+>>>>>>> Update README.md
 **Note**: Python2 users do not need to encode ``json_key['private_key']`` due to ``str`` and ``bytes`` not being differentiated.
 
 
 7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
 
+=======
+=======
+<<<<<<< HEAD
+>>>>>>> small date fix in changelog from commit 0a06735a4d
+6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+<<<<<<< HEAD
+
+=======
+**Note**: Python 3 users need to cast ``json_key['private_key']`` to ``bytes``. Otherwise you'll get ``TypeError: expected bytes, not str`` exception. Replace the line with ``SignedJwtAssertionCredentials`` call with this:
+
+::
+
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+
+
+7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+>>>>>>> bd23436... Added requirements to the instruction #236
+
+=======
+    
+>>>>>>> # This is a combination of 2 commits.
 Troubleshooting
 ---------------
 
@@ -103,7 +265,78 @@ oauth2client.client.CryptoUnavailableError: No crypto library available
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you're getting the "No crypto library available" exception, make sure you have ``PyOpenSSL`` library installed in your environment.
+=======
+<<<<<<< HEAD
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
 
+=======
+**Note**: Python 3 users need to cast ``json_key['private_key']`` to ``bytes``. Otherwise you'll get ``TypeError: expected bytes, not str`` exception. Replace the line with ``SignedJwtAssertionCredentials`` call with this:
+
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+<<<<<<< HEAD
+
+=======
+**Note**: Python 3 users need to cast ``json_key['private_key']`` to ``bytes``. Otherwise you'll get ``TypeError: expected bytes, not str`` exception. Replace the line with ``SignedJwtAssertionCredentials`` call with this:
+
+::
+
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+=======
+**Note**: Legacy Python users do not need to encode ``json_key['private_key']`` due to ``str`` and ``bytes`` not being differentiated.
+>>>>>>> c7292b2... DOC: documentation about encoding private_key
+=======
+=======
+>>>>>>> 02c23fc... # This is a combination of 2 commits.
+**Note**: Python2 users do not need to encode ``json_key['private_key']`` due to ``str`` and ``bytes`` not being differentiated.
+>>>>>>> d47540b... DOC: legacy python -> python2
+
+
+7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+>>>>>>> bd23436... Added requirements to the instruction #236
+
+=======
+    
+Troubleshooting
+---------------
+
+oauth2client.client.CryptoUnavailableError: No crypto library available
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you're getting the "No crypto library available" exception, make sure you have ``PyOpenSSL`` library installed in your environment.
+=======
+<<<<<<< HEAD
+6. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+
+=======
+**Note**: Python 3 users need to cast ``json_key['private_key']`` to ``bytes``. Otherwise you'll get ``TypeError: expected bytes, not str`` exception. Replace the line with ``SignedJwtAssertionCredentials`` call with this:
+
+>>>>>>> Update README.md
+::
+
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], bytes(json_key['private_key'], 'utf-8'), scope)
+
+
+7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+>>>>>>> bd23436... Added requirements to the instruction #236
+>>>>>>> # This is a combination of 2 commits.
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+    
+>>>>>>> c7e2983... Troubleshooting No crypto library available exception. 
+>>>>>>> # This is a combination of 2 commits.
+=======
+>>>>>>> Update README.md
+
+    
+>>>>>>> c7e2983... Troubleshooting No crypto library available exception. 
+>>>>>>> Update README.md
 Custom Credentials Objects
 --------------------------
 
@@ -118,3 +351,21 @@ If you have another method of authenicating you can easily hack a custom credent
       def refresh (self, http):
         # get new access_token
         # this only gets called if access_token is None
+<<<<<<< 46798d67c38d2cf8e1c751b684897cdc98598205
+<<<<<<< 95d918ab8c3e881f4363e5f5a50e98f79c768ddf
+<<<<<<< a69cd84f789e21aa91b9c488abd3dc4ac39c8361
+=======
+<<<<<<< HEAD
+>>>>>>> # This is a combination of 2 commits.
+=======
+
+>>>>>>> # This is a combination of 2 commits.
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> # This is a combination of 2 commits.
+>>>>>>> Update README.md
+>>>>>>> Update README.md
