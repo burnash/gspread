@@ -87,6 +87,29 @@ class Spreadsheet(object):
     def id(self):
         return self._feed_entry.find(_ns('id')).text.split('/')[-1]
 
+    @property
+    def title(self):
+        return self._feed_entry.find(_ns('title')).text
+
+    @property
+    def updated(self):
+        """Updated time in RFC 3339 format"""
+        return self._feed_entry.find(_ns('updated')).text
+
+    @property
+    def sheet1(self):
+        """Shortcut property for getting the first worksheet."""
+        return self.get_worksheet(0)
+
+    def __iter__(self):
+        for sheet in self.worksheets():
+            yield(sheet)
+
+    def __repr__(self):
+        return '<%s %s id:%s>' % (self.__class__.__name__,
+                                  repr(self.title),
+                                  self.id)
+
     def get_id_fields(self):
         return {'spreadsheet_id': self.id}
 
@@ -180,19 +203,6 @@ class Spreadsheet(object):
             return self._sheet_list[index]
         except IndexError:
             return None
-
-    @property
-    def sheet1(self):
-        """Shortcut property for getting the first worksheet."""
-        return self.get_worksheet(0)
-
-    @property
-    def title(self):
-        return self._feed_entry.find(_ns('title')).text
-
-    def __iter__(self):
-        for sheet in self.worksheets():
-            yield(sheet)
 
 
 class Worksheet(object):
