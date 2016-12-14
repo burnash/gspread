@@ -82,19 +82,24 @@ class Spreadsheet(object):
         self.client = client
         self._sheet_list = []
         self._feed_entry = feed_entry
+        self._id = feed_entry.find(_ns('id')).text.split('/')[-1]
+        self._title = feed_entry.find(_ns('title')).text
+        self._updated = feed_entry.find(_ns('updated')).text
 
     @property
     def id(self):
-        return self._feed_entry.find(_ns('id')).text.split('/')[-1]
+        """Spreadsheet ID."""
+        return self._id
 
     @property
     def title(self):
-        return self._feed_entry.find(_ns('title')).text
+        """Spreadsheet title."""
+        return self._title
 
     @property
     def updated(self):
         """Updated time in RFC 3339 format"""
-        return self._feed_entry.find(_ns('updated')).text
+        return self._updated
 
     @property
     def sheet1(self):
