@@ -15,7 +15,6 @@ try:
 except:
     from xml.etree import ElementTree
 
-from . import __version__
 from . import urlencode
 from .ns import _ns
 from .httpsession import HTTPSession, HTTPError
@@ -23,10 +22,6 @@ from .models import Spreadsheet
 from .urls import construct_url
 from .utils import finditem, extract_id_from_url
 from .exceptions import (SpreadsheetNotFound, UpdateCellError, RequestError)
-
-
-AUTH_SERVER = 'https://www.google.com'
-SPREADSHEETS_SERVER = 'spreadsheets.google.com'
 
 
 class Client(object):
