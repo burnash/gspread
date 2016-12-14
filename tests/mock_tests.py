@@ -3,7 +3,9 @@
 Avoiding direct network access is benefitial in that it markedly speeds up
 testing, avoids error-prone credential setup, and enables validation even if
 internet access is unavailable.
+
 """
+
 from datetime import datetime
 import unittest
 try:
@@ -16,6 +18,10 @@ import mock
 import gspread
 from tests import test
 from tests import test_utils
+
+
+class MockUtilsTest(test.UtilsTest):
+    pass
 
 
 class MockGspreadTest(unittest.TestCase):
