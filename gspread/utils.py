@@ -11,10 +11,13 @@ This module contains utility functions.
 import re
 from xml.etree import ElementTree
 
-from .exceptions import IncorrectCellLabel
+from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r'([A-Za-z]+)([1-9]\d*)')
+
+URL_KEY_V1_RE = re.compile(r'key=([^&#]+)')
+URL_KEY_V2_RE = re.compile(r'/spreadsheets/d/([a-zA-Z0-9-_]+)')
 
 
 def finditem(func, seq):
@@ -164,7 +167,17 @@ def a1_to_rowcol(label):
     else:
         raise IncorrectCellLabel(label)
 
-    return (row, col)
+
+def extract_id_from_url(url):
+    m2 = URL_KEY_V2_RE.search(url)
+    if m2:
+        return m2.group(1)
+
+    m1 = URL_KEY_V1_RE.search(url)
+    if m1:
+        return m1.group(1)
+
+    raise NoValidUrlKeyFound
 
 
 if __name__ == '__main__':

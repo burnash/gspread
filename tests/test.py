@@ -13,6 +13,7 @@ except ImportError:
 from oauth2client.service_account import ServiceAccountCredentials
 
 import gspread
+from gspread import utils
 
 try:
     unicode
@@ -45,6 +46,39 @@ def gen_value(prefix=None):
         return u'%s %s' % (prefix, gen_value())
     else:
         return unicode(uuid.uuid4())
+
+
+class UtilsTest(unittest.TestCase):
+    def test_extract_id_from_url(self):
+        url_id_list = [
+            # New-style url
+            ('https://docs.google.com/spreadsheets/d/'
+             '1qpyC0X3A0MwQoFDE8p-Bll4hps/edit#gid=0',
+             '1qpyC0X3A0MwQoFDE8p-Bll4hps'),
+
+            ('https://docs.google.com/spreadsheets/d/'
+             '1qpyC0X3A0MwQoFDE8p-Bll4hps/edit',
+             '1qpyC0X3A0MwQoFDE8p-Bll4hps'),
+
+            ('https://docs.google.com/spreadsheets/d/'
+             '1qpyC0X3A0MwQoFDE8p-Bll4hps',
+             '1qpyC0X3A0MwQoFDE8p-Bll4hps'),
+
+            # Old-style url
+            ('https://docs.google.com/spreadsheet/'
+             'ccc?key=1qpyC0X3A0MwQoFDE8p-Bll4hps&usp=drive_web#gid=0',
+             '1qpyC0X3A0MwQoFDE8p-Bll4hps')
+        ]
+
+        for url, id in url_id_list:
+            self.assertEqual(id, utils.extract_id_from_url(url))
+
+    def test_no_extract_id_from_url(self):
+        self.assertRaises(
+            gspread.NoValidUrlKeyFound,
+            utils.extract_id_from_url,
+            'http://example.org'
+        )
 
 
 class GspreadTest(unittest.TestCase):
