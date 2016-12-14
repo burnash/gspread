@@ -1,6 +1,14 @@
 Release History
 ===============
 
+0.5.1 (2016-12-12)
+------------------
+
+* Fixed a missing return value in `utils.a1_to_rowcol`
+* Fixed url parsing in `Client.open_by_url`
+* Added `updated` property to `Spreadsheet` objects
+
+
 0.5.0 (2016-12-12)
 ------------------
 
