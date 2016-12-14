@@ -80,6 +80,20 @@ class UtilsTest(unittest.TestCase):
             'http://example.org'
         )
 
+    def test_a1_to_rowcol(self):
+        self.assertEqual(utils.a1_to_rowcol('ABC3'), (3, 731))
+
+    def test_rowcol_to_a1(self):
+        self.assertEqual(utils.rowcol_to_a1(3, 731), 'ABC3')
+        self.assertEqual(utils.rowcol_to_a1(1, 104), 'CZ1')
+
+    def test_addr_converters(self):
+        for row in range(1, 257):
+            for col in range(1, 512):
+                addr = utils.rowcol_to_a1(row, col)
+                (r, c) = utils.a1_to_rowcol(addr)
+                self.assertEqual((row, col), (r, c))
+
 
 class GspreadTest(unittest.TestCase):
 
@@ -187,25 +201,11 @@ class WorksheetTest(GspreadTest):
     def tearDown(self):
         self.spreadsheet.del_worksheet(self.sheet)
 
-    def test_get_int_addr(self):
-        self.assertEqual(self.sheet.get_int_addr('ABC3'), (3, 731))
-
-    def test_get_addr_int(self):
-        self.assertEqual(self.sheet.get_addr_int(3, 731), 'ABC3')
-        self.assertEqual(self.sheet.get_addr_int(1, 104), 'CZ1')
-
     def test_get_updated(self):
         RFC_3339 = (r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?'
                     r'(Z|[+-]\d{2}:\d{2})')
         has_match = re.match(RFC_3339, self.sheet.updated) is not None
         self.assertTrue(has_match)
-
-    def test_addr_converters(self):
-        for row in range(1, 257):
-            for col in range(1, 512):
-                addr = self.sheet.get_addr_int(row, col)
-                (r, c) = self.sheet.get_int_addr(addr)
-                self.assertEqual((row, col), (r, c))
 
     def test_acell(self):
         cell = self.sheet.acell('A1')

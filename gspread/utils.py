@@ -138,6 +138,7 @@ def rowcol_to_a1(row, col):
         column_label = chr(mod + MAGIC_NUMBER) + column_label
 
     label = '%s%s' % (column_label, row)
+
     return label
 
 
@@ -166,6 +167,8 @@ def a1_to_rowcol(label):
             col += (ord(c) - MAGIC_NUMBER) * (26 ** i)
     else:
         raise IncorrectCellLabel(label)
+
+    return (row, col)
 
 
 def extract_id_from_url(url):
