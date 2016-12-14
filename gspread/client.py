@@ -19,7 +19,7 @@ from . import urlencode
 from .ns import _ns
 from .httpsession import HTTPSession, HTTPError
 from .models import Spreadsheet
-from .urls import construct_url
+from .urls import construct_url, DRIVE_FILES_API_V2_URL
 from .utils import finditem, extract_id_from_url
 from .exceptions import (SpreadsheetNotFound, UpdateCellError, RequestError)
 
@@ -247,15 +247,71 @@ class Client(object):
 
         """
 
-        create_url = 'https://www.googleapis.com/drive/v2/files'
         headers = {'Content-Type': 'application/json'}
         data = {
             'title': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
-        r = self.session.post(create_url, json.dumps(data), headers=headers)
+        r = self.session.post(
+            DRIVE_FILES_API_V2_URL,
+            json.dumps(data),
+            headers=headers
+        )
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
+
+    def insert_permission(
+        self,
+        file_id,
+        value,
+        perm_type,
+        role,
+    ):
+        """Creates a new permission for a file.
+
+        :param file_id: the file or a spreadsheet id.
+        :param value: user or group e-mail address, domain name
+                      or None for 'default' type.
+        :param perm_type: the account type.
+               Allowed values are: ``user``, ``group``, ``domain``,
+               ``anyone``
+        :param role: the primary role for this user.
+               Allowed values are: ``owner``, ``writer``, ``reader``
+
+        Examples::
+            # Give write permissions to otto@example.com
+
+            gc.insert_permission(
+                '0BmgG6nO_6dprnRRUWl1UFE',
+                'otto@example.org',
+                perm_type='user',
+                role='writer'
+            )
+
+            # Make the spreadsheet publicly readable
+
+            gc.insert_permission(
+                '0BmgG6nO_6dprnRRUWl1UFE',
+                None,
+                perm_type='anyone',
+                role='reader'
+            )
+
+        """
+
+        url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
+        headers = {'Content-Type': 'application/json'}
+
+        data = {
+            'value': value,
+            'type': perm_type,
+            'role': role,
+        }
+
+        try:
+            self.session.post(url, json.dumps(data), headers=headers)
+        except HTTPError as ex:
+            raise RequestError(ex.message)
 
 
 def authorize(credentials):

@@ -14,6 +14,7 @@ from .exceptions import UnsupportedFeedTypeError, UrlParameterMissing
 
 
 SPREADSHEETS_API_V3_URL = 'https://spreadsheets.google.com/feeds/'
+DRIVE_FILES_API_V2_URL = 'https://www.googleapis.com/drive/v2/files'
 
 # General pattern
 # /feeds/feedType/key/worksheetId/visibility/projection

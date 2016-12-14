@@ -209,6 +209,28 @@ class Spreadsheet(object):
         except IndexError:
             return None
 
+    def share(self, value, perm_type, role):
+        """Share the spreadsheet with other accounts.
+
+        :param value: user or group e-mail address, domain name
+                      or None for 'default' type.
+        :param perm_type: the account type.
+               Allowed values are: ``user``, ``group``, ``domain``,
+               ``anyone``
+        :param role: the primary role for this user.
+               Allowed values are: ``owner``, ``writer``, ``reader``
+
+        Example::
+
+            # Give Otto a write permission on this spreadsheet
+            sh.share('otto@example.com', perm_type='user', role='writer')
+
+
+            # Transfer ownership to Otto
+            sh.share('otto@example.com', perm_type='user', role='owner')
+        """
+        self.client.insert_permission(self.id, value, perm_type, role)
+
 
 class Worksheet(object):
 
