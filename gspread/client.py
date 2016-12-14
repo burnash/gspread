@@ -8,7 +8,6 @@ This module contains Client class responsible for communicating with
 Google Data API.
 
 """
-import re
 import json
 
 try:
@@ -22,16 +21,12 @@ from .ns import _ns
 from .httpsession import HTTPSession, HTTPError
 from .models import Spreadsheet
 from .urls import construct_url
-from .utils import finditem
-from .exceptions import (SpreadsheetNotFound, NoValidUrlKeyFound,
-                         UpdateCellError, RequestError)
+from .utils import finditem, extract_id_from_url
+from .exceptions import (SpreadsheetNotFound, UpdateCellError, RequestError)
 
 
 AUTH_SERVER = 'https://www.google.com'
 SPREADSHEETS_SERVER = 'spreadsheets.google.com'
-
-_url_key_re_v1 = re.compile(r'key=([^&#]+)')
-_url_key_re_v2 = re.compile(r'spreadsheets/d/([^&#]+)/edit')
 
 
 class Client(object):
@@ -111,14 +106,9 @@ class Client(object):
         for elem in feed.findall(_ns('entry')):
             alter_link = finditem(lambda x: x.get('rel') == 'alternate',
                                   elem.findall(_ns('link')))
-            m = _url_key_re_v1.search(alter_link.get('href'))
-            if m and m.group(1) == key:
+            spreadsheet_id = extract_id_from_url(alter_link.get('href'))
+            if spreadsheet_id == key:
                 return Spreadsheet(self, elem)
-
-            m = _url_key_re_v2.search(alter_link.get('href'))
-            if m and m.group(1) == key:
-                return Spreadsheet(self, elem)
-
         else:
             raise SpreadsheetNotFound
 
@@ -136,17 +126,7 @@ class Client(object):
         >>> c.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
 
         """
-        m1 = _url_key_re_v1.search(url)
-        if m1:
-            return self.open_by_key(m1.group(1))
-
-        else:
-            m2 = _url_key_re_v2.search(url)
-            if m2:
-                return self.open_by_key(m2.group(1))
-
-            else:
-                raise NoValidUrlKeyFound
+        return self.open_by_key(extract_id_from_url(url))
 
     def openall(self, title=None):
         """Opens all available spreadsheets.
