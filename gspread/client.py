@@ -260,6 +260,18 @@ class Client(object):
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
+    def list_permissions(self, file_id):
+        """Retrieve a list of permissions for a file.
+
+        :param file_id: a spreadsheet ID (aka file ID.)
+        """
+        url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
+        headers = {'Content-Type': 'application/json'}
+
+        r = self.session.get(url, headers=headers)
+
+        return r.json()['items']
+
     def insert_permission(
         self,
         file_id,
@@ -269,7 +281,7 @@ class Client(object):
     ):
         """Creates a new permission for a file.
 
-        :param file_id: the file or a spreadsheet id.
+        :param file_id: a spreadsheet ID (aka file ID.)
         :param value: user or group e-mail address, domain name
                       or None for 'default' type.
         :param perm_type: the account type.
@@ -310,6 +322,24 @@ class Client(object):
 
         try:
             self.session.post(url, json.dumps(data), headers=headers)
+        except HTTPError as ex:
+            raise RequestError(ex.message)
+
+    def remove_permission(self, file_id, permission_id):
+        """Deletes a permission from a file.
+
+        :param file_id: a spreadsheet ID (aka file ID.)
+        :param permission_id: an ID for the permission.
+        """
+        url = '{0}/{1}/permissions/{2}'.format(
+            DRIVE_FILES_API_V2_URL,
+            file_id,
+            permission_id
+        )
+        headers = {'Content-Type': 'application/json'}
+
+        try:
+            self.session.delete(url, headers=headers)
         except HTTPError as ex:
             raise RequestError(ex.message)
 
