@@ -341,6 +341,7 @@ class Client(object):
         :param email_message: an email message to be sent if notify=True.
 
         Examples::
+
             # Give write permissions to otto@example.com
 
             gc.insert_permission(
