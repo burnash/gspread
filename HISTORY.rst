@@ -1,6 +1,15 @@
 Release History
 ===============
 
+0.6.0 (2016-12-15)
+------------------
+
+* Added spreadsheet sharing functionality
+* Added csv import
+* Fixed bug where list of sheets isn't cleared on refetch
+  #429, #386
+
+
 0.5.1 (2016-12-12)
 ------------------
 
