@@ -21,14 +21,14 @@ from .urls import construct_url
 from .utils import finditem, numericise_all
 from .utils import rowcol_to_a1, a1_to_rowcol
 
-from .exceptions import WorksheetNotFound, CellNotFound
-
+from .exceptions import (
+    IncorrectCellLabel, WorksheetNotFound, CellNotFound, ImportException
+)
 
 try:
     unicode
 except NameError:
     basestring = unicode = str
-
 
 # Patch ElementTree._escape_attrib
 _elementtree_escape_attrib = ElementTree._escape_attrib
@@ -75,7 +75,6 @@ def cast_to_a1_notation(method):
 
 
 class Spreadsheet(object):
-
     """ A class for a spreadsheet object."""
 
     def __init__(self, client, feed_entry):
@@ -119,6 +118,7 @@ class Spreadsheet(object):
         return {'spreadsheet_id': self.id}
 
     def _fetch_sheets(self):
+        self._sheet_list = []
         feed = self.client.get_worksheets_feed(self)
         for elem in feed.findall(_ns('entry')):
             self._sheet_list.append(Worksheet(self, elem))
@@ -209,27 +209,35 @@ class Spreadsheet(object):
         except IndexError:
             return None
 
-    def share(self, value, perm_type, role):
+    def share(self, value, perm_type, role, notify=True, email_message=None):
         """Share the spreadsheet with other accounts.
-
         :param value: user or group e-mail address, domain name
                       or None for 'default' type.
         :param perm_type: the account type.
                Allowed values are: ``user``, ``group``, ``domain``,
-               ``anyone``
+               ``anyone``.
         :param role: the primary role for this user.
-               Allowed values are: ``owner``, ``writer``, ``reader``
+               Allowed values are: ``owner``, ``writer``, ``reader``.
+        :param notify: Whether to send an email to the target user/domain.
+        :param email_message: The email to be sent if notify=True
 
         Example::
 
             # Give Otto a write permission on this spreadsheet
             sh.share('otto@example.com', perm_type='user', role='writer')
 
-
             # Transfer ownership to Otto
             sh.share('otto@example.com', perm_type='user', role='owner')
+
         """
-        self.client.insert_permission(self.id, value, perm_type, role)
+        self.client.insert_permission(
+            self.id,
+            value=value,
+            perm_type=perm_type,
+            role=role,
+            notify=notify,
+            email_message=email_message
+        )
 
     def list_permissions(self):
         """Lists the spreadsheet's permissions.
@@ -570,6 +578,22 @@ class Worksheet(object):
         # Send request and store result
         self._element = self.client.put_feed(uri, ElementTree.tostring(feed))
 
+    def update_title(self, title):
+        """Renames the worksheet.
+
+        :param title: A new title.
+        """
+
+        self_uri = self._get_link('self', self._element).get('href')
+        feed = self.client.get_feed(self_uri)
+        uri = self._get_link('edit', feed).get('href')
+
+        elem = feed.find(_ns('title'))
+        elem.text = title
+
+        # Send request and store result
+        self._element = self.client.put_feed(uri, ElementTree.tostring(feed))
+
     def add_rows(self, rows):
         """Adds rows to worksheet.
 
@@ -724,7 +748,6 @@ class Worksheet(object):
 
 
 class Cell(object):
-
     """An instance of this class represents a single cell
     in a :class:`worksheet <Worksheet>`.
 
