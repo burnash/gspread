@@ -38,7 +38,7 @@ cell_list = wks.range('A1:B7')
 
 ```python
 # You can open a spreadsheet by its title as it appears in Google Docs
-sh = gc.open("My poor gym results") # <-- Look ma, no keys!
+sh = gc.open('My poor gym results') # <-- Look ma, no keys!
 
 # If you want to be specific, use a key (which can be extracted from
 # the spreadsheet's url)
@@ -46,6 +46,22 @@ sht1 = gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
 
 # Or, if you feel really lazy to extract that key, paste the entire url
 sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
+```
+
+### Creating a Spreadsheet
+
+```python
+sh = gc.create('A new spreadsheet')
+
+# But that new spreadsheet will be visible only to your script's account.
+# To be able to access newly created spreadsheet you *must* share it 
+# with your email. Which brings us to…
+```
+
+### Sharing a Spreadsheet
+
+```python
+sh.share('otto@example.com', perm_type='user', role='writer')
 ```
 
 ### Selecting a Worksheet
