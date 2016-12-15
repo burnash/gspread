@@ -34,7 +34,7 @@ class HTTPSession(object):
         self.headers = headers or {}
         self.requests_session = requests.Session()
 
-    def request(self, method, url, data=None, headers=None):
+    def request(self, method, url, data=None, params=None, headers=None, files=None, json=None):
         if data and isinstance(data, bytes):
             data = data.decode()
 
@@ -60,25 +60,25 @@ class HTTPSession(object):
         try:
             func = getattr(self.requests_session, method.lower())
         except AttributeError:
-            raise Exception("HTTP method '{0}' is not supported".format(method))
-        response = func(url, data=data, headers=request_headers)
+            raise Exception("HTTP method '{}' is not supported".format(method))
+        response = func(url, data=data, params=params, headers=request_headers, files=files, json=json)
 
         if response.status_code > 399:
             raise HTTPError(response.status_code, "{0}: {1}".format(
                 response.status_code, response.content))
         return response
 
-    def get(self, url, **kwargs):
-        return self.request('GET', url, **kwargs)
+    def get(self, url, params=None, **kwargs):
+        return self.request('GET', url, params=params, **kwargs)
 
-    def delete(self, url, **kwargs):
-        return self.request('DELETE', url, **kwargs)
+    def delete(self, url, params=None, **kwargs):
+        return self.request('DELETE', url, params=params, **kwargs)
 
-    def post(self, url, data=None, headers={}):
-        return self.request('POST', url, data=data, headers=headers)
+    def post(self, url, data=None, params=None, files=None, headers={}, json=None):
+        return self.request('POST', url, params=params, data=data, headers=headers, files=files, json=json)
 
-    def put(self, url, data=None, **kwargs):
-        return self.request('PUT', url, data=data, **kwargs)
+    def put(self, url, data=None, params=None,  **kwargs):
+        return self.request('PUT', url, params=params, data=data, **kwargs)
 
     def add_header(self, name, value):
         self.headers[name] = value

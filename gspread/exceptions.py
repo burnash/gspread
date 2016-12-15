@@ -17,6 +17,9 @@ class AuthenticationError(GSpreadException):
 class SpreadsheetNotFound(GSpreadException):
     """Trying to open non-existent or inaccessible spreadsheet."""
 
+class ImportException(GSpreadException):
+    """An error during import."""
+
 class WorksheetNotFound(GSpreadException):
     """Trying to open non-existent or inaccessible worksheet."""
 

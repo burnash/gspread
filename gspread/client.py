@@ -19,7 +19,11 @@ from . import urlencode
 from .ns import _ns
 from .httpsession import HTTPSession, HTTPError
 from .models import Spreadsheet
-from .urls import construct_url, DRIVE_FILES_API_V2_URL
+from .urls import (
+    construct_url,
+    DRIVE_FILES_API_V2_URL,
+    DRIVE_FILES_UPLOAD_API_V2_URL
+)
 from .utils import finditem, extract_id_from_url
 from .exceptions import (SpreadsheetNotFound, UpdateCellError, RequestError)
 
@@ -175,9 +179,29 @@ class Client(object):
         r = self.session.get(url)
         return ElementTree.fromstring(r.content)
 
+    def del_spreadsheet(self, file_id):
+        """Deletes a spreadsheet.
+
+        :param file_id: a spreadsheet ID (aka file ID.)
+        """
+        url = '{0}/{1}'.format(
+            DRIVE_FILES_API_V2_URL,
+            file_id
+        )
+
+        try:
+            self.session.delete(url)
+        except HTTPError as ex:
+            raise RequestError(ex.message)
+
     def del_worksheet(self, worksheet):
         url = construct_url(
-            'worksheet', worksheet, 'private', 'full', worksheet_version=worksheet.version)
+            'worksheet',
+            worksheet,
+            'private',
+            'full',
+            worksheet_version=worksheet.version
+        )
         self.session.delete(url)
 
     def get_cells_cell_id_feed(self, worksheet, cell_id,
@@ -260,6 +284,27 @@ class Client(object):
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
+    def import_csv(self, file_id, data):
+        """Imports data into the first page of the spreadsheet.
+
+        :param data: A CSV string of data.
+        """
+        headers = {'Content-Type': 'text/csv'}
+        url = '{0}/{1}'.format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
+
+        try:
+            self.session.put(
+                url,
+                data=data,
+                params={
+                    'uploadType': 'media',
+                    'convert': True
+                },
+                headers=headers
+            )
+        except HTTPError as ex:
+            raise RequestError(ex.message)
+
     def list_permissions(self, file_id):
         """Retrieve a list of permissions for a file.
 
@@ -278,6 +323,8 @@ class Client(object):
         value,
         perm_type,
         role,
+        notify=True,
+        email_message=None
     ):
         """Creates a new permission for a file.
 
@@ -289,6 +336,9 @@ class Client(object):
                ``anyone``
         :param role: the primary role for this user.
                Allowed values are: ``owner``, ``writer``, ``reader``
+
+        :param notify: Whether to send an email to the target user/domain.
+        :param email_message: an email message to be sent if notify=True.
 
         Examples::
             # Give write permissions to otto@example.com
@@ -312,7 +362,6 @@ class Client(object):
         """
 
         url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
-        headers = {'Content-Type': 'application/json'}
 
         data = {
             'value': value,
@@ -320,8 +369,13 @@ class Client(object):
             'role': role,
         }
 
+        params = {
+            'sendNotificationEmails': notify,
+            'emailMessage': email_message
+        }
+
         try:
-            self.session.post(url, json.dumps(data), headers=headers)
+            self.session.post(url, json.dumps(data), params=params)
         except HTTPError as ex:
             raise RequestError(ex.message)
 
