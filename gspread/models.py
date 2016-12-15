@@ -209,6 +209,57 @@ class Spreadsheet(object):
         except IndexError:
             return None
 
+    def share(self, value, perm_type, role):
+        """Share the spreadsheet with other accounts.
+
+        :param value: user or group e-mail address, domain name
+                      or None for 'default' type.
+        :param perm_type: the account type.
+               Allowed values are: ``user``, ``group``, ``domain``,
+               ``anyone``
+        :param role: the primary role for this user.
+               Allowed values are: ``owner``, ``writer``, ``reader``
+
+        Example::
+
+            # Give Otto a write permission on this spreadsheet
+            sh.share('otto@example.com', perm_type='user', role='writer')
+
+
+            # Transfer ownership to Otto
+            sh.share('otto@example.com', perm_type='user', role='owner')
+        """
+        self.client.insert_permission(self.id, value, perm_type, role)
+
+    def list_permissions(self):
+        """Lists the spreadsheet's permissions.
+        """
+        return self.client.list_permissions(self.id)
+
+    def remove_permissions(self, value, role='any'):
+        """
+        Example::
+
+            # Remove Otto's write permission for this spreadsheet
+            sh.remove_permissions('otto@example.com', role='writer')
+
+            # Remove all Otto's permissions for this spreadsheet
+            sh.remove_permissions('otto@example.com')
+        """
+        permission_list = self.client.list_permissions(self.id)
+
+        key = 'emailAddress' if '@' in value else 'domain'
+
+        filtered_id_list = [
+            p['id'] for p in permission_list
+            if p[key] == value and (p['role'] == role or role == 'any')
+        ]
+
+        for permission_id in filtered_id_list:
+            self.client.remove_permission(self.id, permission_id)
+
+        return filtered_id_list
+
 
 class Worksheet(object):
 
