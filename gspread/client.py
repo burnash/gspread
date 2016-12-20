@@ -17,7 +17,8 @@ except:
 
 from . import urlencode
 from .ns import _ns
-from .httpsession import HTTPSession, HTTPError
+from .httpsession import HTTPSession
+from .exceptions import RequestError
 from .models import Spreadsheet
 from .urls import (
     construct_url,
@@ -25,7 +26,7 @@ from .urls import (
     DRIVE_FILES_UPLOAD_API_V2_URL
 )
 from .utils import finditem, extract_id_from_url
-from .exceptions import (SpreadsheetNotFound, UpdateCellError, RequestError)
+from .exceptions import (SpreadsheetNotFound, UpdateCellError)
 
 
 class Client(object):
@@ -189,10 +190,7 @@ class Client(object):
             file_id
         )
 
-        try:
-            self.session.delete(url)
-        except HTTPError as ex:
-            raise RequestError(ex.message)
+        self.session.delete(url)
 
     def del_worksheet(self, worksheet):
         url = construct_url(
@@ -219,9 +217,9 @@ class Client(object):
 
         try:
             r = self.session.put(url, data, headers=headers)
-        except HTTPError as ex:
-            if getattr(ex, 'code', None) == 403:
-                raise UpdateCellError(ex.message)
+        except RequestError as ex:
+            if ex[0] == 403:
+                raise UpdateCellError(ex[1])
             else:
                 raise
 
@@ -231,10 +229,7 @@ class Client(object):
         headers = {'Content-Type': 'application/atom+xml'}
         data = self._ensure_xml_header(data)
 
-        try:
-            r = self.session.post(url, data, headers=headers)
-        except HTTPError as ex:
-            raise RequestError(ex.message)
+        r = self.session.post(url, data, headers=headers)
 
         return ElementTree.fromstring(r.content)
 
@@ -292,18 +287,15 @@ class Client(object):
         headers = {'Content-Type': 'text/csv'}
         url = '{0}/{1}'.format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
 
-        try:
-            self.session.put(
-                url,
-                data=data,
-                params={
-                    'uploadType': 'media',
-                    'convert': True
-                },
-                headers=headers
-            )
-        except HTTPError as ex:
-            raise RequestError(ex.message)
+        self.session.put(
+            url,
+            data=data,
+            params={
+                'uploadType': 'media',
+                'convert': True
+            },
+            headers=headers
+        )
 
     def list_permissions(self, file_id):
         """Retrieve a list of permissions for a file.
@@ -374,13 +366,15 @@ class Client(object):
             'sendNotificationEmails': notify,
             'emailMessage': email_message
         }
-        
+
         headers = {'Content-Type': 'application/json'}
 
-        try:
-            self.session.post(url, json.dumps(data), params=params, headers=headers)
-        except HTTPError as ex:
-            raise RequestError(ex.message)
+        self.session.post(
+            url,
+            json.dumps(data),
+            params=params,
+            headers=headers
+        )
 
     def remove_permission(self, file_id, permission_id):
         """Deletes a permission from a file.
@@ -395,10 +389,7 @@ class Client(object):
         )
         headers = {'Content-Type': 'application/json'}
 
-        try:
-            self.session.delete(url, headers=headers)
-        except HTTPError as ex:
-            raise RequestError(ex.message)
+        self.session.delete(url, headers=headers)
 
 
 def authorize(credentials):

@@ -20,7 +20,7 @@ except NameError:
     basestring = unicode = str
 
 
-from .exceptions import HTTPError
+from .exceptions import RequestError
 
 
 class HTTPSession(object):
@@ -60,11 +60,12 @@ class HTTPSession(object):
         try:
             func = getattr(self.requests_session, method.lower())
         except AttributeError:
-            raise Exception("HTTP method '{}' is not supported".format(method))
+            raise RequestError("HTTP method '{}' is not supported".format(method))
+
         response = func(url, data=data, params=params, headers=request_headers, files=files, json=json)
 
         if response.status_code > 399:
-            raise HTTPError(response.status_code, "{0}: {1}".format(
+            raise RequestError(response.status_code, "{0}: {1}".format(
                 response.status_code, response.content))
         return response
 

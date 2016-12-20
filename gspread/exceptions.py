@@ -43,9 +43,3 @@ class UpdateCellError(GSpreadException):
 
 class RequestError(GSpreadException):
     """Error while sending API request."""
-
-class HTTPError(RequestError):
-    """DEPRECATED. Error while sending API request."""
-    def __init__(self, code, msg):
-        super(HTTPError, self).__init__(msg)
-        self.code = code
