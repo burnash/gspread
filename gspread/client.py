@@ -374,9 +374,11 @@ class Client(object):
             'sendNotificationEmails': notify,
             'emailMessage': email_message
         }
+        
+        headers = {'Content-Type': 'application/json'}
 
         try:
-            self.session.post(url, json.dumps(data), params=params)
+            self.session.post(url, json.dumps(data), params=params, headers=headers)
         except HTTPError as ex:
             raise RequestError(ex.message)
 
