@@ -1,6 +1,11 @@
 Release History
 ===============
 
+0.6.1 (2016-12-20)
+------------------
+
+* Fixed error when inserting permissions #431
+
 0.6.0 (2016-12-15)
 ------------------
 
