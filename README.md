@@ -1,8 +1,5 @@
 # Google Spreadsheets Python API
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=TK7NPLQ6XEPKS&lc=US&item_name=gspread&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" /></a>
-
-
 Manage your spreadsheets with _gspread_ in Python.
 
 Features:
@@ -54,7 +51,7 @@ sht2 = gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
 sh = gc.create('A new spreadsheet')
 
 # But that new spreadsheet will be visible only to your script's account.
-# To be able to access newly created spreadsheet you *must* share it 
+# To be able to access newly created spreadsheet you *must* share it
 # with your email. Which brings us to…
 ```
 
