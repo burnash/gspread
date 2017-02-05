@@ -406,16 +406,15 @@ class Worksheet(object):
         :param last_row: Integer row number
         :param last_col: Integer row number
 
-        Example (A1 notation)::
+        Example::
 
-        >>> wks.range('A1:B7')
-        [<Cell R1C1 "42">, ...]
+            >>> # Using A1 notation
+            >>> wks.range('A1:B7')
+            [<Cell R1C1 "42">, ...]
 
-
-        Example (numeric)::
-
-        >>> wks.range(1, 1, 7, 2)
-        [<Cell R1C1 "42">, ...]
+            >>> # Same with numeric boundaries
+            >>> wks.range(1, 1, 7, 2)
+            [<Cell R1C1 "42">, ...]
 
         """
         feed = self.client.get_cells_feed(
