@@ -411,6 +411,7 @@ class Worksheet(object):
         >>> wks.range('A1:B7')
         [<Cell R1C1 "42">, ...]
 
+
         Example (numeric)::
 
         >>> wks.range(1, 1, 7, 2)
