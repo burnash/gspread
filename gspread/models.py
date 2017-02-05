@@ -768,7 +768,10 @@ class Cell(object):
         cell_elem = element.find(_ns1('cell'))
         self._row = int(cell_elem.get('row'))
         self._col = int(cell_elem.get('col'))
+
+        #: Raw value of the cell (e.g. formula)
         self.input_value = cell_elem.get('inputValue')
+
         numeric_value = cell_elem.get('numericValue')
         self.numeric_value = float(numeric_value) if numeric_value else None
 
