@@ -172,6 +172,30 @@ for cell in cell_list:
 worksheet.update_cells(cell_list)
 ```
 
+## Optional Pandas DataFrame Support
+
+If you have pandas (>= 0.14.0) installed, the `gspread.dataframe` module
+offers `get_as_dataframe` and `set_with_dataframe` functions to return a worksheet's
+contents as a DataFrame object, or set a worksheets' contents using a 
+DataFrame.
+
+```python
+import pandas as pd
+from gspread.dataframe import get_as_dataframe, set_with_dataframe
+
+df = pd.DataFrame.from_records([{'a': i, 'b': i * 2} for i in range(100)])
+set_with_dataframe(worksheet, df)
+
+df2 = get_as_dataframe(worksheet)
+```
+
+You can install Pandas as part of the gspread installation using the `pandas`
+extra:
+
+```sh
+pip install gspread[pandas]
+```
+
 ## Installation
 
 ### Requirements
