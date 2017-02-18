@@ -3,7 +3,7 @@
 import os.path
 import sys
 
-import gspread
+import gspread_old_fork
 
 try:
     from setuptools import setup
@@ -33,11 +33,11 @@ Download
 long_description = long_description.lstrip("\n").format(index=read('docs/index.txt'))
 
 setup(
-    name='gspread',
-    packages=['gspread'],
+    name='gspread_old_fork',
+    packages=['gspread_old_fork'],
     description=description,
     long_description=long_description,
-    version=gspread.__version__,
+    version=gspread_old_fork.__version__,
     author='Anton Burnashev',
     author_email='fuss.here@gmail.com',
     url='https://github.com/burnash/gspread',
