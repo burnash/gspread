@@ -33,8 +33,8 @@ Download
 long_description = long_description.lstrip("\n").format(index=read('docs/index.txt'))
 
 setup(
-    name='gspread',
-    packages=['gspread'],
+    name='gspread_old_fork',
+    packages=['gspread_old_fork'],
     description=description,
     long_description=long_description,
     version=gspread.__version__,
