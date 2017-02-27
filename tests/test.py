@@ -28,7 +28,7 @@ SCOPE = [
     'https://www.googleapis.com/auth/drive.file'
 ]
 
-I18N_STR = u'Iñtërnâtiônàlizætiøn'#.encode('utf8')
+I18N_STR = u'Iñtërnâtiônàlizætiøn'  # .encode('utf8')
 
 
 def read_config(filename):
@@ -49,6 +49,7 @@ def gen_value(prefix=None):
 
 
 class UtilsTest(unittest.TestCase):
+
     def test_extract_id_from_url(self):
         url_id_list = [
             # New-style url
@@ -177,7 +178,7 @@ class SpreadsheetTest(GspreadTest):
 
     def test_worksheet_iteration(self):
         self.assertEqual(self.spreadsheet.worksheets(),
-            [sheet for sheet in self.spreadsheet])
+                         [sheet for sheet in self.spreadsheet])
 
 
 class WorksheetTest(GspreadTest):
@@ -192,7 +193,7 @@ class WorksheetTest(GspreadTest):
 
     def setUp(self):
         super(WorksheetTest, self).setUp()
-        #NOTE(msuozzo): Here, a new worksheet is created for each test.
+        # NOTE(msuozzo): Here, a new worksheet is created for each test.
         # This was determined to be faster than reusing a single sheet and
         # having to clear its contents after each test.
         # Basically: Time(add_wks + del_wks) < Time(range + update_cells)
@@ -520,6 +521,14 @@ class WorksheetTest(GspreadTest):
                            for line in exported_data.splitlines()]
 
         self.assertEqual(exported_values, value_list)
+
+    def test_get_gid(self):
+        self.sheet._id = 'od6'
+        self.assertEqual(self.gid, '0')
+        self.sheet._id = 'osyqnsz'
+        self.assertEqual(self.gid, '1751403737')
+        self.sheet._id = 'ogsrar0'
+        self.assertEqual(self.gid, '1015761654')
 
 
 class WorksheetDeleteTest(GspreadTest):
