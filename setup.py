@@ -3,7 +3,8 @@
 import os.path
 import sys
 
-import gspread
+#import gspread
+import gspread_old_fork
 
 try:
     from setuptools import setup
@@ -37,7 +38,7 @@ setup(
     packages=['gspread_old_fork'],
     description=description,
     long_description=long_description,
-    version=gspread.__version__,
+    version=gspread_old_fork.__version__,
     author='Anton Burnashev',
     author_email='fuss.here@gmail.com',
     url='https://github.com/burnash/gspread',
