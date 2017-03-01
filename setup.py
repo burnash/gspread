@@ -3,7 +3,6 @@
 import os.path
 import sys
 
-#import gspread
 import gspread_old_fork
 
 try:
