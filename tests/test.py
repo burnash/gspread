@@ -524,11 +524,11 @@ class WorksheetTest(GspreadTest):
 
     def test_get_gid(self):
         self.sheet._id = 'od6'
-        self.assertEqual(self.gid, '0')
+        self.assertEqual(self.sheet.gid, '0')
         self.sheet._id = 'osyqnsz'
-        self.assertEqual(self.gid, '1751403737')
+        self.assertEqual(self.sheet.gid, '1751403737')
         self.sheet._id = 'ogsrar0'
-        self.assertEqual(self.gid, '1015761654')
+        self.assertEqual(self.sheet.gid, '1015761654')
 
 
 class WorksheetDeleteTest(GspreadTest):
