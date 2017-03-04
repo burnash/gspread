@@ -19,7 +19,7 @@ from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
 from .utils import finditem, numericise_all
-from .utils import rowcol_to_a1, a1_to_rowcol
+from .utils import rowcol_to_a1, a1_to_rowcol, wid_to_gid
 
 from .exceptions import (
     IncorrectCellLabel, WorksheetNotFound, CellNotFound, ImportException
@@ -300,6 +300,11 @@ class Worksheet(object):
     def title(self):
         """Title of a worksheet."""
         return self._title
+
+    @property
+    def gid(self):
+        """Gid of a worksheet."""
+        return wid_to_gid(self._id)
 
     @property
     def row_count(self):
