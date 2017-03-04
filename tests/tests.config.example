@@ -1,21 +1,21 @@
 [Google Account]
-email:example@gmail.com, not the ".iam.gserviceaccount.com" address.
+email: example@gmail.com, not the ".iam.gserviceaccount.com" address.
 password:
 
 [Spreadsheet]
-id:string following "https://docs.google.com/spreadsheets/d/" and preceding "edit"
-title:title of this spreadsheet
-key:same as id
-url:full url of this spreadsheet
-sheet1_title:title of the first worksheet
-new_spreadsheet_title:could be anything you like
+id: string following "https://docs.google.com/spreadsheets/d/" and preceding "/edit"
+title: title of this spreadsheet
+key: same as id
+url: full url of this spreadsheet
+sheet1_title: title of the first worksheet
+new_spreadsheet_title: could be anything you like
 
 [Worksheet]
-id:string following "#gid="
-title:title of this worksheet
-row_count:row count of this worksheet
-col_count:column count of this worksheet
+id: string following "#gid="
+title: title of this worksheet
+row_count: row count of this worksheet
+col_count: column count of this worksheet
 
 [WorksheetDelete]
-ws1_name:could be anything you like, note that these two worksheets mustn't exist.
+ws1_name: could be anything you like, note that these two worksheets mustn't exist.
 ws2_name:
