@@ -19,7 +19,7 @@ from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
 from .utils import finditem, numericise_all
-from .utils import rowcol_to_a1, a1_to_rowcol
+from .utils import rowcol_to_a1, a1_to_rowcol, wid_to_gid
 
 from .exceptions import (
     IncorrectCellLabel, WorksheetNotFound, CellNotFound, ImportException
@@ -304,10 +304,7 @@ class Worksheet(object):
     @property
     def gid(self):
         """Gid of a worksheet."""
-        wid = self.id
-        widval = wid[1:] if len(wid) > 3 else wid
-        xorval = 474 if len(wid) > 3 else 31578
-        return str(int(str(widval), 36) ^ xorval)
+        return wid_to_gid(self._id)
 
     @property
     def row_count(self):

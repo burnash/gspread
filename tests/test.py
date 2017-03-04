@@ -95,6 +95,14 @@ class UtilsTest(unittest.TestCase):
                 (r, c) = utils.a1_to_rowcol(addr)
                 self.assertEqual((row, col), (r, c))
 
+    def test_get_gid(self):
+        gid = 'od6'
+        self.assertEqual(utils.wid_to_gid(gid), '0')
+        gid = 'osyqnsz'
+        self.assertEqual(utils.wid_to_gid(gid), '1751403737')
+        gid = 'ogsrar0'
+        self.assertEqual(utils.wid_to_gid(gid), '1015761654')
+
 
 class GspreadTest(unittest.TestCase):
 
@@ -521,14 +529,6 @@ class WorksheetTest(GspreadTest):
                            for line in exported_data.splitlines()]
 
         self.assertEqual(exported_values, value_list)
-
-    def test_get_gid(self):
-        self.sheet._id = 'od6'
-        self.assertEqual(self.sheet.gid, '0')
-        self.sheet._id = 'osyqnsz'
-        self.assertEqual(self.sheet.gid, '1751403737')
-        self.sheet._id = 'ogsrar0'
-        self.assertEqual(self.sheet.gid, '1015761654')
 
 
 class WorksheetDeleteTest(GspreadTest):

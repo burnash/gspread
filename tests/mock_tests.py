@@ -13,7 +13,10 @@ try:
 except ImportError:
     import configparser as ConfigParser
 
-import mock
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 import gspread
 from tests import test
