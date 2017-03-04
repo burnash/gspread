@@ -207,7 +207,9 @@ python setup.py install
 
 3. Open `tests.config` with your favorite editor and fill up config parameters with your testing spreadsheet's info.
 4. Install [Nose](http://nose.readthedocs.org).
-5. Run tests:
+5. Download credentials json file, see [doc](http://gspread.readthedocs.io/en/latest/oauth2.html#using-signed-credentials),
+Rename it to `creds.json` and put it into the tests folder.
+6. Run tests:
 
     ```sh
     nosetests
