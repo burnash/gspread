@@ -80,21 +80,17 @@ If using oauth2client < 2.0.0
 
     import json
     import gspread
-    from oauth2client.client import SignedJwtAssertionCredentials
-
-    json_key = json.load(open('gspread-april-2cd … ba4.json'))
+    from oauth2client.service_account import ServiceAccountCredentials
+    
     scope = ['https://spreadsheets.google.com/feeds']
 
-    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('gspread-april-2cd … ba4.json', scope)
 
     gc = gspread.authorize(credentials)
 
     wks = gc.open("Where is the money Lebowski?").sheet1
 
-**Note**: Python2 users do not need to encode ``json_key['private_key']`` due to ``str`` and ``bytes`` not being differentiated.
-
-
-7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
+7. Go to Google Sheets and share your spreadsheet with an email you have in your file, gspread-april-2cd … ba4.json, under 'client_email' key. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
 
 Troubleshooting
 ---------------
