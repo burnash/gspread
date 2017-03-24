@@ -16,7 +16,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 
 from . import urlencode
-from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
+from .ns import _ns, _ns1, _ns2, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
 from .utils import finditem, numericise_all
 from .utils import rowcol_to_a1, a1_to_rowcol, wid_to_gid
@@ -534,6 +534,20 @@ class Worksheet(object):
 
         self.client.put_feed(uri, ElementTree.tostring(feed))
 
+    def list_rows(self):
+        """List rows in current spreadsheet."""
+        rows = self.client.list_rows(self)
+        for row in rows:
+            yield Row(row)
+
+    def delete_row(self, row):
+        """Deletes given row.
+
+        :param row: :class:`row <Row>`.
+
+        """
+        self.client.delete_row(row.edit_link)
+
     def _create_update_feed(self, cell_list):
         feed = Element('feed', {'xmlns': ATOM_NS,
                                 'xmlns:batch': BATCH_NS,
@@ -812,3 +826,27 @@ class Cell(object):
                                    self.row,
                                    self.col,
                                    repr(self.value))
+
+
+class Row(object):
+    """An instance of this class represents a single row
+    in a :class:`worksheet <Worksheet>`.
+
+    """
+    def __init__(self, element):
+        self.element = element
+        self.id = self.element.find(_ns('id')).text
+        self.title = self.element.find(_ns('title')).text
+        self.value = self.element.find(_ns('content')).text
+        for link in self.element.findall(_ns('link')):
+            if link.get('rel') == 'self':
+                self.view_link = link.get('href')
+            elif link.get('rel') == 'edit':
+                self.edit_link = link.get('href')
+
+    def __getattr__(self, name):
+        return self.element.find(_ns2(name)).text
+
+    def __repr__(self):
+        return '<%s %s>' % (self.__class__.__name__,
+                            repr(self.title))

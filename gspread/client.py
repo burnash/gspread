@@ -210,6 +210,15 @@ class Client(object):
         r = self.session.get(url)
         return ElementTree.fromstring(r.content)
 
+    def list_rows(self, worksheet):
+        url = construct_url('list', worksheet)
+        r = self.session.get(url)
+        feed = ElementTree.fromstring(r.read())
+        return feed.findall(_ns('entry'))
+
+    def delete_row(self, row_edit_url):
+        self.session.delete(row_edit_url)
+
     def put_feed(self, url, data):
         headers = {'Content-Type': 'application/atom+xml',
                    'If-Match': '*'}

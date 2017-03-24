@@ -36,6 +36,7 @@ DRIVE_FILES_UPLOAD_API_V2_URL = ('https://www.googleapis.com'
 _feed_types = {'spreadsheets': 'spreadsheets/{visibility}/{projection}',
                'worksheets': 'worksheets/{spreadsheet_id}/{visibility}/{projection}',
                'worksheet': 'worksheets/{spreadsheet_id}/{visibility}/{projection}/{worksheet_id}/{version}',
+               'list': 'list/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}',
                'cells': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}',
                'cells_batch': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}/batch',
                'cells_cell_id': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}/{cell_id}'}
