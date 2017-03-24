@@ -374,7 +374,7 @@ class Worksheet(object):
 
         Example:
 
-        >>> wks.acell('A1') # this could be 'a1' as well
+        >>> worksheet.acell('A1')
         <Cell R1C1 "I'm cell A1">
 
         """
@@ -389,7 +389,7 @@ class Worksheet(object):
 
         Example:
 
-        >>> wks.cell(1, 1)
+        >>> worksheet.cell(1, 1)
         <Cell R1C1 "I'm cell A1">
 
         """
@@ -414,11 +414,11 @@ class Worksheet(object):
         Example::
 
             >>> # Using A1 notation
-            >>> wks.range('A1:B7')
+            >>> worksheet.range('A1:B7')
             [<Cell R1C1 "42">, ...]
 
             >>> # Same with numeric boundaries
-            >>> wks.range(1, 1, 7, 2)
+            >>> worksheet.range(1, 1, 7, 2)
             [<Cell R1C1 "42">, ...]
 
         """
@@ -509,8 +509,7 @@ class Worksheet(object):
 
         Example:
 
-        >>> wks.update_acell('A1', '42') # this could be 'a1' as well
-        <Cell R1C1 "I'm cell A1">
+            worksheet.update_acell('A1', '42') # this could be 'a1' as well
 
         """
         return self.update_cell(*(a1_to_rowcol(label)), val=val)
@@ -521,6 +520,10 @@ class Worksheet(object):
         :param row: Row number.
         :param col: Column number.
         :param val: New value.
+
+        Example::
+
+            worksheet.update_cell(1, 1, '42')
 
         """
         feed = self.client.get_cells_cell_id_feed(self,
@@ -564,6 +567,17 @@ class Worksheet(object):
         """Updates cells in batch.
 
         :param cell_list: List of a :class:`Cell` objects to update.
+
+        Example::
+
+            # Select a range
+            cell_list = worksheet.range('A1:C7')
+
+            for cell in cell_list:
+                cell.value = 'O_o'
+
+            # Update in batch
+            worksheet.update_cells(cell_list)
 
         """
         feed = self._create_update_feed(cell_list)
