@@ -38,7 +38,7 @@ class HTTPSession(object):
 
     """
 
-    def __init__(self, headers=None, tries=1):
+    def __init__(self, headers=None, tries=3):
         self.headers = headers or {}
         self.connections = {}
         self.tries = tries
