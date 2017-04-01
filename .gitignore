@@ -5,3 +5,7 @@ tests/creds.json
 # tox testrunner support
 .tox/
 gspread.egg-info/
+
+build
+dist
+gspread_old_fork.egg-info/
