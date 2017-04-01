@@ -112,7 +112,11 @@ class HTTPSession(object):
                 break
             
         if response.status > 399:
-            raise HTTPError(response.status, "%s: %s" % (response.status, response.read()))
+            print "gspread_old_fork.httpsession.py tried " + \
+                "{} times :( ...".format(attempts)
+            raise HTTPError(response.status, "%s: %s" % (
+                response.status, response.read()))
+        
         return response
 
     def get(self, url, **kwargs):
