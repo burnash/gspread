@@ -9,7 +9,6 @@ This module contains common spreadsheets' models
 """
 
 from collections import defaultdict
-from itertools import chain
 from functools import wraps
 
 from xml.etree import ElementTree
@@ -444,9 +443,8 @@ class Worksheet(object):
         if not rows:
             return []
 
-        all_row_keys = chain.from_iterable(row.keys() for row in rows.values())
-        rect_cols = range(1, max(all_row_keys) + 1)
-        rect_rows = range(1, max(rows.keys()) + 1)
+        rect_cols = range(1, self.col_count + 1)
+        rect_rows = range(1, self.row_count + 1)
 
         return [[rows[i][j] for j in rect_cols] for i in rect_rows]
 

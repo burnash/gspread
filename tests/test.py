@@ -365,16 +365,23 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(list_len, len(result_list))
 
     def test_get_all_values(self):
-        self.sheet.resize(4, 4)
+        print self.sheet
+        self.sheet.resize(7, 5)
         # put in new values, made from three lists
-        rows = [["A1", "B1", "", "D1"],
-                ["", "b2", "", ""],
-                ["", "", "", ""],
-                ["A4", "B4", "", "D4"]]
-        cell_list = self.sheet.range('A1:D1')
-        cell_list.extend(self.sheet.range('A2:D2'))
-        cell_list.extend(self.sheet.range('A3:D3'))
-        cell_list.extend(self.sheet.range('A4:D4'))
+        rows = [["A1", "B1", "", "D1", ""],
+                ["", "b2", "", "", ""],
+                ["", "", "", "", ""],
+                ["A4", "B4", "", "D4", ""],
+                ["", "", "", "", ""],
+                ["", "", "", "", ""],
+                ["", "", "", "", ""]]
+        cell_list = self.sheet.range('A1:E1')
+        cell_list.extend(self.sheet.range('A2:E2'))
+        cell_list.extend(self.sheet.range('A3:E3'))
+        cell_list.extend(self.sheet.range('A4:E4'))
+        cell_list.extend(self.sheet.range('A5:E5'))
+        cell_list.extend(self.sheet.range('A6:E6'))
+        cell_list.extend(self.sheet.range('A7:E7'))
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
         self.sheet.update_cells(cell_list)
