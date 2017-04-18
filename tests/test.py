@@ -365,7 +365,6 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(list_len, len(result_list))
 
     def test_get_all_values(self):
-        print self.sheet
         self.sheet.resize(7, 5)
         # put in new values, made from three lists
         rows = [["A1", "B1", "", "D1", ""],
