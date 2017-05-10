@@ -242,7 +242,7 @@ class Client(object):
 
         return ElementTree.fromstring(r.content)
 
-    def create(self, title):
+    def create(self,title,copy='no',key=''):
         """Creates a new spreadsheet.
 
         :param title: A title of a new spreadsheet.
@@ -265,6 +265,9 @@ class Client(object):
            when you try to create a new spreadsheet.
 
         """
+        endpoint=DRIVE_FILES_API_V2_URL
+        if copy =='yes':
+            endpoint="https://www.googleapis.com/drive/v2/files/" + key + '/copy'        
 
         headers = {'Content-Type': 'application/json'}
         data = {
@@ -272,7 +275,7 @@ class Client(object):
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
         r = self.session.post(
-            DRIVE_FILES_API_V2_URL,
+            endpoint,
             json.dumps(data),
             headers=headers
         )
