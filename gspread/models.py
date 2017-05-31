@@ -65,7 +65,7 @@ def cast_to_a1_notation(method):
             range_end = rowcol_to_a1(*args[-2:])
             range_name = ':'.join((range_start, range_end))
 
-            args = (range_name,) + args[4:]
+            args = (range_name,)
         except ValueError:
             pass
 
