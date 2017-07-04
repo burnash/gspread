@@ -218,8 +218,8 @@ class Client(object):
         try:
             r = self.session.put(url, data, headers=headers)
         except RequestError as ex:
-            if ex[0] == 403:
-                raise UpdateCellError(ex[1])
+            if ex.args[0] == 403:
+                raise UpdateCellError(ex.args[1])
             else:
                 raise
 
