@@ -18,7 +18,7 @@ except ImportError:
     from urllib.parse import urlencode
 
 
-from .client import Client, authorize
+from .client import Client, authorize, public
 from .models import Spreadsheet, Worksheet, Cell
 from .exceptions import (GSpreadException, AuthenticationError,
                          SpreadsheetNotFound, NoValidUrlKeyFound,
