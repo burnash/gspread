@@ -18,7 +18,7 @@ Using Signed Credentials
 
 1. Head to `Google Developers Console <https://console.developers.google.com/project>`_ and create a new project (or select the one you have.)
 
-2. Under "API & auth", in the API enable "Drive API".
+2. Under "API & auth", in the API enable "Google Drive API" (*not* Google Sheets API).
 
 .. image:: https://cloud.githubusercontent.com/assets/264674/7033107/72b75938-dd80-11e4-9a9f-54fb10820976.png
     :alt: Enabled APIs
