@@ -648,15 +648,19 @@ class Worksheet(object):
         """
         self.add_rows(1)
         new_row = self.row_count
-        data_width = len(values)
-        if self.col_count < data_width:
-            self.resize(cols=data_width)
 
-        cell_list = []
-        for i, value in enumerate(values, start=1):
-            cell = self.cell(new_row, i)
-            cell.value = value
-            cell_list.append(cell)
+        if values:
+            data_width = len(values)
+            if self.col_count < data_width:
+                self.resize(cols=data_width)
+
+            cell_list = []
+            for i, value in enumerate(values, start=1):
+                cell = self.cell(new_row, i)
+                cell.value = value
+                cell_list.append(cell)
+        else:
+            cell_list = []
 
         self.update_cells(cell_list)
 
