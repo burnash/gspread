@@ -637,6 +637,17 @@ class Worksheet(object):
         """
         self.resize(cols=self.col_count + cols)
 
+    def create_new_cell(self, row, col, value):
+        """Creates a new cell object for append_row.
+
+        :param row: Integer row number.
+        :param col: Integer column number.
+        :param value: String data to be placed into cell.
+        """
+        cell = self.cell(row, col)
+        cell.value = value
+        return cell
+
     def append_row(self, values):
         """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
@@ -648,17 +659,18 @@ class Worksheet(object):
         """
         self.add_rows(1)
         new_row = self.row_count
+        cell_list = []
 
         if values:
-            data_width = len(values)
-            if self.col_count < data_width:
-                self.resize(cols=data_width)
+            if type(values) is list:
+                data_width = len(values)
+                if self.col_count < data_width:
+                    self.resize(cols=data_width)
 
-            cell_list = []
-            for i, value in enumerate(values, start=1):
-                cell = self.cell(new_row, i)
-                cell.value = value
-                cell_list.append(cell)
+                for i, value in enumerate(values, start=1):
+                    cell_list.append(self.create_new_cell(new_row, i, value))
+            else:
+                cell_list.append(self.create_new_cell(new_row, 1, values))
         else:
             cell_list = []
 
