@@ -744,6 +744,43 @@ class Worksheet(object):
         # Remove last row
         self.resize(rows=self.row_count - 1)
 
+
+    def insert_col(self, values, index=1):
+        """"Adds a column to the worksheet at the specified index
+        and populates it with values.
+
+        Widens the worksheet vertically if there are more values than rows.
+
+        :param values: List of values for the new column.
+        """
+        if index == self.col_count + 1:
+            return self.append_col(values)
+        elif index > self.col_count + 1:
+            raise IndexError('Column index out of range')
+
+        self.add_cols(1)
+        data_height = len(values)
+        if self.row_count < data_height:
+            self.resize(rows=data_height)
+
+        # Retrieve all Cells at or below `index` using a single batch query
+        top_left = rowcol_to_a1(1, index)
+        bottom_right = rowcol_to_a1(self.row_count, self.col_count)
+        range_str = '%s:%s' % (top_left, bottom_right)
+
+        cells_after_insert = self.range(range_str)
+
+        for ind, cell in reversed(list(enumerate(cells_after_insert))):
+            if cell.col == index:
+                # For the index column, take the cell values from `values`
+                new_val = values[cell.row - 1] if cell.row <= len(values) else ''
+            else:
+                # For all other columns, take the cell values from the left most cell.
+                new_val = cells_after_insert[ind - 1].input_value
+            cell.value = new_val
+
+        self.update_cells(cells_after_insert)
+
     def _finder(self, func, query):
         cells = self._fetch_cells()
 
