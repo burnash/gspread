@@ -8,3 +8,6 @@ env/
 # tox testrunner support
 .tox/
 gspread.egg-info/
+
+# Editors
+.vscode
