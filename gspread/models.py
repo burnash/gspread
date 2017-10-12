@@ -660,6 +660,29 @@ class Worksheet(object):
 
         self.update_cells(cell_list)
 
+    def append_col(self, values):
+        """Adds a column to the worksheet and populates it with values.
+        Widens the worksheet if there are more values than rows.
+
+        Note that a new Google Sheet has 100 or 1000 columns by default. You
+        may need to scroll right to find the new column.
+
+        :param values: List of values for the new column.
+        """
+        self.add_cols(1)
+        new_col = self.col_count
+        data_height = len(values)
+        if self.row_count < data_height:
+            self.resize(rows=data_height)
+
+        cell_list = []
+        for i, value in enumerate(values, start=1):
+            cell = self.cell(i, new_col)
+            cell.value = value
+            cell_list.append(cell)
+
+        self.update_cells(cell_list)
+
     def insert_row(self, values, index=1):
         """"Adds a row to the worksheet at the specified index
         and populates it with values.
