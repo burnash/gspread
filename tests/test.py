@@ -65,6 +65,11 @@ class UtilsTest(unittest.TestCase):
              '1qpyC0X3A0MwQoFDE8p-Bll4hps',
              '1qpyC0X3A0MwQoFDE8p-Bll4hps'),
 
+            # Per-user-style url
+            ('https://docs.google.com/spreadsheets/u/1/d/'
+             '1qpyC0X3A0MwQoFDE8p-Bll4hps',
+             '1qpyC0X3A0MwQoFDE8p-Bll4hps'),
+
             # Old-style url
             ('https://docs.google.com/spreadsheet/'
              'ccc?key=1qpyC0X3A0MwQoFDE8p-Bll4hps&usp=drive_web#gid=0',
