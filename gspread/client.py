@@ -316,7 +316,8 @@ class Client(object):
         perm_type,
         role,
         notify=True,
-        email_message=None
+        email_message=None,
+        withLink=False
     ):
         """Creates a new permission for a file.
 
@@ -352,6 +353,16 @@ class Client(object):
                 role='reader'
             )
 
+            # Make the spreadsheet publicly editable by anyone with the link
+
+            gc.insert_permission(
+                '0BmgG6nO_6dprnRRUWl1UFE',
+                None,
+                perm_type='anyone',
+                role='writer',
+                withLink=True
+            )
+
         """
 
         url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
@@ -360,6 +371,7 @@ class Client(object):
             'value': value,
             'type': perm_type,
             'role': role,
+            'withLink':withLink,
         }
 
         params = {
