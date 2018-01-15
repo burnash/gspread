@@ -8,6 +8,7 @@ Features:
 * Extract range, entire row or column values.
 * Independent of Google Data Python client library.
 * Python 3 support.
+* The library uses version 3 of the [Google Sheets API](https://developers.google.com/sheets/api/v3/).
 
 ## Basic Usage
 
