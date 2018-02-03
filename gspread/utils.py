@@ -29,7 +29,7 @@ def finditem(func, seq):
     return next((item for item in seq if func(item)))
 
 
-def numericise(value, empty2zero=False, default_blank=""):
+def numericise(value, empty2zero=False, default_blank="", allow_underscores_in_numeric_literals=False):
     """Returns a value that depends on the input string:
         - Float if input can be converted to Float
         - Integer if input can be converted to integer
@@ -42,6 +42,10 @@ def numericise(value, empty2zero=False, default_blank=""):
     'faa'
     >>> numericise("3")
     3
+    >>> numericise("3_2", allow_underscores_in_numeric_literals=False)
+    '3_2'
+    >>> numericise("3_2", allow_underscores_in_numeric_literals=True)
+    '32'
     >>> numericise("3.1")
     3.1
     >>> numericise("", empty2zero=True)
@@ -58,6 +62,8 @@ def numericise(value, empty2zero=False, default_blank=""):
     >>>
     """
     if value is not None:
+        if "_" in value and not allow_underscores_in_numeric_literals:
+            return value
         try:
             value = int(value)
         except ValueError:
@@ -73,9 +79,9 @@ def numericise(value, empty2zero=False, default_blank=""):
     return value
 
 
-def numericise_all(input, empty2zero=False, default_blank=""):
+def numericise_all(input, empty2zero=False, default_blank="", allow_underscores_in_numeric_literals=False):
     """Returns a list of numericised values from strings"""
-    return [numericise(s, empty2zero, default_blank) for s in input]
+    return [numericise(s, empty2zero, default_blank, allow_underscores_in_numeric_literals) for s in input]
 
 
 def rowcol_to_a1(row, col):
