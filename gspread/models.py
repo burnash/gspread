@@ -17,13 +17,22 @@ from xml.etree.ElementTree import Element, SubElement
 
 from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
-from .urls import construct_url
-from .utils import finditem, numericise_all
-from .utils import rowcol_to_a1, a1_to_rowcol, wid_to_gid
-
-from .exceptions import (
-    IncorrectCellLabel, WorksheetNotFound, CellNotFound, ImportException
+from .urls import (
+    construct_url,
+    SPREADSHEET_VALUES_URL,
+    SPREADSHEET_BATCH_UPDATE_URL
 )
+from .utils import (
+    finditem,
+    numericise_all,
+    rowcol_to_a1,
+    a1_to_rowcol,
+    wid_to_gid,
+    fill_gaps
+)
+
+
+from .exceptions import WorksheetNotFound, CellNotFound
 
 try:
     unicode
@@ -123,7 +132,7 @@ class Spreadsheet(object):
         for elem in feed.findall(_ns('entry')):
             self._sheet_list.append(Worksheet(self, elem))
 
-    def add_worksheet(self, title, rows, cols):
+    def add_worksheet_v3(self, title, rows, cols):
         """Adds a new worksheet to a spreadsheet.
 
         :param title: A title of a new worksheet.
@@ -147,7 +156,36 @@ class Spreadsheet(object):
 
         return worksheet
 
-    def del_worksheet(self, worksheet):
+    def add_worksheet(self, title, rows, cols):
+        payload = {
+            'requests': [{
+                'addSheet': {
+                    'properties': {
+                        'title': title,
+                        'sheetType': 'GRID',
+                        'gridProperties': {
+                            'rowCount': rows,
+                            'columnCount': cols
+                        }
+                    }
+                }
+            }],
+        }
+
+        r = self.client.request(
+            'post',
+            SPREADSHEET_BATCH_UPDATE_URL % self.id,
+            json=payload
+        )
+
+        properties = r.json()['replies'][0]['addSheet']['properties']
+
+        worksheet = Worksheetv4(self, properties)
+        self._sheet_list.append(worksheet)
+
+        return worksheet
+
+    def del_worksheet_v3(self, worksheet):
         """Deletes a worksheet from a spreadsheet.
 
         :param worksheet: The worksheet to be deleted.
@@ -155,6 +193,28 @@ class Spreadsheet(object):
         """
         self.client.del_worksheet(worksheet)
         self._sheet_list.remove(worksheet)
+
+    def del_worksheet(self, worksheet):
+        """Deletes a worksheet from a spreadsheet.
+
+        :param worksheet: The worksheet to be deleted.
+
+        """
+        payload = {
+            'requests': [{
+                'deleteSheet': {'sheetId': worksheet._properties['sheetId']}
+            }]
+        }
+
+        r = self.client.request(
+            'post',
+            SPREADSHEET_BATCH_UPDATE_URL % self.id,
+            json=payload
+        )
+
+        self._sheet_list.remove(worksheet)
+
+        return r.json()
 
     def worksheets(self):
         """Returns a list of all :class:`worksheets <Worksheet>`
@@ -269,7 +329,39 @@ class Spreadsheet(object):
         return filtered_id_list
 
 
-class Worksheet(object):
+class BaseWorksheet(object):
+    pass
+
+
+class Worksheetv4(object):
+
+    def __init__(self, spreadsheet, properties):
+        self.spreadsheet = spreadsheet
+        self.client = spreadsheet.client
+        self._properties = properties
+
+    def __repr__(self):
+        return '<%s %s id:%s>' % (self.__class__.__name__,
+                                  repr(self.title),
+                                  self.id)
+
+    @property
+    def title(self):
+        """Title of a worksheet."""
+        return self._properties['title']
+
+    @property
+    def row_count(self):
+        """Number of rows"""
+        return self._properties['gridProperties']['rowCount']
+
+    @property
+    def col_count(self):
+        """Number of columns"""
+        return self._properties['gridProperties']['columnCount']
+
+
+class Worksheet(BaseWorksheet):
 
     """A class for worksheet object."""
 
@@ -279,6 +371,7 @@ class Worksheet(object):
         self._id = element.find(_ns('id')).text.split('/')[-1]
         self._title = element.find(_ns('title')).text
         self._element = element
+
         try:
             self.version = self._get_link(
                 'edit', element).get('href').split('/')[-1]
@@ -366,7 +459,7 @@ class Worksheet(object):
         )
         return rowcol_to_a1(row, col)
 
-    def acell(self, label):
+    def acell_v3(self, label):
         """Returns an instance of a :class:`Cell`.
 
         :param label: String with cell label in common format, e.g. 'B1'.
@@ -378,9 +471,9 @@ class Worksheet(object):
         <Cell R1C1 "I'm cell A1">
 
         """
-        return self.cell(*(a1_to_rowcol(label)))
+        return self.cell_v3(*(a1_to_rowcol(label)))
 
-    def cell(self, row, col):
+    def cell_v3(self, row, col):
         """Returns an instance of a :class:`Cell` positioned in `row`
            and `col` column.
 
@@ -397,8 +490,30 @@ class Worksheet(object):
                                                   self._cell_addr(row, col))
         return Cell(self, feed)
 
+    def acell(self, label, value_render_option='FORMATTED_VALUE'):
+        return self.cell(*(a1_to_rowcol(label)))
+
+    def cell(self, row, col, value_render_option='FORMATTED_VALUE'):
+        query_parameters = 'valueRenderOption=%s' % value_render_option
+
+        values_url = SPREADSHEET_VALUES_URL % (
+            self.spreadsheet.id,
+            rowcol_to_a1(row, col)
+        )
+
+        url = '%s?%s' % (values_url, query_parameters)
+
+        r = self.client.request('get', url)
+
+        try:
+            value = r.json()['values'][0][0]
+        except KeyError:
+            value = ''
+
+        return Cellv4(row, col, value)
+
     @cast_to_a1_notation
-    def range(self, name):
+    def range_v3(self, name):
         """Returns a list of :class:`Cell` objects from a specified range.
 
         :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
@@ -428,7 +543,29 @@ class Worksheet(object):
         )
         return [Cell(self, elem) for elem in feed.findall(_ns('entry'))]
 
-    def get_all_values(self):
+    @cast_to_a1_notation
+    def range(self, name):
+        r = self.client.request(
+            'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, name))
+
+        start, end = name.split(':')
+        (row_offset, column_offset) = a1_to_rowcol(start)
+        (last_row, last_column) = a1_to_rowcol(end)
+
+        values = fill_gaps(
+            r.json()['values'],
+            rows=last_row - row_offset + 1,
+            cols=last_column - column_offset + 1
+        )
+
+        # TODO Wrap in actual Cell object
+        return [
+            Cellv4(row=i + row_offset, col=j + column_offset, value=value)
+            for i, row in enumerate(values)
+            for j, value in enumerate(row)
+        ]
+
+    def get_all_values_v3(self):
         """Returns a list of lists containing all cells' values as strings.
         """
         cells = self._fetch_cells()
@@ -449,6 +586,12 @@ class Worksheet(object):
         rect_rows = range(1, max(rows.keys()) + 1)
 
         return [[rows[i][j] for j in rect_cols] for i in rect_rows]
+
+    def get_all_values(self):
+        r = self.client.request(
+            'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, self.title))
+
+        return fill_gaps(r.json()['values'])
 
     def get_all_records(self, empty2zero=False, head=1, default_blank=""):
         """Returns a list of dictionaries, all of them having:
@@ -500,7 +643,7 @@ class Worksheet(object):
         row_cells = self.range('%s:%s' % (start_cell, end_cell))
         return [cell.value for cell in row_cells]
 
-    def update_acell(self, label, val):
+    def update_acell_v3(self, label, val):
         """Sets the new value to a cell.
 
         :param label: String with cell label in common format, e.g. 'B1'.
@@ -512,9 +655,9 @@ class Worksheet(object):
             worksheet.update_acell('A1', '42') # this could be 'a1' as well
 
         """
-        return self.update_cell(*(a1_to_rowcol(label)), val=val)
+        return self.update_cell_v3(*(a1_to_rowcol(label)), val=val)
 
-    def update_cell(self, row, col, val):
+    def update_cell_v3(self, row, col, val):
         """Sets the new value to a cell.
 
         :param row: Row number.
@@ -533,6 +676,47 @@ class Worksheet(object):
         uri = self._get_link('edit', feed).get('href')
 
         self.client.put_feed(uri, ElementTree.tostring(feed))
+
+    def update_acell(self, label, value):
+        """Sets the new value to a cell.
+
+        :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+        :param value: New value.
+
+        Example:
+
+            worksheet.update_acell('A1', '42') # this could be 'a1' as well
+
+        """
+        return self.update_cell(*(a1_to_rowcol(label)), value=value)
+
+    def update_cell(self, row, col, value):
+        """Sets the new value to a cell.
+
+        :param row: Row number.
+        :param col: Column number.
+        :param value: New value.
+
+        Example::
+
+            worksheet.update_cell(1, 1, '42')
+
+        """
+        query_parameters = 'valueInputOption=USER_ENTERED'
+
+        values_url = SPREADSHEET_VALUES_URL % (
+            self.spreadsheet.id,
+            rowcol_to_a1(row, col)
+        )
+
+        url = '%s?%s' % (values_url, query_parameters)
+
+        payload = {"values": [[value]]}
+
+        r = self.client.request('put', url, json=payload)
+
+        return r.json()
 
     def _create_update_feed(self, cell_list):
         feed = Element('feed', {'xmlns': ATOM_NS,
@@ -776,7 +960,28 @@ class Worksheet(object):
         self.update_cells(cells)
 
 
-class Cell(object):
+class BaseCell(object):
+    def __init__(self, worksheet, element):
+        pass
+
+    @property
+    def row(self):
+        """Row number of the cell."""
+        return self._row
+
+    @property
+    def col(self):
+        """Column number of the cell."""
+        return self._col
+
+    def __repr__(self):
+        return '<%s R%sC%s %s>' % (self.__class__.__name__,
+                                   self.row,
+                                   self.col,
+                                   repr(self.value))
+
+
+class Cell(BaseCell):
     """An instance of this class represents a single cell
     in a :class:`worksheet <Worksheet>`.
 
@@ -797,18 +1002,10 @@ class Cell(object):
         #: Value of the cell.
         self.value = cell_elem.text or ''
 
-    @property
-    def row(self):
-        """Row number of the cell."""
-        return self._row
 
-    @property
-    def col(self):
-        """Column number of the cell."""
-        return self._col
+class Cellv4(BaseCell):
+    def __init__(self, row, col, value=''):
+        self._row = row
+        self._col = col
 
-    def __repr__(self):
-        return '<%s R%sC%s %s>' % (self.__class__.__name__,
-                                   self.row,
-                                   self.col,
-                                   repr(self.value))
+        self.value = value

@@ -15,6 +15,8 @@ try:
 except:
     from xml.etree import ElementTree
 
+import requests
+
 from . import urlencode
 from .ns import _ns
 from .httpsession import HTTPSession
@@ -26,7 +28,7 @@ from .urls import (
     DRIVE_FILES_UPLOAD_API_V2_URL
 )
 from .utils import finditem, extract_id_from_url
-from .exceptions import (SpreadsheetNotFound, UpdateCellError)
+from .exceptions import (APIError, SpreadsheetNotFound, UpdateCellError)
 
 
 class Client(object):
@@ -44,6 +46,7 @@ class Client(object):
     def __init__(self, auth, http_session=None):
         self.auth = auth
         self.session = http_session or HTTPSession()
+        self.session2 = http_session or requests.Session()
 
     def _ensure_xml_header(self, data):
         if data.startswith(b'<?xml'):
@@ -61,6 +64,9 @@ class Client(object):
             self.auth.refresh(http)
 
         self.session.add_header('Authorization', "Bearer " + self.auth.access_token)
+        self.session2.headers.update({
+            'Authorization': 'Bearer %s' % self.auth.access_token
+        })
 
     def open(self, title):
         """Opens a spreadsheet.
@@ -390,6 +396,25 @@ class Client(object):
         headers = {'Content-Type': 'application/json'}
 
         self.session.delete(url, headers=headers)
+
+    def request(
+            self,
+            method,
+            endpoint,
+            params=None,
+            data=None,
+            json=None,
+            files=None):
+        # url = '%s%s' % (self.api_base_url, endpoint)
+
+        response = getattr(self.session2, method)(
+            endpoint, json=json, params=params, data=data, files=files
+        )
+
+        if response.ok:
+            return response
+        else:
+            raise APIError(response)
 
 
 def authorize(credentials):
