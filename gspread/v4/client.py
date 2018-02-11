@@ -69,16 +69,28 @@ class Client(object):
                 self.list_spreadsheet_files()
             )
 
+            # Drive uses different terminology
+            properties['title'] = properties['name']
+
             return Spreadsheet(self, properties)
         except StopIteration:
             raise SpreadsheetNotFound
 
     def open_by_key(self, key):
-        raise NotImplementedError
+        """Opens a spreadsheet specified by `key`.
+
+        :param key: A key of a spreadsheet as it appears in a URL in a browser.
+
+        :returns: a :class:`~gspread.Spreadsheet` instance.
+
+        >>> c = gspread.authorize(credentials)
+        >>> c.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
+
+        """
+        return Spreadsheet(self, {'id': key})
 
     def open_by_url(self, url):
         raise NotImplementedError
 
     def openall(self, title=None):
         raise NotImplementedError
-

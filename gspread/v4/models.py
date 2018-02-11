@@ -1,4 +1,7 @@
-from ..base import BaseCell
+from ..base import BaseCell, BaseSpreadsheet
+
+from ..exceptions import WorksheetNotFound
+
 from ..utils import (
     a1_to_rowcol,
     rowcol_to_a1,
@@ -15,10 +18,8 @@ from .urls import (
     SPREADSHEET_BATCH_UPDATE_URL
 )
 
-from ..exceptions import WorksheetNotFound
 
-
-class Spreadsheet(object):
+class Spreadsheet(BaseSpreadsheet):
     def __init__(self, client, properties):
         self.client = client
         self._properties = properties
@@ -31,7 +32,12 @@ class Spreadsheet(object):
     @property
     def title(self):
         """Spreadsheet title."""
-        return self._properties['name']
+        try:
+            return self._properties['title']
+        except KeyError:
+            metadata = self.fetch_sheet_metadata()
+            self._properties.update(metadata['properties'])
+            return self._properties['title']
 
     @property
     def updated(self):
