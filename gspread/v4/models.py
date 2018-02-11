@@ -266,11 +266,40 @@ class Worksheet(object):
 
         return [dict(zip(keys, row)) for row in values]
 
-    def row_values(self, row):
-        raise NotImplementedError
+    def row_values(self, row, value_render_option='FORMATTED_VALUE'):
+        query_parameters = 'valueRenderOption=%s' % value_render_option
 
-    def col_values(self, col):
-        raise NotImplementedError
+        label = 'A%s:%s' % (row, row)
+
+        values_url = SPREADSHEET_VALUES_URL % (
+            self.spreadsheet.id,
+            label
+        )
+
+        url = '%s?%s' % (values_url, query_parameters)
+
+        r = self.client.request('get', url)
+
+        return r.json()['values'][0]
+
+    def col_values(self, col, value_render_option='FORMATTED_VALUE'):
+        query_parameters = (
+            'valueRenderOption=%s&majorDimension=COLUMNS' % value_render_option
+        )
+
+        start_label = rowcol_to_a1(1, col)
+        label = '%s:%s' % (start_label, start_label[:-1])
+
+        values_url = SPREADSHEET_VALUES_URL % (
+            self.spreadsheet.id,
+            label
+        )
+
+        url = '%s?%s' % (values_url, query_parameters)
+
+        r = self.client.request('get', url)
+
+        return r.json()['values'][0]
 
     def update_acell(self, label, value):
         """Sets the new value to a cell.
