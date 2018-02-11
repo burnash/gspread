@@ -18,9 +18,22 @@ except ImportError:
     from urllib.parse import urlencode
 
 
-from .client import Client, authorize
+from .client import Client
 from .models import Spreadsheet, Worksheet, Cell
 from .exceptions import (GSpreadException, AuthenticationError,
                          SpreadsheetNotFound, NoValidUrlKeyFound,
                          IncorrectCellLabel, WorksheetNotFound,
                          UpdateCellError, RequestError, CellNotFound)
+
+from . import v4
+
+
+def authorize(credentials, client_class=v4.Client):
+    """Login to Google API using OAuth2 credentials.
+    This is a shortcut function which instantiates :class:`Client`
+    and performs login right away.
+    :returns: :class:`Client` instance.
+    """
+    client = client_class(auth=credentials)
+    client.login()
+    return client
