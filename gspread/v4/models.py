@@ -2,11 +2,12 @@ from ..base import BaseCell
 from ..utils import (
     a1_to_rowcol,
     rowcol_to_a1,
-    fill_gaps,
     cast_to_a1_notation,
     numericise_all,
     finditem
 )
+
+from .utils import fill_gaps
 
 from .urls import (
     SPREADSHEET_URL,

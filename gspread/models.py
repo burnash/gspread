@@ -16,9 +16,7 @@ from xml.etree.ElementTree import Element, SubElement
 
 from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
-from .urls import (
-    construct_url,
-)
+from .urls import construct_url
 
 from .utils import (
     finditem,
