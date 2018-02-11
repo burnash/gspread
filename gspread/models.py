@@ -29,7 +29,7 @@ from .utils import (
 
 from .exceptions import WorksheetNotFound, CellNotFound
 
-from .base import BaseCell
+from .base import BaseSpreadsheet, BaseCell
 
 try:
     unicode
@@ -55,7 +55,7 @@ def _escape_attrib(text, encoding=None, replace=None):
 ElementTree._escape_attrib = _escape_attrib
 
 
-class Spreadsheet(object):
+class Spreadsheet(BaseSpreadsheet):
     """ A class for a spreadsheet object."""
 
     def __init__(self, client, feed_entry):
@@ -189,36 +189,6 @@ class Spreadsheet(object):
             return self._sheet_list[index]
         except IndexError:
             return None
-
-    def share(self, value, perm_type, role, notify=True, email_message=None):
-        """Share the spreadsheet with other accounts.
-        :param value: user or group e-mail address, domain name
-                      or None for 'default' type.
-        :param perm_type: the account type.
-               Allowed values are: ``user``, ``group``, ``domain``,
-               ``anyone``.
-        :param role: the primary role for this user.
-               Allowed values are: ``owner``, ``writer``, ``reader``.
-        :param notify: Whether to send an email to the target user/domain.
-        :param email_message: The email to be sent if notify=True
-
-        Example::
-
-            # Give Otto a write permission on this spreadsheet
-            sh.share('otto@example.com', perm_type='user', role='writer')
-
-            # Transfer ownership to Otto
-            sh.share('otto@example.com', perm_type='user', role='owner')
-
-        """
-        self.client.insert_permission(
-            self.id,
-            value=value,
-            perm_type=perm_type,
-            role=role,
-            notify=notify,
-            email_message=email_message
-        )
 
     def list_permissions(self):
         """Lists the spreadsheet's permissions.
