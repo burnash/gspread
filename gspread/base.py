@@ -1,3 +1,24 @@
+from .utils import extract_id_from_url
+
+
+class BaseClient(object):
+    def open_by_url(self, url):
+        """Opens a spreadsheet specified by `url`.
+
+        :param url: URL of a spreadsheet as it appears in a browser.
+
+        :returns: a :class:`~gspread.Spreadsheet` instance.
+
+        :raises gspread.SpreadsheetNotFound: if no spreadsheet with
+                                             specified `url` is found.
+
+        >>> c = gspread.authorize(credentials)
+        >>> c.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
+
+        """
+        return self.open_by_key(extract_id_from_url(url))
+
+
 class BaseSpreadsheet(object):
     def share(self, value, perm_type, role, notify=True, email_message=None):
         """Share the spreadsheet with other accounts.

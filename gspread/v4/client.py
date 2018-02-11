@@ -1,13 +1,14 @@
 import requests
 
 from ..utils import finditem
+from ..base import BaseClient
 
 from ..exceptions import SpreadsheetNotFound
 from .exceptions import APIError
 from .models import Spreadsheet
 
 
-class Client(object):
+class Client(BaseClient):
     """An instance of this class communicates with Google Data API.
 
     :param auth: An OAuth2 credential object. Credential objects are those created by the
@@ -89,8 +90,10 @@ class Client(object):
         """
         return Spreadsheet(self, {'id': key})
 
-    def open_by_url(self, url):
-        raise NotImplementedError
-
     def openall(self, title=None):
-        raise NotImplementedError
+        spreadsheet_files = self.list_spreadsheet_files()
+
+        return [
+            Spreadsheet(self, dict(title=x['name'], **x))
+            for x in spreadsheet_files
+        ]
