@@ -123,7 +123,7 @@ class Spreadsheet(BaseSpreadsheet):
                         }
                     }
                 }
-            }],
+            }]
         }
 
         r = self.client.request(
