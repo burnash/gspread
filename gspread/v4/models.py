@@ -238,7 +238,6 @@ class Worksheet(object):
     def get_all_values(self):
         r = self.client.request(
             'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, self.title))
-
         return fill_gaps(r.json()['values'])
 
     def get_all_records(self, empty2zero=False, head=1, default_blank=""):
@@ -281,7 +280,10 @@ class Worksheet(object):
 
         r = self.client.request('get', url)
 
-        return r.json()['values'][0]
+        try:
+            return r.json()['values'][0]
+        except KeyError:
+            return []
 
     def col_values(self, col, value_render_option='FORMATTED_VALUE'):
         query_parameters = (
