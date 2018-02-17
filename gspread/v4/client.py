@@ -137,3 +137,68 @@ class Client(BaseClient):
         )
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
+
+    def insert_permission(
+        self,
+        file_id,
+        value,
+        perm_type,
+        role,
+        notify=True,
+        email_message=None
+    ):
+        """Creates a new permission for a file.
+
+        :param file_id: a spreadsheet ID (aka file ID.)
+        :param value: user or group e-mail address, domain name
+                      or None for 'default' type.
+        :param perm_type: the account type.
+               Allowed values are: ``user``, ``group``, ``domain``,
+               ``anyone``
+        :param role: the primary role for this user.
+               Allowed values are: ``owner``, ``writer``, ``reader``
+
+        :param notify: Whether to send an email to the target user/domain.
+        :param email_message: an email message to be sent if notify=True.
+
+        Examples::
+
+            # Give write permissions to otto@example.com
+
+            gc.insert_permission(
+                '0BmgG6nO_6dprnRRUWl1UFE',
+                'otto@example.org',
+                perm_type='user',
+                role='writer'
+            )
+
+            # Make the spreadsheet publicly readable
+
+            gc.insert_permission(
+                '0BmgG6nO_6dprnRRUWl1UFE',
+                None,
+                perm_type='anyone',
+                role='reader'
+            )
+
+        """
+
+        url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
+
+        payload = {
+            'value': value,
+            'type': perm_type,
+            'role': role,
+        }
+
+        params = {
+            'sendNotificationEmails': notify,
+            'emailMessage': email_message
+        }
+
+        self.request(
+            'post',
+            url,
+            json=payload,
+            params=params
+        )
