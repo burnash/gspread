@@ -358,3 +358,10 @@ class Cell(BaseCell):
         self._col = col
 
         self.value = value
+
+    @property
+    def numeric_value(self):
+        try:
+            return float(self.value)
+        except ValueError:
+            return None
