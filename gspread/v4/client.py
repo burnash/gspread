@@ -7,6 +7,11 @@ from ..exceptions import SpreadsheetNotFound
 from .exceptions import APIError
 from .models import Spreadsheet
 
+from ..urls import (
+    DRIVE_FILES_API_V2_URL,
+    DRIVE_FILES_UPLOAD_API_V2_URL
+)
+
 
 class Client(BaseClient):
     """An instance of this class communicates with Google Data API.
@@ -97,3 +102,38 @@ class Client(BaseClient):
             Spreadsheet(self, dict(title=x['name'], **x))
             for x in spreadsheet_files
         ]
+
+    def create(self, title):
+        """Creates a new spreadsheet.
+
+        :param title: A title of a new spreadsheet.
+
+        :returns: a :class:`~gspread.Spreadsheet` instance.
+
+        .. note::
+
+           In order to use this method, you need to add
+           ``https://www.googleapis.com/auth/drive`` to your oAuth scope.
+
+           Example::
+
+              scope = [
+                  'https://spreadsheets.google.com/feeds',
+                  'https://www.googleapis.com/auth/drive'
+              ]
+
+           Otherwise you will get an ``Insufficient Permission`` error
+           when you try to create a new spreadsheet.
+
+        """
+        payload = {
+            'title': title,
+            'mimeType': 'application/vnd.google-apps.spreadsheet'
+        }
+        r = self.request(
+            'post',
+            DRIVE_FILES_API_V2_URL,
+            json=payload
+        )
+        spreadsheet_id = r.json()['id']
+        return self.open_by_key(spreadsheet_id)
