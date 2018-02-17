@@ -15,7 +15,8 @@ from .utils import fill_gaps
 from .urls import (
     SPREADSHEET_URL,
     SPREADSHEET_VALUES_URL,
-    SPREADSHEET_BATCH_UPDATE_URL
+    SPREADSHEET_BATCH_UPDATE_URL,
+    SPREADSHEET_APPEND_URL
 )
 
 
@@ -350,6 +351,33 @@ class Worksheet(object):
 
     def update_title(self, title):
         raise NotImplementedError
+
+    def append_row(self, values, value_input_option='RAW'):
+        """Adds a row to the worksheet and populates it with values.
+        Widens the worksheet if there are more values than columns.
+
+        :param values: List of values for the new row.
+        """
+        query_parameters = 'valueInputOption=%s' % value_input_option
+
+        payload = {
+            'values': [values]
+        }
+
+        append_url = SPREADSHEET_APPEND_URL % (
+            self.spreadsheet.id,
+            self.title
+        )
+
+        url = '%s?%s' % (append_url, query_parameters)
+
+        r = self.client.request(
+            'post',
+            url,
+            json=payload
+        )
+
+        return r.json()
 
 
 class Cell(BaseCell):
