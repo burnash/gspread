@@ -269,7 +269,7 @@ class Worksheet(object):
     def row_values(self, row, value_render_option='FORMATTED_VALUE'):
         query_parameters = 'valueRenderOption=%s' % value_render_option
 
-        label = 'A%s:%s' % (row, row)
+        label = '%s!A%s:%s' % (self.title,row, row)
 
         values_url = SPREADSHEET_VALUES_URL % (
             self.spreadsheet.id,
@@ -291,7 +291,7 @@ class Worksheet(object):
         )
 
         start_label = rowcol_to_a1(1, col)
-        label = '%s:%s' % (start_label, start_label[:-1])
+        label = '%s!%s:%s' % (self.title, start_label, start_label[:-1])
 
         values_url = SPREADSHEET_VALUES_URL % (
             self.spreadsheet.id,
