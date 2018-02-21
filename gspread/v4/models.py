@@ -10,7 +10,7 @@ from ..utils import (
     finditem
 )
 
-from .utils import fill_gaps
+from .utils import fill_gaps, cell_list_to_rect
 
 from .urls import (
     SPREADSHEET_URL,
@@ -337,6 +337,7 @@ class Worksheet(object):
             rowcol_to_a1(row, col)
         )
 
+        # TODO: Add Sheet address
         url = '%s?%s' % (values_url, query_parameters)
 
         payload = {"values": [[value]]}
@@ -345,8 +346,34 @@ class Worksheet(object):
 
         return r.json()
 
-    def update_cells(self, cell_list):
-        raise NotImplementedError
+    def update_cells(self, cell_list, value_input_option='RAW'):
+        query_parameters = 'valueInputOption=%s' % value_input_option
+
+        values_rect = cell_list_to_rect(cell_list)
+
+        payload = {
+            'values': values_rect
+        }
+
+        start = rowcol_to_a1(cell_list[0].row, cell_list[0].col)
+        end = rowcol_to_a1(cell_list[-1].row, cell_list[-1].col)
+
+        label = '%s!%s:%s' % (self.title, start, end)
+
+        values_url = SPREADSHEET_VALUES_URL % (
+            self.spreadsheet.id,
+            label
+        )
+
+        url = '%s?%s' % (values_url, query_parameters)
+
+        r = self.client.request(
+            'put',
+            url,
+            json=payload
+        )
+
+        return r.json()
 
     def resize(self, rows=None, cols=None):
         raise NotImplementedError
