@@ -390,6 +390,19 @@ class Client(object):
         headers = {'Content-Type': 'application/json'}
 
         self.session.delete(url, headers=headers)
+        
+    def update_format(self, file_id, data_file):
+        """Updates format of a worksheet.
+
+                :param file_id: a spreadsheet ID (aka file ID.)
+                :param data_file: json with formatting.
+                """
+        headers = {'Content-Type': 'application/json'}
+        with open(data_file) as json_file:
+            data = json.load(json_file)
+        url = construct_url('cells_batch_format', spreadsheet_id=file_id)
+        r = self.session.post(url, json=data, headers=headers)    
+        
 
 
 def authorize(credentials):
