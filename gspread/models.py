@@ -774,6 +774,13 @@ class Worksheet(object):
         for cell in cells:
             cell.value = ''
         self.update_cells(cells)
+        
+    def update_format_cells(self,sheet_id,json_file ):
+        """Update worksheet format based on a json
+           :param sheet_id the spreadsheet id
+           :param json_file the json file that contains the formatting
+        """
+        self.client.update_format(sheet_id,json_file)
 
 
 class Cell(object):
