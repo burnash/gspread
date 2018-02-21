@@ -16,7 +16,8 @@ from .urls import (
     SPREADSHEET_URL,
     SPREADSHEET_VALUES_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
-    SPREADSHEET_APPEND_URL
+    SPREADSHEET_APPEND_URL,
+    SPREADSHEET_CLEAR_URL
 )
 
 
@@ -404,6 +405,21 @@ class Worksheet(object):
             'post',
             url,
             json=payload
+        )
+
+        return r.json()
+
+    def clear(self):
+        """Clears all cells in the worksheet.
+        """
+        url = SPREADSHEET_CLEAR_URL % (
+            self.spreadsheet.id,
+            self.title
+        )
+
+        r = self.client.request(
+            'post',
+            url
         )
 
         return r.json()
