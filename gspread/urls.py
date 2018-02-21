@@ -17,6 +17,7 @@ SPREADSHEETS_API_V3_URL = 'https://spreadsheets.google.com/feeds/'
 DRIVE_FILES_API_V2_URL = 'https://www.googleapis.com/drive/v2/files'
 DRIVE_FILES_UPLOAD_API_V2_URL = ('https://www.googleapis.com'
                                  '/upload/drive/v2/files')
+SPREADSHEETS_API_V4_URL = 'https://sheets.googleapis.com/v4/'
 
 # General pattern
 # /feeds/feedType/key/worksheetId/visibility/projection
@@ -32,13 +33,17 @@ DRIVE_FILES_UPLOAD_API_V2_URL = ('https://www.googleapis.com'
 # Cell-based feed
 # /feeds/cells/key/worksheetId/visibility/projection
 # /feeds/cells/key/worksheetId/visibility/projection/cellId
+#
+# v4API spreadsheet update
+# https://sheets.googleapis.com/v4/spreadsheets/spreadsheetId:batchUpdate 
 
 _feed_types = {'spreadsheets': 'spreadsheets/{visibility}/{projection}',
                'worksheets': 'worksheets/{spreadsheet_id}/{visibility}/{projection}',
                'worksheet': 'worksheets/{spreadsheet_id}/{visibility}/{projection}/{worksheet_id}/{version}',
                'cells': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}',
                'cells_batch': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}/batch',
-               'cells_cell_id': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}/{cell_id}'}
+               'cells_cell_id': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}/{cell_id}',
+               'cells_batch_format': 'spreadsheets/{spreadsheet_id}:batchUpdate'}
 
 _fields_cache = {}
 
@@ -83,7 +88,11 @@ def construct_url(feedtype=None,
     params = dict((k, v) for k, v in params.items() if v is not None)
 
     try:
-        return '%s%s' % (SPREADSHEETS_API_V3_URL,
+        if feedtype == 'cells_batch_format':
+            return '%s%s' % (SPREADSHEETS_API_V4_URL,
+                             urlpattern.format(**params))
+        else:
+            return '%s%s' % (SPREADSHEETS_API_V3_URL,
                          urlpattern.format(**params))
     except KeyError as e:
         raise UrlParameterMissing(e)
