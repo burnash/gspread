@@ -495,12 +495,13 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(b3.input_value, formula)
 
     def test_delete_row(self):
-        num_rows = self.sheet.row_count
+        for i in range(5):
+            value_list = [gen_value(i) for i in range(10)]
+            self.sheet.append_row(value_list)
 
         prev = self.sheet.row_values(1)
         next = self.sheet.row_values(3)
         self.sheet.delete_row(2)
-        self.assertEqual(self.sheet.row_count, num_rows - 1)
         self.assertEqual(self.sheet.row_values(1), prev)
         self.assertEqual(self.sheet.row_values(2), next)
 

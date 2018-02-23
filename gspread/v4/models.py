@@ -413,6 +413,32 @@ class Worksheet(object):
 
         return r.json()
 
+    def delete_row(self, index):
+        """"Deletes a row from the worksheet at the specified index
+
+        :param index: Index of a row for deletion
+        """
+        payload = {
+            "requests": [{
+                "deleteDimension": {
+                    "range": {
+                      "sheetId": self.id,
+                      "dimension": "ROWS",
+                      "startIndex": index - 1,
+                      "endIndex": index
+                    }
+                }
+            }]
+        }
+
+        r = self.client.request(
+            'post',
+            SPREADSHEET_BATCH_UPDATE_URL % self.spreadsheet.id,
+            json=payload
+        )
+
+        return r.json()
+
     def clear(self):
         """Clears all cells in the worksheet.
         """
