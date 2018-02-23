@@ -239,7 +239,11 @@ class Worksheet(object):
     def get_all_values(self):
         r = self.client.request(
             'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, self.title))
-        return fill_gaps(r.json()['values'])
+
+        try:
+            return fill_gaps(r.json()['values'])
+        except KeyError:
+            return []
 
     def get_all_records(self, empty2zero=False, head=1, default_blank=""):
         """Returns a list of dictionaries, all of them having:
@@ -270,7 +274,7 @@ class Worksheet(object):
     def row_values(self, row, value_render_option='FORMATTED_VALUE'):
         query_parameters = 'valueRenderOption=%s' % value_render_option
 
-        label = '%s!A%s:%s' % (self.title,row, row)
+        label = '%s!A%s:%s' % (self.title, row, row)
 
         values_url = SPREADSHEET_VALUES_URL % (
             self.spreadsheet.id,
