@@ -389,7 +389,41 @@ class Worksheet(object):
         return r.json()
 
     def resize(self, rows=None, cols=None):
-        raise NotImplementedError
+        """Resizes the worksheet.
+
+        :param rows: New rows number.
+        :param cols: New columns number.
+        """
+        grid_properties = {}
+
+        if rows is not None:
+            grid_properties['rowCount'] = rows
+
+        if cols is not None:
+            grid_properties['columnCount'] = cols
+
+        if not grid_properties:
+            raise TypeError("Either 'rows' or 'cols' should be specified.")
+
+        payload = {
+            'requests': [{
+                'updateSheetProperties': {
+                    'properties': {
+                        'sheetId': self.id,
+                        'gridProperties': grid_properties
+                    },
+                    'fields': 'gridProperties'
+                }
+            }]
+        }
+
+        r = self.client.request(
+            'post',
+            SPREADSHEET_BATCH_UPDATE_URL % self.spreadsheet.id,
+            json=payload
+        )
+
+        return r.json()
 
     def update_title(self, title):
         raise NotImplementedError
