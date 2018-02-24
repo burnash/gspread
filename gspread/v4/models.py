@@ -457,6 +457,48 @@ class Worksheet(object):
 
         return r.json()
 
+    def insert_row(
+        self,
+        values,
+        index=1,
+        value_input_option='RAW',
+        inheritFromBefore=False
+    ):
+        payload = {
+            "requests": [{
+                "insertDimension": {
+                    "range": {
+                      "sheetId": self.id,
+                      "dimension": "ROWS",
+                      "startIndex": index - 1,
+                      "endIndex": index
+                    }
+                }
+            }]
+        }
+
+        r = self.client.request(
+            'post',
+            SPREADSHEET_BATCH_UPDATE_URL % self.spreadsheet.id,
+            json=payload
+        )
+
+        query_parameters = 'valueInputOption=%s' % value_input_option
+        label = '%s!%s' % (self.title, 'A%s' % index)
+
+        values_url = SPREADSHEET_VALUES_URL % (
+            self.spreadsheet.id,
+            label
+        )
+
+        url = '%s?%s' % (values_url, query_parameters)
+
+        payload = {'values': [values]}
+
+        r = self.client.request('put', url, json=payload)
+
+        return r.json()
+
     def delete_row(self, index):
         """"Deletes a row from the worksheet at the specified index
 

@@ -222,6 +222,7 @@ class WorksheetTest(GspreadTest):
     def tearDown(self):
         self.spreadsheet.del_worksheet(self.sheet)
 
+    @unittest.skip('Deprecated: looks like v4 does not provide this info')
     def test_get_updated(self):
         RFC_3339 = (r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?'
                     r'(Z|[+-]\d{2}:\d{2})')
@@ -384,6 +385,7 @@ class WorksheetTest(GspreadTest):
                 ["", "", "", ""],
                 ["A4", "B4", "", "D4"]]
         cell_list = self.sheet.range('A1:D1')
+
         cell_list.extend(self.sheet.range('A2:D2'))
         cell_list.extend(self.sheet.range('A3:D3'))
         cell_list.extend(self.sheet.range('A4:D4'))
@@ -393,7 +395,6 @@ class WorksheetTest(GspreadTest):
 
         # read values with get_all_values, get a list of lists
         read_data = self.sheet.get_all_values()
-
         # values should match with original lists
         self.assertEqual(read_data, rows)
 
@@ -478,21 +479,31 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(value_list, read_values)
 
     def test_insert_row(self):
-        num_rows = self.sheet.row_count
-        num_cols = self.sheet.col_count
-        values = [gen_value(i) for i in range(num_cols + 4)]
-        self.sheet.insert_row(values, 1)
-        self.assertEqual(self.sheet.row_count, num_rows + 1)
-        self.assertEqual(self.sheet.col_count, num_cols + 4)
-        read_values = self.sheet.row_values(1)
-        self.assertEqual(values, read_values)
+        num_rows = 6
+        num_cols = 4
+
+        rows = [[
+            gen_value('%s,%s' % (i, j))
+            for j in range(num_cols)]
+            for i in range(num_rows)
+        ]
+
+        cell_list = self.sheet.range('A1:D6')
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        new_row_values = [gen_value(i) for i in range(num_cols + 4)]
+        self.sheet.insert_row(new_row_values, 2)
+        read_values = self.sheet.row_values(2)
+        self.assertEqual(new_row_values, read_values)
 
         formula = '=1+1'
         self.sheet.update_acell('B2', formula)
         values = [gen_value(i) for i in range(num_cols + 4)]
         self.sheet.insert_row(values, 1)
-        b3 = self.sheet.acell('B3')
-        self.assertEqual(b3.input_value, formula)
+        b3 = self.sheet.acell('B3', value_render_option='FORMULA')
+        self.assertEqual(b3.value, formula)
 
     def test_delete_row(self):
         for i in range(5):
@@ -512,6 +523,7 @@ class WorksheetTest(GspreadTest):
                 [1, "b2", 1.45, ""],
                 ["", "", "", ""],
                 ["A4", 0.4, "", 4]]
+
         cell_list = self.sheet.range('A1:D6')
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
@@ -520,6 +532,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.clear()
         self.assertEqual(self.sheet.get_all_values(), [])
 
+    @unittest.skip('Deprecated: looks like v4 does not provide this feature')
     def test_export(self):
         list_len = 10
 
