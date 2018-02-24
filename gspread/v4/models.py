@@ -198,14 +198,15 @@ class Worksheet(object):
         return self._properties['gridProperties']['columnCount']
 
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
-        return self.cell(*(a1_to_rowcol(label)))
+        return self.cell(*(a1_to_rowcol(label)), value_render_option)
 
     def cell(self, row, col, value_render_option='FORMATTED_VALUE'):
         query_parameters = 'valueRenderOption=%s' % value_render_option
+        label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
 
         values_url = SPREADSHEET_VALUES_URL % (
             self.spreadsheet.id,
-            rowcol_to_a1(row, col)
+            label
         )
 
         url = '%s?%s' % (values_url, query_parameters)
