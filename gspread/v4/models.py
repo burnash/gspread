@@ -221,25 +221,26 @@ class Worksheet(object):
 
     @cast_to_a1_notation
     def range(self, name):
+        label = '%s!%s' % (self.title, name)
+
         r = self.client.request(
-            'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, name))
+            'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, label))
 
         start, end = name.split(':')
         (row_offset, column_offset) = a1_to_rowcol(start)
         (last_row, last_column) = a1_to_rowcol(end)
 
-        try:
-            values = fill_gaps(
-                r.json()['values'],
-                rows=last_row - row_offset + 1,
-                cols=last_column - column_offset + 1
-            )
-        except KeyError:
-            values = []
+        values = r.json().get('values', [])
+
+        rect_values = fill_gaps(
+            values,
+            rows=last_row - row_offset + 1,
+            cols=last_column - column_offset + 1
+        )
 
         return [
             Cell(row=i + row_offset, col=j + column_offset, value=value)
-            for i, row in enumerate(values)
+            for i, row in enumerate(rect_values)
             for j, value in enumerate(row)
         ]
 
@@ -500,10 +501,7 @@ class Worksheet(object):
         r = self.client.request(
             'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, self.title))
 
-        try:
-            values = fill_gaps(r.json()['values'])
-        except KeyError:
-            values = []
+        values = fill_gaps(r.json().get('values', []))
 
         cells = [
             Cell(row=i + 1, col=j + 1, value=value)
