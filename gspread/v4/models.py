@@ -1,6 +1,6 @@
 from ..base import BaseCell, BaseSpreadsheet
 
-from ..exceptions import WorksheetNotFound
+from ..exceptions import WorksheetNotFound, CellNotFound
 
 from ..utils import (
     a1_to_rowcol,
@@ -19,6 +19,11 @@ from .urls import (
     SPREADSHEET_APPEND_URL,
     SPREADSHEET_CLEAR_URL
 )
+
+try:
+    unicode
+except NameError:
+    basestring = unicode = str
 
 
 class Spreadsheet(BaseSpreadsheet):
@@ -223,13 +228,15 @@ class Worksheet(object):
         (row_offset, column_offset) = a1_to_rowcol(start)
         (last_row, last_column) = a1_to_rowcol(end)
 
-        values = fill_gaps(
-            r.json()['values'],
-            rows=last_row - row_offset + 1,
-            cols=last_column - column_offset + 1
-        )
+        try:
+            values = fill_gaps(
+                r.json()['values'],
+                rows=last_row - row_offset + 1,
+                cols=last_column - column_offset + 1
+            )
+        except KeyError:
+            values = []
 
-        # TODO Wrap in actual Cell object
         return [
             Cell(row=i + row_offset, col=j + column_offset, value=value)
             for i, row in enumerate(values)
@@ -337,12 +344,13 @@ class Worksheet(object):
         """
         query_parameters = 'valueInputOption=USER_ENTERED'
 
+        label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
+
         values_url = SPREADSHEET_VALUES_URL % (
             self.spreadsheet.id,
-            rowcol_to_a1(row, col)
+            label
         )
 
-        # TODO: Add Sheet address
         url = '%s?%s' % (values_url, query_parameters)
 
         payload = {"values": [[value]]}
@@ -453,6 +461,45 @@ class Worksheet(object):
         )
 
         return r.json()
+
+    def _finder(self, func, query):
+        r = self.client.request(
+            'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, self.title))
+
+        try:
+            values = fill_gaps(r.json()['values'])
+        except KeyError:
+            values = []
+
+        cells = [
+            Cell(row=i + 1, col=j + 1, value=value)
+            for i, row in enumerate(values)
+            for j, value in enumerate(row)
+        ]
+
+        if isinstance(query, basestring):
+            match = lambda x: x.value == query
+        else:
+            match = lambda x: query.search(x.value)
+
+        return func(match, cells)
+
+    def find(self, query):
+        """Finds first cell matching query.
+
+        :param query: A text string or compiled regular expression.
+        """
+        try:
+            return self._finder(finditem, query)
+        except StopIteration:
+            raise CellNotFound(query)
+
+    def findall(self, query):
+        """Finds all cells matching query.
+
+        :param query: A text string or compiled regular expression.
+        """
+        return list(self._finder(filter, query))
 
 
 class Cell(BaseCell):
