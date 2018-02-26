@@ -395,13 +395,11 @@ class Client(object):
         """Updates format of a worksheet.
 
                 :param file_id: a spreadsheet ID (aka file ID.)
-                :param data_file: json with formatting.
+                :param data: dictionary created from json containing formatting details.
                 """
         headers = {'Content-Type': 'application/json'}
-        with open(data_file) as json_file:
-            data = json.load(json_file)
         url = construct_url('cells_batch_format', spreadsheet_id=file_id)
-        r = self.session.post(url, json=data, headers=headers)    
+        self.session.post(url, json=data, headers=headers)    
         
 
 
