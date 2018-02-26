@@ -311,21 +311,36 @@ class WorksheetTest(GspreadTest):
 
     def test_resize(self):
         add_num = 10
-
         new_rows = self.sheet.row_count + add_num
+
+        def get_grid_props():
+            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()['sheets']
+            return utils.finditem(
+                lambda x: x['properties']['sheetId'] == self.sheet.id, sheets
+            )['properties']['gridProperties']
+
         self.sheet.add_rows(add_num)
-        self.assertEqual(self.sheet.row_count, new_rows)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['rowCount'], new_rows)
 
         new_cols = self.sheet.col_count + add_num
+
         self.sheet.add_cols(add_num)
-        self.assertEqual(self.sheet.col_count, new_cols)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['columnCount'], new_cols)
 
         new_rows -= add_num
         new_cols -= add_num
         self.sheet.resize(new_rows, new_cols)
 
-        self.assertEqual(self.sheet.row_count, new_rows)
-        self.assertEqual(self.sheet.col_count, new_cols)
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['rowCount'], new_rows)
+        self.assertEqual(grid_props['columnCount'], new_cols)
 
     def test_find(self):
         value = gen_value()

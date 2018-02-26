@@ -407,6 +407,10 @@ class Worksheet(object):
         if not grid_properties:
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
+        fields = ','.join(
+            'gridProperties/%s' % p for p in grid_properties.keys()
+        )
+
         payload = {
             'requests': [{
                 'updateSheetProperties': {
@@ -414,7 +418,7 @@ class Worksheet(object):
                         'sheetId': self.id,
                         'gridProperties': grid_properties
                     },
-                    'fields': 'gridProperties'
+                    'fields': fields
                 }
             }]
         }
@@ -429,6 +433,20 @@ class Worksheet(object):
 
     def update_title(self, title):
         raise NotImplementedError
+
+    def add_rows(self, rows):
+        """Adds rows to worksheet.
+
+        :param rows: Rows number to add.
+        """
+        self.resize(rows=self.row_count + rows)
+
+    def add_cols(self, cols):
+        """Adds colums to worksheet.
+
+        :param cols: Columns number to add.
+        """
+        self.resize(cols=self.col_count + cols)
 
     def append_row(self, values, value_input_option='RAW'):
         """Adds a row to the worksheet and populates it with values.
