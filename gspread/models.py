@@ -775,12 +775,20 @@ class Worksheet(object):
             cell.value = ''
         self.update_cells(cells)
         
-    def update_format_cells(self,sheet_id,json_file ):
-        """Update worksheet format based on a json
-           :param sheet_id the spreadsheet id
-           :param json_file the json file that contains the formatting
+    def update_worksheet_format(self,json_file):
+        """Updates the worksheet format (i.e cells borders, colors, text font, etc)
+        :param json_file (with path if necessary) is the file that contains the formatting rules
         """
-        self.client.update_format(sheet_id,json_file)
+
+        worksheet_id=self.gid
+        sheet_id = self.spreadsheet.id #it is used to form the link where the json will be POST-ed on
+        with open(json_file) as o_json_file:
+            data=json.load(o_json_file)
+        data_string=str(data)
+        # The worksheet id is specified in the json file using attribute "sheetId"
+        # Any "sheetId" attribute specified in the json will be replaced with the actual worksheet id
+        json_modified=ast.literal_eval(re.sub(r"'sheetId': (\d+)", r"'sheetId': " + str(worksheet_id), data_string))
+        self.client.update_format(sheet_id,json_modified)
 
 
 class Cell(object):
