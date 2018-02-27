@@ -188,6 +188,10 @@ class Worksheet(object):
         return self._properties['title']
 
     @property
+    def updated(self):
+        raise NotImplementedError
+
+    @property
     def row_count(self):
         """Number of rows"""
         return self._properties['gridProperties']['rowCount']
@@ -432,7 +436,25 @@ class Worksheet(object):
         return r.json()
 
     def update_title(self, title):
-        raise NotImplementedError
+        payload = {
+            'requests': [{
+                'updateSheetProperties': {
+                    'properties': {
+                        'sheetId': self.id,
+                        'title': title
+                    },
+                    'fields': 'title'
+                }
+            }]
+        }
+
+        r = self.client.request(
+            'post',
+            SPREADSHEET_BATCH_UPDATE_URL % self.spreadsheet.id,
+            json=payload
+        )
+
+        return r.json()
 
     def add_rows(self, rows):
         """Adds rows to worksheet.
