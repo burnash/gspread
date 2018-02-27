@@ -50,6 +50,35 @@ class BaseSpreadsheet(object):
             email_message=email_message
         )
 
+    def list_permissions(self):
+        """Lists the spreadsheet's permissions.
+        """
+        return self.client.list_permissions(self.id)
+
+    def remove_permissions(self, value, role='any'):
+        """
+        Example::
+
+            # Remove Otto's write permission for this spreadsheet
+            sh.remove_permissions('otto@example.com', role='writer')
+
+            # Remove all Otto's permissions for this spreadsheet
+            sh.remove_permissions('otto@example.com')
+        """
+        permission_list = self.client.list_permissions(self.id)
+
+        key = 'emailAddress' if '@' in value else 'domain'
+
+        filtered_id_list = [
+            p['id'] for p in permission_list
+            if p[key] == value and (p['role'] == role or role == 'any')
+        ]
+
+        for permission_id in filtered_id_list:
+            self.client.remove_permission(self.id, permission_id)
+
+        return filtered_id_list
+
 
 class BaseCell(object):
     def __init__(self, worksheet, element):
