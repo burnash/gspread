@@ -138,6 +138,48 @@ class Client(BaseClient):
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
+    def del_spreadsheet(self, file_id):
+        """Deletes a spreadsheet.
+
+        :param file_id: a spreadsheet ID (aka file ID.)
+        """
+        url = '{0}/{1}'.format(
+            DRIVE_FILES_API_V2_URL,
+            file_id
+        )
+
+        self.request('delete', url)
+
+    def import_csv(self, file_id, data):
+        """Imports data into the first page of the spreadsheet.
+
+        :param data: A CSV string of data.
+        """
+        headers = {'Content-Type': 'text/csv'}
+        url = '{0}/{1}'.format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
+
+        self.request(
+            'put',
+            url,
+            data=data,
+            params={
+                'uploadType': 'media',
+                'convert': True
+            },
+            headers=headers
+        )
+
+    def list_permissions(self, file_id):
+        """Retrieve a list of permissions for a file.
+
+        :param file_id: a spreadsheet ID (aka file ID.)
+        """
+        url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
+
+        r = self.request('get', url)
+
+        return r.json()['items']
+
     def insert_permission(
         self,
         file_id,
@@ -202,3 +244,17 @@ class Client(BaseClient):
             json=payload,
             params=params
         )
+
+    def remove_permission(self, file_id, permission_id):
+        """Deletes a permission from a file.
+
+        :param file_id: a spreadsheet ID (aka file ID.)
+        :param permission_id: an ID for the permission.
+        """
+        url = '{0}/{1}/permissions/{2}'.format(
+            DRIVE_FILES_API_V2_URL,
+            file_id,
+            permission_id
+        )
+
+        self.request('delete', url)
