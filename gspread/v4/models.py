@@ -48,7 +48,12 @@ class Spreadsheet(BaseSpreadsheet):
 
     @property
     def updated(self):
-        raise NotImplementedError
+        import warnings
+        warnings.warn(
+            "Spreadsheet.updated() is deprecated, "
+            "this feature is not supported in Sheets API v4",
+            DeprecationWarning
+        )
 
     @property
     def sheet1(self):
@@ -189,7 +194,12 @@ class Worksheet(object):
 
     @property
     def updated(self):
-        raise NotImplementedError
+        import warnings
+        warnings.warn(
+            "Worksheet.updated() is deprecated, "
+            "this feature is not supported in Sheets API v4",
+            DeprecationWarning
+        )
 
     @property
     def row_count(self):
@@ -615,6 +625,14 @@ class Worksheet(object):
         :param query: A text string or compiled regular expression.
         """
         return list(self._finder(filter, query))
+
+    def export(self, format):
+        import warnings
+        warnings.warn(
+            "Worksheet.export() is deprecated, "
+            "this feature is not supported in Sheets API v4",
+            DeprecationWarning
+        )
 
 
 class Cell(BaseCell):
