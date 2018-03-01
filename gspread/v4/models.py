@@ -69,14 +69,22 @@ class Spreadsheet(BaseSpreadsheet):
                                   repr(self.title),
                                   self.id)
 
+    def values_get(self, range, params=None):
+        url = SPREADSHEET_VALUES_URL % (self.id, range)
+        r = self.client.request('get', url, params=params)
+        return r.json()
+
+    def values_update(self, range, params=None, body=None):
+        url = SPREADSHEET_VALUES_URL % (self.id, range)
+        r = self.client.request('put', url, params=params, json=body)
+        return r.json()
+
     def fetch_sheet_metadata(self):
-        query_parameters = 'includeGridData=false'
+        params = {'includeGridData': 'false'}
 
-        spreadsheet_url = SPREADSHEET_URL % self.id
+        url = SPREADSHEET_URL % self.id
 
-        url = '%s?%s' % (spreadsheet_url, query_parameters)
-
-        r = self.client.request('get', url)
+        r = self.client.request('get', url, params=params)
 
         return r.json()
 
@@ -215,20 +223,14 @@ class Worksheet(object):
         return self.cell(*(a1_to_rowcol(label)), value_render_option)
 
     def cell(self, row, col, value_render_option='FORMATTED_VALUE'):
-        query_parameters = 'valueRenderOption=%s' % value_render_option
-        label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
-
-        values_url = SPREADSHEET_VALUES_URL % (
-            self.spreadsheet.id,
-            label
+        range_label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
+        data = self.spreadsheet.values_get(
+            range_label,
+            params={'valueRenderOption': value_render_option}
         )
 
-        url = '%s?%s' % (values_url, query_parameters)
-
-        r = self.client.request('get', url)
-
         try:
-            value = r.json()['values'][0][0]
+            value = data['values'][0][0]
         except KeyError:
             value = ''
 
@@ -236,16 +238,15 @@ class Worksheet(object):
 
     @cast_to_a1_notation
     def range(self, name):
-        label = '%s!%s' % (self.title, name)
+        range_label = '%s!%s' % (self.title, name)
 
-        r = self.client.request(
-            'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, label))
+        data = self.spreadsheet.values_get(range_label)
 
         start, end = name.split(':')
         (row_offset, column_offset) = a1_to_rowcol(start)
         (last_row, last_column) = a1_to_rowcol(end)
 
-        values = r.json().get('values', [])
+        values = data.get('values', [])
 
         rect_values = fill_gaps(
             values,
@@ -260,11 +261,10 @@ class Worksheet(object):
         ]
 
     def get_all_values(self):
-        r = self.client.request(
-            'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, self.title))
+        data = self.spreadsheet.values_get(self.title)
 
         try:
-            return fill_gaps(r.json()['values'])
+            return fill_gaps(data['values'])
         except KeyError:
             return []
 
@@ -295,42 +295,34 @@ class Worksheet(object):
         return [dict(zip(keys, row)) for row in values]
 
     def row_values(self, row, value_render_option='FORMATTED_VALUE'):
-        query_parameters = 'valueRenderOption=%s' % value_render_option
+        range_label = '%s!A%s:%s' % (self.title, row, row)
 
-        label = '%s!A%s:%s' % (self.title, row, row)
-
-        values_url = SPREADSHEET_VALUES_URL % (
-            self.spreadsheet.id,
-            label
+        data = self.spreadsheet.values_get(
+            range_label,
+            params={'valueRenderOption': value_render_option}
         )
 
-        url = '%s?%s' % (values_url, query_parameters)
-
-        r = self.client.request('get', url)
-
         try:
-            return r.json()['values'][0]
+            return data['values'][0]
         except KeyError:
             return []
 
     def col_values(self, col, value_render_option='FORMATTED_VALUE'):
-        query_parameters = (
-            'valueRenderOption=%s&majorDimension=COLUMNS' % value_render_option
-        )
-
         start_label = rowcol_to_a1(1, col)
-        label = '%s!%s:%s' % (self.title, start_label, start_label[:-1])
+        range_label = '%s!%s:%s' % (self.title, start_label, start_label[:-1])
 
-        values_url = SPREADSHEET_VALUES_URL % (
-            self.spreadsheet.id,
-            label
+        data = self.spreadsheet.values_get(
+            range_label,
+            params={
+                'valueRenderOption': value_render_option,
+                'majorDimension': 'COLUMNS'
+            }
         )
 
-        url = '%s?%s' % (values_url, query_parameters)
-
-        r = self.client.request('get', url)
-
-        return r.json()['values'][0]
+        try:
+            return data['values'][0]
+        except KeyError:
+            return []
 
     def update_acell(self, label, value):
         """Sets the new value to a cell.
@@ -358,51 +350,39 @@ class Worksheet(object):
             worksheet.update_cell(1, 1, '42')
 
         """
-        query_parameters = 'valueInputOption=USER_ENTERED'
+        range_label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
 
-        label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
-
-        values_url = SPREADSHEET_VALUES_URL % (
-            self.spreadsheet.id,
-            label
+        data = self.spreadsheet.values_update(
+            range_label,
+            params={
+                'valueInputOption': 'USER_ENTERED'
+            },
+            body={
+                'values': [[value]]
+            }
         )
 
-        url = '%s?%s' % (values_url, query_parameters)
-
-        payload = {"values": [[value]]}
-
-        r = self.client.request('put', url, json=payload)
-
-        return r.json()
+        return data
 
     def update_cells(self, cell_list, value_input_option='RAW'):
-        query_parameters = 'valueInputOption=%s' % value_input_option
-
         values_rect = cell_list_to_rect(cell_list)
-
-        payload = {
-            'values': values_rect
-        }
 
         start = rowcol_to_a1(cell_list[0].row, cell_list[0].col)
         end = rowcol_to_a1(cell_list[-1].row, cell_list[-1].col)
 
-        label = '%s!%s:%s' % (self.title, start, end)
+        range_label = '%s!%s:%s' % (self.title, start, end)
 
-        values_url = SPREADSHEET_VALUES_URL % (
-            self.spreadsheet.id,
-            label
+        data = self.spreadsheet.values_update(
+            range_label,
+            params={
+                'valueInputOption': value_input_option
+            },
+            body={
+                'values': values_rect
+            }
         )
 
-        url = '%s?%s' % (values_url, query_parameters)
-
-        r = self.client.request(
-            'put',
-            url,
-            json=payload
-        )
-
-        return r.json()
+        return data
 
     def resize(self, rows=None, cols=None):
         """Resizes the worksheet.
@@ -533,21 +513,19 @@ class Worksheet(object):
             json=payload
         )
 
-        query_parameters = 'valueInputOption=%s' % value_input_option
-        label = '%s!%s' % (self.title, 'A%s' % index)
+        range_label = '%s!%s' % (self.title, 'A%s' % index)
 
-        values_url = SPREADSHEET_VALUES_URL % (
-            self.spreadsheet.id,
-            label
+        data = self.spreadsheet.values_update(
+            range_label,
+            params={
+                'valueInputOption': value_input_option
+            },
+            body={
+                'values': [values]
+            }
         )
 
-        url = '%s?%s' % (values_url, query_parameters)
-
-        payload = {'values': [values]}
-
-        r = self.client.request('put', url, json=payload)
-
-        return r.json()
+        return data
 
     def delete_row(self, index):
         """"Deletes a row from the worksheet at the specified index
@@ -591,10 +569,12 @@ class Worksheet(object):
         return r.json()
 
     def _finder(self, func, query):
-        r = self.client.request(
-            'get', SPREADSHEET_VALUES_URL % (self.spreadsheet.id, self.title))
+        data = self.spreadsheet.values_get(self.title)
 
-        values = fill_gaps(r.json().get('values', []))
+        try:
+            values = fill_gaps(data['values'])
+        except KeyError:
+            values = []
 
         cells = [
             Cell(row=i + 1, col=j + 1, value=value)
