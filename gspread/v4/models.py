@@ -16,8 +16,8 @@ from .urls import (
     SPREADSHEET_URL,
     SPREADSHEET_VALUES_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
-    SPREADSHEET_APPEND_URL,
-    SPREADSHEET_CLEAR_URL
+    SPREADSHEET_VALUES_APPEND_URL,
+    SPREADSHEET_VALUES_CLEAR_URL
 )
 
 try:
@@ -68,6 +68,25 @@ class Spreadsheet(BaseSpreadsheet):
         return '<%s %s id:%s>' % (self.__class__.__name__,
                                   repr(self.title),
                                   self.id)
+
+    def batch_update(self, body):
+        r = self.client.request(
+            'post',
+            SPREADSHEET_BATCH_UPDATE_URL % self.id,
+            json=body
+        )
+
+        return r.json()
+
+    def values_append(self, range, params, body):
+        url = SPREADSHEET_VALUES_APPEND_URL % (self.id, range)
+        r = self.client.request('post', url, params=params, json=body)
+        return r.json()
+
+    def values_clear(self, range):
+        url = SPREADSHEET_VALUES_CLEAR_URL % (self.id, range)
+        r = self.client.request('post', url)
+        return r.json()
 
     def values_get(self, range, params=None):
         url = SPREADSHEET_VALUES_URL % (self.id, range)
@@ -131,7 +150,7 @@ class Spreadsheet(BaseSpreadsheet):
             raise WorksheetNotFound(title)
 
     def add_worksheet(self, title, rows, cols):
-        payload = {
+        body = {
             'requests': [{
                 'addSheet': {
                     'properties': {
@@ -146,13 +165,9 @@ class Spreadsheet(BaseSpreadsheet):
             }]
         }
 
-        r = self.client.request(
-            'post',
-            SPREADSHEET_BATCH_UPDATE_URL % self.id,
-            json=payload
-        )
+        data = self.batch_update(body)
 
-        properties = r.json()['replies'][0]['addSheet']['properties']
+        properties = data['replies'][0]['addSheet']['properties']
 
         worksheet = Worksheet(self, properties)
 
@@ -164,19 +179,13 @@ class Spreadsheet(BaseSpreadsheet):
         :param worksheet: The worksheet to be deleted.
 
         """
-        payload = {
+        body = {
             'requests': [{
                 'deleteSheet': {'sheetId': worksheet._properties['sheetId']}
             }]
         }
 
-        r = self.client.request(
-            'post',
-            SPREADSHEET_BATCH_UPDATE_URL % self.id,
-            json=payload
-        )
-
-        return r.json()
+        return self.batch_update(body)
 
 
 class Worksheet(object):
@@ -405,7 +414,7 @@ class Worksheet(object):
             'gridProperties/%s' % p for p in grid_properties.keys()
         )
 
-        payload = {
+        body = {
             'requests': [{
                 'updateSheetProperties': {
                     'properties': {
@@ -417,16 +426,10 @@ class Worksheet(object):
             }]
         }
 
-        r = self.client.request(
-            'post',
-            SPREADSHEET_BATCH_UPDATE_URL % self.spreadsheet.id,
-            json=payload
-        )
-
-        return r.json()
+        return self.spreadsheet.batch_update(body)
 
     def update_title(self, title):
-        payload = {
+        body = {
             'requests': [{
                 'updateSheetProperties': {
                     'properties': {
@@ -438,13 +441,7 @@ class Worksheet(object):
             }]
         }
 
-        r = self.client.request(
-            'post',
-            SPREADSHEET_BATCH_UPDATE_URL % self.spreadsheet.id,
-            json=payload
-        )
-
-        return r.json()
+        return self.spreadsheet.batch_update(body)
 
     def add_rows(self, rows):
         """Adds rows to worksheet.
@@ -466,26 +463,15 @@ class Worksheet(object):
 
         :param values: List of values for the new row.
         """
-        query_parameters = 'valueInputOption=%s' % value_input_option
+        params = {
+            'valueInputOption': value_input_option
+        }
 
-        payload = {
+        body = {
             'values': [values]
         }
 
-        append_url = SPREADSHEET_APPEND_URL % (
-            self.spreadsheet.id,
-            self.title
-        )
-
-        url = '%s?%s' % (append_url, query_parameters)
-
-        r = self.client.request(
-            'post',
-            url,
-            json=payload
-        )
-
-        return r.json()
+        return self.spreadsheet.values_append(self.title, params, body)
 
     def insert_row(
         self,
@@ -494,7 +480,7 @@ class Worksheet(object):
         value_input_option='RAW',
         inheritFromBefore=False
     ):
-        payload = {
+        body = {
             "requests": [{
                 "insertDimension": {
                     "range": {
@@ -507,11 +493,7 @@ class Worksheet(object):
             }]
         }
 
-        r = self.client.request(
-            'post',
-            SPREADSHEET_BATCH_UPDATE_URL % self.spreadsheet.id,
-            json=payload
-        )
+        self.spreadsheet.batch_update(body)
 
         range_label = '%s!%s' % (self.title, 'A%s' % index)
 
@@ -532,7 +514,7 @@ class Worksheet(object):
 
         :param index: Index of a row for deletion
         """
-        payload = {
+        body = {
             "requests": [{
                 "deleteDimension": {
                     "range": {
@@ -545,28 +527,12 @@ class Worksheet(object):
             }]
         }
 
-        r = self.client.request(
-            'post',
-            SPREADSHEET_BATCH_UPDATE_URL % self.spreadsheet.id,
-            json=payload
-        )
-
-        return r.json()
+        return self.spreadsheet.batch_update(body)
 
     def clear(self):
         """Clears all cells in the worksheet.
         """
-        url = SPREADSHEET_CLEAR_URL % (
-            self.spreadsheet.id,
-            self.title
-        )
-
-        r = self.client.request(
-            'post',
-            url
-        )
-
-        return r.json()
+        return self.spreadsheet.values_clear(self.title)
 
     def _finder(self, func, query):
         data = self.spreadsheet.values_get(self.title)
