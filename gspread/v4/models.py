@@ -477,8 +477,7 @@ class Worksheet(object):
         self,
         values,
         index=1,
-        value_input_option='RAW',
-        inheritFromBefore=False
+        value_input_option='RAW'
     ):
         body = {
             "requests": [{
