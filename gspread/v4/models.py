@@ -229,7 +229,10 @@ class Worksheet(object):
         return self._properties['gridProperties']['columnCount']
 
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
-        return self.cell(*(a1_to_rowcol(label)), value_render_option)
+        return self.cell(
+            *(a1_to_rowcol(label)),
+            value_render_option=value_render_option
+        )
 
     def cell(self, row, col, value_render_option='FORMATTED_VALUE'):
         range_label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
