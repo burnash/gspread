@@ -222,13 +222,6 @@ class WorksheetTest(GspreadTest):
     def tearDown(self):
         self.spreadsheet.del_worksheet(self.sheet)
 
-    @unittest.skip('Deprecated: looks like v4 does not provide this info')
-    def test_get_updated(self):
-        RFC_3339 = (r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?'
-                    r'(Z|[+-]\d{2}:\d{2})')
-        has_match = re.match(RFC_3339, self.sheet.updated) is not None
-        self.assertTrue(has_match)
-
     def test_acell(self):
         cell = self.sheet.acell('A1')
         self.assertTrue(isinstance(cell, gspread.base.BaseCell))
@@ -546,26 +539,6 @@ class WorksheetTest(GspreadTest):
 
         self.sheet.clear()
         self.assertEqual(self.sheet.get_all_values(), [])
-
-    @unittest.skip('Deprecated: looks like v4 does not provide this feature')
-    def test_export(self):
-        list_len = 10
-
-        value_list = [gen_value(i) for i in range(list_len)]
-
-        range_label = 'A1:A%s' % list_len
-        cell_list = self.sheet.range(range_label)
-
-        for c, v in zip(cell_list, value_list):
-            c.value = v
-
-        self.sheet.update_cells(cell_list)
-
-        exported_data = self.sheet.export(format='csv')
-        exported_values = [unicode(line.decode())
-                           for line in exported_data.splitlines()]
-
-        self.assertEqual(exported_values, value_list)
 
 
 class WorksheetDeleteTest(GspreadTest):
