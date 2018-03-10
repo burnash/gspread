@@ -49,7 +49,6 @@ class Client(BaseClient):
             data=None,
             json=None,
             files=None):
-        # url = '%s%s' % (self.api_base_url, endpoint)
 
         response = getattr(self.session, method)(
             endpoint, json=json, params=params, data=data, files=files
