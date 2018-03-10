@@ -593,3 +593,14 @@ class Cell(BaseCell):
             return float(self.value)
         except ValueError:
             return None
+
+    @property
+    def input_value(self):
+        import warnings
+        warnings.warn(
+            "Cell.input_value is deprecated, "
+            "this feature is not supported in Sheets API v4. "
+            "Please use `value_render_option` when you "
+            "Retrieve `Cell` objects (e.g. in `Worksheet.range()` method).",
+            DeprecationWarning
+        )
