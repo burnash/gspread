@@ -8,6 +8,7 @@ Features:
 * Open a spreadsheet by its **title** or **url**.
 * Extract range, entire row or column values.
 * Python 3 support.
+* The library uses version 3 of the [Google Sheets API](https://developers.google.com/sheets/api/v3/).
 
 ## Basic Usage
 
