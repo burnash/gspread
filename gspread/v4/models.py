@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+
+"""
+gspread.v4.models
+~~~~~~~~~~~~~~~~~
+
+This module contains common spreadsheets' models.
+
+"""
+
 from ..base import BaseCell, BaseSpreadsheet
 
 from ..exceptions import WorksheetNotFound, CellNotFound
@@ -27,6 +37,7 @@ except NameError:
 
 
 class Spreadsheet(BaseSpreadsheet):
+    """The class that represents a spreadsheet."""
     def __init__(self, client, properties):
         self.client = client
         self._properties = properties
@@ -48,6 +59,9 @@ class Spreadsheet(BaseSpreadsheet):
 
     @property
     def updated(self):
+        """.. deprecated:: 2.0
+        This feature is not supported in Sheets API v4.
+        """
         import warnings
         warnings.warn(
             "Spreadsheet.updated() is deprecated, "
@@ -108,6 +122,19 @@ class Spreadsheet(BaseSpreadsheet):
         return r.json()
 
     def get_worksheet(self, index):
+        """Returns a worksheet with specified `index`.
+
+        :param index: An index of a worksheet. Indexes start from zero.
+
+        :returns: an instance of :class:`gsperad.v4.models.Worksheet`
+                  or `None` if the worksheet is not found.
+
+        Example. To get first worksheet of a spreadsheet:
+
+        >>> sht = client.open('My fancy spreadsheet')
+        >>> worksheet = sht.get_worksheet(0)
+
+        """
         sheet_data = self.fetch_sheet_metadata()
 
         try:
@@ -117,7 +144,7 @@ class Spreadsheet(BaseSpreadsheet):
             return None
 
     def worksheets(self):
-        """Returns a list of all :class:`worksheets <Worksheet>`
+        """Returns a list of all :class:`worksheets <gsperad.v4.models.Worksheet>`
         in a spreadsheet.
 
         """
@@ -131,7 +158,7 @@ class Spreadsheet(BaseSpreadsheet):
                       worksheets with the same title, first one will
                       be returned.
 
-        :returns: an instance of :class:`Worksheet`.
+        :returns: an instance of :class:`gsperad.v4.models.Worksheet`.
 
         Example. Getting worksheet named 'Annual bonuses'
 
@@ -150,6 +177,14 @@ class Spreadsheet(BaseSpreadsheet):
             raise WorksheetNotFound(title)
 
     def add_worksheet(self, title, rows, cols):
+        """Adds a new worksheet to a spreadsheet.
+
+        :param title: A title of a new worksheet.
+        :param rows: Number of rows.
+        :param cols: Number of columns.
+
+        :returns: a newly created :class:`worksheets <gsperad.v4.models.Worksheet>`.
+        """
         body = {
             'requests': [{
                 'addSheet': {
@@ -189,6 +224,10 @@ class Spreadsheet(BaseSpreadsheet):
 
 
 class Worksheet(object):
+    """The class that represents a single sheet in a spreadsheet
+    (aka "worksheet").
+
+    """
 
     def __init__(self, spreadsheet, properties):
         self.spreadsheet = spreadsheet
@@ -202,6 +241,7 @@ class Worksheet(object):
 
     @property
     def id(self):
+        """Id of a worksheet."""
         return self._properties['sheetId']
 
     @property
@@ -211,6 +251,9 @@ class Worksheet(object):
 
     @property
     def updated(self):
+        """.. deprecated:: 2.0
+        This feature is not supported in Sheets API v4.
+        """
         import warnings
         warnings.warn(
             "Worksheet.updated() is deprecated, "
@@ -220,21 +263,56 @@ class Worksheet(object):
 
     @property
     def row_count(self):
-        """Number of rows"""
+        """Number of rows."""
         return self._properties['gridProperties']['rowCount']
 
     @property
     def col_count(self):
-        """Number of columns"""
+        """Number of columns."""
         return self._properties['gridProperties']['columnCount']
 
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
+        """Returns an instance of a :class:`gspread.v4.models.Cell`.
+
+        :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+        :param value_render_option: Determines how values should be rendered
+                                    in the the output. See `ValueRenderOption`_
+                                    in the Sheets API.
+
+        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        Example:
+
+        >>> worksheet.acell('A1')
+        <Cell R1C1 "I'm cell A1">
+
+        """
+
         return self.cell(
             *(a1_to_rowcol(label)),
             value_render_option=value_render_option
         )
 
     def cell(self, row, col, value_render_option='FORMATTED_VALUE'):
+        """Returns an instance of a :class:`gspread.v4.models.Cell` positioned
+        in `row` and `col` column.
+
+        :param row: Integer row number.
+        :param col: Integer column number.
+        :param value_render_option: Determines how values should be rendered
+                                    in the the output. See `ValueRenderOption`_
+                                    in the Sheets API.
+
+        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        Example:
+
+        >>> worksheet.cell(1, 1)
+        <Cell R1C1 "I'm cell A1">
+
+        """
+
         range_label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
         data = self.spreadsheet.values_get(
             range_label,
@@ -250,6 +328,30 @@ class Worksheet(object):
 
     @cast_to_a1_notation
     def range(self, name):
+        """Returns a list of :class:`Cell` objects from a specified range.
+
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param first_row: Integer row number
+        :param first_col: Integer row number
+        :param last_row: Integer row number
+        :param last_col: Integer row number
+
+        Example::
+
+            >>> # Using A1 notation
+            >>> worksheet.range('A1:B7')
+            [<Cell R1C1 "42">, ...]
+
+            >>> # Same with numeric boundaries
+            >>> worksheet.range(1, 1, 7, 2)
+            [<Cell R1C1 "42">, ...]
+
+        """
+
         range_label = '%s!%s' % (self.title, name)
 
         data = self.spreadsheet.values_get(range_label)
@@ -273,6 +375,10 @@ class Worksheet(object):
         ]
 
     def get_all_values(self):
+        """Returns a list of lists containing all cells' values as strings.
+
+        """
+
         data = self.spreadsheet.values_get(self.title)
 
         try:
@@ -281,22 +387,22 @@ class Worksheet(object):
             return []
 
     def get_all_records(self, empty2zero=False, head=1, default_blank=""):
-        """Returns a list of dictionaries, all of them having:
-            - the contents of the spreadsheet's with the head row as keys,
-            And each of these dictionaries holding
-            - the contents of subsequent rows of cells as values.
-
+        """Returns a list of dictionaries, all of them having the contents
+        of the spreadsheet with the head row as keys and each of these
+        dictionaries holding the contents of subsequent rows of cells
+        as values.
 
         Cell values are numericised (strings that can be read as ints
         or floats are converted).
 
-        :param empty2zero: determines whether empty cells are converted to zeros.
-        :param head: determines wich row to use as keys, starting from 1
-            following the numeration of the spreadsheet.
-        :param default_blank: determines whether empty cells are converted to
-            something else except empty string or zero.
-
+        :param empty2zero: determines whether empty cells are converted
+                           to zeros.
+        :param head: determines wich row to use as keys, starting
+                     from 1 following the numeration of the spreadsheet.
+        :param default_blank: determines whether empty cells are converted
+                              to something else except empty string or zero.
         """
+
         idx = head - 1
 
         data = self.get_all_values()
@@ -307,6 +413,19 @@ class Worksheet(object):
         return [dict(zip(keys, row)) for row in values]
 
     def row_values(self, row, value_render_option='FORMATTED_VALUE'):
+        """Returns a list of all values in a `row`.
+
+        Empty cells in this list will be rendered as :const:`None`.
+
+        :param row: Integer row number.
+        :param value_render_option: Determines how values should be rendered
+                                    in the the output. See `ValueRenderOption`_
+                                    in the Sheets API.
+
+        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        """
+
         range_label = '%s!A%s:%s' % (self.title, row, row)
 
         data = self.spreadsheet.values_get(
@@ -320,6 +439,19 @@ class Worksheet(object):
             return []
 
     def col_values(self, col, value_render_option='FORMATTED_VALUE'):
+        """Returns a list of all values in column `col`.
+
+        Empty cells in this list will be rendered as :const:`None`.
+
+        :param col: Integer column number.
+        :param value_render_option: Determines how values should be rendered
+                                    in the the output. See `ValueRenderOption`_
+                                    in the Sheets API.
+
+        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        """
+
         start_label = rowcol_to_a1(1, col)
         range_label = '%s!%s:%s' % (self.title, start_label, start_label[:-1])
 
@@ -343,9 +475,9 @@ class Worksheet(object):
                       Letter case is ignored.
         :param value: New value.
 
-        Example:
+        Example::
 
-            worksheet.update_acell('A1', '42') # this could be 'a1' as well
+            worksheet.update_acell('A1', '42')
 
         """
         return self.update_cell(*(a1_to_rowcol(label)), value=value)
@@ -377,6 +509,28 @@ class Worksheet(object):
         return data
 
     def update_cells(self, cell_list, value_input_option='RAW'):
+        """Updates cells in batch.
+
+        :param cell_list: List of a :class:`Cell` objects to update.
+        :param value_input_option: Determines how input data should be
+                                   interpreted. See `ValueInputOption`_
+                                   in the Sheets API.
+
+        .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+
+        Example::
+
+            # Select a range
+            cell_list = worksheet.range('A1:C7')
+
+            for cell in cell_list:
+                cell.value = 'O_o'
+
+            # Update in batch
+            worksheet.update_cells(cell_list)
+
+        """
+
         values_rect = cell_list_to_rect(cell_list)
 
         start = rowcol_to_a1(cell_list[0].row, cell_list[0].col)
@@ -432,6 +586,12 @@ class Worksheet(object):
         return self.spreadsheet.batch_update(body)
 
     def update_title(self, title):
+        """Renames the worksheet.
+
+        :param title: A new title.
+
+        """
+
         body = {
             'requests': [{
                 'updateSheetProperties': {
@@ -450,6 +610,7 @@ class Worksheet(object):
         """Adds rows to worksheet.
 
         :param rows: Rows number to add.
+
         """
         self.resize(rows=self.row_count + rows)
 
@@ -457,6 +618,7 @@ class Worksheet(object):
         """Adds colums to worksheet.
 
         :param cols: Columns number to add.
+
         """
         self.resize(cols=self.col_count + cols)
 
@@ -465,6 +627,7 @@ class Worksheet(object):
         Widens the worksheet if there are more values than columns.
 
         :param values: List of values for the new row.
+
         """
         params = {
             'valueInputOption': value_input_option
@@ -482,6 +645,20 @@ class Worksheet(object):
         index=1,
         value_input_option='RAW'
     ):
+        """Adds a row to the worksheet at the specified index
+        and populates it with values.
+
+        Widens the worksheet if there are more values than columns.
+
+        :param values: List of values for the new row.
+        :param value_input_option: Determines how input data should be
+                                   interpreted. See `ValueInputOption`_
+                                   in the Sheets API.
+
+        .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+
+        """
+
         body = {
             "requests": [{
                 "insertDimension": {
@@ -512,9 +689,9 @@ class Worksheet(object):
         return data
 
     def delete_row(self, index):
-        """"Deletes a row from the worksheet at the specified index
+        """"Deletes a row from the worksheet at the specified index.
 
-        :param index: Index of a row for deletion
+        :param index: Index of a row for deletion.
         """
         body = {
             "requests": [{
@@ -575,6 +752,9 @@ class Worksheet(object):
         return list(self._finder(filter, query))
 
     def export(self, format):
+        """.. deprecated:: 2.0
+        This feature is not supported in Sheets API v4.
+        """
         import warnings
         warnings.warn(
             "Worksheet.export() is deprecated, "
@@ -584,10 +764,16 @@ class Worksheet(object):
 
 
 class Cell(BaseCell):
+    """An instance of this class represents a single cell
+    in a :class:`worksheet <gspread.v4.models.Worksheet>`.
+
+    """
+
     def __init__(self, row, col, value=''):
         self._row = row
         self._col = col
 
+        #: Value of the cell.
         self.value = value
 
     @property
@@ -599,6 +785,9 @@ class Cell(BaseCell):
 
     @property
     def input_value(self):
+        """.. deprecated:: 2.0
+        This feature is not supported in Sheets API v4.
+        """
         import warnings
         warnings.warn(
             "Cell.input_value is deprecated, "

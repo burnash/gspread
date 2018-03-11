@@ -19,7 +19,7 @@ Main Interface
 
 .. autofunction:: authorize
 
-.. autoclass:: Client
+.. autoclass:: gspread.v4.Client
    :members:
 
 Models
@@ -33,11 +33,11 @@ The models represent common spreadsheet objects: :class:`a spreadsheet <Spreadsh
    The classes described below should not be instantiated by end-user. Their
    instances result from calling other objects' methods.
 
-.. autoclass:: Spreadsheet
+.. autoclass:: gspread.v4.models.Spreadsheet
    :members:
-.. autoclass:: Worksheet
+.. autoclass:: gspread.v4.models.Worksheet
    :members:
-.. autoclass:: Cell
+.. autoclass:: gspread.v4.models.Cell
    :members:
 
 Utils
@@ -49,23 +49,8 @@ Utils
 Exceptions
 ----------
 
-.. autoexception:: GSpreadException
-.. autoexception:: AuthenticationError
-.. autoexception:: SpreadsheetNotFound
-.. autoexception:: WorksheetNotFound
-.. autoexception:: NoValidUrlKeyFound
-.. autoexception:: UpdateCellError
-.. autoexception:: RequestError
-
-Internal Modules
-----------------
-
-Following modules are for internal use only.
-
-.. automodule:: gspread.httpsession
-   :members: HTTPSession
-.. automodule:: gspread.urls
-   :members: construct_url
+.. autoexception:: gspread.v4.exceptions.GSpreadException
+.. autoexception:: gspread.v4.exceptions.APIError
 
 .. _github issue: https://github.com/burnash/gspread/issues
 

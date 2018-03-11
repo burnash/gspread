@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+
+"""
+gspread.v4.client
+~~~~~~~~~~~~~~
+
+This module contains Client class responsible for communicating with
+Google API.
+
+"""
+
 import requests
 
 from ..utils import finditem
@@ -14,19 +25,20 @@ from ..urls import (
 
 
 class Client(BaseClient):
-    """An instance of this class communicates with Google Data API.
+    """An instance of this class communicates with Google API.
 
     :param auth: An OAuth2 credential object. Credential objects are those created by the
                  oauth2client library. https://github.com/google/oauth2client
-    :param http_session: (optional) A session object capable of making HTTP requests while persisting headers.
-                                    Defaults to :class:`~gspread.httpsession.HTTPSession`.
+    :param session: (optional) A session object capable of making HTTP requests
+                    while persisting some parameters across requests.
+                    Defaults to `requests.Session <http://docs.python-requests.org/en/master/api/#request-sessions>`_.
 
     >>> c = gspread.v4.Client(auth=OAuthCredentialObject)
 
     """
-    def __init__(self, auth, http_session=None):
+    def __init__(self, auth, session=None):
         self.auth = auth
-        self.session = http_session or requests.Session()
+        self.session = session or requests.Session()
 
     def login(self):
         """Authorize client."""
@@ -68,6 +80,22 @@ class Client(BaseClient):
         return r.json()['files']
 
     def open(self, title):
+        """Opens a spreadsheet.
+
+        :param title: A title of a spreadsheet.
+
+        :returns: a :class:`~gspread.v4.models.Spreadsheet` instance.
+
+        If there's more than one spreadsheet with same title the first one
+        will be opened.
+
+        :raises gspread.SpreadsheetNotFound: if no spreadsheet with
+                                             specified `title` is found.
+
+        >>> c = gspread.authorize(credentials)
+        >>> c.open('My fancy spreadsheet')
+
+        """
         try:
             properties = finditem(
                 lambda x: x['name'] == title,
@@ -86,7 +114,7 @@ class Client(BaseClient):
 
         :param key: A key of a spreadsheet as it appears in a URL in a browser.
 
-        :returns: a :class:`~gspread.Spreadsheet` instance.
+        :returns: a :class:`~gspread.v4.models.Spreadsheet` instance.
 
         >>> c = gspread.authorize(credentials)
         >>> c.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
@@ -95,6 +123,14 @@ class Client(BaseClient):
         return Spreadsheet(self, {'id': key})
 
     def openall(self, title=None):
+        """Opens all available spreadsheets.
+
+        :param title: (optional) If specified can be used to filter
+                      spreadsheets by title.
+
+        :returns: a list of :class:`~gspread.v4.models.Spreadsheet` instances.
+
+        """
         spreadsheet_files = self.list_spreadsheet_files()
 
         return [
@@ -107,7 +143,7 @@ class Client(BaseClient):
 
         :param title: A title of a new spreadsheet.
 
-        :returns: a :class:`~gspread.Spreadsheet` instance.
+        :returns: a :class:`~gspread.v4.models.Spreadsheet` instance.
 
         .. note::
 
