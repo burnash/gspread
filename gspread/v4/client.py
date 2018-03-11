@@ -27,8 +27,9 @@ from ..urls import (
 class Client(BaseClient):
     """An instance of this class communicates with Google API.
 
-    :param auth: An OAuth2 credential object. Credential objects are those created by the
-                 oauth2client library. https://github.com/google/oauth2client
+    :param auth: An OAuth2 credential object. Credential objects
+                 are those created by the oauth2client library.
+                 https://github.com/google/oauth2client
     :param session: (optional) A session object capable of making HTTP requests
                     while persisting some parameters across requests.
                     Defaults to `requests.Session <http://docs.python-requests.org/en/master/api/#request-sessions>`_.

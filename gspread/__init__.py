@@ -30,9 +30,11 @@ from . import v4
 
 def authorize(credentials, client_class=v4.Client):
     """Login to Google API using OAuth2 credentials.
-    This is a shortcut function which instantiates :class:`Client`
+    This is a shortcut function which
+    instantiates :class:`gspread.v4.client.Client`
     and performs login right away.
-    :returns: :class:`Client` instance.
+
+    :returns: :class:`gspread.v4.client.Client` instance.
     """
     client = client_class(auth=credentials)
     client.login()
