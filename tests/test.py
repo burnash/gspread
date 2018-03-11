@@ -195,7 +195,7 @@ class SpreadsheetTest(GspreadTest):
         )
 
     def test_worksheet_iteration(self):
-        self.assertListEqual(
+        self.assertEqual(
             [x.id for x in self.spreadsheet.worksheets()],
             [sheet.id for sheet in self.spreadsheet]
         )
