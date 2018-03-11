@@ -1,6 +1,27 @@
 Release History
 ===============
 
+2.0.0 (2018-03-11)
+------------------
+
+* Ported the library to Google Sheets API v4.
+
+  This is a transition release. The v3-related code is untouched,
+  but v4 is used by default. It is encouraged to move to v4 since
+  the API is faster and has more features.
+
+  API v4 is a significant change from v3. Some methods are not
+  backward compatible, so there's no support for this compatibility
+  in gspread either.
+
+  These methods and properties are not supported in v4:
+
+  * `Spreadsheet.updated`
+  * `Worksheet.updated`
+  * `Worksheet.export()`
+  * `Cell.input_value`
+
+
 0.6.2 (2016-12-20)
 ------------------
 
