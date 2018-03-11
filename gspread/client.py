@@ -28,8 +28,10 @@ from .urls import (
 from .utils import finditem, extract_id_from_url
 from .exceptions import (SpreadsheetNotFound, UpdateCellError)
 
+from .base import BaseClient
 
-class Client(object):
+
+class Client(BaseClient):
 
     """An instance of this class communicates with Google Data API.
 
@@ -111,22 +113,6 @@ class Client(object):
                 return Spreadsheet(self, elem)
         else:
             raise SpreadsheetNotFound
-
-    def open_by_url(self, url):
-        """Opens a spreadsheet specified by `url`.
-
-        :param url: URL of a spreadsheet as it appears in a browser.
-
-        :returns: a :class:`~gspread.Spreadsheet` instance.
-
-        :raises gspread.SpreadsheetNotFound: if no spreadsheet with
-                                             specified `url` is found.
-
-        >>> c = gspread.authorize(credentials)
-        >>> c.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
-
-        """
-        return self.open_by_key(extract_id_from_url(url))
 
     def openall(self, title=None):
         """Opens all available spreadsheets.
@@ -390,14 +376,3 @@ class Client(object):
         headers = {'Content-Type': 'application/json'}
 
         self.session.delete(url, headers=headers)
-
-
-def authorize(credentials):
-    """Login to Google API using OAuth2 credentials.
-    This is a shortcut function which instantiates :class:`Client`
-    and performs login right away.
-    :returns: :class:`Client` instance.
-    """
-    client = Client(auth=credentials)
-    client.login()
-    return client

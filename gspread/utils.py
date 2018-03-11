@@ -9,6 +9,8 @@ This module contains utility functions.
 """
 
 import re
+from functools import wraps
+
 from xml.etree import ElementTree
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
@@ -169,6 +171,31 @@ def a1_to_rowcol(label):
         raise IncorrectCellLabel(label)
 
     return (row, col)
+
+
+def cast_to_a1_notation(method):
+    """
+    Decorator function casts wrapped arguments to A1 notation
+    in range method calls.
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        try:
+            if len(args):
+                int(args[0])
+
+            # Convert to A1 notation
+            range_start = rowcol_to_a1(*args[:2])
+            range_end = rowcol_to_a1(*args[-2:])
+            range_name = ':'.join((range_start, range_end))
+
+            args = (range_name,) + args[4:]
+        except ValueError:
+            pass
+
+        return method(self, *args, **kwargs)
+
+    return wrapper
 
 
 def extract_id_from_url(url):

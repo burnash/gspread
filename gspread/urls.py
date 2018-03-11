@@ -18,6 +18,7 @@ DRIVE_FILES_API_V2_URL = 'https://www.googleapis.com/drive/v2/files'
 DRIVE_FILES_UPLOAD_API_V2_URL = ('https://www.googleapis.com'
                                  '/upload/drive/v2/files')
 
+# v3
 # General pattern
 # /feeds/feedType/key/worksheetId/visibility/projection
 #

@@ -10,7 +10,6 @@ This module contains common spreadsheets' models
 
 from collections import defaultdict
 from itertools import chain
-from functools import wraps
 
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
@@ -18,12 +17,19 @@ from xml.etree.ElementTree import Element, SubElement
 from . import urlencode
 from .ns import _ns, _ns1, ATOM_NS, BATCH_NS, SPREADSHEET_NS
 from .urls import construct_url
-from .utils import finditem, numericise_all
-from .utils import rowcol_to_a1, a1_to_rowcol, wid_to_gid
 
-from .exceptions import (
-    IncorrectCellLabel, WorksheetNotFound, CellNotFound, ImportException
+from .utils import (
+    finditem,
+    numericise_all,
+    rowcol_to_a1,
+    a1_to_rowcol,
+    wid_to_gid,
+    cast_to_a1_notation
 )
+
+from .exceptions import WorksheetNotFound, CellNotFound
+
+from .base import BaseSpreadsheet, BaseCell
 
 try:
     unicode
@@ -49,32 +55,7 @@ def _escape_attrib(text, encoding=None, replace=None):
 ElementTree._escape_attrib = _escape_attrib
 
 
-def cast_to_a1_notation(method):
-    """
-    Decorator function casts wrapped arguments to A1 notation
-    in range method calls.
-    """
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        try:
-            if len(args):
-                int(args[0])
-
-            # Convert to A1 notation
-            range_start = rowcol_to_a1(*args[:2])
-            range_end = rowcol_to_a1(*args[-2:])
-            range_name = ':'.join((range_start, range_end))
-
-            args = (range_name,) + args[4:]
-        except ValueError:
-            pass
-
-        return method(self, *args, **kwargs)
-
-    return wrapper
-
-
-class Spreadsheet(object):
+class Spreadsheet(BaseSpreadsheet):
     """ A class for a spreadsheet object."""
 
     def __init__(self, client, feed_entry):
@@ -209,65 +190,6 @@ class Spreadsheet(object):
         except IndexError:
             return None
 
-    def share(self, value, perm_type, role, notify=True, email_message=None):
-        """Share the spreadsheet with other accounts.
-        :param value: user or group e-mail address, domain name
-                      or None for 'default' type.
-        :param perm_type: the account type.
-               Allowed values are: ``user``, ``group``, ``domain``,
-               ``anyone``.
-        :param role: the primary role for this user.
-               Allowed values are: ``owner``, ``writer``, ``reader``.
-        :param notify: Whether to send an email to the target user/domain.
-        :param email_message: The email to be sent if notify=True
-
-        Example::
-
-            # Give Otto a write permission on this spreadsheet
-            sh.share('otto@example.com', perm_type='user', role='writer')
-
-            # Transfer ownership to Otto
-            sh.share('otto@example.com', perm_type='user', role='owner')
-
-        """
-        self.client.insert_permission(
-            self.id,
-            value=value,
-            perm_type=perm_type,
-            role=role,
-            notify=notify,
-            email_message=email_message
-        )
-
-    def list_permissions(self):
-        """Lists the spreadsheet's permissions.
-        """
-        return self.client.list_permissions(self.id)
-
-    def remove_permissions(self, value, role='any'):
-        """
-        Example::
-
-            # Remove Otto's write permission for this spreadsheet
-            sh.remove_permissions('otto@example.com', role='writer')
-
-            # Remove all Otto's permissions for this spreadsheet
-            sh.remove_permissions('otto@example.com')
-        """
-        permission_list = self.client.list_permissions(self.id)
-
-        key = 'emailAddress' if '@' in value else 'domain'
-
-        filtered_id_list = [
-            p['id'] for p in permission_list
-            if p[key] == value and (p['role'] == role or role == 'any')
-        ]
-
-        for permission_id in filtered_id_list:
-            self.client.remove_permission(self.id, permission_id)
-
-        return filtered_id_list
-
 
 class Worksheet(object):
 
@@ -279,6 +201,7 @@ class Worksheet(object):
         self._id = element.find(_ns('id')).text.split('/')[-1]
         self._title = element.find(_ns('title')).text
         self._element = element
+
         try:
             self.version = self._get_link(
                 'edit', element).get('href').split('/')[-1]
@@ -776,7 +699,7 @@ class Worksheet(object):
         self.update_cells(cells)
 
 
-class Cell(object):
+class Cell(BaseCell):
     """An instance of this class represents a single cell
     in a :class:`worksheet <Worksheet>`.
 
@@ -796,19 +719,3 @@ class Cell(object):
 
         #: Value of the cell.
         self.value = cell_elem.text or ''
-
-    @property
-    def row(self):
-        """Row number of the cell."""
-        return self._row
-
-    @property
-    def col(self):
-        """Column number of the cell."""
-        return self._col
-
-    def __repr__(self):
-        return '<%s R%sC%s %s>' % (self.__class__.__name__,
-                                   self.row,
-                                   self.col,
-                                   repr(self.value))
