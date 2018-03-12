@@ -135,7 +135,6 @@ class Spreadsheet(BaseSpreadsheet):
 
         """
         self.client.del_worksheet(worksheet)
-        self._sheet_list.remove(worksheet)
 
     def worksheets(self):
         """Returns a list of all :class:`worksheets <Worksheet>`
