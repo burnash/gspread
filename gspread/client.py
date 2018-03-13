@@ -317,7 +317,7 @@ class Client(object):
         role,
         notify=True,
         email_message=None,
-        withLink=False
+        with_link=False
     ):
         """Creates a new permission for a file.
 
@@ -360,7 +360,7 @@ class Client(object):
                 None,
                 perm_type='anyone',
                 role='writer',
-                withLink=True
+                with_link=True
             )
 
         """
@@ -371,7 +371,7 @@ class Client(object):
             'value': value,
             'type': perm_type,
             'role': role,
-            'withLink':withLink,
+            'with_link': with_link
         }
 
         params = {
