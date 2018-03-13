@@ -371,7 +371,7 @@ class Client(object):
             'value': value,
             'type': perm_type,
             'role': role,
-            'with_link': with_link
+            'withLink': with_link
         }
 
         params = {
