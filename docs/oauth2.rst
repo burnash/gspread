@@ -47,9 +47,9 @@ This is how this file may look like:
 
 In the next step you'll need the value of *client_email* from the file.
 
-5. Go to your spreadsheet and share it with a *client_email* from the step above. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to access this spreadsheet with gspread.
+4. Go to your spreadsheet and share it with a *client_email* from the step above. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to access this spreadsheet with gspread.
 
-6. Install `oauth2client <https://github.com/google/oauth2client>`_:
+5. Install `oauth2client <https://github.com/google/oauth2client>`_:
 
 ::
 
@@ -61,7 +61,7 @@ Depending on your system setup you may need to install PyOpenSSL:
 
     pip install PyOpenSSL
 
-7. Now you can read this file, and use the data when constructing your credentials:
+6. Now you can read this file, and use the data when constructing your credentials:
 
 ::
 
