@@ -40,14 +40,16 @@ This is how this file may look like:
     {
         "private_key_id": "2cd … ba4",
         "private_key": "-----BEGIN PRIVATE KEY-----\nNrDyLw … jINQh/9\n-----END PRIVATE KEY-----\n",
-        "client_email": "473 … hd@developer.gserviceaccount.com",
+        "client_email": "473000000000-yoursisdifferent@developer.gserviceaccount.com",
         "client_id": "473 … hd.apps.googleusercontent.com",
         "type": "service_account"
     }
 
-You'll need *client_email* and *private_key*.
+In the next step you'll need the value of *client_email* from the file.
 
-5. Install `oauth2client <https://github.com/google/oauth2client>`_:
+5. Go to your spreadsheet and share it with a *client_email* from the step above. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to access this spreadsheet with gspread.
+
+6. Install `oauth2client <https://github.com/google/oauth2client>`_:
 
 ::
 
@@ -59,7 +61,7 @@ Depending on your system setup you may need to install PyOpenSSL:
 
     pip install PyOpenSSL
 
-6. Now you can read this file, and use the data when constructing your credentials:
+7. Now you can read this file, and use the data when constructing your credentials:
 
 ::
 
@@ -75,7 +77,6 @@ Depending on your system setup you may need to install PyOpenSSL:
 
     wks = gc.open("Where is the money Lebowski?").sheet1
 
-7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
 
 Troubleshooting
 ---------------
