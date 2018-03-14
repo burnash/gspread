@@ -66,8 +66,9 @@ Depending on your system setup you may need to install PyOpenSSL:
     import gspread
     from oauth2client.service_account import ServiceAccountCredentials
 
-    scope = ['https://spreadsheets.google.com/feeds']
-
+    scope = ['https://spreadsheets.google.com/feeds',
+             'https://www.googleapis.com/auth/drive']
+         
     credentials = ServiceAccountCredentials.from_json_keyfile_name('gspread-april-2cd … ba4.json', scope)
 
     gc = gspread.authorize(credentials)
@@ -83,7 +84,8 @@ If using oauth2client < 2.0.0
     from oauth2client.client import SignedJwtAssertionCredentials
 
     json_key = json.load(open('gspread-april-2cd … ba4.json'))
-    scope = ['https://spreadsheets.google.com/feeds']
+    scope = ['https://spreadsheets.google.com/feeds',
+             'https://www.googleapis.com/auth/drive']
 
     credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
 
