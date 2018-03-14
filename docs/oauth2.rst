@@ -75,27 +75,6 @@ Depending on your system setup you may need to install PyOpenSSL:
 
     wks = gc.open("Where is the money Lebowski?").sheet1
 
-If using oauth2client < 2.0.0
-
-::
-
-    import json
-    import gspread
-    from oauth2client.client import SignedJwtAssertionCredentials
-
-    json_key = json.load(open('gspread-april-2cd … ba4.json'))
-    scope = ['https://spreadsheets.google.com/feeds',
-             'https://www.googleapis.com/auth/drive']
-
-    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
-
-    gc = gspread.authorize(credentials)
-
-    wks = gc.open("Where is the money Lebowski?").sheet1
-
-**Note**: Python2 users do not need to encode ``json_key['private_key']`` due to ``str`` and ``bytes`` not being differentiated.
-
-
 7. Go to Google Sheets and share your spreadsheet with an email you have in your ``json_key['client_email']``. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to open it.
 
 Troubleshooting
