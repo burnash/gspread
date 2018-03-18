@@ -19,7 +19,7 @@ MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r'([A-Za-z]+)([1-9]\d*)')
 
 URL_KEY_V1_RE = re.compile(r'key=([^&#]+)')
-URL_KEY_V2_RE = re.compile(r'/spreadsheets/d/([a-zA-Z0-9-_]+)')
+URL_KEY_V2_RE = re.compile(r'/spreadsheets/(?:u/\d+/|)d/([a-zA-Z0-9-_]+)')
 
 
 def finditem(func, seq):
