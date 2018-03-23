@@ -73,12 +73,23 @@ class Client(BaseClient):
             raise APIError(response)
 
     def list_spreadsheet_files(self):
-        url = (
-            "https://www.googleapis.com/drive/v3/files"
-            "?q=mimeType%3D'application%2Fvnd.google-apps.spreadsheet'"
-        )
-        r = self.request('get', url)
-        return r.json()['files']
+        files = []
+        page_token = ''
+        url = "https://www.googleapis.com/drive/v3/files"
+        params = {
+            'q': "mimeType='application/vnd.google-apps.spreadsheet'",
+            "pageSize": 1000
+        }
+
+        while page_token is not None:
+            if page_token:
+                params['pageToken'] = page_token
+
+            res = self.request('get', url, params=params).json()
+            files.extend(res['files'])
+            page_token = res.get('nextPageToken', None)
+
+        return files
 
     def open(self, title):
         """Opens a spreadsheet.
