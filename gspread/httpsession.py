@@ -36,7 +36,7 @@ class HTTPSession(object):
 
     def request(self, method, url, data=None, params=None, headers=None, files=None, json=None):
         if data and isinstance(data, bytes):
-            data = data.decode()
+            data = data.decode('utf-8')
 
         if data and not isinstance(data, basestring):
             data = urlencode(data)

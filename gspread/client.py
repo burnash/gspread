@@ -204,8 +204,8 @@ class Client(BaseClient):
         try:
             r = self.session.put(url, data, headers=headers)
         except RequestError as ex:
-            if ex[0] == 403:
-                raise UpdateCellError(ex[1])
+            if ex.args[0] == 403:
+                raise UpdateCellError(ex.args[1])
             else:
                 raise
 
@@ -302,7 +302,8 @@ class Client(BaseClient):
         perm_type,
         role,
         notify=True,
-        email_message=None
+        email_message=None,
+        with_link=False
     ):
         """Creates a new permission for a file.
 
@@ -338,6 +339,16 @@ class Client(BaseClient):
                 role='reader'
             )
 
+            # Make the spreadsheet publicly editable by anyone with the link
+
+            gc.insert_permission(
+                '0BmgG6nO_6dprnRRUWl1UFE',
+                None,
+                perm_type='anyone',
+                role='writer',
+                with_link=True
+            )
+
         """
 
         url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
@@ -346,6 +357,7 @@ class Client(BaseClient):
             'value': value,
             'type': perm_type,
             'role': role,
+            'withLink': with_link
         }
 
         params = {

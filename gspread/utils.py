@@ -214,7 +214,7 @@ def wid_to_gid(wid):
     """Calculate gid of a worksheet from its wid."""
     widval = wid[1:] if len(wid) > 3 else wid
     xorval = 474 if len(wid) > 3 else 31578
-    return str(int(str(widval), 36) ^ xorval)
+    return str(int(widval, 36) ^ xorval)
 
 
 if __name__ == '__main__':
