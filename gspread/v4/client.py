@@ -121,7 +121,13 @@ class Client(BaseClient):
         >>> c.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
 
         """
-        return Spreadsheet(self, {'id': key})
+        try:
+            return Spreadsheet(self, {'id': key})
+        except APIError as err:
+            if 'NOT_FOUND' in err:
+                raise SpreadsheetNotFound
+            else:
+                raise err
 
     def openall(self, title=None):
         """Opens all available spreadsheets.
