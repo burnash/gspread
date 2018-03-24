@@ -122,12 +122,17 @@ class Client(BaseClient):
 
         """
         try:
-            return Spreadsheet(self, {'id': key})
-        except APIError as err:
-            if 'NOT_FOUND' in err:
-                raise SpreadsheetNotFound
-            else:
-                raise err
+            properties = finditem(
+                lambda x: x['id'] == key,
+                self.list_spreadsheet_files()
+            )
+
+            # Drive uses different terminology
+            properties['title'] = properties['name']
+
+            return Spreadsheet(self, properties)
+        except StopIteration:
+            raise SpreadsheetNotFound
 
     def openall(self, title=None):
         """Opens all available spreadsheets.
