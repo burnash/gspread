@@ -156,6 +156,28 @@ class ClientTest(GspreadTest):
         self.assertTrue(
             isinstance(new_spreadsheet, gspread.base.BaseSpreadsheet))
 
+    def test_import_csv(self):
+        title = gen_value('TestImportSpreadsheet')
+        new_spreadsheet = self.gc.create(title)
+
+        csv_rows = 4
+        csv_cols = 4
+
+        rows = [[
+            gen_value('%s-%s' % (i, j))
+            for j in range(csv_cols)]
+            for i in range(csv_rows)
+        ]
+
+        simple_csv_data = '\n'.join([','.join(row) for row in rows])
+
+        self.gc.import_csv(new_spreadsheet.id, simple_csv_data)
+
+        sh = self.gc.open_by_key(new_spreadsheet.id)
+        self.assertEqual(sh.sheet1.get_all_values(), rows)
+
+        self.gc.del_spreadsheet(new_spreadsheet.id)
+
 
 class SpreadsheetTest(GspreadTest):
 

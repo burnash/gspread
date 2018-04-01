@@ -61,10 +61,16 @@ class Client(BaseClient):
             params=None,
             data=None,
             json=None,
-            files=None):
+            files=None,
+            headers=None):
 
         response = getattr(self.session, method)(
-            endpoint, json=json, params=params, data=data, files=files
+            endpoint,
+            json=json,
+            params=params,
+            data=data,
+            files=files,
+            headers=headers
         )
 
         if response.ok:
