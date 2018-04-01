@@ -1,6 +1,14 @@
 Release History
 ===============
 
+2.0.1 (2018-04-01)
+------------------
+
+* Fixed #518
+* Include v4 in setup.py
+* Fetch all spreadsheets in Spreadsheet.list_spreadsheet_files
+
+
 2.0.0 (2018-03-11)
 ------------------
 

@@ -10,11 +10,13 @@ except ImportError:
     from distutils.core import setup
 
 if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
+    os.system('python setup.py sdist bdist_wheel')
     sys.exit()
+
 
 def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
+
 
 description = 'Google Spreadsheets Python API'
 
