@@ -138,7 +138,18 @@ class Client(BaseClient):
         >>> c.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
 
         """
-        return Spreadsheet(self, {'id': key})
+        try:
+            properties = finditem(
+                lambda x: x['id'] == key,
+                self.list_spreadsheet_files()
+            )
+
+            # Drive uses different terminology
+            properties['title'] = properties['name']
+
+            return Spreadsheet(self, properties)
+        except StopIteration:
+            raise SpreadsheetNotFound
 
     def openall(self, title=None):
         """Opens all available spreadsheets.
