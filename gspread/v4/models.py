@@ -8,6 +8,11 @@ This module contains common spreadsheets' models.
 
 """
 
+try:
+    from urllib.parse import quote
+except:
+    from urllib import quote
+
 from ..base import BaseCell, BaseSpreadsheet
 
 from ..exceptions import WorksheetNotFound, CellNotFound
@@ -93,22 +98,22 @@ class Spreadsheet(BaseSpreadsheet):
         return r.json()
 
     def values_append(self, range, params, body):
-        url = SPREADSHEET_VALUES_APPEND_URL % (self.id, range)
+        url = SPREADSHEET_VALUES_APPEND_URL % (self.id, quote(range, safe=''))
         r = self.client.request('post', url, params=params, json=body)
         return r.json()
 
     def values_clear(self, range):
-        url = SPREADSHEET_VALUES_CLEAR_URL % (self.id, range)
+        url = SPREADSHEET_VALUES_CLEAR_URL % (self.id, quote(range, safe=''))
         r = self.client.request('post', url)
         return r.json()
 
     def values_get(self, range, params=None):
-        url = SPREADSHEET_VALUES_URL % (self.id, range)
+        url = SPREADSHEET_VALUES_URL % (self.id, quote(range, safe=''))
         r = self.client.request('get', url, params=params)
         return r.json()
 
     def values_update(self, range, params=None, body=None):
-        url = SPREADSHEET_VALUES_URL % (self.id, range)
+        url = SPREADSHEET_VALUES_URL % (self.id, quote(range, safe=''))
         r = self.client.request('put', url, params=params, json=body)
         return r.json()
 
