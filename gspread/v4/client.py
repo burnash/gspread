@@ -84,7 +84,9 @@ class Client(BaseClient):
         url = "https://www.googleapis.com/drive/v3/files"
         params = {
             'q': "mimeType='application/vnd.google-apps.spreadsheet'",
-            "pageSize": 1000
+            "pageSize": 1000,
+            'supportsTeamDrives': True,
+            'includeTeamDriveItems': True,
         }
 
         while page_token is not None:
