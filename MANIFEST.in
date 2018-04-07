@@ -1,3 +1,4 @@
 include README.md LICENSE.txt
+include docs/index.txt
 recursive-include docs *.rst *.py
 prune *.pyc
