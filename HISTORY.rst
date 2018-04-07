@@ -4,7 +4,14 @@ Release History
 2.1.1 (2018-04-08)
 ------------------
 
-* Fixed #533
+* Fixed #533 (#534 by @reallistic)
+
+
+2.1.0 (2018-04-07)
+------------------
+
+* URL encode the range in the value_* functions (#530 by @aiguofer)
+* Open team drive sheets by name (#527 by @ryantuck)
 
 
 2.0.1 (2018-04-01)
@@ -12,7 +19,7 @@ Release History
 
 * Fixed #518
 * Include v4 in setup.py
-* Fetch all spreadsheets in Spreadsheet.list_spreadsheet_files
+* Fetch all spreadsheets in Spreadsheet.list_spreadsheet_files (#522 by @aiguofer)
 
 
 2.0.0 (2018-03-11)
