@@ -29,12 +29,6 @@ class CellNotFound(GSpreadException):
 class NoValidUrlKeyFound(GSpreadException):
     """No valid key found in URL."""
 
-class UnsupportedFeedTypeError(GSpreadException):
-    pass
-
-class UrlParameterMissing(GSpreadException):
-    pass
-
 class IncorrectCellLabel(GSpreadException):
     """The cell label is incorrect."""
 
