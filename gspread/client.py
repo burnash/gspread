@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-gspread.v4.client
+gspread.client
 ~~~~~~~~~~~~~~
 
 This module contains Client class responsible for communicating with
@@ -11,14 +11,14 @@ Google API.
 
 import requests
 
-from ..utils import finditem
-from ..base import BaseClient
+from .utils import finditem
+from .base import BaseClient
 
-from ..exceptions import SpreadsheetNotFound
+from .exceptions import SpreadsheetNotFound
 from .exceptions import APIError
 from .models import Spreadsheet
 
-from ..urls import (
+from .urls import (
     DRIVE_FILES_API_V2_URL,
     DRIVE_FILES_UPLOAD_API_V2_URL
 )
