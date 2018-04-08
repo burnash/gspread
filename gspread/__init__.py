@@ -21,10 +21,10 @@ except ImportError:
 
 from .client import Client
 from .models import Spreadsheet, Worksheet, Cell
-from .exceptions import (GSpreadException, AuthenticationError,
+from .exceptions import (GSpreadException,
                          SpreadsheetNotFound, NoValidUrlKeyFound,
                          IncorrectCellLabel, WorksheetNotFound,
-                         UpdateCellError, RequestError, CellNotFound)
+                         CellNotFound)
 
 
 def authorize(credentials, client_class=Client):
