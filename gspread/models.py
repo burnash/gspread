@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-gspread.v4.models
+gspread.models
 ~~~~~~~~~~~~~~~~~
 
 This module contains common spreadsheets' models.
@@ -129,7 +129,7 @@ class Spreadsheet(object):
 
         :param index: An index of a worksheet. Indexes start from zero.
 
-        :returns: an instance of :class:`gsperad.v4.models.Worksheet`
+        :returns: an instance of :class:`gsperad.models.Worksheet`
                   or `None` if the worksheet is not found.
 
         Example. To get first worksheet of a spreadsheet:
@@ -147,7 +147,7 @@ class Spreadsheet(object):
             return None
 
     def worksheets(self):
-        """Returns a list of all :class:`worksheets <gsperad.v4.models.Worksheet>`
+        """Returns a list of all :class:`worksheets <gsperad.models.Worksheet>`
         in a spreadsheet.
 
         """
@@ -161,7 +161,7 @@ class Spreadsheet(object):
                       worksheets with the same title, first one will
                       be returned.
 
-        :returns: an instance of :class:`gsperad.v4.models.Worksheet`.
+        :returns: an instance of :class:`gsperad.models.Worksheet`.
 
         Example. Getting worksheet named 'Annual bonuses'
 
@@ -186,7 +186,7 @@ class Spreadsheet(object):
         :param rows: Number of rows.
         :param cols: Number of columns.
 
-        :returns: a newly created :class:`worksheets <gsperad.v4.models.Worksheet>`.
+        :returns: a newly created :class:`worksheets <gsperad.models.Worksheet>`.
         """
         body = {
             'requests': [{
@@ -334,7 +334,7 @@ class Worksheet(object):
         return self._properties['gridProperties']['columnCount']
 
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
-        """Returns an instance of a :class:`gspread.v4.models.Cell`.
+        """Returns an instance of a :class:`gspread.models.Cell`.
 
         :param label: String with cell label in common format, e.g. 'B1'.
                       Letter case is ignored.
@@ -357,7 +357,7 @@ class Worksheet(object):
         )
 
     def cell(self, row, col, value_render_option='FORMATTED_VALUE'):
-        """Returns an instance of a :class:`gspread.v4.models.Cell` positioned
+        """Returns an instance of a :class:`gspread.models.Cell` positioned
         in `row` and `col` column.
 
         :param row: Integer row number.
@@ -827,7 +827,7 @@ class Worksheet(object):
 
 class Cell(object):
     """An instance of this class represents a single cell
-    in a :class:`worksheet <gspread.v4.models.Worksheet>`.
+    in a :class:`worksheet <gspread.models.Worksheet>`.
 
     """
 

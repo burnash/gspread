@@ -19,7 +19,7 @@ Main Interface
 
 .. autofunction:: authorize
 
-.. autoclass:: gspread.v4.Client
+.. autoclass:: gspread.Client
    :members:
 
 Models
@@ -33,11 +33,11 @@ The models represent common spreadsheet objects: :class:`a spreadsheet <Spreadsh
    The classes described below should not be instantiated by end-user. Their
    instances result from calling other objects' methods.
 
-.. autoclass:: gspread.v4.models.Spreadsheet
+.. autoclass:: gspread.models.Spreadsheet
    :members:
-.. autoclass:: gspread.v4.models.Worksheet
+.. autoclass:: gspread.models.Worksheet
    :members:
-.. autoclass:: gspread.v4.models.Cell
+.. autoclass:: gspread.models.Cell
    :members:
 
 Utils
@@ -49,8 +49,8 @@ Utils
 Exceptions
 ----------
 
-.. autoexception:: gspread.v4.exceptions.GSpreadException
-.. autoexception:: gspread.v4.exceptions.APIError
+.. autoexception:: gspread.exceptions.GSpreadException
+.. autoexception:: gspread.exceptions.APIError
 
 .. _github issue: https://github.com/burnash/gspread/issues
 
@@ -60,4 +60,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

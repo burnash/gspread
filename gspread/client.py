@@ -34,7 +34,7 @@ class Client(object):
                     while persisting some parameters across requests.
                     Defaults to `requests.Session <http://docs.python-requests.org/en/master/api/#request-sessions>`_.
 
-    >>> c = gspread.v4.Client(auth=OAuthCredentialObject)
+    >>> c = gspread.Client(auth=OAuthCredentialObject)
 
     """
     def __init__(self, auth, session=None):
@@ -104,7 +104,7 @@ class Client(object):
 
         :param title: A title of a spreadsheet.
 
-        :returns: a :class:`~gspread.v4.models.Spreadsheet` instance.
+        :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
         If there's more than one spreadsheet with same title the first one
         will be opened.
@@ -134,7 +134,7 @@ class Client(object):
 
         :param key: A key of a spreadsheet as it appears in a URL in a browser.
 
-        :returns: a :class:`~gspread.v4.models.Spreadsheet` instance.
+        :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
         >>> c = gspread.authorize(credentials)
         >>> c.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
@@ -164,7 +164,7 @@ class Client(object):
         :param title: (optional) If specified can be used to filter
                       spreadsheets by title.
 
-        :returns: a list of :class:`~gspread.v4.models.Spreadsheet` instances.
+        :returns: a list of :class:`~gspread.models.Spreadsheet` instances.
 
         """
         spreadsheet_files = self.list_spreadsheet_files()
@@ -179,7 +179,7 @@ class Client(object):
 
         :param title: A title of a new spreadsheet.
 
-        :returns: a :class:`~gspread.v4.models.Spreadsheet` instance.
+        :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
         .. note::
 
