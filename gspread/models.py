@@ -2,7 +2,7 @@
 
 """
 gspread.models
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 This module contains common spreadsheets' models.
 
