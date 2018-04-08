@@ -248,18 +248,18 @@ class WorksheetTest(GspreadTest):
 
     def test_acell(self):
         cell = self.sheet.acell('A1')
-        self.assertTrue(isinstance(cell, gspread.base.BaseCell))
+        self.assertTrue(isinstance(cell, gspread.models.Cell))
 
     def test_cell(self):
         cell = self.sheet.cell(1, 1)
-        self.assertTrue(isinstance(cell, gspread.base.BaseCell))
+        self.assertTrue(isinstance(cell, gspread.models.Cell))
 
     def test_range(self):
         cell_range1 = self.sheet.range('A1:A5')
         cell_range2 = self.sheet.range(1, 1, 5, 1)
         for c1, c2 in zip(cell_range1, cell_range2):
-            self.assertTrue(isinstance(c1, gspread.base.BaseCell))
-            self.assertTrue(isinstance(c2, gspread.base.BaseCell))
+            self.assertTrue(isinstance(c1, gspread.models.Cell))
+            self.assertTrue(isinstance(c2, gspread.models.Cell))
             self.assertTrue(c1.col == c2.col)
             self.assertTrue(c1.row == c2.row)
             self.assertTrue(c1.value == c2.value)

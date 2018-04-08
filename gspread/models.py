@@ -13,8 +13,6 @@ try:
 except:
     from urllib import quote
 
-from .base import BaseCell
-
 from .exceptions import WorksheetNotFound, CellNotFound
 
 from .utils import (
@@ -827,7 +825,7 @@ class Worksheet(object):
         )
 
 
-class Cell(BaseCell):
+class Cell(object):
     """An instance of this class represents a single cell
     in a :class:`worksheet <gspread.v4.models.Worksheet>`.
 
@@ -839,6 +837,22 @@ class Cell(BaseCell):
 
         #: Value of the cell.
         self.value = value
+
+    def __repr__(self):
+        return '<%s R%sC%s %s>' % (self.__class__.__name__,
+                                   self.row,
+                                   self.col,
+                                   repr(self.value))
+
+    @property
+    def row(self):
+        """Row number of the cell."""
+        return self._row
+
+    @property
+    def col(self):
+        """Column number of the cell."""
+        return self._col
 
     @property
     def numeric_value(self):
