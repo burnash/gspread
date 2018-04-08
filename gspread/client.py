@@ -12,7 +12,7 @@ Google API.
 import requests
 
 from .utils import finditem
-from .base import BaseClient
+from .utils import extract_id_from_url
 
 from .exceptions import SpreadsheetNotFound
 from .exceptions import APIError
@@ -24,7 +24,7 @@ from .urls import (
 )
 
 
-class Client(BaseClient):
+class Client(object):
     """An instance of this class communicates with Google API.
 
     :param auth: An OAuth2 credential object. Credential objects
@@ -141,6 +141,22 @@ class Client(BaseClient):
 
         """
         return Spreadsheet(self, {'id': key})
+
+    def open_by_url(self, url):
+        """Opens a spreadsheet specified by `url`.
+
+        :param url: URL of a spreadsheet as it appears in a browser.
+
+        :returns: a :class:`~gspread.Spreadsheet` instance.
+
+        :raises gspread.SpreadsheetNotFound: if no spreadsheet with
+                                             specified `url` is found.
+
+        >>> c = gspread.authorize(credentials)
+        >>> c.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
+
+        """
+        return self.open_by_key(extract_id_from_url(url))
 
     def openall(self, title=None):
         """Opens all available spreadsheets.

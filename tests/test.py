@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+
 import os
 import re
 import random
 import unittest
 import itertools
 import uuid
+
 try:
     import ConfigParser
 except ImportError:
@@ -117,7 +119,7 @@ class GspreadTest(unittest.TestCase):
             raise Exception(msg % e.filename)
 
     def setUp(self):
-        self.assertTrue(isinstance(self.gc, gspread.base.BaseClient))
+        self.assertTrue(isinstance(self.gc, gspread.client.Client))
 
 
 class ClientTest(GspreadTest):
