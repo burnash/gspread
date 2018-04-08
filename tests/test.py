@@ -129,7 +129,7 @@ class ClientTest(GspreadTest):
     def test_open(self):
         title = self.config.get('Spreadsheet', 'title')
         spreadsheet = self.gc.open(title)
-        self.assertTrue(isinstance(spreadsheet, gspread.base.BaseSpreadsheet))
+        self.assertTrue(isinstance(spreadsheet, gspread.models.Spreadsheet))
 
     def test_no_found_exeption(self):
         noexistent_title = "Please don't use this phrase as a name of a sheet."
@@ -140,23 +140,23 @@ class ClientTest(GspreadTest):
     def test_open_by_key(self):
         key = self.config.get('Spreadsheet', 'key')
         spreadsheet = self.gc.open_by_key(key)
-        self.assertTrue(isinstance(spreadsheet, gspread.base.BaseSpreadsheet))
+        self.assertTrue(isinstance(spreadsheet, gspread.models.Spreadsheet))
 
     def test_open_by_url(self):
         url = self.config.get('Spreadsheet', 'url')
         spreadsheet = self.gc.open_by_url(url)
-        self.assertTrue(isinstance(spreadsheet, gspread.base.BaseSpreadsheet))
+        self.assertTrue(isinstance(spreadsheet, gspread.models.Spreadsheet))
 
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
         for s in spreadsheet_list:
-            self.assertTrue(isinstance(s, gspread.base.BaseSpreadsheet))
+            self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
 
     def test_create(self):
         title = gen_value('TestSpreadsheet')
         new_spreadsheet = self.gc.create(title)
         self.assertTrue(
-            isinstance(new_spreadsheet, gspread.base.BaseSpreadsheet))
+            isinstance(new_spreadsheet, gspread.models.Spreadsheet))
 
     def test_import_csv(self):
         title = gen_value('TestImportSpreadsheet')
