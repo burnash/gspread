@@ -13,19 +13,19 @@ try:
 except:
     from urllib import quote
 
-from ..base import BaseCell, BaseSpreadsheet
+from .base import BaseCell, BaseSpreadsheet
 
-from ..exceptions import WorksheetNotFound, CellNotFound
+from .exceptions import WorksheetNotFound, CellNotFound
 
-from ..utils import (
+from .utils import (
     a1_to_rowcol,
     rowcol_to_a1,
     cast_to_a1_notation,
     numericise_all,
-    finditem
+    finditem,
+    fill_gaps,
+    cell_list_to_rect
 )
-
-from .utils import fill_gaps, cell_list_to_rect
 
 from .urls import (
     SPREADSHEET_URL,
