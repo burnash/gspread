@@ -13,12 +13,6 @@ __version__ = '2.1.1'
 __author__ = 'Anton Burnashev'
 
 
-try:
-    from urllib import urlencode
-except ImportError:
-    from urllib.parse import urlencode
-
-
 from .client import Client
 from .models import Spreadsheet, Worksheet, Cell
 from .exceptions import (GSpreadException,
