@@ -15,10 +15,15 @@ __author__ = 'Anton Burnashev'
 
 from .client import Client
 from .models import Spreadsheet, Worksheet, Cell
-from .exceptions import (GSpreadException,
-                         SpreadsheetNotFound, NoValidUrlKeyFound,
-                         IncorrectCellLabel, WorksheetNotFound,
-                         CellNotFound)
+
+from .exceptions import (
+    GSpreadException,
+    SpreadsheetNotFound,
+    NoValidUrlKeyFound,
+    IncorrectCellLabel,
+    WorksheetNotFound,
+    CellNotFound
+)
 
 
 def authorize(credentials, client_class=Client):
