@@ -2,6 +2,14 @@ Release History
 ===============
 
 
+3.0.0 (2018-04-12)
+------------------
+
+* This version drops Google Sheets API v3 support.
+    - API v4 was the default backend since version 2.0.0.
+    - All v4-related code has been moved from `gspread.v4` module to `gspread` module.
+
+
 2.1.1 (2018-04-08)
 ------------------
 
