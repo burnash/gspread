@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+
 import os
 import re
 import random
 import unittest
 import itertools
 import uuid
+
 try:
     import ConfigParser
 except ImportError:
@@ -117,7 +119,7 @@ class GspreadTest(unittest.TestCase):
             raise Exception(msg % e.filename)
 
     def setUp(self):
-        self.assertTrue(isinstance(self.gc, gspread.base.BaseClient))
+        self.assertTrue(isinstance(self.gc, gspread.client.Client))
 
 
 class ClientTest(GspreadTest):
@@ -127,7 +129,7 @@ class ClientTest(GspreadTest):
     def test_open(self):
         title = self.config.get('Spreadsheet', 'title')
         spreadsheet = self.gc.open(title)
-        self.assertTrue(isinstance(spreadsheet, gspread.base.BaseSpreadsheet))
+        self.assertTrue(isinstance(spreadsheet, gspread.models.Spreadsheet))
 
     def test_no_found_exeption(self):
         noexistent_title = "Please don't use this phrase as a name of a sheet."
@@ -138,23 +140,23 @@ class ClientTest(GspreadTest):
     def test_open_by_key(self):
         key = self.config.get('Spreadsheet', 'key')
         spreadsheet = self.gc.open_by_key(key)
-        self.assertTrue(isinstance(spreadsheet, gspread.base.BaseSpreadsheet))
+        self.assertTrue(isinstance(spreadsheet, gspread.models.Spreadsheet))
 
     def test_open_by_url(self):
         url = self.config.get('Spreadsheet', 'url')
         spreadsheet = self.gc.open_by_url(url)
-        self.assertTrue(isinstance(spreadsheet, gspread.base.BaseSpreadsheet))
+        self.assertTrue(isinstance(spreadsheet, gspread.models.Spreadsheet))
 
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
         for s in spreadsheet_list:
-            self.assertTrue(isinstance(s, gspread.base.BaseSpreadsheet))
+            self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
 
     def test_create(self):
         title = gen_value('TestSpreadsheet')
         new_spreadsheet = self.gc.create(title)
         self.assertTrue(
-            isinstance(new_spreadsheet, gspread.base.BaseSpreadsheet))
+            isinstance(new_spreadsheet, gspread.models.Spreadsheet))
 
     def test_import_csv(self):
         title = gen_value('TestImportSpreadsheet')
@@ -196,25 +198,16 @@ class SpreadsheetTest(GspreadTest):
 
     def test_sheet1(self):
         sheet1 = self.spreadsheet.sheet1
-        self.assertTrue(
-            isinstance(sheet1, gspread.Worksheet) or
-            isinstance(sheet1, gspread.v4.models.Worksheet)
-        )
+        self.assertTrue(isinstance(sheet1, gspread.Worksheet))
 
     def test_get_worksheet(self):
         sheet1 = self.spreadsheet.get_worksheet(0)
-        self.assertTrue(
-            isinstance(sheet1, gspread.Worksheet) or
-            isinstance(sheet1, gspread.v4.models.Worksheet)
-        )
+        self.assertTrue(isinstance(sheet1, gspread.Worksheet))
 
     def test_worksheet(self):
         sheet_title = self.config.get('Spreadsheet', 'sheet1_title')
         sheet = self.spreadsheet.worksheet(sheet_title)
-        self.assertTrue(
-            isinstance(sheet, gspread.Worksheet) or
-            isinstance(sheet, gspread.v4.models.Worksheet)
-        )
+        self.assertTrue(isinstance(sheet, gspread.Worksheet))
 
     def test_worksheet_iteration(self):
         self.assertEqual(
@@ -246,18 +239,18 @@ class WorksheetTest(GspreadTest):
 
     def test_acell(self):
         cell = self.sheet.acell('A1')
-        self.assertTrue(isinstance(cell, gspread.base.BaseCell))
+        self.assertTrue(isinstance(cell, gspread.models.Cell))
 
     def test_cell(self):
         cell = self.sheet.cell(1, 1)
-        self.assertTrue(isinstance(cell, gspread.base.BaseCell))
+        self.assertTrue(isinstance(cell, gspread.models.Cell))
 
     def test_range(self):
         cell_range1 = self.sheet.range('A1:A5')
         cell_range2 = self.sheet.range(1, 1, 5, 1)
         for c1, c2 in zip(cell_range1, cell_range2):
-            self.assertTrue(isinstance(c1, gspread.base.BaseCell))
-            self.assertTrue(isinstance(c2, gspread.base.BaseCell))
+            self.assertTrue(isinstance(c1, gspread.models.Cell))
+            self.assertTrue(isinstance(c2, gspread.models.Cell))
             self.assertTrue(c1.col == c2.col)
             self.assertTrue(c1.row == c2.row)
             self.assertTrue(c1.value == c2.value)

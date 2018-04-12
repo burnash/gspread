@@ -4,87 +4,17 @@
 gspread.urls
 ~~~~~~~~~~~~
 
-This module is Google API url patterns storage.
+Google API urls.
 
 """
 
-import re
+SPREADSHEETS_API_V4_BASE_URL = 'https://sheets.googleapis.com/v4/spreadsheets'
+SPREADSHEET_URL = SPREADSHEETS_API_V4_BASE_URL + '/%s'
+SPREADSHEET_BATCH_UPDATE_URL = SPREADSHEETS_API_V4_BASE_URL + '/%s:batchUpdate'
+SPREADSHEET_VALUES_URL = SPREADSHEETS_API_V4_BASE_URL + '/%s/values/%s'
+SPREADSHEET_VALUES_APPEND_URL = SPREADSHEET_VALUES_URL + ':append'
+SPREADSHEET_VALUES_CLEAR_URL = SPREADSHEET_VALUES_URL + ':clear'
 
-from .exceptions import UnsupportedFeedTypeError, UrlParameterMissing
-
-
-SPREADSHEETS_API_V3_URL = 'https://spreadsheets.google.com/feeds/'
 DRIVE_FILES_API_V2_URL = 'https://www.googleapis.com/drive/v2/files'
 DRIVE_FILES_UPLOAD_API_V2_URL = ('https://www.googleapis.com'
                                  '/upload/drive/v2/files')
-
-# v3
-# General pattern
-# /feeds/feedType/key/worksheetId/visibility/projection
-#
-# Spreadsheet metafeed
-# /feeds/spreadsheets/private/full
-# /feeds/spreadsheets/private/full/key
-#
-# Worksheet
-# /feeds/worksheets/key/visibility/projection
-# /feeds/worksheets/key/visibility/projection/worksheetId
-#
-# Cell-based feed
-# /feeds/cells/key/worksheetId/visibility/projection
-# /feeds/cells/key/worksheetId/visibility/projection/cellId
-
-_feed_types = {'spreadsheets': 'spreadsheets/{visibility}/{projection}',
-               'worksheets': 'worksheets/{spreadsheet_id}/{visibility}/{projection}',
-               'worksheet': 'worksheets/{spreadsheet_id}/{visibility}/{projection}/{worksheet_id}/{version}',
-               'cells': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}',
-               'cells_batch': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}/batch',
-               'cells_cell_id': 'cells/{spreadsheet_id}/{worksheet_id}/{visibility}/{projection}/{cell_id}'}
-
-_fields_cache = {}
-
-
-_field_re = re.compile(r'{(\w+)}')
-
-
-def _extract_fields(patternstr):
-    return _field_re.findall(patternstr)
-
-
-def construct_url(feedtype=None,
-                  obj=None,
-                  visibility='private',
-                  projection='full',
-                  spreadsheet_id=None,
-                  worksheet_id=None,
-                  cell_id=None,
-                  worksheet_version=None):
-    """Constructs URL to be used for API request.
-    """
-    try:
-        urlpattern = _feed_types[feedtype]
-        fields = _fields_cache.get(feedtype)
-        if fields is None:
-            fields = _extract_fields(urlpattern)
-            _fields_cache[feedtype] = fields
-    except KeyError as e:
-        raise UnsupportedFeedTypeError(e)
-
-    obj_fields = obj.get_id_fields() if obj is not None else {}
-
-    params = {'visibility': visibility,
-              'projection': projection,
-              'spreadsheet_id': (spreadsheet_id if spreadsheet_id
-                                 else obj_fields.get('spreadsheet_id')),
-              'worksheet_id': (worksheet_id if worksheet_id
-                               else obj_fields.get('worksheet_id')),
-              'cell_id': cell_id,
-              'version': worksheet_version}
-
-    params = dict((k, v) for k, v in params.items() if v is not None)
-
-    try:
-        return '%s%s' % (SPREADSHEETS_API_V3_URL,
-                         urlpattern.format(**params))
-    except KeyError as e:
-        raise UrlParameterMissing(e)
