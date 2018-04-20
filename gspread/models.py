@@ -333,6 +333,21 @@ class Worksheet(object):
         """Number of columns."""
         return self._properties['gridProperties']['columnCount']
 
+    @property
+    def frozen_row_count(self):
+        """Number of rows."""
+        return self._properties['gridProperties']['frozenRowCount']
+
+    @property
+    def frozen_col_count(self):
+        """Number of rows."""
+        return self._properties['gridProperties']['frozenColumnCount']
+
+    @property
+    def hide_gridlines(self):
+        """Number of rows."""
+        return self._properties['gridProperties']['hideGridlines']
+
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
         """Returns an instance of a :class:`gspread.models.Cell`.
 
@@ -387,6 +402,36 @@ class Worksheet(object):
             value = ''
 
         return Cell(row, col, value)
+
+    def format_range(self, name, cell_format):
+        """Update a range of :class:`Cell` objects to have the specified cell formatting.
+
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+        :param cell_format: A models.CellFormat object.
+        """
+
+        range_label = '%s!%s' % (self.title, name)
+
+        start, end = name.split(':')
+        (row_offset, column_offset) = a1_to_rowcol(start)
+        (last_row, last_column) = a1_to_rowcol(end)
+
+        body = {
+            'requests': [{
+                'repeatCell': {
+                    'range': {
+                        'sheetId': self.id,
+                        'startRowIndex': row_offset-1,
+                        'endRowIndex': last_row,
+                        'startColumnIndex': column_offset-1,
+                        'endColumnIndex': last_column
+                    },
+                    'cell': { 'userEnteredFormat': cell_format.to_props() },
+                    'fields': ",".join(cell_format.affected_fields('userEnteredFormat'))
+                }
+            }]
+        }
+        return self.spreadsheet.batch_update(body)
 
     @cast_to_a1_notation
     def range(self, name):
@@ -612,7 +657,7 @@ class Worksheet(object):
 
         return data
 
-    def resize(self, rows=None, cols=None):
+    def resize(self, rows=None, cols=None, frozen_rows=None, frozen_cols=None):
         """Resizes the worksheet.
 
         :param rows: New rows number.
@@ -626,8 +671,25 @@ class Worksheet(object):
         if cols is not None:
             grid_properties['columnCount'] = cols
 
+        if frozen_rows is not None:
+            grid_properties['frozenRowCount'] = frozen_rows
+
+        if frozen_cols is not None:
+            grid_properties['frozenColumnCount'] = frozen_cols
+
         if not grid_properties:
-            raise TypeError("Either 'rows' or 'cols' should be specified.")
+            raise TypeError("Either 'rows', 'cols', 'frozen_rows', 'frozen_cols' should be specified.")
+
+        return self.update_grid_properties(grid_properties)
+
+    def update_grid_properties(self, grid_properties):
+        """Updates gridProperties for the worksheet.
+
+        :param grid_properties: dict of gridProperties to change.
+        """
+
+        if not grid_properties:
+            raise TypeError("grid_properties must not be empty.")
 
         fields = ','.join(
             'gridProperties/%s' % p for p in grid_properties.keys()
