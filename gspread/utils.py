@@ -229,6 +229,19 @@ def cell_list_to_rect(cell_list):
 
     return [[rows[i][j] for j in rect_cols] for i in rect_rows]
 
+def range_to_gridrange_object(range, worksheet_id):
+    parts = range.split(':')
+    start = parts[0]
+    end = parts[1] if len(parts) > 1 else ''
+    (row_offset, column_offset) = a1_to_rowcol(start)
+    (last_row, last_column) = a1_to_rowcol(end) if end else (row_offset, column_offset)
+    return {
+        'sheetId': worksheet_id,
+        'startRowIndex': row_offset-1,
+        'endRowIndex': last_row,
+        'startColumnIndex': column_offset-1,
+        'endColumnIndex': last_column
+    }
 
 if __name__ == '__main__':
     import doctest

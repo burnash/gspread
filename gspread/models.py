@@ -22,7 +22,8 @@ from .utils import (
     numericise_all,
     finditem,
     fill_gaps,
-    cell_list_to_rect
+    cell_list_to_rect,
+    range_to_gridrange_object
 )
 
 from .urls import (
@@ -410,22 +411,10 @@ class Worksheet(object):
         :param cell_format: A models.CellFormat object.
         """
 
-        range_label = '%s!%s' % (self.title, name)
-
-        start, end = name.split(':')
-        (row_offset, column_offset) = a1_to_rowcol(start)
-        (last_row, last_column) = a1_to_rowcol(end)
-
         body = {
             'requests': [{
                 'repeatCell': {
-                    'range': {
-                        'sheetId': self.id,
-                        'startRowIndex': row_offset-1,
-                        'endRowIndex': last_row,
-                        'startColumnIndex': column_offset-1,
-                        'endColumnIndex': last_column
-                    },
+                    'range': range_to_gridrange_object(name, self.id),
                     'cell': { 'userEnteredFormat': cell_format.to_props() },
                     'fields': ",".join(cell_format.affected_fields('userEnteredFormat'))
                 }
