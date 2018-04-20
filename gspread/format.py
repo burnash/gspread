@@ -28,11 +28,45 @@ def _extract_fieldrefs(name, value, prefix):
         return []
 
 class CellFormatComponent(object):
-    pass
+    _FIELDS = ()
+
+    def __repr__(self):
+        return '<' + self.__class__.__name__ + ' ' + str(self) + '>'
+
+    def __str__(self):
+        p = []
+        for a in self._FIELDS:
+            v = getattr(self, a)
+            if v is not None:
+                if isinstance(v, CellFormatComponent):
+                    p.append( (a, "(" + str(v) + ")") )
+                else:
+                    p.append( (a, str(v)) )
+        return ";".join(["%s=%s" % (k, v) for k, v in p])
+
+    def to_props(self):
+        p = {}
+        for a in self._FIELDS:
+            if getattr(self, a) is not None:
+                p[a] = _extract_props(getattr(self, a))
+        return p
+
+    def affected_fields(self, prefix):
+        fields = []
+        for a in self._FIELDS:
+            if getattr(self, a) is not None:
+                fields.extend( _extract_fieldrefs(a, getattr(self, a), prefix) )
+        return fields
 
 class CellFormat(CellFormatComponent):
+    _FIELDS = (
+        'numberFormat', 'backgroundColor', 'borders', 'padding', 
+        'horizontalAlignment', 'verticalAlignment', 'wrapStrategy', 
+        'textDirection', 'textFormat', 'hyperlinkDisplayType', 'textRotation'
+    )
+
     def __init__(self, 
-        number_format=None,
+        numberFormat=None,
         backgroundColor=None,
         borders=None,
         padding=None,
@@ -44,7 +78,7 @@ class CellFormat(CellFormatComponent):
         hyperlinkDisplayType=None,
         textRotation=None
         ):
-        self.number_format = number_format
+        self.numberFormat = numberFormat
         self.backgroundColor = backgroundColor
         self.borders = borders
         self.padding = padding
@@ -56,28 +90,9 @@ class CellFormat(CellFormatComponent):
         self.hyperlinkDisplayType = _parse_string_enum('hyperlinkDisplayType', hyperlinkDisplayType, {'LINKED', 'PLAIN_TEXT'})
         self.textRotation = textRotation
 
-    def to_props(self):
-        p = {}
-        for a in (
-            'number_format', 'backgroundColor', 'borders', 'padding', 
-            'horizontalAlignment', 'verticalAlignment', 'wrapStrategy', 
-            'textDirection', 'textFormat', 'hyperlinkDisplayType', 'textRotation'):
-            if getattr(self, a) is not None:
-                p[a] = _extract_props(getattr(self, a))
-        return p
-
-    def affected_fields(self, prefix):
-        fields = []
-        for a in (
-            'number_format', 'backgroundColor', 'borders', 'padding', 
-            'horizontalAlignment', 'verticalAlignment', 'wrapStrategy', 
-            'textDirection', 'textFormat', 'hyperlinkDisplayType', 'textRotation'):
-            if getattr(self, a) is not None:
-                fields.extend( _extract_fieldrefs(a, getattr(self, a), prefix) )
-        return fields
-
-
 class NumberFormat(CellFormatComponent):
+    _FIELDS = ('type', 'pattern')
+
     TYPES = {'TEXT', 'NUMBER', 'PERCENT', 'CURRENCY', 'DATE', 'TIME', 'DATE_TIME', 'SCIENTIFIC'}
 
     def __init__(self, type, pattern=None):
@@ -86,60 +101,27 @@ class NumberFormat(CellFormatComponent):
         self.type = type.upper()
         self.pattern = pattern
 
-    def to_props(self):
-        p = { 'type': self.type }
-        if self.pattern:
-            p['pattern'] = self.pattern
-        return p
-
-    def affected_fields(self, prefix):
-        fields = []
-        fields.extend( _extract_fieldrefs('type', self.type, prefix) )
-        fields.extend( _extract_fieldrefs('pattern', self.pattern, prefix) )
-        return fields
-
 class Color(CellFormatComponent):
+    _FIELDS = ('red', 'green', 'blue', 'alpha')
+
     def __init__(self, red, green, blue, alpha=None):
         self.red = red
         self.green = green
         self.blue = blue
         self.alpha = alpha
 
-    def to_props(self):
-        p = { 'red': self.red, 'blue': self.blue, 'green': self.green }
-        if self.alpha is not None:
-            p['alpha'] = self.alpha
-        return p
-
-    def affected_fields(self, prefix):
-        fields = []
-        for a in ('red', 'green', 'blue', 'alpha'):
-            if getattr(self, a) is not None:
-                fields.extend( _extract_fieldrefs(a, getattr(self, a), prefix) )
-        return fields
-
 class Borders(CellFormatComponent):
+    _FIELDS = ('top', 'bottom', 'left', 'right')
+
     def __init__(self, top=None, bottom=None, left=None, right=None):
         self.top = top
         self.bottom = bottom
         self.left = left
         self.right = right
 
-    def to_props(self):
-        p = {}
-        for a in ('top', 'bottom', 'left', 'right'):
-            if getattr(self, a) is not None:
-                p[a] = _extract_props(getattr(self, a))
-        return p
-
-    def affected_fields(self, prefix):
-        fields = []
-        for a in ('top', 'bottom', 'left', 'right'):
-            if getattr(self, a) is not None:
-                fields.extend( _extract_fieldrefs(a, getattr(self, a), prefix) )
-        return fields
-
 class Border(CellFormatComponent):
+    _FIELDS = ('style', 'color')
+
     STYLES = {'DOTTED', 'DASHED', 'SOLID', 'SOLID_MEDIUM', 'SOLID_THICK', 'NONE', 'DOUBLE'}
 
     def __init__(self, style, color):
@@ -148,41 +130,18 @@ class Border(CellFormatComponent):
         self.style = style.upper()
         self.color = color
 
-    def to_props(self):
-        p = { 'style': self.style }
-        if self.color:
-            p['color'] = _extract_props(self.color)
-        return p
-
-    def affected_fields(self, prefix):
-        fields = []
-        for a in ('style', 'color'):
-            if getattr(self, a) is not None:
-                fields.extend( _extract_fieldrefs(a, getattr(self, a), prefix) )
-        return fields
-
 class Padding(CellFormatComponent):
+    _FIELDS = ('top', 'right', 'bottom', 'left')
+
     def __init__(self, top=None, right=None, bottom=None, left=None):
         self.top = top
         self.right = right
         self.bottom = bottom
         self.left = left
 
-    def to_props(self):
-        p = {}
-        for a in ('top', 'right', 'bottom', 'left'):
-            if getattr(self, a) is not None:
-                p[a] = getattr(self, a)
-        return p
-
-    def affected_fields(self, prefix):
-        fields = []
-        for a in ('top', 'right', 'bottom', 'left'):
-            if getattr(self, a) is not None:
-                fields.extend( _extract_fieldrefs(a, getattr(self, a), prefix) )
-        return fields
-
 class TextFormat(CellFormatComponent):
+    _FIELDS = ('foregroundColor', 'fontFamily', 'fontSize', 'bold', 'italic', 'strikethrough', 'underline')
+
     def __init__(self, 
         foregroundColor=None, 
         fontFamily=None, 
@@ -200,36 +159,14 @@ class TextFormat(CellFormatComponent):
         self.strikethrough = strikethrough
         self.underline = underline
 
-    def to_props(self):
-        p = {}
-        for a in ('foregroundColor', 'fontFamily', 'fontSize', 'bold', 'italic', 'strikethrough', 'underline'):
-            if getattr(self, a) is not None:
-                p[a] = _extract_props(getattr(self, a))
-        return p
-
-    def affected_fields(self, prefix):
-        fields = []
-        for a in ('foregroundColor', 'fontFamily', 'fontSize', 'bold', 'italic', 'strikethrough', 'underline'):
-            if getattr(self, a) is not None:
-                fields.extend( _extract_fieldrefs(a, getattr(self, a), prefix) )
-        return fields
-
 class TextRotation(CellFormatComponent):
+    _FIELDS = ('angle', 'vertical')
+
     def __init__(self, angle=None, vertical=None):
         if len([expr for expr in (angle is not None, vertical is not None) if expr]) != 1:
             raise ValueError("Either angle or vertical must be specified, not both or neither")
         self.angle = angle
         self.vertical = vertical
-
-    def to_props(self):
-        return { 'angle': self.angle } if self.angle is not None else { 'vertical': self.vertical }
-
-    def affected_fields(self, prefix):
-        fields = []
-        for a in ('angle', 'vertical'):
-            if getattr(self, a) is not None:
-                fields.extend( _extract_fieldrefs(a, getattr(self, a), prefix) )
-        return fields
 
 for _c in [ obj for name, obj in locals().items() if isinstance(obj, type) and issubclass(obj, CellFormatComponent) ]:
     locals()[_underlower(_c.__name__)] = _c
