@@ -105,6 +105,20 @@ class UtilsTest(unittest.TestCase):
         gid = 'ogsrar0'
         self.assertEqual(utils.wid_to_gid(gid), '1015761654')
 
+    def test_numericise(self):
+        self.assertEqual(utils.numericise('faa'), 'faa')
+        self.assertEqual(utils.numericise('3'), 3)
+        self.assertEqual(utils.numericise('3_2'), '3_2')
+        self.assertEqual(utils.numericise('3_2', allow_underscores_in_numeric_literals=False), '3_2')
+        self.assertEqual(utils.numericise('3_2', allow_underscores_in_numeric_literals=True), 32)
+        self.assertEqual(utils.numericise('3.1'), 3.1)
+        self.assertEqual(utils.numericise('', empty2zero=True), 0)
+        self.assertEqual(utils.numericise('', empty2zero=False), '')
+        self.assertEqual(utils.numericise('', default_blank=None), None)
+        self.assertEqual(utils.numericise('', default_blank='foo'), 'foo')
+        self.assertEqual(utils.numericise(''), '')
+        self.assertEqual(utils.numericise(None), None)
+
 
 class GspreadTest(unittest.TestCase):
 
