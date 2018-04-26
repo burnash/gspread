@@ -666,7 +666,9 @@ class Worksheet(object):
             }]
         }
 
-        return self.spreadsheet.batch_update(body)
+        response = self.spreadsheet.batch_update(body)
+        self._properties['title'] = title
+        return response
 
     def add_rows(self, rows):
         """Adds rows to worksheet.
