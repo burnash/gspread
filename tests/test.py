@@ -350,6 +350,22 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(grid_props['rowCount'], new_rows)
         self.assertEqual(grid_props['columnCount'], new_cols)
 
+        frozen_rows = 1
+        frozen_cols = 1
+        self.sheet.resize(frozen_rows=frozen_rows, frozen_cols=frozen_cols)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['frozenRowCount'], frozen_rows)
+        self.assertEqual(grid_props['frozenColumnCount'], frozen_cols)
+
+        self.sheet.resize(frozen_rows=0, frozen_cols=0)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['frozenRowCount'], 0)
+        self.assertEqual(grid_props['frozenColumnCount'], 0)
+
     def test_find(self):
         value = gen_value()
 
