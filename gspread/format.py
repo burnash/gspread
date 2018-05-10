@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 
 def _ul_repl(m):
@@ -167,6 +169,8 @@ class TextRotation(CellFormatComponent):
             raise ValueError("Either angle or vertical must be specified, not both or neither")
         self.angle = angle
         self.vertical = vertical
+
+# provide camelCase aliases for all component classes.
 
 for _c in [ obj for name, obj in locals().items() if isinstance(obj, type) and issubclass(obj, CellFormatComponent) ]:
     locals()[_underlower(_c.__name__)] = _c

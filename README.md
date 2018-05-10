@@ -172,6 +172,32 @@ for cell in cell_list:
 worksheet.update_cells(cell_list)
 ```
 
+### Formatting Cells
+
+Basic formatting of a range of cells is supported. All basic formatting components 
+of the v4 Sheets API's `CellFormat` are present as classes in the `gspread.format` module, 
+available both by `InitialCaps` names and `camelCase` names: for example, the background color 
+class is `BackgroundColor` but is also available as `backgroundColor`, while the color class is `Color`
+but available also as `color`. Attributes of formatting components are best specified as 
+keyword arguments using `camelCase` naming, e.g. `backgroundColor=...`. Complex formats 
+may be composed easily, by nesting the calls to the classes.  
+
+See [the CellFormat page of the Sheets API documentation](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#CellFormat) 
+to learn more about each formatting component.
+
+```python
+
+from gspread.format import *
+
+fmt = cellFormat(
+    backgroundColor=color(1, 0.9, 0.9),
+    textFormat=textFormat(bold=True, foregroundColor=color(1, 0, 1)),
+    horizontalAlignment='CENTER'
+    )
+
+ws.format_range('A1:J1', fmt)
+```
+
 ## Installation
 
 ### Requirements
