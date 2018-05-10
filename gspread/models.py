@@ -647,10 +647,15 @@ class Worksheet(object):
         return data
 
     def resize(self, rows=None, cols=None, frozen_rows=None, frozen_cols=None):
-        """Resizes the worksheet.
+        """Resizes the worksheet. Only the arguments provided will be
+        applied to the worksheet; for example, `resize(rows=1000)` will 
+        update only the number of rows, while `resize(frozen_rows=1)` will
+        update only the number of frozen rows.
 
-        :param rows: New rows number.
-        :param cols: New columns number.
+        :param rows: Optionally, the new number of rows in the worksheet.
+        :param cols: Optionally, the new number of columns in the worksheet.
+        :param frozen_rows: Optionally, the number of rows to "freeze" on the worksheet.
+        :param frozen_cols: Optionally, the number of columns to "freeze" on the worksheet.
         """
         grid_properties = {}
 
