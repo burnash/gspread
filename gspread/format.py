@@ -2,20 +2,13 @@
 
 import re
 
-def convert_to_cell_format(value):
-    """
-    :param: value: the dictionary object parsed from the JSON body of an API response
-    :returns: a CellFormat object
-    """
-    return _json_to_component('cellFormat', value)
-
-def _json_to_component(class_alias, value):
+def _props_to_component(class_alias, value):
     if class_alias not in _CLASSES:
         raise ValueError("No format component named '%s'" % class_alias)
     kwargs = {}
     for k, v in value.items():
         if isinstance(v, dict):
-            v = _json_to_component(k, v)
+            v = _props_to_component(k, v)
         kwargs[k] = v
     return _CLASSES[class_alias](**kwargs)
 
@@ -24,7 +17,6 @@ def _ul_repl(m):
 
 def _underlower(name):
     return name[0].lower() + name[1:]
-    #return name[0].lower() + re.sub(r'([A-Z])', _ul_repl, name[1:])
 
 def _parse_string_enum(name, value, set_of_values, required=False):
     if value is None and required:
@@ -48,6 +40,10 @@ def _extract_fieldrefs(name, value, prefix):
 
 class CellFormatComponent(object):
     _FIELDS = ()
+
+    @classmethod
+    def from_props(cls, props):
+        return _props_to_component(_underlower(cls.__name__), props)
 
     def __repr__(self):
         return '<' + self.__class__.__name__ + ' ' + str(self) + '>'
