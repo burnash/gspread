@@ -16,6 +16,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 import gspread
 from gspread import utils
+from gspread.format import *
 
 try:
     unicode
@@ -225,6 +226,13 @@ class WorksheetTest(GspreadTest):
         super(WorksheetTest, cls).setUpClass()
         title = cls.config.get('Spreadsheet', 'title')
         cls.spreadsheet = cls.gc.open(title)
+        try:
+            test_sheet = cls.spreadsheet.worksheet('wksht_test')
+            if test_sheet:
+                # somehow left over from interrupted test, remove.
+                cls.spreadsheet.del_worksheet(test_sheet)
+        except gspread.exceptions.WorksheetNotFound:
+            pass # expected
 
     def setUp(self):
         super(WorksheetTest, self).setUp()
@@ -363,8 +371,8 @@ class WorksheetTest(GspreadTest):
 
         grid_props = get_grid_props()
 
-        self.assertEqual(grid_props['frozenRowCount'], 0)
-        self.assertEqual(grid_props['frozenColumnCount'], 0)
+        self.assertEqual(grid_props.get('frozenRowCount'), None)
+        self.assertEqual(grid_props.get('frozenColumnCount'), None)
 
     def test_find(self):
         value = gen_value()
@@ -570,6 +578,24 @@ class WorksheetTest(GspreadTest):
 
         self.sheet.clear()
         self.assertEqual(self.sheet.get_all_values(), [])
+
+    def test_format_range(self):
+        rows = [["", "", "", ""],
+                ["", "", "", ""],
+                ["A1", "B1", "", "D1"],
+                [1, "b2", 1.45, ""],
+                ["", "", "", ""],
+                ["A4", 0.4, "", 4]]
+
+        cell_list = self.sheet.range('A1:D6')
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        fmt = cellFormat(textFormat=textFormat(bold=True))
+        self.sheet.format_range('A1:D6', fmt)
+        md = self.spreadsheet.fetch_sheet_metadata({'includeGridData': True, 'ranges': ['{}!A1'.format(self.sheet.title)]})
+        self.assertEqual(md['sheets'][0]['data'][0]['rowData'][0]['values'][0]['userEnteredFormat']['textFormat']['bold'], True)
 
 
 class WorksheetDeleteTest(GspreadTest):

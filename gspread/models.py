@@ -116,8 +116,9 @@ class Spreadsheet(object):
         r = self.client.request('put', url, params=params, json=body)
         return r.json()
 
-    def fetch_sheet_metadata(self):
-        params = {'includeGridData': 'false'}
+    def fetch_sheet_metadata(self, params=None):
+        if params is None:
+            params = {'includeGridData': 'false'}
 
         url = SPREADSHEET_URL % self.id
 
