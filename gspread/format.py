@@ -2,6 +2,23 @@
 
 import re
 
+def convert_to_cell_format(value):
+    """
+    :param: value: the dictionary object parsed from the JSON body of an API response
+    :returns: a CellFormat object
+    """
+    return _json_to_component('cellFormat', value)
+
+def _json_to_component(class_alias, value):
+    if class_alias not in _CLASSES:
+        raise ValueError("No format component named '%s'" % class_alias)
+    kwargs = {}
+    for k, v in value.items():
+        if isinstance(v, dict):
+            v = _json_to_component(k, v)
+        kwargs[k] = v
+    return _CLASSES[class_alias](**kwargs)
+
 def _ul_repl(m):
     return '_' + m.group(1).lower()
 
@@ -172,6 +189,9 @@ class TextRotation(CellFormatComponent):
 
 # provide camelCase aliases for all component classes.
 
+_CLASSES = {}
 for _c in [ obj for name, obj in locals().items() if isinstance(obj, type) and issubclass(obj, CellFormatComponent) ]:
-    locals()[_underlower(_c.__name__)] = _c
+    _k = _underlower(_c.__name__)
+    _CLASSES[_k] = _c
+    locals()[_k] = _c
 

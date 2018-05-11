@@ -595,8 +595,8 @@ class WorksheetTest(GspreadTest):
         fmt = cellFormat(textFormat=textFormat(bold=True))
         self.sheet.format_range('A1:D6', fmt)
         md = self.spreadsheet.fetch_sheet_metadata({'includeGridData': True, 'ranges': ['{}!A1'.format(self.sheet.title)]})
-        self.assertEqual(md['sheets'][0]['data'][0]['rowData'][0]['values'][0]['userEnteredFormat']['textFormat']['bold'], True)
-
+        ue_fmt = convert_to_cell_format(md['sheets'][0]['data'][0]['rowData'][0]['values'][0]['userEnteredFormat'])
+        self.assertEqual(ue_fmt.textFormat.bold, True)
 
 class WorksheetDeleteTest(GspreadTest):
 
