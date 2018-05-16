@@ -22,7 +22,8 @@ from .utils import (
     numericise_all,
     finditem,
     fill_gaps,
-    cell_list_to_rect
+    cell_list_to_rect,
+    update_worksheet_properties
 )
 
 from .urls import (
@@ -530,6 +531,7 @@ class Worksheet(object):
         except KeyError:
             return []
 
+    @update_worksheet_properties
     def update_acell(self, label, value):
         """Sets the new value to a cell.
 
@@ -544,6 +546,7 @@ class Worksheet(object):
         """
         return self.update_cell(*(a1_to_rowcol(label)), value=value)
 
+    @update_worksheet_properties
     def update_cell(self, row, col, value):
         """Sets the new value to a cell.
 
@@ -570,6 +573,7 @@ class Worksheet(object):
 
         return data
 
+    @update_worksheet_properties
     def update_cells(self, cell_list, value_input_option='RAW'):
         """Updates cells in batch.
 
@@ -612,6 +616,7 @@ class Worksheet(object):
 
         return data
 
+    @update_worksheet_properties
     def resize(self, rows=None, cols=None):
         """Resizes the worksheet.
 
@@ -647,6 +652,7 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
+    @update_worksheet_properties
     def update_title(self, title):
         """Renames the worksheet.
 
@@ -684,6 +690,7 @@ class Worksheet(object):
         """
         self.resize(cols=self.col_count + cols)
 
+    @update_worksheet_properties
     def append_row(self, values, value_input_option='RAW'):
         """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
@@ -701,6 +708,7 @@ class Worksheet(object):
 
         return self.spreadsheet.values_append(self.title, params, body)
 
+    @update_worksheet_properties
     def insert_row(
         self,
         values,
@@ -750,6 +758,7 @@ class Worksheet(object):
 
         return data
 
+    @update_worksheet_properties
     def delete_row(self, index):
         """"Deletes a row from the worksheet at the specified index.
 
