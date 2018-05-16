@@ -13,7 +13,11 @@ from functools import wraps
 from collections import defaultdict
 from itertools import chain
 
-from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
+from .exceptions import (
+    IncorrectCellLabel,
+    NoValidUrlKeyFound, 
+    WorksheetNotFound
+)
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r'([A-Za-z]+)([1-9]\d*)')
@@ -229,6 +233,31 @@ def cell_list_to_rect(cell_list):
 
     return [[rows[i][j] for j in rect_cols] for i in rect_rows]
 
+def update_worksheet_properties(func):
+    """
+    Decorator for gspread.models.Worksheet methods, to update Worksheet
+    instance properties after calling those methods, so the properties 
+    stay up to date with actual spreadsheet state
+    """
+    def wrapper(*args, **kwargs):
+        self = args[0]
+        sheet_id = self.id
+        func(*args, **kwargs)
+        sheet_data = self.spreadsheet.fetch_sheet_metadata()
+
+        try:
+            sheet = finditem(
+                lambda x: x['properties']['sheetId'] == sheet_id,
+                sheet_data['sheets']
+            )
+        except (StopIteration, KeyError):
+            raise WorksheetNotFound(sheet_id)
+
+        properties = sheet['properties']
+
+        self._properties = properties
+    
+    return wrapper
 
 if __name__ == '__main__':
     import doctest
