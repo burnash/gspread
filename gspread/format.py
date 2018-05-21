@@ -119,7 +119,7 @@ class NumberFormat(CellFormatComponent):
 class Color(CellFormatComponent):
     _FIELDS = ('red', 'green', 'blue', 'alpha')
 
-    def __init__(self, red, green, blue, alpha=None):
+    def __init__(self, red=None, green=None, blue=None, alpha=None):
         self.red = red
         self.green = green
         self.blue = blue
@@ -190,4 +190,6 @@ for _c in [ obj for name, obj in locals().items() if isinstance(obj, type) and i
     _k = _underlower(_c.__name__)
     _CLASSES[_k] = _c
     locals()[_k] = _c
+_CLASSES['foregroundColor'] = Color
+_CLASSES['backgroundColor'] = Color
 

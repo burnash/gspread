@@ -34,6 +34,8 @@ from .urls import (
     SPREADSHEET_VALUES_CLEAR_URL
 )
 
+from .format import CellFormat
+
 try:
     unicode
 except NameError:
@@ -46,6 +48,14 @@ class Spreadsheet(object):
         self.client = client
         self._properties = properties
 
+    def _fetch_with_updated_properties(self, key):
+        try:
+            return self._properties[key]
+        except KeyError:
+            metadata = self.fetch_sheet_metadata()
+            self._properties.update(metadata['properties'])
+            return self._properties[key]
+
     @property
     def id(self):
         """Spreadsheet ID."""
@@ -54,12 +64,14 @@ class Spreadsheet(object):
     @property
     def title(self):
         """Spreadsheet title."""
-        try:
-            return self._properties['title']
-        except KeyError:
-            metadata = self.fetch_sheet_metadata()
-            self._properties.update(metadata['properties'])
-            return self._properties['title']
+        return self._fetch_with_updated_properties('title')
+
+    @property
+    def default_format(self):
+        """Default CellFormat for spreadsheet."""
+        fmt = self._fetch_with_updated_properties('defaultFormat')
+        if fmt:
+            return CellFormat.from_props(fmt)
 
     @property
     def updated(self):
@@ -337,17 +349,17 @@ class Worksheet(object):
 
     @property
     def frozen_row_count(self):
-        """Number of rows."""
+        """Number of frozen rows."""
         return self._properties['gridProperties']['frozenRowCount']
 
     @property
     def frozen_col_count(self):
-        """Number of rows."""
+        """Number of frozen columns."""
         return self._properties['gridProperties']['frozenColumnCount']
 
     @property
     def hide_gridlines(self):
-        """Number of rows."""
+        """Whether gridlines are hidden."""
         return self._properties['gridProperties']['hideGridlines']
 
     def acell(self, label, value_render_option='FORMATTED_VALUE'):

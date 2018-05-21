@@ -587,6 +587,7 @@ class WorksheetTest(GspreadTest):
                 ["", "", "", ""],
                 ["A4", 0.4, "", 4]]
 
+        def_fmt = self.spreadsheet.default_format
         cell_list = self.sheet.range('A1:D6')
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
