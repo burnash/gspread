@@ -595,8 +595,8 @@ class Worksheet(object):
 
         values_rect = cell_list_to_rect(cell_list)
 
-        start = rowcol_to_a1(cell_list[0].row, cell_list[0].col)
-        end = rowcol_to_a1(cell_list[-1].row, cell_list[-1].col)
+        start = rowcol_to_a1(min(c.row for c in cell_list), min(c.col for c in cell_list))
+        end = rowcol_to_a1(max(c.row for c in cell_list), max(c.col for c in cell_list))
 
         range_label = '%s!%s:%s' % (self.title, start, end)
 
