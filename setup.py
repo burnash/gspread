@@ -26,9 +26,6 @@ long_description = """
 License
 -------
 MIT
-
-Download
-========
 """
 
 long_description = long_description.lstrip("\n").format(index=read('docs/index.txt'))
