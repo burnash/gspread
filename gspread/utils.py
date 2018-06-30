@@ -211,13 +211,13 @@ def cell_list_to_rect(cell_list):
     if not cell_list:
         return []
 
-    rows = defaultdict(lambda: defaultdict(str))
+    rows = defaultdict(lambda: {})
 
     row_offset = cell_list[0].row
     col_offset = cell_list[0].col
 
     for cell in cell_list:
-        row = rows.setdefault(int(cell.row) - row_offset, defaultdict(str))
+        row = rows.setdefault(int(cell.row) - row_offset, {})
         row[cell.col - col_offset] = cell.value
 
     if not rows:
@@ -227,7 +227,11 @@ def cell_list_to_rect(cell_list):
     rect_cols = range(max(all_row_keys) + 1)
     rect_rows = range(max(rows.keys()) + 1)
 
-    return [[rows[i][j] for j in rect_cols] for i in rect_rows]
+    # Return the values of the cells as a list of lists where each sublist
+    # contains all of the values for one row. The Google API requires a rectangle
+    # of updates, so if a cell isn't present in the input cell_list, then the
+    # value will be None and will not be updated.
+    return [[rows[i].get(j) for j in rect_cols] for i in rect_rows]
 
 
 if __name__ == '__main__':
