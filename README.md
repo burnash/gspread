@@ -196,28 +196,11 @@ python setup.py install
 * [Getting Google API's credentials](http://gspread.readthedocs.io/en/latest/oauth2.html)
 * [gspread API Reference](http://gspread.readthedocs.org/)
 
-## Testing
-
-1. Go to Google Drive and create an empty spreadsheet you will use for testing.
-2. Create a configuration file from config dummy:
-
-    ```sh
-    cp tests/tests.config.example tests/tests.config
-    ```
-
-3. Open `tests.config` with your favorite editor and fill up config parameters with your testing spreadsheet's info.
-4. Install [Nose](http://nose.readthedocs.org).
-5. Download credentials json file(see [doc](http://gspread.readthedocs.io/en/latest/oauth2.html#using-signed-credentials)),
-rename it to `creds.json` and put it into the tests folder.
-6. Run tests:
-
-    ```sh
-    nosetests
-    ```
-
 ## [Contributors](https://github.com/burnash/gspread/graphs/contributors)
 
 ## How to Contribute
+
+Please make sure to take a moment and read the [Code of Conduct](https://github.com/burnash/gspread/blob/master/.github/CODE_OF_CONDUCT.md).
 
 ### Ask Questions
 
@@ -231,5 +214,4 @@ Before opening an issue, search the tracker for possible duplicates. If you find
 
 ### Contribute code
 
-* Check the [GitHub Issues](https://github.com/burnash/gspread/issues) for open issues that need attention.
-* Follow the [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/) Guide.
+Please make sure to read the [Contributing Guide](https://github.com/burnash/gspread/blob/master/.github/CONTRIBUTING.md) before making a pull request.
