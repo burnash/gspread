@@ -317,6 +317,39 @@ class WorksheetTest(GspreadTest):
         cell = self.sheet.cell(1, 1)
         self.assertEqual(cell.value, I18N_STR)
 
+    def test_update_cells_noncontiguous(self):
+        num_rows = 6
+        num_cols = 4
+
+        rows = [[
+            gen_value('%s,%s' % (i, j))
+            for j in range(num_cols)]
+            for i in range(num_rows)
+        ]
+
+        cell_list = self.sheet.range('A1:D6')
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        # Re-fetch cells
+        cell_list = self.sheet.range('A1:D6')
+        test_values = [c.value for c in cell_list]
+
+        top_left = cell_list[0]
+        bottom_right = cell_list[-1]
+
+        top_left.value = top_left_value = gen_value('top_left')
+        bottom_right.value = bottom_right_value = gen_value('bottom_right')
+
+        self.sheet.update_cells([top_left, bottom_right])
+
+        cell_list = self.sheet.range('A1:D6')
+        read_values = [c.value for c in cell_list]
+        test_values[0] = top_left_value
+        test_values[-1] = bottom_right_value
+        self.assertEqual(test_values, read_values)
+
     def test_resize(self):
         add_num = 10
         new_rows = self.sheet.row_count + add_num
