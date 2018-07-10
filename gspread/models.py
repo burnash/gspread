@@ -569,6 +569,15 @@ class Worksheet(object):
         )
 
         return data
+    def update_cell_by_column_name(self, col_name, row, value):
+      """Sets new value to a cell pointed to by the column's name and the its respective row.
+         A simple wrapper around update_cell.
+      
+      :param col_name: String column name.
+      :param row: Integer row number. 
+      :param value: New value. 
+      """
+      return update_cell(row, self.find(col_name).col, value)
 
     def update_cells(self, cell_list, value_input_option='RAW'):
         """Updates cells in batch.
