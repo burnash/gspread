@@ -158,18 +158,18 @@ class CellFormat(CellFormatComponent):
         self.backgroundColor = backgroundColor
         self.borders = borders
         self.padding = padding
-        self.horizontalAlignment = _parse_string_enum('horizontalAlignment', horizontalAlignment, {'LEFT', 'CENTER', 'RIGHT'})
-        self.verticalAlignment = _parse_string_enum('verticalAlignment', verticalAlignment, {'TOP', 'MIDDLE', 'BOTTOM'})
-        self.wrapStrategy = _parse_string_enum('wrapStrategy', wrapStrategy, {'OVERFLOW_CELL', 'LEGACY_WRAP', 'CLIP', 'WRAP'})
-        self.textDirection = _parse_string_enum('textDirection', textDirection, {'LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'})
+        self.horizontalAlignment = _parse_string_enum('horizontalAlignment', horizontalAlignment, set(['LEFT', 'CENTER', 'RIGHT']))
+        self.verticalAlignment = _parse_string_enum('verticalAlignment', verticalAlignment, set(['TOP', 'MIDDLE', 'BOTTOM']))
+        self.wrapStrategy = _parse_string_enum('wrapStrategy', wrapStrategy, set(['OVERFLOW_CELL', 'LEGACY_WRAP', 'CLIP', 'WRAP']))
+        self.textDirection = _parse_string_enum('textDirection', textDirection, set(['LEFT_TO_RIGHT', 'RIGHT_TO_LEFT']))
         self.textFormat = textFormat
-        self.hyperlinkDisplayType = _parse_string_enum('hyperlinkDisplayType', hyperlinkDisplayType, {'LINKED', 'PLAIN_TEXT'})
+        self.hyperlinkDisplayType = _parse_string_enum('hyperlinkDisplayType', hyperlinkDisplayType, set(['LINKED', 'PLAIN_TEXT']))
         self.textRotation = textRotation
 
 class NumberFormat(CellFormatComponent):
     _FIELDS = ('type', 'pattern')
 
-    TYPES = {'TEXT', 'NUMBER', 'PERCENT', 'CURRENCY', 'DATE', 'TIME', 'DATE_TIME', 'SCIENTIFIC'}
+    TYPES = set(['TEXT', 'NUMBER', 'PERCENT', 'CURRENCY', 'DATE', 'TIME', 'DATE_TIME', 'SCIENTIFIC'])
 
     def __init__(self, type, pattern=None):
         if type.upper() not in TYPES:
@@ -198,7 +198,7 @@ class Borders(CellFormatComponent):
 class Border(CellFormatComponent):
     _FIELDS = ('style', 'color')
 
-    STYLES = {'DOTTED', 'DASHED', 'SOLID', 'SOLID_MEDIUM', 'SOLID_THICK', 'NONE', 'DOUBLE'}
+    STYLES = set(['DOTTED', 'DASHED', 'SOLID', 'SOLID_MEDIUM', 'SOLID_THICK', 'NONE', 'DOUBLE'])
 
     def __init__(self, style, color):
         if style.upper() not in STYLES:
