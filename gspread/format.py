@@ -125,9 +125,7 @@ class CellFormatComponent(object):
             self_v = getattr(self, a, None)
             other_v = getattr(other, a, None)
             this_v = None
-            if (self_v is None or other_v is None) and self_v is not other_v:
-                this_v = self_v if other_v is None else other_v
-            elif isinstance(self_v, CellFormatComponent):
+            if isinstance(self_v, CellFormatComponent):
                 this_v = self_v.difference(other_v)
             elif other_v != self_v:
                 this_v = self_v

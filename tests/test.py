@@ -611,6 +611,7 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(effective_format.difference(fmt), def_fmt)
         self.assertEqual(effective_format.intersection(effective_format), effective_format)
         self.assertEqual(effective_format & effective_format, effective_format)
+        self.assertEqual(effective_format - effective_format, None)
 
 class WorksheetDeleteTest(GspreadTest):
 
