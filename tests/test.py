@@ -595,10 +595,10 @@ class WorksheetTest(GspreadTest):
 
         fmt = cellFormat(textFormat=textFormat(bold=True))
         self.sheet.format_range('A1:D6', fmt)
-        md = self.spreadsheet.fetch_sheet_metadata({'includeGridData': True, 'ranges': ['{}!A1'.format(self.sheet.title)]})
-        props = md['sheets'][0]['data'][0]['rowData'][0]['values'][0]['userEnteredFormat']
-        ue_fmt = cellFormat.from_props(props)
+        ue_fmt = self.sheet.get_user_entered_format('A1')
         self.assertEqual(ue_fmt.textFormat.bold, True)
+        eff_fmt = self.sheet.get_effective_format('A1')
+        self.assertEqual(eff_fmt.textFormat.bold, True)
 
     def test_formats_equality_and_arithmetic(self):
         def_fmt = cellFormat(backgroundColor=Color(1,0,1),textFormat=textFormat(italic=False))

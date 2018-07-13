@@ -126,6 +126,8 @@ class CellFormatComponent(object):
                 this_v = self_v if other_v is None else other_v
             elif isinstance(self_v, CellFormatComponent):
                 this_v = self_v.difference(other_v)
+            elif other_v != self_v:
+                this_v = self_v
             if this_v is not None:
                 new_props[a] = _extract_props(this_v)
         return self.__class__.from_props(new_props) if new_props else None

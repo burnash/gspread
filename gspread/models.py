@@ -435,6 +435,54 @@ class Worksheet(object):
         }
         return self.spreadsheet.batch_update(body)
 
+    def get_effective_format(self, label):
+        """Returns a CellFormat object or None representing the effective formatting directives,
+        if any, for the cell; that is a combination of default formatting, user-entered formatting,
+        and conditional formatting.
+
+        :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+        Example:
+
+        >>> worksheet.get_user_entered_format('A1')
+        <CellFormat textFormat=(bold=True)>
+        >>> worksheet.get_user_entered_format('A2')
+        None
+        """
+        label = '%s!%s' % (self.title, rowcol_to_a1(*a1_to_rowcol(label)))
+
+        resp = self.spreadsheet.fetch_sheet_metadata({
+            'includeGridData': True,
+            'ranges': [label], 
+            'fields': 'sheets.data.rowData.values.effectiveFormat'
+        })
+        props = resp['sheets'][0]['data'][0]['rowData'][0]['values'][0].get('effectiveFormat')
+        return CellFormat.from_props(props) if props else None
+
+    def get_user_entered_format(self, label):
+        """Returns a CellFormat object or None representing the user-entered formatting directives,
+        if any, for the cell.
+
+        :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+        Example:
+
+        >>> worksheet.get_user_entered_format('A1')
+        <CellFormat textFormat=(bold=True)>
+        >>> worksheet.get_user_entered_format('A2')
+        None
+        """
+        label = '%s!%s' % (self.title, rowcol_to_a1(*a1_to_rowcol(label)))
+
+        resp = self.spreadsheet.fetch_sheet_metadata({
+            'includeGridData': True,
+            'ranges': [label], 
+            'fields': 'sheets.data.rowData.values.userEnteredFormat'
+        })
+        props = resp['sheets'][0]['data'][0]['rowData'][0]['values'][0].get('userEnteredFormat')
+        return CellFormat.from_props(props) if props else None
+
+
     @cast_to_a1_notation
     def range(self, name):
         """Returns a list of :class:`Cell` objects from a specified range.

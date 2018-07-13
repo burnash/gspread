@@ -217,6 +217,11 @@ CellFormat(backgroundColor=color(1,1,1), textFormat=textFormat(bold=True))
 True
 ```
 
+The spreadsheet's own default format, as a CellFormat object, is available via `Spreadsheet.default_format`.
+`Worksheet.get_effective_format(label)` and `Worksheet.get_user_entered_format(label)` also will return
+for any provided cell label either a CellFormat object (if any formatting is present) or None.
+
+
 ## Installation
 
 ### Requirements
