@@ -198,6 +198,25 @@ fmt = cellFormat(
 ws.format_range('A1:J1', fmt)
 ```
 
+`CellFormat` objects are comparable with `==` and `!=`, and are mutable at all times; 
+they can be safely copied with `copy.deepcopy`. `CellFormat` objects can be combined
+into a new `CellFormat` object using the `add` method (or `+` operator). `CellFormat` objects also offer 
+`difference` and `intersection` methods, as well as the corresponding
+operators `-` (for difference) and `&` (for intersection). An example:
+
+```python
+
+>>> default_format = CellFormat(backgroundColor=color(1,1,1), textFormat=textFormat(bold=True))
+>>> user_format = CellFormat(textFormat=textFormat(italic=True))
+>>> effective_format = default_format + user_format
+>>> effective_format
+CellFormat(backgroundColor=color(1,1,1), textFormat=textFormat(bold=True, italic=True))
+>>> effective_format - user_format 
+CellFormat(backgroundColor=color(1,1,1), textFormat=textFormat(bold=True))
+>>> effective_format - user_format == default_format
+True
+```
+
 ## Installation
 
 ### Requirements

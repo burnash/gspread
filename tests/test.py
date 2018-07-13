@@ -600,6 +600,18 @@ class WorksheetTest(GspreadTest):
         ue_fmt = cellFormat.from_props(props)
         self.assertEqual(ue_fmt.textFormat.bold, True)
 
+    def test_formats_equality_and_arithmetic(self):
+        def_fmt = cellFormat(backgroundColor=Color(1,0,1),textFormat=textFormat(italic=False))
+        fmt = cellFormat(textFormat=textFormat(bold=True))
+        effective_format = def_fmt + fmt
+        self.assertEqual(effective_format.textFormat.bold, True)
+        effective_format2 = def_fmt + fmt
+        self.assertEqual(effective_format, effective_format2)
+        self.assertEqual(effective_format - fmt, def_fmt)
+        self.assertEqual(effective_format.difference(fmt), def_fmt)
+        self.assertEqual(effective_format.intersection(effective_format), effective_format)
+        self.assertEqual(effective_format & effective_format, effective_format)
+
 class WorksheetDeleteTest(GspreadTest):
 
     def setUp(self):

@@ -73,6 +73,65 @@ class CellFormatComponent(object):
                 fields.extend( _extract_fieldrefs(a, getattr(self, a), prefix) )
         return fields
 
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        for a in self._FIELDS:
+            self_v = getattr(self, a, None)
+            other_v = getattr(other, a, None)
+            if self_v != other_v:
+                return False
+        return True
+
+    def add(self, other):
+        new_props = {}
+        for a in self._FIELDS:
+            self_v = getattr(self, a, None)
+            other_v = getattr(other, a, None)
+            if isinstance(self_v, CellFormatComponent):
+                this_v = self_v.add(other_v)
+            elif other_v is not None:
+                this_v = other_v
+            else:
+                this_v = self_v
+            if this_v is not None:
+                new_props[a] = _extract_props(this_v)
+        return self.__class__.from_props(new_props)
+
+    __add__ = add
+
+    def intersection(self, other):
+        new_props = {}
+        for a in self._FIELDS:
+            self_v = getattr(self, a, None)
+            other_v = getattr(other, a, None)
+            this_v = None
+            if isinstance(self_v, CellFormatComponent):
+                this_v = self_v.intersection(other_v)
+            elif self_v == other_v:
+                this_v = self_v
+            if this_v is not None:
+                new_props[a] = _extract_props(this_v)
+        return self.__class__.from_props(new_props) if new_props else None
+
+    __and__ = intersection
+
+    def difference(self, other):
+        new_props = {}
+        for a in self._FIELDS:
+            self_v = getattr(self, a, None)
+            other_v = getattr(other, a, None)
+            this_v = None
+            if (self_v is None or other_v is None) and self_v is not other_v:
+                this_v = self_v if other_v is None else other_v
+            elif isinstance(self_v, CellFormatComponent):
+                this_v = self_v.difference(other_v)
+            if this_v is not None:
+                new_props[a] = _extract_props(this_v)
+        return self.__class__.from_props(new_props) if new_props else None
+
+    __sub__ = difference
+
 class CellFormat(CellFormatComponent):
     _FIELDS = (
         'numberFormat', 'backgroundColor', 'borders', 'padding', 
