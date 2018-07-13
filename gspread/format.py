@@ -83,6 +83,9 @@ class CellFormatComponent(object):
                 return False
         return True
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def add(self, other):
         new_props = {}
         for a in self._FIELDS:
