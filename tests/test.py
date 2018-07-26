@@ -597,13 +597,32 @@ class WorksheetDeleteTest(GspreadTest):
         self.spreadsheet = self.gc.open(title)
         ws1_name = self.config.get('WorksheetDelete', 'ws1_name')
         ws2_name = self.config.get('WorksheetDelete', 'ws2_name')
-        self.ws1 = self.spreadsheet.add_worksheet(ws1_name, 1, 1)
-        self.ws2 = self.spreadsheet.add_worksheet(ws2_name, 1, 1)
+        existing_titles = [ w.title for w in self.spreadsheet.worksheets() ]
+        if ws1_name not in existing_titles:
+            self.ws1 = self.spreadsheet.add_worksheet(ws1_name, 1, 1)
+        else:
+            self.ws1 = self.spreadsheet.worksheet(ws1_name)
+        if ws2_name not in existing_titles:
+            self.ws2 = self.spreadsheet.add_worksheet(ws2_name, 1, 1)
+        else:
+            self.ws2 = self.spreadsheet.worksheet(ws2_name)
 
     def test_delete_multiple_worksheets(self):
         self.spreadsheet.del_worksheet(self.ws1)
         self.spreadsheet.del_worksheet(self.ws2)
 
+    def test_reorder_worksheets(self):
+        w = self.spreadsheet.worksheets()
+        w.reverse()
+        self.spreadsheet.reorder_worksheets(w)
+        self.assertEqual([ i.id for i in w ], [ i.id for i in self.spreadsheet.worksheets() ])
+
+    def test_worksheet_update_index(self):
+        w = self.spreadsheet.worksheets()
+        last_sheet = w[-1]
+        last_sheet.update_index(0)
+        w = self.spreadsheet.worksheets()
+        self.assertEqual(w[0].id, last_sheet.id)
 
 class CellTest(GspreadTest):
 

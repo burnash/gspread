@@ -115,8 +115,9 @@ class Spreadsheet(object):
         r = self.client.request('put', url, params=params, json=body)
         return r.json()
 
-    def fetch_sheet_metadata(self):
-        params = {'includeGridData': 'false'}
+    def fetch_sheet_metadata(self, params=None):
+        if params is None:
+            params = {'includeGridData': 'false'}
 
         url = SPREADSHEET_URL % self.id
 
@@ -219,11 +220,48 @@ class Spreadsheet(object):
         """
         body = {
             'requests': [{
-                'deleteSheet': {'sheetId': worksheet._properties['sheetId']}
+                'deleteSheet': {'sheetId': worksheet.id}
             }]
         }
 
         return self.batch_update(body)
+
+    def reorder_worksheets(self, worksheets_in_desired_order):
+        """Updates the ``index`` property of each Worksheets to reflect 
+        its index in the provided sequence of Worksheets.
+
+        :param worksheets_in_desired_order: Iterable of Worksheet objects in desired order.
+
+        Note: If you omit some of the Spreadsheet's existing Worksheet objects from
+        the provided sequence, those Worksheets will be appended to the end of the sequence
+        in the order that they appear in the list returned by ``Spreadsheet.worksheets()``.
+        """
+        idx_map = {}
+        for idx, w in enumerate(worksheets_in_desired_order):
+            idx_map[w.id] = idx
+        for w in self.worksheets():
+            if w.id in idx_map:
+                continue
+            idx += 1
+            idx_map[w.id] = idx
+
+        body = {
+            'requests': [
+                {
+                    'updateSheetProperties': {
+                        'properties': {
+                            'sheetId': key,
+                            'index': val
+                        },
+                        'fields': 'index'
+                    }
+                }
+                for key, val in idx_map.items()
+            ]
+        }
+
+        return self.batch_update(body)
+
 
     def share(self, value, perm_type, role, notify=True, email_message=None):
         """Share the spreadsheet with other accounts.
@@ -662,6 +700,32 @@ class Worksheet(object):
                         'title': title
                     },
                     'fields': 'title'
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def update_index(self, index):
+        """Updates the ``index`` property for the worksheet. 
+
+        See the `Sheets API documentation 
+        <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#sheetproperties>`_
+        for information on how updating the index property affects the order of worksheets
+        in a spreadsheet.
+
+        To reorder all worksheets in a spreadsheet, see `Spreadsheet.reorder_worksheets`.
+
+        """
+
+        body = {
+            'requests': [{
+                'updateSheetProperties': {
+                    'properties': {
+                        'sheetId': self.id,
+                        'index': index
+                    },
+                    'fields': 'index'
                 }
             }]
         }
