@@ -20,6 +20,7 @@ from .models import Spreadsheet
 
 from .urls import (
     DRIVE_FILES_API_V2_URL,
+    DRIVE_FILES_API_V3_URL,
     DRIVE_FILES_UPLOAD_API_V2_URL
 )
 
@@ -81,7 +82,8 @@ class Client(object):
     def list_spreadsheet_files(self):
         files = []
         page_token = ''
-        url = "https://www.googleapis.com/drive/v3/files"
+        url = DRIVE_FILES_API_V3_URL,
+
         params = {
             'q': "mimeType='application/vnd.google-apps.spreadsheet'",
             "pageSize": 1000,
@@ -198,12 +200,12 @@ class Client(object):
 
         """
         payload = {
-            'title': title,
+            'name': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
         r = self.request(
             'post',
-            DRIVE_FILES_API_V2_URL,
+            DRIVE_FILES_API_V3_URL,
             json=payload
         )
         spreadsheet_id = r.json()['id']
@@ -215,7 +217,7 @@ class Client(object):
         :param file_id: a spreadsheet ID (aka file ID.)
         """
         url = '{0}/{1}'.format(
-            DRIVE_FILES_API_V2_URL,
+            DRIVE_FILES_API_V3_URL,
             file_id
         )
 
