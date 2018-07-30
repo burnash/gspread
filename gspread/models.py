@@ -871,9 +871,9 @@ class Worksheet(object):
             start, end = name.split(':')
             (row_offset, column_offset) = a1_to_rowcol(start)
             (last_row, last_column) = a1_to_rowcol(end)
-            rng['startRowIndex'] = row_offset - 1,
-            rng['endRowIndex'] = last_row,
-            rng['startColumnIndex'] = column_offset - 1,
+            rng['startRowIndex'] = row_offset - 1
+            rng['endRowIndex'] = last_row
+            rng['startColumnIndex'] = column_offset - 1
             rng['endColumnIndex'] = last_column
 
         filter_settings = {
@@ -884,6 +884,19 @@ class Worksheet(object):
             'requests': [{
                 'setBasicFilter': {
                     'filter': filter_settings
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def remove_filter(self):
+        """Remove the basic filter from a worksheet.
+        """
+        body = {
+            'requests': [{
+                'clearBasicFilter': {
+                    'sheetId': self.id,
                 }
             }]
         }
