@@ -333,6 +333,16 @@ class Worksheet(object):
         """Number of columns."""
         return self._properties['gridProperties']['columnCount']
 
+    @property
+    def frozen_row_count(self):
+        """Number of frozen rows."""
+        return self._properties['gridProperties'].get('frozenRowCount', 0)
+
+    @property
+    def frozen_col_count(self):
+        """Number of frozen columns."""
+        return self._properties['gridProperties'].get('frozenColumnCount', 0)
+
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
         """Returns an instance of a :class:`gspread.models.Cell`.
 
