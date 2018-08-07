@@ -172,6 +172,45 @@ for cell in cell_list:
 worksheet.update_cells(cell_list)
 ```
 
+### Formatting Cells
+ Basic formatting of a range of cells is supported. All basic formatting components 
+of the v4 Sheets API's `CellFormat` are present as classes in the `gspread.format` module, 
+available both by `InitialCaps` names and `camelCase` names: for example, the background color 
+class is `BackgroundColor` but is also available as `backgroundColor`, while the color class is `Color`
+but available also as `color`. Attributes of formatting components are best specified as 
+keyword arguments using `camelCase` naming, e.g. `backgroundColor=...`. Complex formats 
+may be composed easily, by nesting the calls to the classes.  
+ See [the CellFormat page of the Sheets API documentation](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#CellFormat) 
+to learn more about each formatting component.
+ ```python
+ from gspread.format import *
+ fmt = cellFormat(
+    backgroundColor=color(1, 0.9, 0.9),
+    textFormat=textFormat(bold=True, foregroundColor=color(1, 0, 1)),
+    horizontalAlignment='CENTER'
+    )
+ ws.format_range('A1:J1', fmt)
+```
+ `CellFormat` objects are comparable with `==` and `!=`, and are mutable at all times; 
+they can be safely copied with `copy.deepcopy`. `CellFormat` objects can be combined
+into a new `CellFormat` object using the `add` method (or `+` operator). `CellFormat` objects also offer 
+`difference` and `intersection` methods, as well as the corresponding
+operators `-` (for difference) and `&` (for intersection). An example:
+ ```python
+ >>> default_format = CellFormat(backgroundColor=color(1,1,1), textFormat=textFormat(bold=True))
+>>> user_format = CellFormat(textFormat=textFormat(italic=True))
+>>> effective_format = default_format + user_format
+>>> effective_format
+CellFormat(backgroundColor=color(1,1,1), textFormat=textFormat(bold=True, italic=True))
+>>> effective_format - user_format 
+CellFormat(backgroundColor=color(1,1,1), textFormat=textFormat(bold=True))
+>>> effective_format - user_format == default_format
+True
+```
+ The spreadsheet's own default format, as a CellFormat object, is available via `Spreadsheet.default_format`.
+`Worksheet.get_effective_format(label)` and `Worksheet.get_user_entered_format(label)` also will return
+for any provided cell label either a CellFormat object (if any formatting is present) or None.
+
 ## Installation
 
 ### Requirements

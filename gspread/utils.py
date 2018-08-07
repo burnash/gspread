@@ -9,8 +9,8 @@ This module contains utility functions.
 """
 
 import re
-from functools import wraps
 from collections import defaultdict
+from functools import wraps
 from itertools import chain
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
@@ -150,6 +150,7 @@ def cast_to_a1_notation(method):
     Decorator function casts wrapped arguments to A1 notation
     in range method calls.
     """
+
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         try:
@@ -195,7 +196,6 @@ def rightpad(row, max_len):
 
 
 def fill_gaps(L, rows=None, cols=None):
-
     max_cols = max(len(row) for row in L) if cols is None else cols
     max_rows = len(L) if rows is None else rows
 
@@ -210,15 +210,15 @@ def fill_gaps(L, rows=None, cols=None):
 def cell_list_to_rect(cell_list):
     if not cell_list:
         return []
-    
-    cell_list.sort(key = lambda x: (x.row, x.col))
-    rows = defaultdict(lambda: {})
+
+    cell_list.sort(key=lambda x: (x.row, x.col))
+    rows = defaultdict(lambda: defaultdict(str))
 
     row_offset = cell_list[0].row
     col_offset = cell_list[0].col
 
     for cell in cell_list:
-        row = rows.setdefault(int(cell.row) - row_offset, {})
+        row = rows.setdefault(int(cell.row) - row_offset, defaultdict(str))
         row[cell.col - col_offset] = cell.value
 
     if not rows:
@@ -228,13 +228,25 @@ def cell_list_to_rect(cell_list):
     rect_cols = range(max(all_row_keys) + 1)
     rect_rows = range(max(rows.keys()) + 1)
 
-    # Return the values of the cells as a list of lists where each sublist
-    # contains all of the values for one row. The Google API requires a rectangle
-    # of updates, so if a cell isn't present in the input cell_list, then the
-    # value will be None and will not be updated.
-    return [[rows[i].get(j) for j in rect_cols] for i in rect_rows]
+    return [[rows[i][j] for j in rect_cols] for i in rect_rows]
+
+
+def range_to_gridrange_object(range, worksheet_id):
+    parts = range.split(':')
+    start = parts[0]
+    end = parts[1] if len(parts) > 1 else ''
+    (row_offset, column_offset) = a1_to_rowcol(start)
+    (last_row, last_column) = a1_to_rowcol(end) if end else (row_offset, column_offset)
+    return {
+        'sheetId': worksheet_id,
+        'startRowIndex': row_offset - 1,
+        'endRowIndex': last_row,
+        'startColumnIndex': column_offset - 1,
+        'endColumnIndex': last_column
+    }
 
 
 if __name__ == '__main__':
     import doctest
+
     doctest.testmod()

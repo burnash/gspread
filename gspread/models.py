@@ -14,7 +14,14 @@ except:
     from urllib import quote
 
 from .exceptions import WorksheetNotFound, CellNotFound
-
+from .format import CellFormat
+from .urls import (
+    SPREADSHEET_URL,
+    SPREADSHEET_VALUES_URL,
+    SPREADSHEET_BATCH_UPDATE_URL,
+    SPREADSHEET_VALUES_APPEND_URL,
+    SPREADSHEET_VALUES_CLEAR_URL,
+)
 from .utils import (
     a1_to_rowcol,
     rowcol_to_a1,
@@ -22,15 +29,8 @@ from .utils import (
     numericise_all,
     finditem,
     fill_gaps,
-    cell_list_to_rect
-)
-
-from .urls import (
-    SPREADSHEET_URL,
-    SPREADSHEET_VALUES_URL,
-    SPREADSHEET_BATCH_UPDATE_URL,
-    SPREADSHEET_VALUES_APPEND_URL,
-    SPREADSHEET_VALUES_CLEAR_URL
+    cell_list_to_rect,
+    range_to_gridrange_object,
 )
 
 try:
@@ -41,9 +41,18 @@ except NameError:
 
 class Spreadsheet(object):
     """The class that represents a spreadsheet."""
+
     def __init__(self, client, properties):
         self.client = client
         self._properties = properties
+
+    def _fetch_with_updated_properties(self, key):
+        try:
+            return self._properties[key]
+        except KeyError:
+            metadata = self.fetch_sheet_metadata()
+            self._properties.update(metadata['properties'])
+            return self._properties[key]
 
     @property
     def id(self):
@@ -53,12 +62,14 @@ class Spreadsheet(object):
     @property
     def title(self):
         """Spreadsheet title."""
-        try:
-            return self._properties['title']
-        except KeyError:
-            metadata = self.fetch_sheet_metadata()
-            self._properties.update(metadata['properties'])
-            return self._properties['title']
+        return self._fetch_with_updated_properties('title')
+
+    @property
+    def default_format(self):
+        """Default CellFormat for spreadsheet."""
+        fmt = self._fetch_with_updated_properties('defaultFormat')
+        if fmt:
+            return CellFormat.from_props(fmt)
 
     @property
     def updated(self):
@@ -79,7 +90,7 @@ class Spreadsheet(object):
 
     def __iter__(self):
         for sheet in self.worksheets():
-            yield(sheet)
+            yield (sheet)
 
     def __repr__(self):
         return '<%s %s id:%s>' % (self.__class__.__name__,
@@ -115,8 +126,9 @@ class Spreadsheet(object):
         r = self.client.request('put', url, params=params, json=body)
         return r.json()
 
-    def fetch_sheet_metadata(self):
-        params = {'includeGridData': 'false'}
+    def fetch_sheet_metadata(self, params=None):
+        if params is None:
+            params = {'includeGridData': 'false'}
 
         url = SPREADSHEET_URL % self.id
 
@@ -333,6 +345,21 @@ class Worksheet(object):
         """Number of columns."""
         return self._properties['gridProperties']['columnCount']
 
+    @property
+    def frozen_row_count(self):
+        """Number of frozen rows."""
+        return self._properties['gridProperties']['frozenRowCount']
+
+    @property
+    def frozen_col_count(self):
+        """Number of frozen columns."""
+        return self._properties['gridProperties']['frozenColumnCount']
+
+    @property
+    def hide_gridlines(self):
+        """Whether gridlines are hidden."""
+        return self._properties['gridProperties']['hideGridlines']
+
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
         """Returns an instance of a :class:`gspread.models.Cell`.
 
@@ -387,6 +414,63 @@ class Worksheet(object):
             value = ''
 
         return Cell(row, col, value)
+
+    def format_range(self, name, cell_format):
+        """Update a range of :class:`Cell` objects to have the specified cell formatting.
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+        :param cell_format: A models.CellFormat object.
+        """
+        body = {
+            'requests': [{
+                'repeatCell': {
+                    'range': range_to_gridrange_object(name, self.id),
+                    'cell': {'userEnteredFormat': cell_format.to_props()},
+                    'fields': ",".join(cell_format.affected_fields('userEnteredFormat'))
+                }
+            }]
+        }
+        return self.spreadsheet.batch_update(body)
+
+    def get_effective_format(self, label):
+        """Returns a CellFormat object or None representing the effective formatting directives,
+        if any, for the cell; that is a combination of default formatting, user-entered formatting,
+        and conditional formatting.
+         :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+        Example:
+         >>> worksheet.get_user_entered_format('A1')
+        <CellFormat textFormat=(bold=True)>
+        >>> worksheet.get_user_entered_format('A2')
+        None
+        """
+        label = '%s!%s' % (self.title, rowcol_to_a1(*a1_to_rowcol(label)))
+        resp = self.spreadsheet.fetch_sheet_metadata({
+            'includeGridData': True,
+            'ranges': [label],
+            'fields': 'sheets.data.rowData.values.effectiveFormat'
+        })
+        props = resp['sheets'][0]['data'][0]['rowData'][0]['values'][0].get('effectiveFormat')
+        return CellFormat.from_props(props) if props else None
+
+    def get_user_entered_format(self, label):
+        """Returns a CellFormat object or None representing the user-entered formatting directives,
+        if any, for the cell.
+         :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+        Example:
+         >>> worksheet.get_user_entered_format('A1')
+        <CellFormat textFormat=(bold=True)>
+        >>> worksheet.get_user_entered_format('A2')
+        None
+        """
+        label = '%s!%s' % (self.title, rowcol_to_a1(*a1_to_rowcol(label)))
+        resp = self.spreadsheet.fetch_sheet_metadata({
+            'includeGridData': True,
+            'ranges': [label],
+            'fields': 'sheets.data.rowData.values.userEnteredFormat'
+        })
+        props = resp['sheets'][0]['data'][0]['rowData'][0]['values'][0].get('userEnteredFormat')
+        return CellFormat.from_props(props) if props else None
 
     @cast_to_a1_notation
     def range(self, name):
@@ -612,11 +696,16 @@ class Worksheet(object):
 
         return data
 
-    def resize(self, rows=None, cols=None):
-        """Resizes the worksheet.
+    def resize(self, rows=None, cols=None, frozen_rows=None, frozen_cols=None):
+        """Resizes the worksheet. Only the arguments provided will be
+        applied to the worksheet; for example, `resize(rows=1000)` will
+        update only the number of rows, while `resize(frozen_rows=1)` will
+        update only the number of frozen rows.
 
-        :param rows: New rows number.
-        :param cols: New columns number.
+        :param rows: Optionally, the new number of rows in the worksheet.
+        :param cols: Optionally, the new number of columns in the worksheet.
+        :param frozen_rows: Optionally, the number of rows to "freeze" on the worksheet.
+        :param frozen_cols: Optionally, the number of columns to "freeze" on the worksheet.
         """
         grid_properties = {}
 
@@ -626,8 +715,24 @@ class Worksheet(object):
         if cols is not None:
             grid_properties['columnCount'] = cols
 
+        if frozen_rows is not None:
+            grid_properties['frozenRowCount'] = frozen_rows
+
+        if frozen_cols is not None:
+            grid_properties['frozenColumnCount'] = frozen_cols
+
         if not grid_properties:
-            raise TypeError("Either 'rows' or 'cols' should be specified.")
+            raise TypeError("Either 'rows', 'cols', 'frozen_rows', 'frozen_cols' should be specified.")
+
+        return self.update_grid_properties(grid_properties)
+
+    def update_grid_properties(self, grid_properties):
+        """Updates gridProperties for the worksheet.
+        :param grid_properties: dict of gridProperties to change.
+        """
+
+        if not grid_properties:
+            raise TypeError("grid_properties must not be empty.")
 
         fields = ','.join(
             'gridProperties/%s' % p for p in grid_properties.keys()
@@ -725,10 +830,10 @@ class Worksheet(object):
             "requests": [{
                 "insertDimension": {
                     "range": {
-                      "sheetId": self.id,
-                      "dimension": "ROWS",
-                      "startIndex": index - 1,
-                      "endIndex": index
+                        "sheetId": self.id,
+                        "dimension": "ROWS",
+                        "startIndex": index - 1,
+                        "endIndex": index
                     }
                 }
             }]
@@ -759,10 +864,10 @@ class Worksheet(object):
             "requests": [{
                 "deleteDimension": {
                     "range": {
-                      "sheetId": self.id,
-                      "dimension": "ROWS",
-                      "startIndex": index - 1,
-                      "endIndex": index
+                        "sheetId": self.id,
+                        "dimension": "ROWS",
+                        "startIndex": index - 1,
+                        "endIndex": index
                     }
                 }
             }]
@@ -812,6 +917,61 @@ class Worksheet(object):
         :param query: A text string or compiled regular expression.
         """
         return list(self._finder(filter, query))
+
+    @cast_to_a1_notation
+    def add_basic_filter(self, name=None):
+        """Add a basic filter to the worksheet. If a range or bundaries
+        are passed, the filter will be limited to the given range.
+
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param first_row: Integer row number
+        :param first_col: Integer row number
+        :param last_row: Integer row number
+        :param last_col: Integer row number
+        """
+        rng = {
+            'sheetId': self.id,
+        }
+
+        if name is not None:
+            start, end = name.split(':')
+            (row_offset, column_offset) = a1_to_rowcol(start)
+            (last_row, last_column) = a1_to_rowcol(end)
+            rng['startRowIndex'] = row_offset - 1
+            rng['endRowIndex'] = last_row
+            rng['startColumnIndex'] = column_offset - 1
+            rng['endColumnIndex'] = last_column
+
+        filter_settings = {
+            'range': rng
+        }
+
+        body = {
+            'requests': [{
+                'setBasicFilter': {
+                    'filter': filter_settings
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def remove_basic_filter(self):
+        """Remove the basic filter from a worksheet.
+        """
+        body = {
+            'requests': [{
+                'clearBasicFilter': {
+                    'sheetId': self.id,
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
 
     def export(self, format):
         """.. deprecated:: 2.0

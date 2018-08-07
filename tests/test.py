@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import os
-import re
-import random
-import unittest
 import itertools
+import os
+import random
+import re
+import unittest
 import uuid
 
 try:
@@ -16,12 +16,12 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 import gspread
 from gspread import utils
+from gspread.format import *
 
 try:
     unicode
 except NameError:
     basestring = unicode = str
-
 
 CONFIG_FILENAME = os.path.join(os.path.dirname(__file__), 'tests.config')
 CREDS_FILENAME = os.path.join(os.path.dirname(__file__), 'creds.json')
@@ -123,7 +123,6 @@ class GspreadTest(unittest.TestCase):
 
 
 class ClientTest(GspreadTest):
-
     """Test for gspread.client."""
 
     def test_open(self):
@@ -182,7 +181,6 @@ class ClientTest(GspreadTest):
 
 
 class SpreadsheetTest(GspreadTest):
-
     """Test for gspread.Spreadsheet."""
 
     def setUp(self):
@@ -217,7 +215,6 @@ class SpreadsheetTest(GspreadTest):
 
 
 class WorksheetTest(GspreadTest):
-
     """Test for gspread.Worksheet."""
 
     @classmethod
@@ -225,6 +222,13 @@ class WorksheetTest(GspreadTest):
         super(WorksheetTest, cls).setUpClass()
         title = cls.config.get('Spreadsheet', 'title')
         cls.spreadsheet = cls.gc.open(title)
+        try:
+            test_sheet = cls.spreadsheet.worksheet('wksht_test')
+            if test_sheet:
+                # somehow left over from interrupted test, remove.
+                cls.spreadsheet.del_worksheet(test_sheet)
+        except gspread.exceptions.WorksheetNotFound:
+            pass  # expected
 
     def setUp(self):
         super(WorksheetTest, self).setUp()
@@ -317,39 +321,6 @@ class WorksheetTest(GspreadTest):
         cell = self.sheet.cell(1, 1)
         self.assertEqual(cell.value, I18N_STR)
 
-    def test_update_cells_noncontiguous(self):
-        num_rows = 6
-        num_cols = 4
-
-        rows = [[
-            gen_value('%s,%s' % (i, j))
-            for j in range(num_cols)]
-            for i in range(num_rows)
-        ]
-
-        cell_list = self.sheet.range('A1:D6')
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
-
-        # Re-fetch cells
-        cell_list = self.sheet.range('A1:D6')
-        test_values = [c.value for c in cell_list]
-
-        top_left = cell_list[0]
-        bottom_right = cell_list[-1]
-
-        top_left.value = top_left_value = gen_value('top_left')
-        bottom_right.value = bottom_right_value = gen_value('bottom_right')
-
-        self.sheet.update_cells([top_left, bottom_right])
-
-        cell_list = self.sheet.range('A1:D6')
-        read_values = [c.value for c in cell_list]
-        test_values[0] = top_left_value
-        test_values[-1] = bottom_right_value
-        self.assertEqual(test_values, read_values)
-
     def test_resize(self):
         add_num = 10
         new_rows = self.sheet.row_count + add_num
@@ -382,6 +353,22 @@ class WorksheetTest(GspreadTest):
 
         self.assertEqual(grid_props['rowCount'], new_rows)
         self.assertEqual(grid_props['columnCount'], new_cols)
+
+        frozen_rows = 1
+        frozen_cols = 1
+        self.sheet.resize(frozen_rows=frozen_rows, frozen_cols=frozen_cols)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['frozenRowCount'], frozen_rows)
+        self.assertEqual(grid_props['frozenColumnCount'], frozen_cols)
+
+        self.sheet.resize(frozen_rows=0, frozen_cols=0)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props.get('frozenRowCount'), None)
+        self.assertEqual(grid_props.get('frozenColumnCount'), None)
 
     def test_find(self):
         value = gen_value()
@@ -588,6 +575,40 @@ class WorksheetTest(GspreadTest):
         self.sheet.clear()
         self.assertEqual(self.sheet.get_all_values(), [])
 
+    def test_format_range(self):
+        rows = [["", "", "", ""],
+                ["", "", "", ""],
+                ["A1", "B1", "", "D1"],
+                [1, "b2", 1.45, ""],
+                ["", "", "", ""],
+                ["A4", 0.4, "", 4]]
+
+        def_fmt = self.spreadsheet.default_format
+        cell_list = self.sheet.range('A1:D6')
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        fmt = cellFormat(textFormat=textFormat(bold=True))
+        self.sheet.format_range('A1:D6', fmt)
+        ue_fmt = self.sheet.get_user_entered_format('A1')
+        self.assertEqual(ue_fmt.textFormat.bold, True)
+        eff_fmt = self.sheet.get_effective_format('A1')
+        self.assertEqual(eff_fmt.textFormat.bold, True)
+
+    def test_formats_equality_and_arithmetic(self):
+        def_fmt = cellFormat(backgroundColor=Color(1, 0, 1), textFormat=textFormat(italic=False))
+        fmt = cellFormat(textFormat=textFormat(bold=True))
+        effective_format = def_fmt + fmt
+        self.assertEqual(effective_format.textFormat.bold, True)
+        effective_format2 = def_fmt + fmt
+        self.assertEqual(effective_format, effective_format2)
+        self.assertEqual(effective_format - fmt, def_fmt)
+        self.assertEqual(effective_format.difference(fmt), def_fmt)
+        self.assertEqual(effective_format.intersection(effective_format), effective_format)
+        self.assertEqual(effective_format & effective_format, effective_format)
+        self.assertEqual(effective_format - effective_format, None)
+
 
 class WorksheetDeleteTest(GspreadTest):
 
@@ -606,7 +627,6 @@ class WorksheetDeleteTest(GspreadTest):
 
 
 class CellTest(GspreadTest):
-
     """Test for gspread.Cell."""
 
     def setUp(self):
