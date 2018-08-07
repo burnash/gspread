@@ -210,7 +210,8 @@ def fill_gaps(L, rows=None, cols=None):
 def cell_list_to_rect(cell_list):
     if not cell_list:
         return []
-
+    
+    cell_list.sort(key = lambda x: (x.row, x.col))
     rows = defaultdict(lambda: {})
 
     row_offset = cell_list[0].row
