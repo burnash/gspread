@@ -348,12 +348,18 @@ class Worksheet(object):
     @property
     def frozen_row_count(self):
         """Number of frozen rows."""
-        return self._properties['gridProperties']['frozenRowCount']
+        try:
+            return self._properties['gridProperties']['frozenRowCount']
+        except KeyError:
+            return 0
 
     @property
     def frozen_col_count(self):
         """Number of frozen columns."""
-        return self._properties['gridProperties']['frozenColumnCount']
+        try:
+            return self._properties['gridProperties']['frozenColumnCount']
+        except KeyError:
+            return 0
 
     @property
     def hide_gridlines(self):
