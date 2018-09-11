@@ -89,7 +89,7 @@ If you're getting the "No crypto library available" exception, make sure you hav
 Custom Credentials Objects
 --------------------------
 
-If you have another method of authenicating you can easily hack a custom credentials object.
+If you have another method of authenticating you can easily hack a custom credentials object.
 
 ::
 
