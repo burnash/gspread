@@ -77,6 +77,16 @@ def numericise_all(input, empty2zero=False, default_blank=""):
     """Returns a list of numericised values from strings"""
     return [numericise(s, empty2zero, default_blank) for s in input]
 
+def numericise_all_except_ignored(input, ignore, empty2zero=False, default_blank=""):
+    """Returns a list of numericised values from strings except those
+     from the row specified as ignore"""
+    if ignore > len(input):
+        raise IndexError('Ignored row not within range')
+    ig = input.pop(ignore-1)
+    return_list = [numericise(s, empty2zero, default_blank) for s in input]
+    return_list.insert(ignore-1, ig)
+    return return_list
+
 
 def rowcol_to_a1(row, col):
     """Translates a row and column cell address to A1 notation.

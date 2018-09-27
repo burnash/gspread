@@ -20,6 +20,7 @@ from .utils import (
     rowcol_to_a1,
     cast_to_a1_notation,
     numericise_all,
+    numericise_all_except_ignored,
     finditem,
     fill_gaps,
     cell_list_to_rect
@@ -448,7 +449,7 @@ class Worksheet(object):
         except KeyError:
             return []
 
-    def get_all_records(self, empty2zero=False, head=1, default_blank=""):
+    def get_all_records(self, empty2zero=False, head=1, default_blank="", numericise_ignore=None):
         """Returns a list of dictionaries, all of them having the contents
         of the spreadsheet with the head row as keys and each of these
         dictionaries holding the contents of subsequent rows of cells
@@ -463,14 +464,19 @@ class Worksheet(object):
                      from 1 following the numeration of the spreadsheet.
         :param default_blank: determines whether empty cells are converted
                               to something else except empty string or zero.
+        :param ignore: integer for the row to not numericise
         """
 
         idx = head - 1
 
         data = self.get_all_values()
         keys = data[idx]
-        values = [numericise_all(row, empty2zero, default_blank)
-                  for row in data[idx + 1:]]
+        if not numericise_ignore:
+            values = [numericise_all(row, empty2zero, default_blank)
+                      for row in data[idx + 1:]]
+        else:
+            values = [numericise_all_except_ignored(row, numericise_ignore, empty2zero, default_blank)
+                      for row in data[idx + 1:]]
 
         return [dict(zip(keys, row)) for row in values]
 
