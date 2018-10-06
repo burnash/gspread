@@ -50,6 +50,16 @@ def gen_value(prefix=None):
         return unicode(uuid.uuid4())
 
 
+def prefixed_counter(prefix, start=1):
+    c = itertools.count(start)
+    for value in c:
+        yield u'%s %s' % (prefix, value)
+
+
+def get_method_name(self_id):
+    return self_id.split('.')[-1]
+
+
 class UtilsTest(unittest.TestCase):
 
     def test_extract_id_from_url(self):
@@ -107,6 +117,8 @@ class UtilsTest(unittest.TestCase):
 
 
 class GspreadTest(unittest.TestCase):
+    def _sequence_generator(self):
+        return prefixed_counter(get_method_name(self.id()))
 
     @classmethod
     def setUpClass(cls):
@@ -117,9 +129,6 @@ class GspreadTest(unittest.TestCase):
         except IOError as e:
             msg = "Can't find %s for reading test configuration. "
             raise Exception(msg % e.filename)
-
-    def setUp(self):
-        self.assertTrue(isinstance(self.gc, gspread.client.Client))
 
 
 class ClientTest(GspreadTest):
@@ -153,20 +162,22 @@ class ClientTest(GspreadTest):
             self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
 
     def test_create(self):
-        title = gen_value('TestSpreadsheet')
+        title = 'Test Spreadsheet'
         new_spreadsheet = self.gc.create(title)
         self.assertTrue(
             isinstance(new_spreadsheet, gspread.models.Spreadsheet))
 
     def test_import_csv(self):
-        title = gen_value('TestImportSpreadsheet')
+        title = 'TestImportSpreadsheet'
         new_spreadsheet = self.gc.create(title)
+
+        sg = self._sequence_generator()
 
         csv_rows = 4
         csv_cols = 4
 
         rows = [[
-            gen_value('%s-%s' % (i, j))
+            next(sg)
             for j in range(csv_cols)]
             for i in range(csv_rows)
         ]
@@ -228,6 +239,9 @@ class WorksheetTest(GspreadTest):
 
     def setUp(self):
         super(WorksheetTest, self).setUp()
+        title = self.config.get('Spreadsheet', 'title')
+        self.spreadsheet = self.gc.open(title)
+
         # NOTE(msuozzo): Here, a new worksheet is created for each test.
         # This was determined to be faster than reusing a single sheet and
         # having to clear its contents after each test.
@@ -236,6 +250,7 @@ class WorksheetTest(GspreadTest):
 
     def tearDown(self):
         self.spreadsheet.del_worksheet(self.sheet)
+        super(WorksheetTest, self).tearDown()
 
     def test_acell(self):
         cell = self.sheet.acell('A1')
@@ -256,12 +271,16 @@ class WorksheetTest(GspreadTest):
             self.assertTrue(c1.value == c2.value)
 
     def test_update_acell(self):
-        value = gen_value()
+        sg = self._sequence_generator()
+        value = next(sg)
+
         self.sheet.update_acell('A2', value)
         self.assertEqual(self.sheet.acell('A2').value, value)
 
     def test_update_cell(self):
-        value = gen_value()
+        sg = self._sequence_generator()
+        value = next(sg)
+
         self.sheet.update_cell(1, 2, value)
         self.assertEqual(self.sheet.cell(1, 2).value, value)
 
@@ -278,7 +297,9 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(self.sheet.cell(1, 2).value, u'Артур')
 
     def test_update_cell_multiline(self):
-        value = gen_value()
+        sg = self._sequence_generator()
+        value = next(sg)
+
         value = "%s\n%s" % (value, value)
         self.sheet.update_cell(1, 2, value)
         self.assertEqual(self.sheet.cell(1, 2).value, value)
@@ -290,8 +311,10 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(cell.value, I18N_STR)
 
     def test_update_cells(self):
+        sg = self._sequence_generator()
+
         list_len = 10
-        value_list = [gen_value(i) for i in range(list_len)]
+        value_list = [next(sg) for i in range(list_len)]
 
         # Test multiline
         value_list[0] = "%s\n%s" % (value_list[0], value_list[0])
@@ -318,11 +341,13 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(cell.value, I18N_STR)
 
     def test_update_cells_noncontiguous(self):
+        sg = self._sequence_generator()
+
         num_rows = 6
         num_cols = 4
 
         rows = [[
-            gen_value('%s,%s' % (i, j))
+            next(sg)
             for j in range(num_cols)]
             for i in range(num_rows)
         ]
@@ -339,8 +364,8 @@ class WorksheetTest(GspreadTest):
         top_left = cell_list[0]
         bottom_right = cell_list[-1]
 
-        top_left.value = top_left_value = gen_value('top_left')
-        bottom_right.value = bottom_right_value = gen_value('bottom_right')
+        top_left.value = top_left_value = next(sg) + ' top_left'
+        bottom_right.value = bottom_right_value = next(sg) + ' bottom_right'
 
         self.sheet.update_cells([top_left, bottom_right])
 
@@ -384,7 +409,8 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(grid_props['columnCount'], new_cols)
 
     def test_find(self):
-        value = gen_value()
+        sg = self._sequence_generator()
+        value = next(sg)
 
         self.sheet.update_cell(2, 10, value)
         self.sheet.update_cell(2, 11, value)
@@ -392,7 +418,7 @@ class WorksheetTest(GspreadTest):
         cell = self.sheet.find(value)
         self.assertEqual(cell.value, value)
 
-        value2 = gen_value()
+        value2 = next(sg)
         value = "%so_O%s" % (value, value2)
         self.sheet.update_cell(2, 11, value)
 
@@ -405,7 +431,10 @@ class WorksheetTest(GspreadTest):
         list_len = 10
         range_label = 'A1:A%s' % list_len
         cell_list = self.sheet.range(range_label)
-        value = gen_value()
+
+        sg = self._sequence_generator()
+
+        value = next(sg)
 
         for c in cell_list:
             c.value = value
@@ -420,7 +449,7 @@ class WorksheetTest(GspreadTest):
 
         cell_list = self.sheet.range(range_label)
 
-        value = gen_value()
+        value = next(sg)
         for c in cell_list:
             char = chr(random.randrange(ord('a'), ord('z')))
             c.value = "%s%s_%s%s" % (c.value, char, char.upper(), value)
@@ -529,17 +558,20 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_records[1], d1)
 
     def test_append_row(self):
-        value_list = [gen_value(i) for i in range(10)]
+        sg = self._sequence_generator()
+        value_list = [next(sg) for i in range(10)]
         self.sheet.append_row(value_list)
         read_values = self.sheet.row_values(1)
         self.assertEqual(value_list, read_values)
 
     def test_insert_row(self):
+        sg = self._sequence_generator()
+
         num_rows = 6
         num_cols = 4
 
         rows = [[
-            gen_value('%s,%s' % (i, j))
+            next(sg)
             for j in range(num_cols)]
             for i in range(num_rows)
         ]
@@ -549,28 +581,30 @@ class WorksheetTest(GspreadTest):
             cell.value = value
         self.sheet.update_cells(cell_list)
 
-        new_row_values = [gen_value(i) for i in range(num_cols + 4)]
+        new_row_values = [next(sg) for i in range(num_cols + 4)]
         self.sheet.insert_row(new_row_values, 2)
         read_values = self.sheet.row_values(2)
         self.assertEqual(new_row_values, read_values)
 
         formula = '=1+1'
         self.sheet.update_acell('B2', formula)
-        values = [gen_value(i) for i in range(num_cols + 4)]
+        values = [next(sg) for i in range(num_cols + 4)]
         self.sheet.insert_row(values, 1)
         b3 = self.sheet.acell('B3', value_render_option='FORMULA')
         self.assertEqual(b3.value, formula)
 
     def test_delete_row(self):
+        sg = self._sequence_generator()
+
         for i in range(5):
-            value_list = [gen_value(i) for i in range(10)]
+            value_list = [next(sg) for i in range(10)]
             self.sheet.append_row(value_list)
 
-        prev = self.sheet.row_values(1)
-        next = self.sheet.row_values(3)
+        prev_row = self.sheet.row_values(1)
+        next_row = self.sheet.row_values(3)
         self.sheet.delete_row(2)
-        self.assertEqual(self.sheet.row_values(1), prev)
-        self.assertEqual(self.sheet.row_values(2), next)
+        self.assertEqual(self.sheet.row_values(1), prev_row)
+        self.assertEqual(self.sheet.row_values(2), next_row)
 
     def test_clear(self):
         rows = [["", "", "", ""],
@@ -615,7 +649,8 @@ class CellTest(GspreadTest):
         self.sheet = self.gc.open(title).sheet1
 
     def test_properties(self):
-        update_value = gen_value()
+        sg = self._sequence_generator()
+        update_value = next(sg)
         self.sheet.update_acell('A1', update_value)
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.value, update_value)
