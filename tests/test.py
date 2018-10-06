@@ -14,6 +14,10 @@ except ImportError:
 
 from oauth2client.service_account import ServiceAccountCredentials
 
+from betamax import Betamax
+from betamax.fixtures.unittest import BetamaxTestCase
+from betamax_json_body_serializer import JSONBodySerializer
+
 import gspread
 from gspread import utils
 
@@ -31,6 +35,12 @@ SCOPE = [
 ]
 
 I18N_STR = u'Iñtërnâtiônàlizætiøn'  # .encode('utf8')
+
+Betamax.register_serializer(JSONBodySerializer)
+
+with Betamax.configure() as config:
+    config.cassette_library_dir = 'tests/fixtures/cassettes'
+    config.default_cassette_options['serialize_with'] = 'json_body'
 
 
 def read_config(filename):
@@ -58,6 +68,27 @@ def prefixed_counter(prefix, start=1):
 
 def get_method_name(self_id):
     return self_id.split('.')[-1]
+
+
+class BetamaxGspreadTest(BetamaxTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        try:
+            cls.config = read_config(CONFIG_FILENAME)
+            cls.auth_credentials = read_credentials(CREDS_FILENAME)
+
+        except IOError as e:
+            msg = "Can't find %s for reading test configuration. "
+            raise Exception(msg % e.filename)
+
+    def setUp(self):
+        super(BetamaxGspreadTest, self).setUp()
+        self.session.headers.update({'accept-encoding': 'identity'})
+        self.gc = gspread.Client(self.auth_credentials, session=self.session)
+        self.gc.login()
+
+        self.assertTrue(isinstance(self.gc, gspread.client.Client))
 
 
 class UtilsTest(unittest.TestCase):
@@ -116,19 +147,9 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(utils.wid_to_gid(gid), '1015761654')
 
 
-class GspreadTest(unittest.TestCase):
+class GspreadTest(BetamaxGspreadTest):
     def _sequence_generator(self):
         return prefixed_counter(get_method_name(self.id()))
-
-    @classmethod
-    def setUpClass(cls):
-        try:
-            cls.config = read_config(CONFIG_FILENAME)
-            credentials = read_credentials(CREDS_FILENAME)
-            cls.gc = gspread.authorize(credentials)
-        except IOError as e:
-            msg = "Can't find %s for reading test configuration. "
-            raise Exception(msg % e.filename)
 
 
 class ClientTest(GspreadTest):
@@ -230,12 +251,6 @@ class SpreadsheetTest(GspreadTest):
 class WorksheetTest(GspreadTest):
 
     """Test for gspread.Worksheet."""
-
-    @classmethod
-    def setUpClass(cls):
-        super(WorksheetTest, cls).setUpClass()
-        title = cls.config.get('Spreadsheet', 'title')
-        cls.spreadsheet = cls.gc.open(title)
 
     def setUp(self):
         super(WorksheetTest, self).setUp()
