@@ -38,9 +38,23 @@ I18N_STR = u'Iñtërnâtiônàlizætiøn'  # .encode('utf8')
 
 Betamax.register_serializer(JSONBodySerializer)
 
+
+def sanitize_token(interaction, current_cassette):
+    headers = interaction.data['request']['headers']
+    token = headers.get('Authorization')
+
+    if token is None:
+        return
+
+    interaction.data['request']['headers']['Authorization'] = [
+        'Bearer <ACCESS_TOKEN>'
+    ]
+
+
 with Betamax.configure() as config:
     config.cassette_library_dir = 'tests/fixtures/cassettes'
     config.default_cassette_options['serialize_with'] = 'json_body'
+    config.before_record(callback=sanitize_token)
 
 
 def read_config(filename):
