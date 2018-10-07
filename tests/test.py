@@ -6,6 +6,7 @@ import random
 import unittest
 import itertools
 import uuid
+from collections import namedtuple
 
 try:
     import ConfigParser
@@ -33,6 +34,7 @@ SCOPE = [
     'https://spreadsheets.google.com/feeds',
     'https://www.googleapis.com/auth/drive.file'
 ]
+DUMMY_ACCESS_TOKEN = '<ACCESS_TOKEN>'
 
 I18N_STR = u'Iñtërnâtiônàlizætiøn'  # .encode('utf8')
 
@@ -47,7 +49,7 @@ def sanitize_token(interaction, current_cassette):
         return
 
     interaction.data['request']['headers']['Authorization'] = [
-        'Bearer <ACCESS_TOKEN>'
+        'Bearer %s' % DUMMY_ACCESS_TOKEN
     ]
 
 
@@ -84,17 +86,23 @@ def get_method_name(self_id):
     return self_id.split('.')[-1]
 
 
+DummyCredentials = namedtuple('DummyCredentials', 'access_token')
+
+
 class BetamaxGspreadTest(BetamaxTestCase):
 
     @classmethod
     def setUpClass(cls):
         try:
             cls.config = read_config(CONFIG_FILENAME)
-            cls.auth_credentials = read_credentials(CREDS_FILENAME)
-
         except IOError as e:
             msg = "Can't find %s for reading test configuration. "
             raise Exception(msg % e.filename)
+
+        try:
+            cls.auth_credentials = read_credentials(CREDS_FILENAME)
+        except IOError as e:
+            cls.auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
 
     def setUp(self):
         super(BetamaxGspreadTest, self).setUp()
