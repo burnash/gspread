@@ -5,13 +5,7 @@ import re
 import random
 import unittest
 import itertools
-import uuid
 from collections import namedtuple
-
-try:
-    import ConfigParser
-except ImportError:
-    import configparser as ConfigParser
 
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -28,7 +22,6 @@ except NameError:
     basestring = unicode = str
 
 
-CONFIG_FILENAME = os.path.join(os.path.dirname(__file__), 'tests.config')
 CREDS_FILENAME = os.path.join(os.path.dirname(__file__), 'creds.json')
 SCOPE = [
     'https://spreadsheets.google.com/feeds',
@@ -59,21 +52,8 @@ with Betamax.configure() as config:
     config.before_record(callback=sanitize_token)
 
 
-def read_config(filename):
-    config = ConfigParser.ConfigParser()
-    config.readfp(open(filename))
-    return config
-
-
 def read_credentials(filename):
     return ServiceAccountCredentials.from_json_keyfile_name(filename, SCOPE)
-
-
-def gen_value(prefix=None):
-    if prefix:
-        return u'%s %s' % (prefix, gen_value())
-    else:
-        return unicode(uuid.uuid4())
 
 
 def prefixed_counter(prefix, start=1):
@@ -92,17 +72,26 @@ DummyCredentials = namedtuple('DummyCredentials', 'access_token')
 class BetamaxGspreadTest(BetamaxTestCase):
 
     @classmethod
+    def get_temporary_spreadsheet_title(cls):
+        return'Test %s' % cls.__name__
+
+    @classmethod
     def setUpClass(cls):
         try:
-            cls.config = read_config(CONFIG_FILENAME)
-        except IOError as e:
-            msg = "Can't find %s for reading test configuration. "
-            raise Exception(msg % e.filename)
-
-        try:
             cls.auth_credentials = read_credentials(CREDS_FILENAME)
+            cls.base_gc = gspread.authorize(cls.auth_credentials)
+            title = 'Test %s' % cls.__name__
+            cls.temporary_spreadsheet = cls.base_gc.create(title)
+
         except IOError as e:
             cls.auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
+
+    @classmethod
+    def tearDownClass(cls):
+        try:
+            cls.base_gc.del_spreadsheet(cls.temporary_spreadsheet.id)
+        except AttributeError:
+            pass
 
     def setUp(self):
         super(BetamaxGspreadTest, self).setUp()
@@ -178,26 +167,11 @@ class ClientTest(GspreadTest):
 
     """Test for gspread.client."""
 
-    def test_open(self):
-        title = self.config.get('Spreadsheet', 'title')
-        spreadsheet = self.gc.open(title)
-        self.assertTrue(isinstance(spreadsheet, gspread.models.Spreadsheet))
-
     def test_no_found_exeption(self):
         noexistent_title = "Please don't use this phrase as a name of a sheet."
         self.assertRaises(gspread.SpreadsheetNotFound,
                           self.gc.open,
                           noexistent_title)
-
-    def test_open_by_key(self):
-        key = self.config.get('Spreadsheet', 'key')
-        spreadsheet = self.gc.open_by_key(key)
-        self.assertTrue(isinstance(spreadsheet, gspread.models.Spreadsheet))
-
-    def test_open_by_url(self):
-        url = self.config.get('Spreadsheet', 'url')
-        spreadsheet = self.gc.open_by_url(url)
-        self.assertTrue(isinstance(spreadsheet, gspread.models.Spreadsheet))
 
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
@@ -241,14 +215,11 @@ class SpreadsheetTest(GspreadTest):
 
     def setUp(self):
         super(SpreadsheetTest, self).setUp()
-        title = self.config.get('Spreadsheet', 'title')
-        self.spreadsheet = self.gc.open(title)
+        self.spreadsheet = self.gc.open(self.get_temporary_spreadsheet_title())
 
     def test_properties(self):
-        self.assertEqual(self.config.get('Spreadsheet', 'id'),
-                         self.spreadsheet.id)
-        self.assertEqual(self.config.get('Spreadsheet', 'title'),
-                         self.spreadsheet.title)
+        self.assertTrue(re.match(r'^[a-zA-Z0-9-_]+$', self.spreadsheet.id))
+        self.assertTrue(len(self.spreadsheet.title) > 0)
 
     def test_sheet1(self):
         sheet1 = self.spreadsheet.sheet1
@@ -301,8 +272,7 @@ class WorksheetTest(GspreadTest):
 
     def setUp(self):
         super(WorksheetTest, self).setUp()
-        title = self.config.get('Spreadsheet', 'title')
-        self.spreadsheet = self.gc.open(title)
+        self.spreadsheet = self.gc.open(self.get_temporary_spreadsheet_title())
 
         # NOTE(msuozzo): Here, a new worksheet is created for each test.
         # This was determined to be faster than reusing a single sheet and
@@ -691,8 +661,8 @@ class CellTest(GspreadTest):
 
     def setUp(self):
         super(CellTest, self).setUp()
-        title = self.config.get('Spreadsheet', 'title')
-        self.sheet = self.gc.open(title).sheet1
+        self.spreadsheet = self.gc.open(self.get_temporary_spreadsheet_title())
+        self.sheet = self.spreadsheet.sheet1
 
     def test_properties(self):
         sg = self._sequence_generator()
