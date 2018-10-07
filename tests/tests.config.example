@@ -15,7 +15,3 @@ id: string following "#gid="
 title: title of this worksheet
 row_count: row count of this worksheet
 col_count: column count of this worksheet
-
-[WorksheetDelete]
-ws1_name: could be anything you like, note that these two worksheets mustn't exist.
-ws2_name:

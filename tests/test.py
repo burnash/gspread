@@ -269,6 +269,31 @@ class SpreadsheetTest(GspreadTest):
             [sheet.id for sheet in self.spreadsheet]
         )
 
+    def test_add_del_worksheet(self):
+        sg = self._sequence_generator()
+        worksheet1_name = next(sg)
+        worksheet2_name = next(sg)
+
+        worksheet_list = self.spreadsheet.worksheets()
+        self.assertEqual(len(worksheet_list), 1)
+        existing_sheet_title = worksheet_list[0].title
+
+        # Add
+        worksheet1 = self.spreadsheet.add_worksheet(worksheet1_name, 1, 1)
+        worksheet2 = self.spreadsheet.add_worksheet(worksheet2_name, 1, 1)
+
+        # Re-read, check again
+        worksheet_list = self.spreadsheet.worksheets()
+        self.assertEqual(len(worksheet_list), 3)
+
+        # Delete
+        self.spreadsheet.del_worksheet(worksheet1)
+        self.spreadsheet.del_worksheet(worksheet2)
+
+        worksheet_list = self.spreadsheet.worksheets()
+        self.assertEqual(len(worksheet_list), 1)
+        self.assertEqual(worksheet_list[0].title, existing_sheet_title)
+
 
 class WorksheetTest(GspreadTest):
 
@@ -658,22 +683,6 @@ class WorksheetTest(GspreadTest):
 
         self.sheet.clear()
         self.assertEqual(self.sheet.get_all_values(), [])
-
-
-class WorksheetDeleteTest(GspreadTest):
-
-    def setUp(self):
-        super(WorksheetDeleteTest, self).setUp()
-        title = self.config.get('Spreadsheet', 'title')
-        self.spreadsheet = self.gc.open(title)
-        ws1_name = self.config.get('WorksheetDelete', 'ws1_name')
-        ws2_name = self.config.get('WorksheetDelete', 'ws2_name')
-        self.ws1 = self.spreadsheet.add_worksheet(ws1_name, 1, 1)
-        self.ws2 = self.spreadsheet.add_worksheet(ws2_name, 1, 1)
-
-    def test_delete_multiple_worksheets(self):
-        self.spreadsheet.del_worksheet(self.ws1)
-        self.spreadsheet.del_worksheet(self.ws2)
 
 
 class CellTest(GspreadTest):
