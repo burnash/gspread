@@ -176,7 +176,7 @@ worksheet.update_cells(cell_list)
 
 ### Requirements
 
-Python 2.6+ or Python 3+
+Python 2.7+ or Python 3+
 
 ### From PyPI
 
