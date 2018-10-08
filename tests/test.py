@@ -25,7 +25,7 @@ except NameError:
 CREDS_FILENAME = os.path.join(os.path.dirname(__file__), 'creds.json')
 SCOPE = [
     'https://spreadsheets.google.com/feeds',
-    'https://www.googleapis.com/auth/drive.file'
+    'https://www.googleapis.com/auth/drive.file',
 ]
 DUMMY_ACCESS_TOKEN = '<ACCESS_TOKEN>'
 
@@ -70,10 +70,9 @@ DummyCredentials = namedtuple('DummyCredentials', 'access_token')
 
 
 class BetamaxGspreadTest(BetamaxTestCase):
-
     @classmethod
     def get_temporary_spreadsheet_title(cls):
-        return'Test %s' % cls.__name__
+        return 'Test %s' % cls.__name__
 
     @classmethod
     def setUpClass(cls):
@@ -103,26 +102,30 @@ class BetamaxGspreadTest(BetamaxTestCase):
 
 
 class UtilsTest(unittest.TestCase):
-
     def test_extract_id_from_url(self):
         url_id_list = [
             # New-style url
-            ('https://docs.google.com/spreadsheets/d/'
-             '1qpyC0X3A0MwQoFDE8p-Bll4hps/edit#gid=0',
-             '1qpyC0X3A0MwQoFDE8p-Bll4hps'),
-
-            ('https://docs.google.com/spreadsheets/d/'
-             '1qpyC0X3A0MwQoFDE8p-Bll4hps/edit',
-             '1qpyC0X3A0MwQoFDE8p-Bll4hps'),
-
-            ('https://docs.google.com/spreadsheets/d/'
-             '1qpyC0X3A0MwQoFDE8p-Bll4hps',
-             '1qpyC0X3A0MwQoFDE8p-Bll4hps'),
-
+            (
+                'https://docs.google.com/spreadsheets/d/'
+                '1qpyC0X3A0MwQoFDE8p-Bll4hps/edit#gid=0',
+                '1qpyC0X3A0MwQoFDE8p-Bll4hps',
+            ),
+            (
+                'https://docs.google.com/spreadsheets/d/'
+                '1qpyC0X3A0MwQoFDE8p-Bll4hps/edit',
+                '1qpyC0X3A0MwQoFDE8p-Bll4hps',
+            ),
+            (
+                'https://docs.google.com/spreadsheets/d/'
+                '1qpyC0X3A0MwQoFDE8p-Bll4hps',
+                '1qpyC0X3A0MwQoFDE8p-Bll4hps',
+            ),
             # Old-style url
-            ('https://docs.google.com/spreadsheet/'
-             'ccc?key=1qpyC0X3A0MwQoFDE8p-Bll4hps&usp=drive_web#gid=0',
-             '1qpyC0X3A0MwQoFDE8p-Bll4hps')
+            (
+                'https://docs.google.com/spreadsheet/'
+                'ccc?key=1qpyC0X3A0MwQoFDE8p-Bll4hps&usp=drive_web#gid=0',
+                '1qpyC0X3A0MwQoFDE8p-Bll4hps',
+            ),
         ]
 
         for url, id in url_id_list:
@@ -169,9 +172,7 @@ class ClientTest(GspreadTest):
 
     def test_no_found_exeption(self):
         noexistent_title = "Please don't use this phrase as a name of a sheet."
-        self.assertRaises(gspread.SpreadsheetNotFound,
-                          self.gc.open,
-                          noexistent_title)
+        self.assertRaises(gspread.SpreadsheetNotFound, self.gc.open, noexistent_title)
 
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
@@ -181,8 +182,7 @@ class ClientTest(GspreadTest):
     def test_create(self):
         title = 'Test Spreadsheet'
         new_spreadsheet = self.gc.create(title)
-        self.assertTrue(
-            isinstance(new_spreadsheet, gspread.models.Spreadsheet))
+        self.assertTrue(isinstance(new_spreadsheet, gspread.models.Spreadsheet))
 
     def test_import_csv(self):
         title = 'TestImportSpreadsheet'
@@ -193,11 +193,7 @@ class ClientTest(GspreadTest):
         csv_rows = 4
         csv_cols = 4
 
-        rows = [[
-            next(sg)
-            for j in range(csv_cols)]
-            for i in range(csv_rows)
-        ]
+        rows = [[next(sg) for j in range(csv_cols)] for i in range(csv_rows)]
 
         simple_csv_data = '\n'.join([','.join(row) for row in rows])
 
@@ -237,7 +233,7 @@ class SpreadsheetTest(GspreadTest):
     def test_worksheet_iteration(self):
         self.assertEqual(
             [x.id for x in self.spreadsheet.worksheets()],
-            [sheet.id for sheet in self.spreadsheet]
+            [sheet.id for sheet in self.spreadsheet],
         )
 
     def test_add_del_worksheet(self):
@@ -378,11 +374,7 @@ class WorksheetTest(GspreadTest):
         num_rows = 6
         num_cols = 4
 
-        rows = [[
-            next(sg)
-            for j in range(num_cols)]
-            for i in range(num_rows)
-        ]
+        rows = [[next(sg) for j in range(num_cols)] for i in range(num_rows)]
 
         cell_list = self.sheet.range('A1:D6')
         for cell, value in zip(cell_list, itertools.chain(*rows)):
@@ -497,10 +489,12 @@ class WorksheetTest(GspreadTest):
     def test_get_all_values(self):
         self.sheet.resize(4, 4)
         # put in new values, made from three lists
-        rows = [["A1", "B1", "", "D1"],
-                ["", "b2", "", ""],
-                ["", "", "", ""],
-                ["A4", "B4", "", "D4"]]
+        rows = [
+            ["A1", "B1", "", "D1"],
+            ["", "b2", "", ""],
+            ["", "", "", ""],
+            ["A4", "B4", "", "D4"],
+        ]
         cell_list = self.sheet.range('A1:D1')
 
         cell_list.extend(self.sheet.range('A2:D2'))
@@ -518,10 +512,12 @@ class WorksheetTest(GspreadTest):
     def test_get_all_records(self):
         self.sheet.resize(4, 4)
         # put in new values, made from three lists
-        rows = [["A1", "B1", "", "D1"],
-                [1, "b2", 1.45, ""],
-                ["", "", "", ""],
-                ["A4", 0.4, "", 4]]
+        rows = [
+            ["A1", "B1", "", "D1"],
+            [1, "b2", 1.45, ""],
+            ["", "", "", ""],
+            ["A4", 0.4, "", 4],
+        ]
         cell_list = self.sheet.range('A1:D4')
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
@@ -554,12 +550,14 @@ class WorksheetTest(GspreadTest):
     def test_get_all_records_different_header(self):
         self.sheet.resize(6, 4)
         # put in new values, made from three lists
-        rows = [["", "", "", ""],
-                ["", "", "", ""],
-                ["A1", "B1", "", "D1"],
-                [1, "b2", 1.45, ""],
-                ["", "", "", ""],
-                ["A4", 0.4, "", 4]]
+        rows = [
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["A1", "B1", "", "D1"],
+            [1, "b2", 1.45, ""],
+            ["", "", "", ""],
+            ["A4", 0.4, "", 4],
+        ]
         cell_list = self.sheet.range('A1:D6')
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
@@ -602,11 +600,7 @@ class WorksheetTest(GspreadTest):
         num_rows = 6
         num_cols = 4
 
-        rows = [[
-            next(sg)
-            for j in range(num_cols)]
-            for i in range(num_rows)
-        ]
+        rows = [[next(sg) for j in range(num_cols)] for i in range(num_rows)]
 
         cell_list = self.sheet.range('A1:D6')
         for cell, value in zip(cell_list, itertools.chain(*rows)):
@@ -639,12 +633,14 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(self.sheet.row_values(2), next_row)
 
     def test_clear(self):
-        rows = [["", "", "", ""],
-                ["", "", "", ""],
-                ["A1", "B1", "", "D1"],
-                [1, "b2", 1.45, ""],
-                ["", "", "", ""],
-                ["A4", 0.4, "", 4]]
+        rows = [
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["A1", "B1", "", "D1"],
+            [1, "b2", 1.45, ""],
+            ["", "", "", ""],
+            ["A4", 0.4, "", 4],
+        ]
 
         cell_list = self.sheet.range('A1:D6')
         for cell, value in zip(cell_list, itertools.chain(*rows)):
