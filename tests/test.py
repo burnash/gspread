@@ -48,7 +48,7 @@ def sanitize_token(interaction, current_cassette):
 
 
 with Betamax.configure() as config:
-    config.cassette_library_dir = 'tests/fixtures/cassettes'
+    config.cassette_library_dir = 'tests/cassettes'
     config.default_cassette_options['serialize_with'] = 'json_body'
     config.before_record(callback=sanitize_token)
 
