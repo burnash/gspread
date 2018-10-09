@@ -22,7 +22,8 @@ except NameError:
     basestring = unicode = str
 
 
-CREDS_FILENAME = os.path.join(os.path.dirname(__file__), 'creds.json')
+CREDS_FILENAME = os.getenv('GS_CREDS_FILENAME')
+
 SCOPE = [
     'https://spreadsheets.google.com/feeds',
     'https://www.googleapis.com/auth/drive.file',
@@ -51,6 +52,9 @@ with Betamax.configure() as config:
     config.default_cassette_options['serialize_with'] = 'json_body'
     config.before_record(callback=sanitize_token)
 
+    record_mode = os.environ.get('GS_RECORD_MODE', 'once')
+    config.default_cassette_options['record_mode'] = record_mode
+
 
 def read_credentials(filename):
     return ServiceAccountCredentials.from_json_keyfile_name(filename, SCOPE)
@@ -76,13 +80,12 @@ class BetamaxGspreadTest(BetamaxTestCase):
 
     @classmethod
     def setUpClass(cls):
-        try:
+        if CREDS_FILENAME:
             cls.auth_credentials = read_credentials(CREDS_FILENAME)
             cls.base_gc = gspread.authorize(cls.auth_credentials)
             title = 'Test %s' % cls.__name__
             cls.temporary_spreadsheet = cls.base_gc.create(title)
-
-        except IOError as e:
+        else:
             cls.auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
 
     @classmethod
