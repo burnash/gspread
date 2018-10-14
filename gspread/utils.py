@@ -83,9 +83,11 @@ def rowcol_to_a1(row, col):
 
     :param row: The row of the cell to be converted.
                 Rows start at index 1.
+    :type row: int, str
 
     :param col: The column of the cell to be converted.
                 Columns start at index 1.
+    :type row: int, str
 
     :returns: a string containing the cell's coordinates in A1 notation.
 
@@ -119,8 +121,9 @@ def rowcol_to_a1(row, col):
 def a1_to_rowcol(label):
     """Translates a cell's address in A1 notation to a tuple of integers.
 
-    :param label: String with cell label in A1 notation, e.g. 'B1'.
+    :param label: A cell label in A1 notation, e.g. 'B1'.
                   Letter case is ignored.
+    :type label: str
 
     :returns: a tuple containing `row` and `column` numbers. Both indexed
               from 1 (one).
