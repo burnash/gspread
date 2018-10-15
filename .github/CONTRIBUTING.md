@@ -19,19 +19,25 @@
 
 ## Testing
 
-1. Go to Google Sheets and create an empty spreadsheet you will use for testing.
-2. Create a configuration file from config dummy:
+1. [Obtain OAuth2 credentials from Google Developers Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
+2. Install test requirements:
 
-    ```sh
-    cp tests/tests.config.example tests/tests.config
-    ```
+```
+pip install -r test-requirements.txt
+```
 
-3. Open `tests.config` with an editor and fill up config parameters with your testing spreadsheet's info.
-4. Install [Nose](http://nose.readthedocs.org).
-5. Download credentials json file(see [doc](http://gspread.readthedocs.io/en/latest/oauth2.html#using-signed-credentials)),
-rename it to `creds.json` and put it into the tests folder.
-6. Run tests:
+3. Run tests:
 
-    ```sh
-    nosetests
-    ```
+```
+GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py
+```
+
+where `YOUR_CREDS.json` is a path to the file you downloaded in step 1.
+
+**Note:** gspread uses [Betamax](https://github.com/betamaxpy/betamax) to record and replay HTTP interactions with Sheets API.
+You can control Betamax's [Record Mode](https://betamax.readthedocs.io/en/latest/record_modes.html) using `GS_RECORD_MODE` environment variable:
+
+```
+GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py
+```
+
