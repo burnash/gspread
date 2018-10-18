@@ -468,6 +468,9 @@ class Worksheet(object):
     def get_all_values(self):
         """Returns a list of lists containing all cells' values as strings.
 
+        .. note::
+
+            Empty trailing rows and columns will not be included.
         """
 
         data = self.spreadsheet.values_get(self.title)
