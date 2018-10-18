@@ -1,5 +1,5 @@
-Using OAuth2 for Authorization
-==============================
+Using OAuth2 for Authentication
+===============================
 
 OAuth Credentials
 -----------------
@@ -70,7 +70,7 @@ Depending on your system setup you may need to install PyOpenSSL:
 
     scope = ['https://spreadsheets.google.com/feeds',
              'https://www.googleapis.com/auth/drive']
-         
+
     credentials = ServiceAccountCredentials.from_json_keyfile_name('gspread-april-2cd … ba4.json', scope)
 
     gc = gspread.authorize(credentials)
