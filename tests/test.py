@@ -239,6 +239,35 @@ class SpreadsheetTest(GspreadTest):
             [sheet.id for sheet in self.spreadsheet],
         )
 
+    def test_values_get(self):
+        sg = self._sequence_generator()
+
+        worksheet1_name = u'%s %s' % (u'🌵', next(sg))
+
+        worksheet = self.spreadsheet.add_worksheet(worksheet1_name, 10, 10)
+
+        range_label = '%s!%s' % (worksheet1_name, 'A1')
+
+        values = [
+            [u'🍇', u'🍉', u'🍋'],
+            [u'🍐', u'🍎', u'🍓']
+        ]
+
+        self.spreadsheet.values_update(
+            range_label,
+            params={
+                'valueInputOption': 'RAW'
+            },
+            body={
+                'values': values
+            }
+        )
+
+        read_data = self.spreadsheet.values_get(worksheet1_name)
+
+        self.assertEqual(values, read_data['values'])
+        self.spreadsheet.del_worksheet(worksheet)
+
     def test_add_del_worksheet(self):
         sg = self._sequence_generator()
         worksheet1_name = next(sg)
