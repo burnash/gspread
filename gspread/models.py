@@ -834,6 +834,100 @@ class Worksheet(object):
         """
         return self.spreadsheet.values_clear(self.title)
 
+
+    def update_cell_abackground(
+            self,
+            label="",
+            red=1.0,
+            green=1.0,
+            blue=1.0
+    ):
+        """"Sets the new background color to a cell.
+
+        :param label: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+        :param red: Red color.
+        :param green: Green color.
+        :param blue: Blue color.
+        """
+        if label == "":
+            return
+        elif label.find(':') > -1:
+
+            cell_range = label.split(":")
+            start = a1_to_rowcol(cell_range[0])
+            end = a1_to_rowcol(cell_range[1])
+
+            self.update_cell_background(
+                start[0],
+                start[1],
+                end[0],
+                end[1],
+                red,
+                green,
+                blue
+            )
+
+        else:
+            cell_range = a1_to_rowcol(label)
+            self.update_cell_background(
+                cell_range[0],
+                cell_range[1],
+                cell_range[0],
+                cell_range[1],
+                red,
+                green,
+                blue
+            )
+        return
+
+    def update_cell_background(
+            self,
+            row_start,
+            column_start,
+            row_stop,
+            column_stop,
+            red=1.0,
+            green=1.0,
+            blue=1.0
+    ):
+        """"Sets the new background color to a cell.
+
+        :param row_start: String with cell label in common format, e.g. 'B1'.
+                      Letter case is ignored.
+        :param red: Red color.
+        :param green: Green color.
+        :param blue: Blue color.
+        """
+        row_start -= 1
+        column_start -= 1
+
+        body = {
+            "requests": [{
+                "repeatCell": {
+                    "range": {
+                        "sheetId": self.id,
+                        "startRowIndex": row_start,
+                        "endRowIndex": row_stop,
+                        "startColumnIndex": column_start,
+                        "endColumnIndex": column_stop
+                    },
+                    "cell": {
+                        "userEnteredFormat": {
+                            "backgroundColor": {
+                                "red": red,
+                                "green": green,
+                                "blue": blue
+                            }
+                        }
+                    },
+                    "fields": "userEnteredFormat(backgroundColor)"
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+		
     def _finder(self, func, query):
         data = self.spreadsheet.values_get(self.title)
 
