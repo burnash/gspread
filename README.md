@@ -180,14 +180,6 @@ pip install gspread
 
 Requirements: Python 2.7+ or Python 3+
 
-### From GitHub
-
-```sh
-git clone https://github.com/burnash/gspread.git
-cd gspread
-python setup.py install
-```
-
 ## [Documentation](http://gspread.readthedocs.org/)
 
 ## [Contributors](https://github.com/burnash/gspread/graphs/contributors)
