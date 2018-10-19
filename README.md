@@ -192,9 +192,7 @@ cd gspread
 python setup.py install
 ```
 
-## Documentation
-* [Getting Google API's credentials](http://gspread.readthedocs.io/en/latest/oauth2.html)
-* [gspread API Reference](http://gspread.readthedocs.org/)
+## [Documentation](http://gspread.readthedocs.org/)
 
 ## [Contributors](https://github.com/burnash/gspread/graphs/contributors)
 
