@@ -230,8 +230,17 @@ class Client(object):
     def import_csv(self, file_id, data):
         """Imports data into the first page of the spreadsheet.
 
-        :param data: A CSV string of data.
-        :type data: str
+        :param str data: A CSV string of data.
+
+        Example:
+
+        .. code::
+
+            # Read CSV file contents
+            content = open('file_to_import.csv', 'r').read()
+
+            gc.import_csv(spreadsheet.id, content)
+
         """
         headers = {'Content-Type': 'text/csv'}
         url = '{0}/{1}'.format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
