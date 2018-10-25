@@ -198,6 +198,10 @@ Please report bugs and suggest features via the [GitHub Issues](https://github.c
 
 Before opening an issue, search the tracker for possible duplicates. If you find a duplicate, please add a comment saying that you encountered the problem as well.
 
+### Improve Documentation
+
+If you spot areas in [documentation](https://gspread.readthedocs.io/) that you think could be better, please submit a pull request. Docs are located in [`docs`](https://github.com/burnash/gspread/tree/master/docs) folder, use [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html#rst-index) markup and rendered by [Sphinx](http://www.sphinx-doc.org/).
+
 ### Contribute code
 
 Please make sure to read the [Contributing Guide](https://github.com/burnash/gspread/blob/master/.github/CONTRIBUTING.md) before making a pull request.
