@@ -617,10 +617,10 @@ class Worksheet(object):
         """Updates many cells at once.
 
         :param cell_list: List of :class:`Cell` objects to update.
-        :param value_render_option: (optional) Determines how values should be
-                                    rendered in the the output. See
-                                    `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: str
+        :param value_input_option: (optional) Determines how input data should
+                                    be interpreted. See `ValueInputOption`_ in
+                                    the Sheets API.
+        :type value_input_option: str
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
 
@@ -738,10 +738,10 @@ class Worksheet(object):
         Widens the worksheet if there are more values than columns.
 
         :param values: List of values for the new row.
-        :param value_render_option: (optional) Determines how values should be
-                                    rendered in the the output. See
-                                    `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: str
+        :param value_input_option: (optional) Determines how input data should
+                                    be interpreted. See `ValueInputOption`_ in
+                                    the Sheets API.
+        :type value_input_option: str
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
 
@@ -770,10 +770,10 @@ class Worksheet(object):
         :param values: List of values for the new row.
         :param index: (optional) Offset for the newly inserted row.
         :type index: int
-        :param value_render_option: (optional) Determines how values should be
-                                    rendered in the the output. See
-                                    `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: str
+        :param value_input_option: (optional) Determines how input data should
+                                    be interpreted. See `ValueInputOption`_ in
+                                    the Sheets API.
+        :type value_input_option: str
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
 
