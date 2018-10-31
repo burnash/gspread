@@ -10,6 +10,18 @@ Features:
 -  Extract range, entire row or column values.
 -  Python 3 support.
 
+
+Installation
+------------
+
+.. code:: sh
+
+   pip install gspread
+
+
+Requirements: Python 2.7+ or Python 3+.
+
+
 Example Usage
 -------------
 
@@ -30,17 +42,6 @@ Example Usage
 
    # Fetch a cell range
    cell_list = wks.range('A1:B7')
-
-
-Installation
-------------
-
-.. code:: sh
-
-   pip install gspread
-
-
-Requirements: Python 2.7+ or Python 3+
 
 
 Authentication
