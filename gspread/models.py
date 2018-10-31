@@ -545,37 +545,50 @@ class Worksheet(object):
         except KeyError:
             return []
 
-    def get_all_records(self, empty2zero=False, head=1, default_blank="", allow_underscores_in_numeric_literals=False):
-        """Returns a list of dictionaries, all of them having:
-            - the contents of the spreadsheet's with the head row as keys,
-            And each of these dictionaries holding
-            - the contents of subsequent rows of cells as values.
+    def get_all_records(
+        self,
+        empty2zero=False,
+        head=1,
+        default_blank="",
+        allow_underscores_in_numeric_literals=False,
+    ):
+        """Returns a list of dictionaries, all of them having the contents
+            of the spreadsheet with the head row as keys and each of these
+            dictionaries holding the contents of subsequent rows of cells
+            as values.
 
-        Cell values are numericised (strings that can be read as ints
-        or floats are converted).
+            Cell values are numericised (strings that can be read as ints
+            or floats are converted).
 
-        :param empty2zero: (optional) Determines whether empty cells are
-                           converted to zeros.
-        :type empty2zero: bool
-        :param head: (optional) Determines wich row to use as keys, starting
-                     from 1 following the numeration of the spreadsheet.
-        :type head: int
-        :param default_blank: (optional) Determines whether empty cells are
-                              converted to something else except empty string
-                              or zero.
-        :type default_blank: str
-        :param allow_underscores_in_numeric_literals: (optional) Allow underscores 
-                                                      in numeric literals,
-                                                      as introduced in PEP 515
-        :type allow_underscores_in_numeric_literals: bool
-        """
+            :param empty2zero: (optional) Determines whether empty cells are
+                               converted to zeros.
+            :type empty2zero: bool
+            :param head: (optional) Determines wich row to use as keys, starting
+                         from 1 following the numeration of the spreadsheet.
+            :type head: int
+            :param default_blank: (optional) Determines whether empty cells are
+                                  converted to something else except empty string
+                                  or zero.
+            :type default_blank: str
+            :param allow_underscores_in_numeric_literals: (optional) Allow underscores
+                                                          in numeric literals,
+                                                          as introduced in PEP 515
+            :type allow_underscores_in_numeric_literals: bool
+            """
 
         idx = head - 1
 
         data = self.get_all_values()
         keys = data[idx]
-        values = [numericise_all(row, empty2zero, default_blank, allow_underscores_in_numeric_literals)
-                  for row in data[idx + 1:]]
+        values = [
+            numericise_all(
+                row,
+                empty2zero,
+                default_blank,
+                allow_underscores_in_numeric_literals,
+            )
+            for row in data[idx + 1:]
+        ]
 
         return [dict(zip(keys, row)) for row in values]
 
