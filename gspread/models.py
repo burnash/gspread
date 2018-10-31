@@ -63,6 +63,7 @@ class Spreadsheet(object):
     @property
     def updated(self):
         """.. deprecated:: 2.0
+
         This feature is not supported in Sheets API v4.
         """
         import warnings
@@ -87,6 +88,15 @@ class Spreadsheet(object):
                                   self.id)
 
     def batch_update(self, body):
+        """Lower-level method that directly calls `spreadsheets.batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate>`_.
+
+        :param dict body: `Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#request-body>`_.
+        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#response-body>`_.
+        :rtype: dict
+
+        .. versionadded:: 3.0
+
+        """
         r = self.client.request(
             'post',
             SPREADSHEET_BATCH_UPDATE_URL % self.id,
@@ -96,21 +106,75 @@ class Spreadsheet(object):
         return r.json()
 
     def values_append(self, range, params, body):
+        """Lower-level method that directly calls `spreadsheets.values.append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
+
+        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_
+                          of a range to search for a logical table of data. Values will be appended after the last row of the table.
+        :param dict params: `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#query-parameters>`_.
+        :param dict body: `Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#request-body>`_.
+        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#response-body>`_.
+        :rtype: dict
+
+        .. versionadded:: 3.0
+
+        """
         url = SPREADSHEET_VALUES_APPEND_URL % (self.id, quote(range, safe=''))
         r = self.client.request('post', url, params=params, json=body)
         return r.json()
 
     def values_clear(self, range):
+        """Lower-level method that directly calls `spreadsheets.values.clear <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/clear>`_.
+
+        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to clear.
+        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/clear#response-body>`_.
+        :rtype: dict
+
+        .. versionadded:: 3.0
+
+        """
         url = SPREADSHEET_VALUES_CLEAR_URL % (self.id, quote(range, safe=''))
         r = self.client.request('post', url)
         return r.json()
 
     def values_get(self, range, params=None):
+        """Lower-level method that directly calls `spreadsheets.values.get <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get>`_.
+
+        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
+        :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#query-parameters>`_.
+        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
+        :rtype: dict
+
+        .. versionadded:: 3.0
+
+        """
         url = SPREADSHEET_VALUES_URL % (self.id, quote(range, safe=''))
         r = self.client.request('get', url, params=params)
         return r.json()
 
     def values_update(self, range, params=None, body=None):
+        """Lower-level method that directly calls `spreadsheets.values.update <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update>`_.
+
+        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to update.
+        :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update#query-parameters>`_.
+        :param dict body: (optional) `Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update#request-body>`_.
+        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update#response-body>`_.
+        :rtype: dict
+
+        Example::
+
+            sh.values_update(
+                'Sheet1!A2',
+                params={
+                    'valueInputOption': 'USER_ENTERED'
+                },
+                body={
+                    'values': [[1, 2, 3]]
+                }
+            )
+
+        .. versionadded:: 3.0
+
+        """
         url = SPREADSHEET_VALUES_URL % (self.id, quote(range, safe=''))
         r = self.client.request('put', url, params=params, json=body)
         return r.json()
@@ -333,6 +397,7 @@ class Worksheet(object):
     @property
     def updated(self):
         """.. deprecated:: 2.0
+
         This feature is not supported in Sheets API v4.
         """
         import warnings
@@ -860,6 +925,7 @@ class Worksheet(object):
 
         :param query: A literal string to match or compiled regular expression.
         :type query: str, :py:class:`re.RegexObject`
+
         """
         try:
             return self._finder(finditem, query)
@@ -871,11 +937,13 @@ class Worksheet(object):
 
         :param query: A literal string to match or compiled regular expression.
         :type query: str, :py:class:`re.RegexObject`
+
         """
         return list(self._finder(filter, query))
 
     def export(self, format):
         """.. deprecated:: 2.0
+
         This feature is not supported in Sheets API v4.
         """
         import warnings
@@ -925,6 +993,7 @@ class Cell(object):
     @property
     def input_value(self):
         """.. deprecated:: 2.0
+
         This feature is not supported in Sheets API v4.
         """
         import warnings
