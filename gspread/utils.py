@@ -89,9 +89,11 @@ def rowcol_to_a1(row, col):
 
     :param row: The row of the cell to be converted.
                 Rows start at index 1.
+    :type row: int, str
 
     :param col: The column of the cell to be converted.
                 Columns start at index 1.
+    :type row: int, str
 
     :returns: a string containing the cell's coordinates in A1 notation.
 
@@ -125,8 +127,9 @@ def rowcol_to_a1(row, col):
 def a1_to_rowcol(label):
     """Translates a cell's address in A1 notation to a tuple of integers.
 
-    :param label: String with cell label in A1 notation, e.g. 'B1'.
+    :param label: A cell label in A1 notation, e.g. 'B1'.
                   Letter case is ignored.
+    :type label: str
 
     :returns: a tuple containing `row` and `column` numbers. Both indexed
               from 1 (one).
@@ -217,13 +220,13 @@ def cell_list_to_rect(cell_list):
     if not cell_list:
         return []
 
-    rows = defaultdict(lambda: defaultdict(str))
+    rows = defaultdict(lambda: {})
 
     row_offset = cell_list[0].row
     col_offset = cell_list[0].col
 
     for cell in cell_list:
-        row = rows.setdefault(int(cell.row) - row_offset, defaultdict(str))
+        row = rows.setdefault(int(cell.row) - row_offset, {})
         row[cell.col - col_offset] = cell.value
 
     if not rows:
@@ -233,7 +236,11 @@ def cell_list_to_rect(cell_list):
     rect_cols = range(max(all_row_keys) + 1)
     rect_rows = range(max(rows.keys()) + 1)
 
-    return [[rows[i][j] for j in rect_cols] for i in rect_rows]
+    # Return the values of the cells as a list of lists where each sublist
+    # contains all of the values for one row. The Google API requires a rectangle
+    # of updates, so if a cell isn't present in the input cell_list, then the
+    # value will be None and will not be updated.
+    return [[rows[i].get(j) for j in rect_cols] for i in rect_rows]
 
 
 if __name__ == '__main__':

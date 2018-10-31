@@ -1,0 +1,641 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-10-08T20:16:05",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"title\": \"TestImportSpreadsheet\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "89"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "mimeType": "application/vnd.google-apps.spreadsheet",
+          "title": "TestImportSpreadsheet"
+        },
+        "method": "POST",
+        "uri": "https://www.googleapis.com/drive/v2/files"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n \"kind\": \"drive#file\",\n \"id\": \"1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4\",\n \"etag\": \"\\\"omwGuTP8OdxhZkubyp-j43cFdJQ/MTUzOTAyOTc2NDg4NQ\\\"\",\n \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4\",\n \"alternateLink\": \"https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/edit?usp=drivesdk\",\n \"embedLink\": \"https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/htmlembed?ouid=117345471312358601321\",\n \"iconLink\": \"https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet\",\n \"title\": \"TestImportSpreadsheet\",\n \"mimeType\": \"application/vnd.google-apps.spreadsheet\",\n \"labels\": {\n  \"starred\": false,\n  \"hidden\": false,\n  \"trashed\": false,\n  \"restricted\": false,\n  \"viewed\": true\n },\n \"copyRequiresWriterPermission\": false,\n \"createdDate\": \"2018-10-08T20:16:04.871Z\",\n \"modifiedDate\": \"2018-10-08T20:16:04.885Z\",\n \"modifiedByMeDate\": \"2018-10-08T20:16:04.885Z\",\n \"lastViewedByMeDate\": \"2018-10-08T20:16:04.871Z\",\n \"markedViewedByMeDate\": \"1970-01-01T00:00:00.000Z\",\n \"version\": \"3\",\n \"parents\": [\n  {\n   \"kind\": \"drive#parentReference\",\n   \"id\": \"0AJ0eIo9JjYbMUk9PVA\",\n   \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/parents/0AJ0eIo9JjYbMUk9PVA\",\n   \"parentLink\": \"https://www.googleapis.com/drive/v2/files/0AJ0eIo9JjYbMUk9PVA\",\n   \"isRoot\": true\n  }\n ],\n \"exportLinks\": {\n  \"application/x-vnd.oasis.opendocument.spreadsheet\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=ods\",\n  \"text/tab-separated-values\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=tsv\",\n  \"application/pdf\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=pdf\",\n  \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=xlsx\",\n  \"text/csv\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=csv\",\n  \"application/zip\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=zip\",\n  \"application/vnd.oasis.opendocument.spreadsheet\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=ods\"\n },\n \"userPermission\": {\n  \"kind\": \"drive#permission\",\n  \"etag\": \"\\\"omwGuTP8OdxhZkubyp-j43cFdJQ/KwakkBCScA8LxXlB1ulrHJHGNog\\\"\",\n  \"id\": \"me\",\n  \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/permissions/me\",\n  \"role\": \"owner\",\n  \"type\": \"user\"\n },\n \"quotaBytesUsed\": \"0\",\n \"ownerNames\": [\n  \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\"\n ],\n \"owners\": [\n  {\n   \"kind\": \"drive#user\",\n   \"displayName\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\",\n   \"isAuthenticatedUser\": true,\n   \"permissionId\": \"08669770340085466890\",\n   \"emailAddress\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\"\n  }\n ],\n \"lastModifyingUserName\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\",\n \"lastModifyingUser\": {\n  \"kind\": \"drive#user\",\n  \"displayName\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\",\n  \"isAuthenticatedUser\": true,\n  \"permissionId\": \"08669770340085466890\",\n  \"emailAddress\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\"\n },\n \"capabilities\": {\n  \"canCopy\": true,\n  \"canEdit\": true\n },\n \"editable\": true,\n \"copyable\": true,\n \"writersCanShare\": true,\n \"shared\": false,\n \"explicitlyTrashed\": false,\n \"appDataContents\": false,\n \"spaces\": [\n  \"drive\"\n ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "no-cache, no-store, max-age=0, must-revalidate"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 08 Oct 2018 20:16:05 GMT"
+          ],
+          "Expires": [
+            "Mon, 01 Jan 1990 00:00:00 GMT"
+          ],
+          "Pragma": [
+            "no-cache"
+          ],
+          "Server": [
+            "GSE"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "alternateLink": "https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/edit?usp=drivesdk",
+          "appDataContents": false,
+          "capabilities": {
+            "canCopy": true,
+            "canEdit": true
+          },
+          "copyRequiresWriterPermission": false,
+          "copyable": true,
+          "createdDate": "2018-10-08T20:16:04.871Z",
+          "editable": true,
+          "embedLink": "https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/htmlembed?ouid=117345471312358601321",
+          "etag": "\"omwGuTP8OdxhZkubyp-j43cFdJQ/MTUzOTAyOTc2NDg4NQ\"",
+          "explicitlyTrashed": false,
+          "exportLinks": {
+            "application/pdf": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=pdf",
+            "application/vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=ods",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=xlsx",
+            "application/x-vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=ods",
+            "application/zip": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=zip",
+            "text/csv": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=csv",
+            "text/tab-separated-values": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=tsv"
+          },
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet",
+          "id": "1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4",
+          "kind": "drive#file",
+          "labels": {
+            "hidden": false,
+            "restricted": false,
+            "starred": false,
+            "trashed": false,
+            "viewed": true
+          },
+          "lastModifyingUser": {
+            "displayName": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+            "emailAddress": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+            "isAuthenticatedUser": true,
+            "kind": "drive#user",
+            "permissionId": "08669770340085466890"
+          },
+          "lastModifyingUserName": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+          "lastViewedByMeDate": "2018-10-08T20:16:04.871Z",
+          "markedViewedByMeDate": "1970-01-01T00:00:00.000Z",
+          "mimeType": "application/vnd.google-apps.spreadsheet",
+          "modifiedByMeDate": "2018-10-08T20:16:04.885Z",
+          "modifiedDate": "2018-10-08T20:16:04.885Z",
+          "ownerNames": [
+            "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com"
+          ],
+          "owners": [
+            {
+              "displayName": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+              "emailAddress": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+              "isAuthenticatedUser": true,
+              "kind": "drive#user",
+              "permissionId": "08669770340085466890"
+            }
+          ],
+          "parents": [
+            {
+              "id": "0AJ0eIo9JjYbMUk9PVA",
+              "isRoot": true,
+              "kind": "drive#parentReference",
+              "parentLink": "https://www.googleapis.com/drive/v2/files/0AJ0eIo9JjYbMUk9PVA",
+              "selfLink": "https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/parents/0AJ0eIo9JjYbMUk9PVA"
+            }
+          ],
+          "quotaBytesUsed": "0",
+          "selfLink": "https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4",
+          "shared": false,
+          "spaces": [
+            "drive"
+          ],
+          "title": "TestImportSpreadsheet",
+          "userPermission": {
+            "etag": "\"omwGuTP8OdxhZkubyp-j43cFdJQ/KwakkBCScA8LxXlB1ulrHJHGNog\"",
+            "id": "me",
+            "kind": "drive#permission",
+            "role": "owner",
+            "selfLink": "https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/permissions/me",
+            "type": "user"
+          },
+          "version": "3",
+          "writersCanShare": true
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.googleapis.com/drive/v2/files"
+      }
+    },
+    {
+      "recorded_at": "2018-10-08T20:16:07",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "test_import_csv 1,test_import_csv 2,test_import_csv 3,test_import_csv 4\ntest_import_csv 5,test_import_csv 6,test_import_csv 7,test_import_csv 8\ntest_import_csv 9,test_import_csv 10,test_import_csv 11,test_import_csv 12\ntest_import_csv 13,test_import_csv 14,test_import_csv 15,test_import_csv 16"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "294"
+          ],
+          "Content-Type": [
+            "text/csv"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "PUT",
+        "uri": "https://www.googleapis.com/upload/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4?uploadType=media&convert=True"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n \"kind\": \"drive#file\",\n \"id\": \"1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4\",\n \"etag\": \"\\\"omwGuTP8OdxhZkubyp-j43cFdJQ/MTUzOTAyOTc2NjI0MQ\\\"\",\n \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4\",\n \"alternateLink\": \"https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/edit?usp=drivesdk\",\n \"embedLink\": \"https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/htmlembed?ouid=117345471312358601321\",\n \"iconLink\": \"https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet\",\n \"thumbnailLink\": \"https://docs.google.com/feeds/vt?gd=true&id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&v=1&s=AMedNnoAAAAAW7vXJ2O_4RELX3htT1Pae5O9hMfERxCt&sz=s220\",\n \"title\": \"TestImportSpreadsheet\",\n \"mimeType\": \"application/vnd.google-apps.spreadsheet\",\n \"labels\": {\n  \"starred\": false,\n  \"hidden\": false,\n  \"trashed\": false,\n  \"restricted\": false,\n  \"viewed\": true\n },\n \"copyRequiresWriterPermission\": false,\n \"createdDate\": \"2018-10-08T20:16:04.871Z\",\n \"modifiedDate\": \"2018-10-08T20:16:06.241Z\",\n \"modifiedByMeDate\": \"2018-10-08T20:16:06.241Z\",\n \"lastViewedByMeDate\": \"2018-10-08T20:16:06.241Z\",\n \"markedViewedByMeDate\": \"1970-01-01T00:00:00.000Z\",\n \"version\": \"5\",\n \"parents\": [\n  {\n   \"kind\": \"drive#parentReference\",\n   \"id\": \"0AJ0eIo9JjYbMUk9PVA\",\n   \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/parents/0AJ0eIo9JjYbMUk9PVA\",\n   \"parentLink\": \"https://www.googleapis.com/drive/v2/files/0AJ0eIo9JjYbMUk9PVA\",\n   \"isRoot\": true\n  }\n ],\n \"exportLinks\": {\n  \"application/x-vnd.oasis.opendocument.spreadsheet\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=ods\",\n  \"text/tab-separated-values\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=tsv\",\n  \"application/pdf\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=pdf\",\n  \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=xlsx\",\n  \"text/csv\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=csv\",\n  \"application/zip\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=zip\",\n  \"application/vnd.oasis.opendocument.spreadsheet\": \"https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=ods\"\n },\n \"userPermission\": {\n  \"kind\": \"drive#permission\",\n  \"etag\": \"\\\"omwGuTP8OdxhZkubyp-j43cFdJQ/KwakkBCScA8LxXlB1ulrHJHGNog\\\"\",\n  \"id\": \"me\",\n  \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/permissions/me\",\n  \"role\": \"owner\",\n  \"type\": \"user\"\n },\n \"quotaBytesUsed\": \"0\",\n \"ownerNames\": [\n  \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\"\n ],\n \"owners\": [\n  {\n   \"kind\": \"drive#user\",\n   \"displayName\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\",\n   \"isAuthenticatedUser\": true,\n   \"permissionId\": \"08669770340085466890\",\n   \"emailAddress\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\"\n  }\n ],\n \"lastModifyingUserName\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\",\n \"lastModifyingUser\": {\n  \"kind\": \"drive#user\",\n  \"displayName\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\",\n  \"isAuthenticatedUser\": true,\n  \"permissionId\": \"08669770340085466890\",\n  \"emailAddress\": \"933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com\"\n },\n \"capabilities\": {\n  \"canCopy\": true,\n  \"canEdit\": true\n },\n \"editable\": true,\n \"copyable\": true,\n \"writersCanShare\": true,\n \"shared\": false,\n \"explicitlyTrashed\": false,\n \"appDataContents\": false,\n \"spaces\": [\n  \"drive\"\n ]\n}\n"
+        },
+        "headers": {
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "no-cache, no-store, max-age=0, must-revalidate"
+          ],
+          "Content-Length": [
+            "4079"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 08 Oct 2018 20:16:07 GMT"
+          ],
+          "ETag": [
+            "\"omwGuTP8OdxhZkubyp-j43cFdJQ/MTUzOTAyOTc2NjI0MQ\""
+          ],
+          "Expires": [
+            "Mon, 01 Jan 1990 00:00:00 GMT"
+          ],
+          "Pragma": [
+            "no-cache"
+          ],
+          "Server": [
+            "UploadServer"
+          ],
+          "Vary": [
+            "Origin",
+            "X-Origin"
+          ],
+          "X-GUploader-UploadID": [
+            "AEnB2Uol_aGOB5CH2mGtYtjB_CdQGrDEKXG0oG2LS0c_wxScHs673qZUkLzvXJ-p9N4-DZpDPiSoI_y_1mMC8u9DrestsDGYGjrDgzVgdC9KwMPGf9ENMzU"
+          ]
+        },
+        "json_body": {
+          "alternateLink": "https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/edit?usp=drivesdk",
+          "appDataContents": false,
+          "capabilities": {
+            "canCopy": true,
+            "canEdit": true
+          },
+          "copyRequiresWriterPermission": false,
+          "copyable": true,
+          "createdDate": "2018-10-08T20:16:04.871Z",
+          "editable": true,
+          "embedLink": "https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/htmlembed?ouid=117345471312358601321",
+          "etag": "\"omwGuTP8OdxhZkubyp-j43cFdJQ/MTUzOTAyOTc2NjI0MQ\"",
+          "explicitlyTrashed": false,
+          "exportLinks": {
+            "application/pdf": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=pdf",
+            "application/vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=ods",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=xlsx",
+            "application/x-vnd.oasis.opendocument.spreadsheet": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=ods",
+            "application/zip": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=zip",
+            "text/csv": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=csv",
+            "text/tab-separated-values": "https://docs.google.com/spreadsheets/export?id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&exportFormat=tsv"
+          },
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet",
+          "id": "1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4",
+          "kind": "drive#file",
+          "labels": {
+            "hidden": false,
+            "restricted": false,
+            "starred": false,
+            "trashed": false,
+            "viewed": true
+          },
+          "lastModifyingUser": {
+            "displayName": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+            "emailAddress": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+            "isAuthenticatedUser": true,
+            "kind": "drive#user",
+            "permissionId": "08669770340085466890"
+          },
+          "lastModifyingUserName": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+          "lastViewedByMeDate": "2018-10-08T20:16:06.241Z",
+          "markedViewedByMeDate": "1970-01-01T00:00:00.000Z",
+          "mimeType": "application/vnd.google-apps.spreadsheet",
+          "modifiedByMeDate": "2018-10-08T20:16:06.241Z",
+          "modifiedDate": "2018-10-08T20:16:06.241Z",
+          "ownerNames": [
+            "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com"
+          ],
+          "owners": [
+            {
+              "displayName": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+              "emailAddress": "933192577840-ncdrpgmg63quufb5c54b4vvko8is7epb@developer.gserviceaccount.com",
+              "isAuthenticatedUser": true,
+              "kind": "drive#user",
+              "permissionId": "08669770340085466890"
+            }
+          ],
+          "parents": [
+            {
+              "id": "0AJ0eIo9JjYbMUk9PVA",
+              "isRoot": true,
+              "kind": "drive#parentReference",
+              "parentLink": "https://www.googleapis.com/drive/v2/files/0AJ0eIo9JjYbMUk9PVA",
+              "selfLink": "https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/parents/0AJ0eIo9JjYbMUk9PVA"
+            }
+          ],
+          "quotaBytesUsed": "0",
+          "selfLink": "https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4",
+          "shared": false,
+          "spaces": [
+            "drive"
+          ],
+          "thumbnailLink": "https://docs.google.com/feeds/vt?gd=true&id=1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4&v=1&s=AMedNnoAAAAAW7vXJ2O_4RELX3htT1Pae5O9hMfERxCt&sz=s220",
+          "title": "TestImportSpreadsheet",
+          "userPermission": {
+            "etag": "\"omwGuTP8OdxhZkubyp-j43cFdJQ/KwakkBCScA8LxXlB1ulrHJHGNog\"",
+            "id": "me",
+            "kind": "drive#permission",
+            "role": "owner",
+            "selfLink": "https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/permissions/me",
+            "type": "user"
+          },
+          "version": "5",
+          "writersCanShare": true
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.googleapis.com/upload/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4?uploadType=media&convert=True"
+      }
+    },
+    {
+      "recorded_at": "2018-10-08T20:16:08",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4?includeGridData=false"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4\",\n  \"properties\": {\n    \"title\": \"TestImportSpreadsheet\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"America/Los_Angeles\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false\n      }\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 1319099401,\n        \"title\": \"TestImportSpreadsheet\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/edit\"\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 08 Oct 2018 20:16:08 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "properties": {
+            "autoRecalc": "ON_CHANGE",
+            "defaultFormat": {
+              "backgroundColor": {
+                "blue": 1,
+                "green": 1,
+                "red": 1
+              },
+              "padding": {
+                "bottom": 2,
+                "left": 3,
+                "right": 3,
+                "top": 2
+              },
+              "textFormat": {
+                "bold": false,
+                "fontFamily": "arial,sans,sans-serif",
+                "fontSize": 10,
+                "foregroundColor": {},
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              },
+              "verticalAlignment": "BOTTOM",
+              "wrapStrategy": "OVERFLOW_CELL"
+            },
+            "locale": "en_US",
+            "timeZone": "America/Los_Angeles",
+            "title": "TestImportSpreadsheet"
+          },
+          "sheets": [
+            {
+              "properties": {
+                "gridProperties": {
+                  "columnCount": 26,
+                  "rowCount": 1000
+                },
+                "index": 0,
+                "sheetId": 1319099401,
+                "sheetType": "GRID",
+                "title": "TestImportSpreadsheet"
+              }
+            }
+          ],
+          "spreadsheetId": "1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4",
+          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/edit"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4?includeGridData=false"
+      }
+    },
+    {
+      "recorded_at": "2018-10-08T20:16:09",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/values/TestImportSpreadsheet"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"range\": \"TestImportSpreadsheet!A1:Z1000\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_import_csv 1\",\n      \"test_import_csv 2\",\n      \"test_import_csv 3\",\n      \"test_import_csv 4\"\n    ],\n    [\n      \"test_import_csv 5\",\n      \"test_import_csv 6\",\n      \"test_import_csv 7\",\n      \"test_import_csv 8\"\n    ],\n    [\n      \"test_import_csv 9\",\n      \"test_import_csv 10\",\n      \"test_import_csv 11\",\n      \"test_import_csv 12\"\n    ],\n    [\n      \"test_import_csv 13\",\n      \"test_import_csv 14\",\n      \"test_import_csv 15\",\n      \"test_import_csv 16\"\n    ]\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 08 Oct 2018 20:16:09 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "majorDimension": "ROWS",
+          "range": "TestImportSpreadsheet!A1:Z1000",
+          "values": [
+            [
+              "test_import_csv 1",
+              "test_import_csv 2",
+              "test_import_csv 3",
+              "test_import_csv 4"
+            ],
+            [
+              "test_import_csv 5",
+              "test_import_csv 6",
+              "test_import_csv 7",
+              "test_import_csv 8"
+            ],
+            [
+              "test_import_csv 9",
+              "test_import_csv 10",
+              "test_import_csv 11",
+              "test_import_csv 12"
+            ],
+            [
+              "test_import_csv 13",
+              "test_import_csv 14",
+              "test_import_csv 15",
+              "test_import_csv 16"
+            ]
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/values/TestImportSpreadsheet"
+      }
+    },
+    {
+      "recorded_at": "2018-10-08T20:16:10",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "0"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "DELETE",
+        "uri": "https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4"
+      },
+      "response": {
+        "body": {
+          "encoding": null,
+          "string": ""
+        },
+        "headers": {
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "no-cache, no-store, max-age=0, must-revalidate"
+          ],
+          "Date": [
+            "Mon, 08 Oct 2018 20:16:09 GMT"
+          ],
+          "ETag": [
+            "\"omwGuTP8OdxhZkubyp-j43cFdJQ/vyGp6PvFo4RvsFtPoIWeCReyIC8\""
+          ],
+          "Expires": [
+            "Mon, 01 Jan 1990 00:00:00 GMT"
+          ],
+          "Pragma": [
+            "no-cache"
+          ],
+          "Server": [
+            "GSE"
+          ],
+          "Vary": [
+            "Origin",
+            "X-Origin"
+          ]
+        },
+        "status": {
+          "code": 204,
+          "message": "No Content"
+        },
+        "url": "https://www.googleapis.com/drive/v2/files/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

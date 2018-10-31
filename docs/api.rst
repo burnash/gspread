@@ -1,0 +1,55 @@
+.. gspread documentation master file, created by
+   sphinx-quickstart on Thu Dec 15 14:44:32 2011.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+API Reference
+=====================
+
+`gspread <https://github.com/burnash/gspread>`_ is a Python client library for the `Google Sheets`_ API.
+
+.. _Google Sheets: https://docs.google.com/spreadsheets/
+
+.. module:: gspread
+
+.. contents:: :local:
+
+API Client
+----------
+
+.. autofunction:: authorize
+
+.. autoclass:: gspread.Client
+   :members:
+
+Models
+------
+
+The models represent common spreadsheet objects: :class:`a spreadsheet <Spreadsheet>`,
+:class:`a worksheet <Worksheet>` and :class:`a cell <Cell>`.
+
+.. note::
+
+   The classes described below should not be instantiated by end-user. Their
+   instances result from calling other objects' methods.
+
+.. autoclass:: gspread.models.Spreadsheet
+   :members:
+.. autoclass:: gspread.models.Worksheet
+   :members:
+.. autoclass:: gspread.models.Cell
+   :members:
+
+Utils
+-----
+
+.. automodule:: gspread.utils
+   :members: rowcol_to_a1, a1_to_rowcol
+
+Exceptions
+----------
+
+.. autoexception:: gspread.exceptions.GSpreadException
+.. autoexception:: gspread.exceptions.APIError
+
+.. _github issue: https://github.com/burnash/gspread/issues
