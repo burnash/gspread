@@ -14,8 +14,8 @@ API Reference
 
 .. contents:: :local:
 
-Main Interface
---------------
+API Client
+----------
 
 .. autofunction:: authorize
 
