@@ -48,6 +48,8 @@ with yourself:
 
    sh.share('otto@example.com', perm_type='user', role='writer')
 
+See :meth:`~gspread.models.Spreadsheet.share` documentation for a full list of accepted parameters.
+
 
 Selecting a Worksheet
 ~~~~~~~~~~~~~~~~~~~~~
