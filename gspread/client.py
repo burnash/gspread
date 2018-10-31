@@ -150,7 +150,7 @@ class Client(object):
         :param url: URL of a spreadsheet as it appears in a browser.
         :type url: str
 
-        :returns: a :class:`~gspread.Spreadsheet` instance.
+        :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
         :raises gspread.SpreadsheetNotFound: if no spreadsheet with
                                              specified `url` is found.

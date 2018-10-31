@@ -27,7 +27,7 @@ Or, if you feel really lazy to extract that key, paste the entire spreadsheet's 
 Creating a Spreadsheet
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Use :meth:`~gspread.client.Client.create` to create a new blank spreadsheet:
+Use :meth:`~gspread.Client.create` to create a new blank spreadsheet:
 
 .. code:: python
 

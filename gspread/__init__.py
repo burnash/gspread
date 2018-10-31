@@ -32,7 +32,7 @@ def authorize(credentials, client_class=Client):
     instantiates :class:`gspread.client.Client`
     and performs login right away.
 
-    :returns: :class:`gspread.client.Client` instance.
+    :returns: :class:`gspread.Client` instance.
     """
     client = client_class(auth=credentials)
     client.login()
