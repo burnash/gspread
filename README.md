@@ -9,6 +9,15 @@ Features:
 * Extract range, entire row or column values.
 * Python 3 support.
 
+## Installation
+
+```sh
+pip install gspread
+```
+
+Requirements: Python 2.7+ or Python 3+
+
+
 ## Basic Usage
 
 1. [Obtain OAuth2 credentials from Google Developers Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
@@ -97,10 +106,6 @@ val = worksheet.acell('B1').value
 
 # With coords
 val = worksheet.cell(1, 2).value
-
-# To get a cell formula
-cell = worksheet.acell('B1') # or .cell(1, 2)
-cell.input_value
 ```
 
 ### Getting All Values From a Row or a Column
@@ -171,14 +176,6 @@ for cell in cell_list:
 # Update in batch
 worksheet.update_cells(cell_list)
 ```
-
-## Installation
-
-```sh
-pip install gspread
-```
-
-Requirements: Python 2.7+ or Python 3+
 
 ## [Documentation](http://gspread.readthedocs.org/)
 
