@@ -280,6 +280,51 @@ class Spreadsheet(object):
 
         return worksheet
 
+    def duplicate_sheet(
+        self,
+        source_sheet_id,
+        insert_sheet_index=None,
+        new_sheet_id=None,
+        new_sheet_name=None
+    ):
+        """Duplicates the contents of a sheet.
+
+        :param int source_sheet_id: The sheet ID to duplicate.
+        :param int insert_sheet_index: (optional) The zero-based index
+                                       where the new sheet should be inserted.
+                                       The index of all sheets after this are
+                                       incremented.
+        :param int new_sheet_id: (optional) The ID of the new sheet.
+                                 If not set, an ID is chosen. If set, the ID
+                                 must not conflict with any existing sheet ID.
+                                 If set, it must be non-negative.
+        :param str new_sheet_name: (optional) The name of the new sheet.
+                                   If empty, a new name is chosen for you.
+
+        :returns: a newly created :class:`worksheets <gsperad.models.Worksheet>`.
+
+        .. versionadded:: 3.1.0
+
+        """
+        body = {
+            'requests': [{
+                'duplicateSheet': {
+                    'sourceSheetId': source_sheet_id,
+                    'insertSheetIndex': insert_sheet_index,
+                    'newSheetId': new_sheet_id,
+                    'newSheetName': new_sheet_name
+                }
+            }]
+        }
+
+        data = self.batch_update(body)
+
+        properties = data['replies'][0]['duplicateSheet']['properties']
+
+        worksheet = Worksheet(self, properties)
+
+        return worksheet
+
     def del_worksheet(self, worksheet):
         """Deletes a worksheet from a spreadsheet.
 
@@ -970,6 +1015,37 @@ class Worksheet(object):
             "Worksheet.export() is deprecated, "
             "this feature is not supported in Sheets API v4",
             DeprecationWarning
+        )
+
+    def duplicate(
+        self,
+        insert_sheet_index=None,
+        new_sheet_id=None,
+        new_sheet_name=None
+    ):
+        """Duplicate the sheet.
+
+        :param int insert_sheet_index: (optional) The zero-based index
+                                       where the new sheet should be inserted.
+                                       The index of all sheets after this are
+                                       incremented.
+        :param int new_sheet_id: (optional) The ID of the new sheet.
+                                 If not set, an ID is chosen. If set, the ID
+                                 must not conflict with any existing sheet ID.
+                                 If set, it must be non-negative.
+        :param str new_sheet_name: (optional) The name of the new sheet.
+                                   If empty, a new name is chosen for you.
+
+        :returns: a newly created :class:`worksheets <gsperad.models.Worksheet>`.
+
+        .. versionadded:: 3.1.0
+
+        """
+        return self.spreadsheet.duplicate_sheet(
+            self.id,
+            insert_sheet_index,
+            new_sheet_id,
+            new_sheet_name
         )
 
 
