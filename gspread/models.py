@@ -301,7 +301,7 @@ class Spreadsheet(object):
         :param str new_sheet_name: (optional) The name of the new sheet.
                                    If empty, a new name is chosen for you.
 
-        :returns: a newly created :class:`worksheets <gsperad.models.Worksheet>`.
+        :returns: a newly created :class:`<gspread.models.Worksheet>`.
 
         .. versionadded:: 3.1.0
 
@@ -1036,7 +1036,7 @@ class Worksheet(object):
         :param str new_sheet_name: (optional) The name of the new sheet.
                                    If empty, a new name is chosen for you.
 
-        :returns: a newly created :class:`worksheets <gsperad.models.Worksheet>`.
+        :returns: a newly created :class:`<gspread.models.Worksheet>`.
 
         .. versionadded:: 3.1.0
 
