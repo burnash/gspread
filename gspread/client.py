@@ -241,6 +241,11 @@ class Client(object):
 
             gc.import_csv(spreadsheet.id, content)
 
+        .. note::
+
+           This method removes all other worksheets and then entirely
+           replaces the contents of the first worksheet.
+
         """
         headers = {'Content-Type': 'text/csv'}
         url = '{0}/{1}'.format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
