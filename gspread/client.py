@@ -214,6 +214,48 @@ class Client(object):
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
+    def copy(self, key, title=None):
+        """Copies a spreadsheet.
+
+        :param key: A key of a spreadsheet to copy.
+        :type title: str
+
+        :param title: A title of a new spreadsheet.
+        :type title: str
+
+        :returns: a :class:`~gspread.models.Spreadsheet` instance.
+
+        .. note::
+
+           In order to use this method, you need to add
+           ``https://www.googleapis.com/auth/drive`` to your oAuth scope.
+
+           Example::
+
+              scope = [
+                  'https://spreadsheets.google.com/feeds',
+                  'https://www.googleapis.com/auth/drive'
+              ]
+
+           Otherwise you will get an ``Insufficient Permission`` error
+           when you try to copy a spreadsheet.
+
+        """
+        if title is None:
+            original = self.open_by_key(key)
+            title = "{} (copy)".format(original.title)
+        payload = {
+            'title': title,
+            'mimeType': 'application/vnd.google-apps.spreadsheet'
+        }
+        r = self.request(
+            'post',
+            "https://www.googleapis.com/drive/v2/files/" + key + '/copy',
+            json=payload
+        )
+        spreadsheet_id = r.json()['id']
+        return self.open_by_key(spreadsheet_id)
+
     def del_spreadsheet(self, file_id):
         """Deletes a spreadsheet.
 
