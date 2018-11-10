@@ -214,14 +214,19 @@ class Client(object):
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
-    def copy(self, key, title=None):
+    def copy(self, key, title=None, copy_permissions=False):
         """Copies a spreadsheet.
 
         :param key: A key of a spreadsheet to copy.
         :type title: str
 
-        :param title: A title of a new spreadsheet.
+        :param title: (optional) A title for the new spreadsheet.
         :type title: str
+
+        :param copy_permissions: (optional) If True, copy permissions from
+               original spreadsheet to new spreadsheet.
+        :type copy_permissions: bool
+
 
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
@@ -243,18 +248,40 @@ class Client(object):
         """
         if title is None:
             original = self.open_by_key(key)
-            title = "{} (copy)".format(original.title)
+            title = 'Copy of {}'.format(original.title)
+
         payload = {
             'title': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
         r = self.request(
             'post',
-            "https://www.googleapis.com/drive/v2/files/" + key + '/copy',
+            'https://www.googleapis.com/drive/v2/files/' + key + '/copy',
             json=payload
         )
         spreadsheet_id = r.json()['id']
-        return self.open_by_key(spreadsheet_id)
+
+        new_spreadsheet = self.open_by_key(spreadsheet_id)
+
+        if copy_permissions:
+            if 'original' not in locals():
+                original = self.open_by_key(key)
+
+            permissions = original.list_permissions()
+            for p in permissions:
+                if p.get('deleted'):
+                    continue
+                try:
+                    new_spreadsheet.share(
+                        value=p['emailAddress'],
+                        perm_type=p['type'],
+                        role=p['role'],
+                        notify=False
+                    )
+                except Exception:
+                    pass
+
+        return new_spreadsheet
 
     def del_spreadsheet(self, file_id):
         """Deletes a spreadsheet.
