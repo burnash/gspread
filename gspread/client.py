@@ -214,6 +214,27 @@ class Client(object):
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
+    def copy_spreadsheet(self, file_id, title):
+        """Copies a spreadsheet.
+
+        :param file_id: a spreadsheet ID (aka file ID.)
+        """
+
+        payload = {
+            'title': title,
+            'mimeType': 'application/vnd.google-apps.spreadsheet'
+        }
+
+        url = '{0}/{1}/copy/'.format(
+            DRIVE_FILES_API_V2_URL,
+            file_id
+        )
+
+        r = self.request('post', url, json=payload)
+
+        spreadsheet_id = r.json()['id']
+        return self.open_by_key(spreadsheet_id)    
+    
     def del_spreadsheet(self, file_id):
         """Deletes a spreadsheet.
 
