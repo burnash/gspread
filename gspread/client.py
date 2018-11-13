@@ -280,7 +280,8 @@ class Client(object):
         perm_type,
         role,
         notify=True,
-        email_message=None
+        email_message=None,
+        with_link=False
     ):
         """Creates a new permission for a file.
 
@@ -301,6 +302,9 @@ class Client(object):
         :type notify: str
         :param email_message: (optional) An email message to be sent if notify=True.
         :type email_message: str
+        
+        :param with_link: (optional) Whether the link is required for this permission to be active.
+        :type with_link: bool
 
         Examples::
 
@@ -330,6 +334,7 @@ class Client(object):
             'value': value,
             'type': perm_type,
             'role': role,
+            'withLink': with_link
         }
 
         params = {

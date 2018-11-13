@@ -340,7 +340,7 @@ class Spreadsheet(object):
 
         return self.batch_update(body)
 
-    def share(self, value, perm_type, role, notify=True, email_message=None):
+    def share(self, value, perm_type, role, notify=True, email_message=None, with_link=False):
         """Share the spreadsheet with other accounts.
 
         :param value: user or group e-mail address, domain name
@@ -357,6 +357,9 @@ class Spreadsheet(object):
         :type notify: str
         :param email_message: (optional) The email to be sent if notify=True
         :type email_message: str
+        
+        :param with_link: (optional) Whether the link is required for this permission
+        :type with_link: bool
 
         Example::
 
@@ -373,7 +376,8 @@ class Spreadsheet(object):
             perm_type=perm_type,
             role=role,
             notify=notify,
-            email_message=email_message
+            email_message=email_message,
+            with_link=with_link
         )
 
     def list_permissions(self):
