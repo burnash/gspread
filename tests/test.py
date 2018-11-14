@@ -201,6 +201,15 @@ class ClientTest(GspreadTest):
         new_spreadsheet = self.gc.create(title)
         self.assertTrue(isinstance(new_spreadsheet, gspread.models.Spreadsheet))
 
+    def test_copy(self):
+        original_spreadsheet = self.gc.create("Original")
+        spreadsheet_copy = self.gc.copy(original_spreadsheet.id)
+        self.assertTrue(isinstance(spreadsheet_copy, gspread.models.Spreadsheet))
+
+        original_metadata = original_spreadsheet.fetch_sheet_metadata()
+        copy_metadata = spreadsheet_copy.fetch_sheet_metadata()
+        self.assertEqual(original_metadata['sheets'], copy_metadata['sheets'])
+
     def test_import_csv(self):
         title = 'TestImportSpreadsheet'
         new_spreadsheet = self.gc.create(title)
