@@ -214,10 +214,10 @@ class Client(object):
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
-    def copy(self, key, title=None, copy_permissions=False):
+    def copy(self, file_id, title=None, copy_permissions=False):
         """Copies a spreadsheet.
 
-        :param key: A key of a spreadsheet to copy.
+        :param file_id: A key of a spreadsheet to copy.
         :type title: str
 
         :param title: (optional) A title for the new spreadsheet.
@@ -246,9 +246,10 @@ class Client(object):
            when you try to copy a spreadsheet.
 
         """
-        if title is None:
-            original = self.open_by_key(key)
-            title = 'Copy of {}'.format(original.title)
+        url = '{0}/{1}/copy'.format(
+            DRIVE_FILES_API_V2_URL,
+            file_id
+        )
 
         payload = {
             'title': title,
@@ -256,7 +257,7 @@ class Client(object):
         }
         r = self.request(
             'post',
-            'https://www.googleapis.com/drive/v2/files/' + key + '/copy',
+            url,
             json=payload
         )
         spreadsheet_id = r.json()['id']
@@ -264,8 +265,7 @@ class Client(object):
         new_spreadsheet = self.open_by_key(spreadsheet_id)
 
         if copy_permissions:
-            if 'original' not in locals():
-                original = self.open_by_key(key)
+            original = self.open_by_key(file_id)
 
             permissions = original.list_permissions()
             for p in permissions:
