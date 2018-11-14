@@ -70,7 +70,8 @@ class Spreadsheet(object):
         warnings.warn(
             "Spreadsheet.updated() is deprecated, "
             "this feature is not supported in Sheets API v4",
-            DeprecationWarning
+            DeprecationWarning,
+            stacklevel=2
         )
 
     @property
@@ -357,7 +358,7 @@ class Spreadsheet(object):
         :type notify: str
         :param email_message: (optional) The email to be sent if notify=True
         :type email_message: str
-        
+
         :param with_link: (optional) Whether the link is required for this permission
         :type with_link: bool
 
@@ -453,7 +454,8 @@ class Worksheet(object):
         warnings.warn(
             "Worksheet.updated() is deprecated, "
             "this feature is not supported in Sheets API v4",
-            DeprecationWarning
+            DeprecationWarning,
+            stacklevel=2
         )
 
     @property
@@ -1018,7 +1020,8 @@ class Worksheet(object):
         warnings.warn(
             "Worksheet.export() is deprecated, "
             "this feature is not supported in Sheets API v4",
-            DeprecationWarning
+            DeprecationWarning,
+            stacklevel=2
         )
 
     def duplicate(
@@ -1101,5 +1104,6 @@ class Cell(object):
             "this feature is not supported in Sheets API v4. "
             "Please use `value_render_option` when you "
             "Retrieve `Cell` objects (e.g. in `Worksheet.range()` method).",
-            DeprecationWarning
+            DeprecationWarning,
+            stacklevel=2
         )
