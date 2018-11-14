@@ -230,6 +230,8 @@ class Client(object):
 
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
+        .. versionadded:: 3.1.0
+
         .. note::
 
            In order to use this method, you need to add
