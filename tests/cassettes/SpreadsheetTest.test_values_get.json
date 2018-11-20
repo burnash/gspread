@@ -1,0 +1,937 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-10-18T17:25:43",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"addSheet\": {\"properties\": {\"title\": \"\\ud83c\\udf35 test_values_get 1\", \"sheetType\": \"GRID\", \"gridProperties\": {\"rowCount\": 10, \"columnCount\": 10}}}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "165"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 10,
+                    "rowCount": 10
+                  },
+                  "sheetType": "GRID",
+                  "title": "\ud83c\udf35 test_values_get 1"
+                }
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 1959985975,\n          \"title\": \"\ud83c\udf35 test_values_get 1\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 10,\n            \"columnCount\": 10\n          }\n        }\n      }\n    }\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Thu, 18 Oct 2018 17:25:43 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 10,
+                    "rowCount": 10
+                  },
+                  "index": 1,
+                  "sheetId": 1959985975,
+                  "sheetType": "GRID",
+                  "title": "\ud83c\udf35 test_values_get 1"
+                }
+              }
+            }
+          ],
+          "spreadsheetId": "11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI:batchUpdate"
+      }
+    },
+    {
+      "recorded_at": "2018-10-18T17:25:43",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"values\": [[\"\\ud83c\\udf47\", \"\\ud83c\\udf49\", \"\\ud83c\\udf4b\"], [\"\\ud83c\\udf50\", \"\\ud83c\\udf4e\", \"\\ud83c\\udf53\"]]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "112"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "values": [
+            [
+              "\ud83c\udf47",
+              "\ud83c\udf49",
+              "\ud83c\udf4b"
+            ],
+            [
+              "\ud83c\udf50",
+              "\ud83c\udf4e",
+              "\ud83c\udf53"
+            ]
+          ]
+        },
+        "method": "PUT",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Thu, 18 Oct 2018 17:25:43 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "spreadsheetId": "11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI",
+          "updatedCells": 6,
+          "updatedColumns": 3,
+          "updatedRange": "'\ud83c\udf35 test_values_get 1'!A1:C2",
+          "updatedRows": 2
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+      }
+    },
+    {
+      "recorded_at": "2018-10-18T17:26:54",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"values\": [[\"\\ud83c\\udf47\", \"\\ud83c\\udf49\", \"\\ud83c\\udf4b\"], [\"\\ud83c\\udf50\", \"\\ud83c\\udf4e\", \"\\ud83c\\udf53\"]]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "112"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "values": [
+            [
+              "\ud83c\udf47",
+              "\ud83c\udf49",
+              "\ud83c\udf4b"
+            ],
+            [
+              "\ud83c\udf50",
+              "\ud83c\udf4e",
+              "\ud83c\udf53"
+            ]
+          ]
+        },
+        "method": "PUT",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Thu, 18 Oct 2018 17:26:53 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "spreadsheetId": "1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY",
+          "updatedCells": 6,
+          "updatedColumns": 3,
+          "updatedRange": "'\ud83c\udf35 test_values_get 1'!A1:C2",
+          "updatedRows": 2
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+      }
+    },
+    {
+      "recorded_at": "2018-10-18T17:26:54",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY/values/%F0%9F%8C%B5%20test_values_get%201"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"range\": \"'\ud83c\udf35 test_values_get 1'!A1:J10\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"\ud83c\udf47\",\n      \"\ud83c\udf49\",\n      \"\ud83c\udf4b\"\n    ],\n    [\n      \"\ud83c\udf50\",\n      \"\ud83c\udf4e\",\n      \"\ud83c\udf53\"\n    ]\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Thu, 18 Oct 2018 17:26:54 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "majorDimension": "ROWS",
+          "range": "'\ud83c\udf35 test_values_get 1'!A1:J10",
+          "values": [
+            [
+              "\ud83c\udf47",
+              "\ud83c\udf49",
+              "\ud83c\udf4b"
+            ],
+            [
+              "\ud83c\udf50",
+              "\ud83c\udf4e",
+              "\ud83c\udf53"
+            ]
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY/values/%F0%9F%8C%B5%20test_values_get%201"
+      }
+    },
+    {
+      "recorded_at": "2018-10-18T17:26:54",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 109032874}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "55"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "deleteSheet": {
+                "sheetId": 109032874
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY\",\n  \"replies\": [\n    {}\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Thu, 18 Oct 2018 17:26:54 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {}
+          ],
+          "spreadsheetId": "1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY:batchUpdate"
+      }
+    },
+    {
+      "recorded_at": "2018-10-18T17:27:51",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"addSheet\": {\"properties\": {\"sheetType\": \"GRID\", \"gridProperties\": {\"columnCount\": 10, \"rowCount\": 10}, \"title\": \"\\ud83c\\udf35 test_values_get 1\"}}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "165"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 10,
+                    "rowCount": 10
+                  },
+                  "sheetType": "GRID",
+                  "title": "\ud83c\udf35 test_values_get 1"
+                }
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/11AkZD6EiaNYT6PZbzlLAfyUua6cplvH5WguNo4p8tZI:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"11AkZD6EiaNYT6PZbzlLAfyUua6cplvH5WguNo4p8tZI\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 1863784223,\n          \"title\": \"\ud83c\udf35 test_values_get 1\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 10,\n            \"columnCount\": 10\n          }\n        }\n      }\n    }\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Thu, 18 Oct 2018 17:27:51 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 10,
+                    "rowCount": 10
+                  },
+                  "index": 1,
+                  "sheetId": 1863784223,
+                  "sheetType": "GRID",
+                  "title": "\ud83c\udf35 test_values_get 1"
+                }
+              }
+            }
+          ],
+          "spreadsheetId": "11AkZD6EiaNYT6PZbzlLAfyUua6cplvH5WguNo4p8tZI"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/11AkZD6EiaNYT6PZbzlLAfyUua6cplvH5WguNo4p8tZI:batchUpdate"
+      }
+    },
+    {
+      "recorded_at": "2018-10-18T17:28:40",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"addSheet\": {\"properties\": {\"sheetType\": \"GRID\", \"gridProperties\": {\"columnCount\": 10, \"rowCount\": 10}, \"title\": \"\\ud83c\\udf35 test_values_get 1\"}}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "165"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 10,
+                    "rowCount": 10
+                  },
+                  "sheetType": "GRID",
+                  "title": "\ud83c\udf35 test_values_get 1"
+                }
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1vsl2YIZyp9GqtYDI9sQMwhGcXtYUARw-mApJSNukxqs:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1vsl2YIZyp9GqtYDI9sQMwhGcXtYUARw-mApJSNukxqs\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 1021845880,\n          \"title\": \"\ud83c\udf35 test_values_get 1\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 10,\n            \"columnCount\": 10\n          }\n        }\n      }\n    }\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Thu, 18 Oct 2018 17:28:40 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 10,
+                    "rowCount": 10
+                  },
+                  "index": 1,
+                  "sheetId": 1021845880,
+                  "sheetType": "GRID",
+                  "title": "\ud83c\udf35 test_values_get 1"
+                }
+              }
+            }
+          ],
+          "spreadsheetId": "1vsl2YIZyp9GqtYDI9sQMwhGcXtYUARw-mApJSNukxqs"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1vsl2YIZyp9GqtYDI9sQMwhGcXtYUARw-mApJSNukxqs:batchUpdate"
+      }
+    },
+    {
+      "recorded_at": "2018-10-18T17:29:48",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27&includeTeamDriveItems=True&supportsTeamDrives=True&pageSize=1000"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n \"kind\": \"drive#fileList\",\n \"incompleteSearch\": false,\n \"files\": [\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg\",\n   \"name\": \"Test SpreadsheetTest\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"11A_X9wnyxVwt1o6iSrc8Px0AfeGqFBRyA_styQEkCSE\",\n   \"name\": \"Test Spreadsheet\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  }\n ]\n}\n"
+        },
+        "headers": {
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private, max-age=0, must-revalidate, no-transform"
+          ],
+          "Content-Length": [
+            "435"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Thu, 18 Oct 2018 17:29:48 GMT"
+          ],
+          "Expires": [
+            "Thu, 18 Oct 2018 17:29:48 GMT"
+          ],
+          "Server": [
+            "GSE"
+          ],
+          "Vary": [
+            "Origin",
+            "X-Origin"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "files": [
+            {
+              "id": "1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg",
+              "kind": "drive#file",
+              "mimeType": "application/vnd.google-apps.spreadsheet",
+              "name": "Test SpreadsheetTest"
+            },
+            {
+              "id": "11A_X9wnyxVwt1o6iSrc8Px0AfeGqFBRyA_styQEkCSE",
+              "kind": "drive#file",
+              "mimeType": "application/vnd.google-apps.spreadsheet",
+              "name": "Test Spreadsheet"
+            }
+          ],
+          "incompleteSearch": false,
+          "kind": "drive#fileList"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27&includeTeamDriveItems=True&supportsTeamDrives=True&pageSize=1000"
+      }
+    },
+    {
+      "recorded_at": "2018-10-18T17:29:49",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"addSheet\": {\"properties\": {\"sheetType\": \"GRID\", \"gridProperties\": {\"columnCount\": 10, \"rowCount\": 10}, \"title\": \"\\ud83c\\udf35 test_values_get 1\"}}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "165"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.19.1"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 10,
+                    "rowCount": 10
+                  },
+                  "sheetType": "GRID",
+                  "title": "\ud83c\udf35 test_values_get 1"
+                }
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 300816892,\n          \"title\": \"\ud83c\udf35 test_values_get 1\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 10,\n            \"columnCount\": 10\n          }\n        }\n      }\n    }\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Thu, 18 Oct 2018 17:29:49 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 10,
+                    "rowCount": 10
+                  },
+                  "index": 1,
+                  "sheetId": 300816892,
+                  "sheetType": "GRID",
+                  "title": "\ud83c\udf35 test_values_get 1"
+                }
+              }
+            }
+          ],
+          "spreadsheetId": "1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg:batchUpdate"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
