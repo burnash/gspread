@@ -8,12 +8,20 @@ This module contains utility functions.
 
 """
 
+import sys
 import re
 from functools import wraps
 from collections import defaultdict
 from itertools import chain
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
+
+
+if sys.version_info.major == 2:
+    import urllib
+elif sys.version_info.major == 3:
+    import urllib.parse as urllib
+
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r'([A-Za-z]+)([1-9]\d*)')
@@ -241,6 +249,10 @@ def cell_list_to_rect(cell_list):
     # of updates, so if a cell isn't present in the input cell_list, then the
     # value will be None and will not be updated.
     return [[rows[i].get(j) for j in rect_cols] for i in rect_rows]
+
+
+def quote(value, safe='', encoding='utf-8'):
+    return urllib.quote(value.encode(encoding), safe)
 
 
 if __name__ == '__main__':
