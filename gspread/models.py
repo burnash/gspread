@@ -8,11 +8,6 @@ This module contains common spreadsheets' models.
 
 """
 
-try:
-    from urllib.parse import quote
-except:
-    from urllib import quote
-
 from .exceptions import WorksheetNotFound, CellNotFound
 
 from .utils import (
@@ -22,7 +17,8 @@ from .utils import (
     numericise_all,
     finditem,
     fill_gaps,
-    cell_list_to_rect
+    cell_list_to_rect,
+    quote
 )
 
 from .urls import (
@@ -119,7 +115,7 @@ class Spreadsheet(object):
         .. versionadded:: 3.0
 
         """
-        url = SPREADSHEET_VALUES_APPEND_URL % (self.id, quote(range, safe=''))
+        url = SPREADSHEET_VALUES_APPEND_URL % (self.id, quote(range))
         r = self.client.request('post', url, params=params, json=body)
         return r.json()
 
@@ -133,7 +129,7 @@ class Spreadsheet(object):
         .. versionadded:: 3.0
 
         """
-        url = SPREADSHEET_VALUES_CLEAR_URL % (self.id, quote(range, safe=''))
+        url = SPREADSHEET_VALUES_CLEAR_URL % (self.id, quote(range))
         r = self.client.request('post', url)
         return r.json()
 
@@ -148,7 +144,7 @@ class Spreadsheet(object):
         .. versionadded:: 3.0
 
         """
-        url = SPREADSHEET_VALUES_URL % (self.id, quote(range, safe=''))
+        url = SPREADSHEET_VALUES_URL % (self.id, quote(range))
         r = self.client.request('get', url, params=params)
         return r.json()
 
@@ -176,7 +172,7 @@ class Spreadsheet(object):
         .. versionadded:: 3.0
 
         """
-        url = SPREADSHEET_VALUES_URL % (self.id, quote(range, safe=''))
+        url = SPREADSHEET_VALUES_URL % (self.id, quote(range))
         r = self.client.request('put', url, params=params, json=body)
         return r.json()
 
