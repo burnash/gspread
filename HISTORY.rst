@@ -1,6 +1,24 @@
 Release History
 ===============
 
+3.1.0 (2018-11-27)
+------------------
+
+* Dropped Python 2.6 support
+
+* Fixed KeyError in urllib.quote in Python 2 (#605, #558)
+* Fixed Worksheet.title being out of sync after using update_title (#542 by @ryanpineo)
+* Fix parameter typos in docs (#616 by @bryanallen22)
+* Miscellaneous docs fixes (#604 by @dgilman)
+* Fixed typo in docs (#591 by @davidefiocco)
+
+* Added a method to copy spreadsheets (#625 by @dsask)
+* Added `with_link` attribute when sharing / adding permissions (#621 by @epicfaace)
+* Added ability to duplicate a worksheet (#617)
+* Change default behaviour of numericise function #499 (#502 by @danthelion)
+* Added stacklevel=2 to deprecation warnings
+
+
 3.0.1 (2018-06-30)
 ------------------
 
