@@ -628,7 +628,7 @@ class Worksheet(object):
         data = self.get_all_values()
 
         # Return an empty list if the sheet doesn't have enough rows
-        if len(data) < idx:
+        if len(data) <= idx:
             return []
 
         keys = data[idx]
