@@ -7,6 +7,7 @@ import unittest
 import itertools
 from collections import namedtuple
 
+from gspread.exceptions import APIError
 from oauth2client.service_account import ServiceAccountCredentials
 
 from betamax import Betamax
@@ -229,6 +230,15 @@ class ClientTest(GspreadTest):
         self.assertEqual(sh.sheet1.get_all_values(), rows)
 
         self.gc.del_spreadsheet(new_spreadsheet.id)
+
+    def test_access_non_existing_spreadsheet(self):
+        wks = self.gc.open_by_key('test')
+        with self.assertRaises(APIError) as error:
+            wks.worksheets()
+        self.assertEqual(error.exception.args[0]['code'], 404)
+        self.assertEqual(error.exception.args[0]['message'], 'Requested entity was not found.')
+        self.assertEqual(error.exception.args[0]['status'], 'NOT_FOUND')
+
 
 
 class SpreadsheetTest(GspreadTest):
