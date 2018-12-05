@@ -626,6 +626,11 @@ class Worksheet(object):
         idx = head - 1
 
         data = self.get_all_values()
+
+        # Return an empty list if the sheet doesn't have enough rows
+        if len(data) <= idx:
+            return []
+
         keys = data[idx]
         values = [
             numericise_all(
