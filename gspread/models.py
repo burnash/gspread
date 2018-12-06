@@ -8,7 +8,7 @@ This module contains common spreadsheets' models.
 
 """
 
-from .exceptions import WorksheetNotFound, CellNotFound
+from .exceptions import WorksheetNotFound, CellNotFound, IncorrectCellLabel
 
 from .utils import (
     a1_to_rowcol,
@@ -585,7 +585,13 @@ class Worksheet(object):
             Empty trailing rows and columns will not be included.
         """
 
-        data = self.spreadsheet.values_get(self.title)
+        try:
+            a1_to_rowcol(self.title)
+            title = "'{}'".format(self.title)
+        except IncorrectCellLabel:
+            title = self.title
+
+        data = self.spreadsheet.values_get(title)
 
         try:
             return fill_gaps(data['values'])
