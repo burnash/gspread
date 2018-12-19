@@ -43,7 +43,7 @@ class Client(object):
 
     def login(self):
         """Authorize client."""
-        if not self.auth.token or self.auth.expired:
+        if not self.auth.token or (hasattr(self.auth, 'expired') and self.auth.expired):
             from google.auth.transport.requests import Request
 
             self.auth.refresh(Request())
