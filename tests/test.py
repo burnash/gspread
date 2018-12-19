@@ -71,7 +71,7 @@ def get_method_name(self_id):
     return self_id.split('.')[-1]
 
 
-DummyCredentials = namedtuple('DummyCredentials', 'access_token')
+DummyCredentials = namedtuple('DummyCredentials', 'token')
 
 
 class BetamaxGspreadTest(BetamaxTestCase):
