@@ -8,7 +8,7 @@ This module contains common spreadsheets' models.
 
 """
 
-from .exceptions import WorksheetNotFound, CellNotFound, IncorrectCellLabel
+from .exceptions import WorksheetNotFound, CellNotFound
 
 from .utils import (
     a1_to_rowcol,
