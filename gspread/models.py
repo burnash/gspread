@@ -9,7 +9,7 @@ This module contains common spreadsheets' models.
 """
 
 from .exceptions import WorksheetNotFound, CellNotFound
-
+from collections import OrderedDict
 from .utils import (
     a1_to_rowcol,
     rowcol_to_a1,
@@ -642,7 +642,7 @@ class Worksheet(object):
             for row in data[idx + 1:]
         ]
 
-        return [dict(zip(keys, row)) for row in values]
+        return [OrderedDict(dict(zip(keys, row))) for row in values]
 
     def row_values(self, row, value_render_option='FORMATTED_VALUE'):
         """Returns a list of all values in a `row`.
