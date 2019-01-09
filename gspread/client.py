@@ -410,7 +410,8 @@ class Client(object):
 
         params = {
             'sendNotificationEmails': notify,
-            'emailMessage': email_message
+            'emailMessage': email_message,
+            'supportsTeamDrives': 'true'
         }
 
         self.request(
