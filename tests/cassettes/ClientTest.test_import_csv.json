@@ -489,7 +489,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/values/TestImportSpreadsheet"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/values/TestImportSpreadsheet?valueRenderOption=FORMATTED_VALUE"
       },
       "response": {
         "body": {
@@ -564,7 +564,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/values/TestImportSpreadsheet"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1GGoPX1IruYfHEZZf_NRU8jPn8mixlDPrlxiMakP-Ye4/values/TestImportSpreadsheet?valueRenderOption=FORMATTED_VALUE"
       }
     },
     {
