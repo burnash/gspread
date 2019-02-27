@@ -230,8 +230,8 @@ def cell_list_to_rect(cell_list):
 
     rows = defaultdict(lambda: {})
 
-    row_offset = cell_list[0].row
-    col_offset = cell_list[0].col
+    row_offset = min(cell.row for cell in cell_list)
+    col_offset = min(cell.col for cell in cell_list)
 
     for cell in cell_list:
         row = rows.setdefault(int(cell.row) - row_offset, {})
