@@ -222,7 +222,7 @@ class Spreadsheet(object):
         :param title: A title of a worksheet. If there're multiple
                       worksheets with the same title, first one will
                       be returned.
-        :type title: int
+        :type title: str
 
         :returns: an instance of :class:`gsperad.models.Worksheet`.
 
