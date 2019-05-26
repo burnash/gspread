@@ -11,17 +11,10 @@ Google API.
 
 import requests
 
-from .utils import finditem
-from .utils import extract_id_from_url
-
-from .exceptions import SpreadsheetNotFound
-from .exceptions import APIError
+from .exceptions import APIError, SpreadsheetNotFound
 from .models import Spreadsheet
-
-from .urls import (
-    DRIVE_FILES_API_V2_URL,
-    DRIVE_FILES_UPLOAD_API_V2_URL
-)
+from .urls import DRIVE_FILES_API_V2_URL, DRIVE_FILES_UPLOAD_API_V2_URL
+from .utils import convert_credentials, extract_id_from_url, finditem
 
 
 class Client(object):
@@ -38,20 +31,16 @@ class Client(object):
 
     """
     def __init__(self, auth, session=None):
-        self.auth = auth
-        self.session = session or requests.Session()
+        self.auth = convert_credentials(auth)
+        self.session = session or AuthorizedSession(self.auth)
 
     def login(self):
-        """Authorize client."""
-        if not self.auth.access_token or \
-                (hasattr(self.auth, 'access_token_expired') and self.auth.access_token_expired):
-            import httplib2
+        from google.auth.transport.requests import Request
 
-            http = httplib2.Http()
-            self.auth.refresh(http)
+        self.auth.refresh(Request(self.session))
 
         self.session.headers.update({
-            'Authorization': 'Bearer %s' % self.auth.access_token
+            'Authorization': 'Bearer %s' % self.auth.token
         })
 
     def request(

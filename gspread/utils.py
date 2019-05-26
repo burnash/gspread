@@ -14,8 +14,9 @@ from functools import wraps
 from collections import defaultdict
 from itertools import chain
 
-from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
+from google import auth, oauth2
 
+from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
 
 if sys.version_info.major == 2:
     import urllib
@@ -28,6 +29,46 @@ CELL_ADDR_RE = re.compile(r'([A-Za-z]+)([1-9]\d*)')
 
 URL_KEY_V1_RE = re.compile(r'key=([^&#]+)')
 URL_KEY_V2_RE = re.compile(r'/spreadsheets/d/([a-zA-Z0-9-_]+)')
+
+
+def convert_credentials(credentials):
+    module = credentials.__module__
+    cls = credentials.__class__.__name__
+    if 'oauth2client' in module and cls == 'ServiceAccountCredentials':
+        return _convert_service_account(credentials)
+    elif 'oauth2client' in module and cls == 'OAuth2Credentials':
+        return _convert_oauth(credentials)
+    elif isinstance(credentials, auth.credentials.Credentials):
+        return credentials
+
+    raise TypeError(
+        'Credentials need to be from either oauth2client or from google-auth.'
+    )
+
+
+def _convert_oauth(credentials):
+    return oauth2.credentials.Credentials(
+        credentials.access_token,
+        credentials.refresh_token,
+        credentials.id_token,
+        credentials.token_uri,
+        credentials.client_id,
+        credentials.client_secret,
+        credentials.scopes,
+    )
+
+
+def _convert_service_account(credentials):
+    data = credentials.serialization_data
+    data['token_uri'] = credentials.token_uri
+    scopes = credentials._scopes.split() or [
+        'https://www.googleapis.com/auth/drive',
+        'https://spreadsheets.google.com/feeds',
+    ]
+
+    return oauth2.service_account.Credentials.from_service_account_info(
+        data, scopes=scopes
+    )
 
 
 def finditem(func, seq):
