@@ -78,13 +78,18 @@ class Client(object):
         else:
             raise APIError(response)
 
-    def list_spreadsheet_files(self):
+    def list_spreadsheet_files(self, title=None):
         files = []
         page_token = ''
-        url = "https://www.googleapis.com/drive/v3/files"
+        url = 'https://www.googleapis.com/drive/v3/files'
+
+        q = 'mimeType="application/vnd.google-apps.spreadsheet"'
+        if title:
+            q += ' and name = "{}"'.format(title)
+
         params = {
-            'q': "mimeType='application/vnd.google-apps.spreadsheet'",
-            "pageSize": 1000,
+            'q': q,
+            'pageSize': 1000,
             'supportsTeamDrives': True,
             'includeTeamDriveItems': True,
         }
@@ -120,7 +125,7 @@ class Client(object):
         try:
             properties = finditem(
                 lambda x: x['name'] == title,
-                self.list_spreadsheet_files()
+                self.list_spreadsheet_files(title)
             )
 
             # Drive uses different terminology
@@ -171,7 +176,7 @@ class Client(object):
         :returns: a list of :class:`~gspread.models.Spreadsheet` instances.
 
         """
-        spreadsheet_files = self.list_spreadsheet_files()
+        spreadsheet_files = self.list_spreadsheet_files(title)
 
         return [
             Spreadsheet(self, dict(title=x['name'], **x))
@@ -373,7 +378,7 @@ class Client(object):
         :type notify: str
         :param email_message: (optional) An email message to be sent if notify=True.
         :type email_message: str
-        
+
         :param with_link: (optional) Whether the link is required for this permission to be active.
         :type with_link: bool
 
