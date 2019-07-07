@@ -191,7 +191,7 @@ class Spreadsheet(object):
         :param index: An index of a worksheet. Indexes start from zero.
         :type index: int
 
-        :returns: an instance of :class:`gsperad.models.Worksheet`
+        :returns: an instance of :class:`gspread.models.Worksheet`
                   or `None` if the worksheet is not found.
 
         Example. To get first worksheet of a spreadsheet:
@@ -209,7 +209,7 @@ class Spreadsheet(object):
             return None
 
     def worksheets(self):
-        """Returns a list of all :class:`worksheets <gsperad.models.Worksheet>`
+        """Returns a list of all :class:`worksheets <gspread.models.Worksheet>`
         in a spreadsheet.
 
         """
@@ -222,9 +222,9 @@ class Spreadsheet(object):
         :param title: A title of a worksheet. If there're multiple
                       worksheets with the same title, first one will
                       be returned.
-        :type title: int
+        :type title: str
 
-        :returns: an instance of :class:`gsperad.models.Worksheet`.
+        :returns: an instance of :class:`gspread.models.Worksheet`.
 
         Example. Getting worksheet named 'Annual bonuses'
 
@@ -252,7 +252,7 @@ class Spreadsheet(object):
         :param cols: Number of columns.
         :type cols: int
 
-        :returns: a newly created :class:`worksheets <gsperad.models.Worksheet>`.
+        :returns: a newly created :class:`worksheets <gspread.models.Worksheet>`.
         """
         body = {
             'requests': [{
