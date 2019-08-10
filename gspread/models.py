@@ -893,10 +893,10 @@ class Worksheet(object):
         return self.spreadsheet.values_append(self.title, params, body)
     
         def append_rows(self, values, value_input_option='RAW'):
-        """Adds a row to the worksheet and populates it with values.
+        """Adds rows to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
 
-        :param values: List of values for the new row.
+        :param values: Values for new rows.
         :param value_input_option: (optional) Determines how input data should
                                     be interpreted. See `ValueInputOption`_ in
                                     the Sheets API.
