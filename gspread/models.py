@@ -892,7 +892,7 @@ class Worksheet(object):
 
         return self.spreadsheet.values_append(self.title, params, body)
     
-        def append_rows(self, values, value_input_option='RAW'):
+    def append_rows(self, values, value_input_option='RAW'):
         """Adds rows to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
 
