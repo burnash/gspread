@@ -896,7 +896,7 @@ class Worksheet(object):
         """Adds rows to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
 
-        :param values: Values for new rows.
+        :param values: Values for new rows. Values must be a list of lists.
         :param value_input_option: (optional) Determines how input data should
                                     be interpreted. See `ValueInputOption`_ in
                                     the Sheets API.
