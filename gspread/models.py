@@ -242,7 +242,7 @@ class Spreadsheet(object):
         except (StopIteration, KeyError):
             raise WorksheetNotFound(title)
 
-    def add_worksheet(self, title, rows, cols):
+    def add_worksheet(self, title, rows=1000, cols=26):
         """Adds a new worksheet to a spreadsheet.
 
         :param title: A title of a new worksheet.
