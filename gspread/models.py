@@ -405,7 +405,7 @@ class Spreadsheet(object):
 
         filtered_id_list = [
             p['id'] for p in permission_list
-            if p[key] == value and (p['role'] == role or role == 'any')
+            if p.get(key) == value and (p['role'] == role or role == 'any')
         ]
 
         for permission_id in filtered_id_list:
