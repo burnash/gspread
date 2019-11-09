@@ -326,6 +326,37 @@ class SpreadsheetTest(GspreadTest):
         self.assertEqual(len(worksheet_list), 1)
         self.assertEqual(worksheet_list[0].title, existing_sheet_title)
 
+    def test_values_batch_get(self):
+        sg = self._sequence_generator()
+
+        worksheet1_name = u'%s %s' % (u'🌵', next(sg))
+
+        worksheet = self.spreadsheet.add_worksheet(worksheet1_name, 10, 10)
+
+        range_label = '%s!%s' % (worksheet1_name, 'A1')
+
+        values = [
+            [u'🍇', u'🍉', u'🍋'],
+            [u'🍐', u'🍎', u'🍓']
+        ]
+
+        self.spreadsheet.values_update(
+            range_label,
+            params={
+                'valueInputOption': 'RAW'
+            },
+            body={
+                'values': values
+            }
+        )
+        ranges = ["%s!%s:%s" % (worksheet1_name, col, col) for col in ["A", "B", "C"]]
+
+        read_data = self.spreadsheet.values_batch_get(ranges)
+
+        for colix, rng in enumerate(read_data['valueRanges']):
+            for rowix, ele in enumerate(rng['values']):
+                self.assertEqual(values[rowix][colix], ele[0])
+        self.spreadsheet.del_worksheet(worksheet)
 
 class WorksheetTest(GspreadTest):
 
