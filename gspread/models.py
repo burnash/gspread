@@ -149,13 +149,13 @@ class Spreadsheet(object):
         r = self.client.request('get', url, params=params)
         return r.json()
 
-    def values_get_batch(self, ranges, params=None):
+    def values_batch_get(self, ranges, params=None):
         """
         Lower-level method that directly calls `spreadsheets.values.batchGet
         <https://develop
         ers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet>`_.
 
-        :param str ranges: List of ranges in the `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
+        :param ranges: List of ranges in the `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
         :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#query-parameters>`_.
         :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
         :rtype: dict
