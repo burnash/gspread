@@ -18,15 +18,11 @@ Using Signed Credentials
 
 1. Head to `Google Developers Console <https://console.developers.google.com/project>`_ and create a new project (or select the one you have.)
 
-2. Under "API & auth", in the API enable "Drive API".
+2. Under "APIs & Services > Library", search for "Drive API" and enable it.
+    
+3. Under "APIs & Services > Library", search for "Sheets API" and enable it.
 
-.. image:: https://cloud.githubusercontent.com/assets/264674/7033107/72b75938-dd80-11e4-9a9f-54fb10820976.png
-    :alt: Enabled APIs
-
-3. Go to "Credentials" and choose "New Credentials > Service Account Key".
-
-.. image:: https://cloud.githubusercontent.com/assets/1297699/12098271/1616f908-b319-11e5-92d8-767e8e5ec757.png
-    :alt: Google Developers Console
+4. Go to "APIs & Services > Credentials" and choose "Create credentials > Service account key".
 
 You will automatically download a JSON file with this data.
 
@@ -47,9 +43,9 @@ This is how this file may look like:
 
 In the next step you'll need the value of *client_email* from the file.
 
-4. Go to your spreadsheet and share it with a *client_email* from the step above. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to access this spreadsheet with gspread.
+5. Go to your spreadsheet and share it with a *client_email* from the step above. Otherwise you'll get a ``gspread.exceptions.SpreadsheetNotFound`` exception when trying to access this spreadsheet with gspread.
 
-5. Install `oauth2client <https://github.com/google/oauth2client>`_:
+6. Install `oauth2client <https://github.com/google/oauth2client>`_:
 
 ::
 
@@ -61,7 +57,7 @@ Depending on your system setup you may need to install PyOpenSSL:
 
     pip install PyOpenSSL
 
-6. Now you can read this file, and use the data when constructing your credentials:
+7. Now you can read this file, and use the data when constructing your credentials:
 
 ::
 
