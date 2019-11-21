@@ -24,6 +24,7 @@ from .utils import (
 from .urls import (
     SPREADSHEET_URL,
     SPREADSHEET_VALUES_URL,
+    SPREADSHEET_VALUES_BATCH_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
     SPREADSHEET_VALUES_APPEND_URL,
     SPREADSHEET_VALUES_CLEAR_URL
@@ -146,6 +147,27 @@ class Spreadsheet(object):
         """
         url = SPREADSHEET_VALUES_URL % (self.id, quote(range))
         r = self.client.request('get', url, params=params)
+        return r.json()
+
+    def values_batch_get(self, ranges, params=None):
+        """
+        Lower-level method that directly calls `spreadsheets.values.batchGet
+        <https://develop
+        ers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet>`_.
+
+        :param ranges: List of ranges in the `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
+        :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#query-parameters>`_.
+        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
+        :rtype: dict
+
+        """
+        if params is None:
+            params = {}
+
+        params.update(ranges=ranges)
+
+        url = SPREADSHEET_VALUES_BATCH_URL % (self.id)
+        r = self.client.request("get", url, params=params)
         return r.json()
 
     def values_update(self, range, params=None, body=None):
