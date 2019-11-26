@@ -85,8 +85,8 @@ class Client(object):
         params = {
             'q': "mimeType='application/vnd.google-apps.spreadsheet'",
             "pageSize": 1000,
-            'supportsTeamDrives': True,
-            'includeTeamDriveItems': True,
+            'supportsAllDrives': True,
+            'includeItemsFromAllDrives': True,
         }
 
         while page_token is not None:
@@ -257,10 +257,14 @@ class Client(object):
             'title': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
+        params = {
+            'supportsAllDrives': True
+        }
         r = self.request(
             'post',
             url,
-            json=payload
+            json=payload,
+            params=params
         )
         spreadsheet_id = r.json()['id']
 
@@ -296,7 +300,10 @@ class Client(object):
             file_id
         )
 
-        self.request('delete', url)
+        params = {
+            'supportsAllDrives': True
+        }
+        self.request('delete', url, params=params)
 
     def import_csv(self, file_id, data):
         """Imports data into the first page of the spreadsheet.
@@ -327,7 +334,8 @@ class Client(object):
             data=data,
             params={
                 'uploadType': 'media',
-                'convert': True
+                'convert': True,
+                'supportsAllDrives': True
             },
             headers=headers
         )
@@ -340,7 +348,10 @@ class Client(object):
         """
         url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
 
-        r = self.request('get', url)
+        params = {
+            'supportsAllDrives': True
+        }
+        r = self.request('get', url, params=params)
 
         return r.json()['items']
 
@@ -411,7 +422,7 @@ class Client(object):
         params = {
             'sendNotificationEmails': notify,
             'emailMessage': email_message,
-            'supportsTeamDrives': 'true'
+            'supportsAllDrives': 'true'
         }
 
         self.request(
@@ -435,4 +446,7 @@ class Client(object):
             permission_id
         )
 
-        self.request('delete', url)
+        params = {
+            'supportsAllDrives': True
+        }
+        self.request('delete', url, params=params)
