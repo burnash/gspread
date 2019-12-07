@@ -5,12 +5,18 @@ OAuth Credentials
 -----------------
 
 OAuth credentials can be generated in several different ways using the
-`oauth2client <https://github.com/google/oauth2client>`_ library provided by Google. If you are
+`google-auth <https://github.com/googleapis/google-auth-library-python>`_ library provided by Google. If you are
 editing spreadsheets for yourself then the easiest way to generate credentials is to use
 *Signed Credentials* stored in your application (see example below). If you plan to edit
 spreadsheets on behalf of others then visit the
 `Google OAuth2 documentation <https://developers.google.com/accounts/docs/OAuth2>`_ for more
 information.
+
+.. NOTE::
+   In previous versions `oauth2client <https://github.com/google/oauth2client>`_ was used. Google has deprecated
+   that in favor of `google-auth`. If you're still using `oauth2client` credentials, the library will convert
+   these to `google-auth` for you, but you can change your code to use the new credentials to make sure nothing
+   breaks in the future.
 
 Using Signed Credentials
 ------------------------
@@ -49,11 +55,11 @@ In the next step you'll need the value of *client_email* from the file.
 
 4. Go to your spreadsheet and share it with a *client_email* from the step above. Otherwise you'll get a ``SpreadsheetNotFound`` exception when trying to access this spreadsheet with gspread.
 
-5. Install `oauth2client <https://github.com/google/oauth2client>`_:
+5. Install `google-auth <https://github.com/googleapis/google-auth-library-python>`_:
 
 ::
 
-    pip install --upgrade oauth2client
+    pip install --upgrade google-auth
 
 Depending on your system setup you may need to install PyOpenSSL:
 
@@ -66,25 +72,17 @@ Depending on your system setup you may need to install PyOpenSSL:
 ::
 
     import gspread
-    from oauth2client.service_account import ServiceAccountCredentials
+    from google.oauth2 import service_account
 
     scope = ['https://spreadsheets.google.com/feeds',
              'https://www.googleapis.com/auth/drive']
 
-    credentials = ServiceAccountCredentials.from_json_keyfile_name('gspread-april-2cd … ba4.json', scope)
+    credentials = service_account.Credentials.from_service_account_file('gspread-april-2cd … ba4.json', scope)
 
     gc = gspread.authorize(credentials)
 
     wks = gc.open("Where is the money Lebowski?").sheet1
 
-
-Troubleshooting
----------------
-
-oauth2client.client.CryptoUnavailableError: No crypto library available
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you're getting the "No crypto library available" exception, make sure you have ``PyOpenSSL`` library installed in your environment.
 
 Custom Credentials Objects
 --------------------------
