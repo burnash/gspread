@@ -1601,6 +1601,42 @@ class Worksheet(object):
             new_sheet_name
         )
 
+    def merge_cells(
+        self,
+        startRowIndex,
+        endRowIndex,
+        startColIndex,
+        endColIndex
+    ):
+        """Merge cells, using index coordonates.
+
+        :param int startRowIndex: index of the row where merge start
+        :param int endRowIndex: index of the row where merge stops
+        :param int startColIndex: index of the column where merge starts
+        :param int endColIndex: index of the column where merge stops
+
+        :return the response body from the request
+        """
+
+        body = {
+            "requests": [
+                {
+                    "mergeCells": {
+                        "mergeType": "MERGE_ROWS",
+                        "range": {
+                            "sheetId": self.id,
+                            "startRowIndex": startRowIndex,
+                            "endRowIndex": endRowIndex,
+                            "startColumnIndex": startColIndex,
+                            "endColumnIndex": endColIndex,
+                        }
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
 
 class Cell(object):
     """An instance of this class represents a single cell
