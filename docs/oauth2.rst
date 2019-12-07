@@ -13,7 +13,8 @@ spreadsheets on behalf of others then visit the
 information.
 
 .. NOTE::
-   In previous versions `oauth2client <https://github.com/google/oauth2client>`_ was used. Google has deprecated
+   In previous versions `oauth2client <https://github.com/google/oauth2client>`_ was used. Google has
+   `deprecated <https://google-auth.readthedocs.io/en/latest/oauth2client-deprecation.html>`_
    that in favor of `google-auth`. If you're still using `oauth2client` credentials, the library will convert
    these to `google-auth` for you, but you can change your code to use the new credentials to make sure nothing
    breaks in the future.
