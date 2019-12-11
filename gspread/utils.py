@@ -14,7 +14,9 @@ from functools import wraps
 from collections import defaultdict
 from itertools import chain
 
-from google import auth, oauth2
+from google.auth.credentials import Credentials as Credentials
+from google.oauth2.credentials import Credentials as UserCredentials
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
 
@@ -38,7 +40,7 @@ def convert_credentials(credentials):
         return _convert_service_account(credentials)
     elif 'oauth2client' in module and cls == 'OAuth2Credentials':
         return _convert_oauth(credentials)
-    elif isinstance(credentials, auth.credentials.Credentials):
+    elif isinstance(credentials, Credentials):
         return credentials
 
     raise TypeError(
@@ -47,7 +49,7 @@ def convert_credentials(credentials):
 
 
 def _convert_oauth(credentials):
-    return oauth2.credentials.Credentials(
+    return UserCredentials(
         credentials.access_token,
         credentials.refresh_token,
         credentials.id_token,
@@ -66,7 +68,7 @@ def _convert_service_account(credentials):
         'https://spreadsheets.google.com/feeds',
     ]
 
-    return oauth2.service_account.Credentials.from_service_account_info(
+    return ServiceAccountCredentials.from_service_account_info(
         data, scopes=scopes
     )
 

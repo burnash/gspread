@@ -8,13 +8,13 @@ import itertools
 from collections import namedtuple
 
 from gspread.exceptions import APIError
-from oauth2client.service_account import ServiceAccountCredentials
 
 from betamax import Betamax
 from betamax.fixtures.unittest import BetamaxTestCase
 from betamax_json_body_serializer import JSONBodySerializer
 
 import gspread
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from gspread import utils
 
 try:
@@ -58,7 +58,7 @@ with Betamax.configure() as config:
 
 
 def read_credentials(filename):
-    return ServiceAccountCredentials.from_json_keyfile_name(filename, SCOPE)
+    return ServiceAccountCredentials.from_service_account_file(filename, scopes=SCOPE)
 
 
 def prefixed_counter(prefix, start=1):
