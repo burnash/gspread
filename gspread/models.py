@@ -242,7 +242,7 @@ class Spreadsheet(object):
         except (StopIteration, KeyError):
             raise WorksheetNotFound(title)
 
-    def add_worksheet(self, title, rows, cols):
+    def add_worksheet(self, title, rows, cols, index=None):
         """Adds a new worksheet to a spreadsheet.
 
         :param title: A title of a new worksheet.
@@ -251,6 +251,8 @@ class Spreadsheet(object):
         :type rows: int
         :param cols: Number of columns.
         :type cols: int
+        :param index: Position of the sheet.
+        :type index: int
 
         :returns: a newly created :class:`worksheets <gsperad.models.Worksheet>`.
         """
@@ -268,6 +270,9 @@ class Spreadsheet(object):
                 }
             }]
         }
+
+        if index is not None:
+            body["requests"][0]["addSheet"]["properties"]["index"] = index
 
         data = self.batch_update(body)
 
