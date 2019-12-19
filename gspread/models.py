@@ -547,7 +547,7 @@ class Worksheet(object):
         return Cell(row, col, value)
 
     @cast_to_a1_notation
-    def range(self, name):
+    def range(self, name, params=None):
         """Returns a list of :class:`Cell` objects from a specified range.
 
         :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
@@ -564,6 +564,8 @@ class Worksheet(object):
         :type last_row: int
         :param last_col: Row number
         :type last_col: int
+        :param params: Update parameters.
+        :type params: dict
 
         Example::
 
@@ -579,7 +581,7 @@ class Worksheet(object):
 
         range_label = '%s!%s' % (self.title, name)
 
-        data = self.spreadsheet.values_get(range_label)
+        data = self.spreadsheet.values_get(range_label, params = params)
 
         start, end = name.split(':')
         (row_offset, column_offset) = a1_to_rowcol(start)

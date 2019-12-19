@@ -175,7 +175,7 @@ def cast_to_a1_notation(method):
 
             # Convert to A1 notation
             range_start = rowcol_to_a1(*args[:2])
-            range_end = rowcol_to_a1(*args[-2:])
+            range_end = rowcol_to_a1(*args[2:4])
             range_name = ':'.join((range_start, range_end))
 
             args = (range_name,) + args[4:]
