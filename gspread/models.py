@@ -849,7 +849,9 @@ class Worksheet(object):
             }]
         }
 
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        self._properties['gridProperties'].update(grid_properties)
+        return res
 
     def update_title(self, title):
         """Renames the worksheet.
@@ -891,7 +893,7 @@ class Worksheet(object):
         :type cols: int
 
         """
-        self.resize(cols=self.col_count + cols)
+        return self.resize(cols=self.col_count + cols)
 
     def append_row(self, values, value_input_option='RAW'):
         """Adds a row to the worksheet and populates it with values.
