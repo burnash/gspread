@@ -905,6 +905,7 @@ class Worksheet(object):
 
         """
         params = {
+            'insertDataOption': 'INSERT_ROWS',
             'valueInputOption': value_input_option
         }
 
