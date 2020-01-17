@@ -24,7 +24,6 @@ from .utils import (
 from .urls import (
     SPREADSHEET_URL,
     SPREADSHEET_VALUES_URL,
-    SPREADSHEET_VALUES_BATCH_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
     SPREADSHEET_VALUES_APPEND_URL,
     SPREADSHEET_VALUES_CLEAR_URL
@@ -149,27 +148,6 @@ class Spreadsheet(object):
         r = self.client.request('get', url, params=params)
         return r.json()
 
-    def values_batch_get(self, ranges, params=None):
-        """
-        Lower-level method that directly calls `spreadsheets.values.batchGet
-        <https://develop
-        ers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet>`_.
-
-        :param ranges: List of ranges in the `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
-        :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#query-parameters>`_.
-        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
-        :rtype: dict
-
-        """
-        if params is None:
-            params = {}
-
-        params.update(ranges=ranges)
-
-        url = SPREADSHEET_VALUES_BATCH_URL % (self.id)
-        r = self.client.request("get", url, params=params)
-        return r.json()
-
     def values_update(self, range, params=None, body=None):
         """Lower-level method that directly calls `spreadsheets.values.update <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update>`_.
 
@@ -213,7 +191,7 @@ class Spreadsheet(object):
         :param index: An index of a worksheet. Indexes start from zero.
         :type index: int
 
-        :returns: an instance of :class:`gspread.models.Worksheet`
+        :returns: an instance of :class:`gsperad.models.Worksheet`
                   or `None` if the worksheet is not found.
 
         Example. To get first worksheet of a spreadsheet:
@@ -231,7 +209,7 @@ class Spreadsheet(object):
             return None
 
     def worksheets(self):
-        """Returns a list of all :class:`worksheets <gspread.models.Worksheet>`
+        """Returns a list of all :class:`worksheets <gsperad.models.Worksheet>`
         in a spreadsheet.
 
         """
@@ -244,9 +222,9 @@ class Spreadsheet(object):
         :param title: A title of a worksheet. If there're multiple
                       worksheets with the same title, first one will
                       be returned.
-        :type title: str
+        :type title: int
 
-        :returns: an instance of :class:`gspread.models.Worksheet`.
+        :returns: an instance of :class:`gsperad.models.Worksheet`.
 
         Example. Getting worksheet named 'Annual bonuses'
 
@@ -274,7 +252,7 @@ class Spreadsheet(object):
         :param cols: Number of columns.
         :type cols: int
 
-        :returns: a newly created :class:`worksheets <gspread.models.Worksheet>`.
+        :returns: a newly created :class:`worksheets <gsperad.models.Worksheet>`.
         """
         body = {
             'requests': [{
@@ -427,7 +405,7 @@ class Spreadsheet(object):
 
         filtered_id_list = [
             p['id'] for p in permission_list
-            if p.get(key) == value and (p['role'] == role or role == 'any')
+            if p[key] == value and (p['role'] == role or role == 'any')
         ]
 
         for permission_id in filtered_id_list:
@@ -648,11 +626,6 @@ class Worksheet(object):
         idx = head - 1
 
         data = self.get_all_values()
-
-        # Return an empty list if the sheet doesn't have enough rows
-        if len(data) <= idx:
-            return []
-
         keys = data[idx]
         values = [
             numericise_all(
@@ -982,6 +955,56 @@ class Worksheet(object):
                       "endIndex": index
                     }
                 }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+    
+    def add_protect_ranges(self, start_row_index,end_row_index,start_column_index,end_column_index,
+                           description=None,  request_user_edit=False):
+        """"Add protect ranges into the selected worksheet. Only the editors can edit the protected ranges
+
+        :param start_row_index: Index of the start row.
+        :type name_range: int
+        :param end_row_index: Index of the end row.
+        :type name_range: int
+        :param start_column_index: Index of the start column.
+        :type name_range: int
+        :param end_column_index: Index of the end column.
+        :type name_range: int
+        :param description: description for the protected ranges
+        :type description: str
+        :param request_user_edit: True if the user who requested this protected range can edit the protected area.
+        :type request_user_edit: boolean
+        """
+        emailAddresses = []
+        for permission in self.client.list_permissions(self.spreadsheet.id):
+            try:
+                email = permission['emailAddress']
+                emailAddresses.append(email)
+            except:
+                continue
+            
+                
+        body = {
+          "requests": [{
+              "addProtectedRange": {
+                'protectedRange': {
+                  "range": {
+                      "sheetId": self.id,
+                      "startRowIndex": start_row_index,
+                      "endRowIndex": end_row_index,
+                      "startColumnIndex": start_column_index,
+                      "endColumnIndex": end_column_index
+                      },
+                  "description": description,
+                  "warningOnly": False,
+                  "requestingUserCanEdit": request_user_edit,
+                  "editors":{
+                      "users": emailAddresses
+                      }
+                }
+              }
             }]
         }
 
