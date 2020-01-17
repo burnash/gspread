@@ -986,6 +986,55 @@ class Worksheet(object):
         }
 
         return self.spreadsheet.batch_update(body)
+    def add_protect_ranges(self, start_row_index,end_row_index,start_column_index,end_column_index,
+                           description=None,  request_user_edit=False):
+        """"Add protect ranges into the selected worksheet. Only the editors can edit the protected ranges
+        :param start_row_index: Index of the start row.
+        :type name_range: int
+        :param end_row_index: Index of the end row.
+        :type name_range: int
+        :param start_column_index: Index of the start column.
+        :type name_range: int
+        :param end_column_index: Index of the end column.
+        :type name_range: int
+        :param description: description for the protected ranges
+        :type description: str
+        :param request_user_edit: True if the user who requested this protected range can edit the protected area.
+        :type request_user_edit: boolean
+        """
+        emailAddresses = []
+        for permission in self.client.list_permissions(self.spreadsheet.id):
+            try:
+                email = permission['emailAddress']
+                emailAddresses.append(email)
+            except:
+                continue
+            
+                
+        body = {
+          "requests": [{
+              "addProtectedRange": {
+                'protectedRange': {
+                  "range": {
+                      "sheetId": self.id,
+                      "startRowIndex": start_row_index,
+                      "endRowIndex": end_row_index,
+                      "startColumnIndex": start_column_index,
+                      "endColumnIndex": end_column_index
+                      },
+                  "description": description,
+                  "warningOnly": False,
+                  "requestingUserCanEdit": request_user_edit,
+                  "editors":{
+                      "users": emailAddresses
+                      }
+                }
+              }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
 
     def clear(self):
         """Clears all cells in the worksheet.
