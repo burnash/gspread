@@ -1,13 +1,27 @@
 Release History
 ===============
 
+3.2.0 (2020-01-30)
+------------------
+
+* Fixed `gspread.utils.cell_list_to_rect()` on non-rect cell list (#613 by @skaparis)
+* Fixed sharing from Team Drives (#646 by @wooddar)
+* Fixed KeyError in list comprehension in `Spreadsheet.remove_permissions()` (#643 by @wooddar)
+* Fixed typos in docstrings and a docstring type param (#690 by @pedrovhb)
+* Clarified supported Python versions (#651 by @hugovk)
+* Fixed the Exception message in `APIError` class (#634 by @lordofinsomnia)
+* Fixed IndexError in `Worksheet.get_all_records()` (#633 by @AivanF)
+
+* Added `Spreadsheet.values_batch_get()` (#705 by @aiguofer)
+
+
 3.1.0 (2018-11-27)
 ------------------
 
 * Dropped Python 2.6 support
 
-* Fixed KeyError in urllib.quote in Python 2 (#605, #558)
-* Fixed Worksheet.title being out of sync after using update_title (#542 by @ryanpineo)
+* Fixed `KeyError` in `urllib.quote` in Python 2 (#605, #558)
+* Fixed `Worksheet.title` being out of sync after using `update_title` (#542 by @ryanpineo)
 * Fix parameter typos in docs (#616 by @bryanallen22)
 * Miscellaneous docs fixes (#604 by @dgilman)
 * Fixed typo in docs (#591 by @davidefiocco)
@@ -16,7 +30,7 @@ Release History
 * Added `with_link` attribute when sharing / adding permissions (#621 by @epicfaace)
 * Added ability to duplicate a worksheet (#617)
 * Change default behaviour of numericise function #499 (#502 by @danthelion)
-* Added stacklevel=2 to deprecation warnings
+* Added `stacklevel=2` to deprecation warnings
 
 
 3.0.1 (2018-06-30)
