@@ -194,7 +194,12 @@ class ClientTest(GspreadTest):
 
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
+        spreadsheet_list2 = self.gc.openall(spreadsheet_list[0].title)
+
+        self.assertTrue(len(spreadsheet_list2) < len(spreadsheet_list))
         for s in spreadsheet_list:
+            self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
+        for s in spreadsheet_list2:
             self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
 
     def test_create(self):

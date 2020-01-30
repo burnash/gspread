@@ -173,6 +173,11 @@ class Client(object):
         """
         spreadsheet_files = self.list_spreadsheet_files()
 
+        if title:
+            spreadsheet_files = [
+                spread for spread in spreadsheet_files if title == spread["name"]
+            ]
+
         return [
             Spreadsheet(self, dict(title=x['name'], **x))
             for x in spreadsheet_files
