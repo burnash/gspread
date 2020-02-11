@@ -27,7 +27,9 @@ from .urls import (
     SPREADSHEET_VALUES_BATCH_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
     SPREADSHEET_VALUES_APPEND_URL,
-    SPREADSHEET_VALUES_CLEAR_URL
+    SPREADSHEET_VALUES_CLEAR_URL,
+    SPREADSHEET_DRIVE_URL,
+    WORKSHEET_DRIVE_URL
 )
 
 try:
@@ -56,6 +58,11 @@ class Spreadsheet(object):
             metadata = self.fetch_sheet_metadata()
             self._properties.update(metadata['properties'])
             return self._properties['title']
+
+    @property
+    def url(self):
+        """Spreadsheet URL"""
+        return SPREADSHEET_DRIVE_URL % self.id
 
     @property
     def updated(self):
@@ -461,6 +468,11 @@ class Worksheet(object):
     def title(self):
         """Worksheet title."""
         return self._properties['title']
+
+    @property
+    def url(self):
+        """Worksheet URL"""
+        return WORKSHEET_DRIVE_URL % (self.spreadsheet.id, self.id)
 
     @property
     def updated(self):
