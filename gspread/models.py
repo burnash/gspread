@@ -891,28 +891,54 @@ class Worksheet(object):
         """
         self.resize(cols=self.col_count + cols)
 
-    def append_row(self, values, value_input_option='RAW'):
+    def append_row(
+        self,
+        values,
+        value_input_option='RAW',
+        insert_data_option=None,
+        table_range=None
+    ):
         """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
 
         :param values: List of values for the new row.
-        :param value_input_option: (optional) Determines how input data should
-                                    be interpreted. See `ValueInputOption`_ in
-                                    the Sheets API.
+        :param value_input_option: (optional) Determines how the input data
+                                    should be interpreted. See
+                                    `ValueInputOption`_ in the Sheets API
+                                    reference.
         :type value_input_option: str
+        :param insert_data_option: (optional) Determines how the input data
+                                    should be inserted. See
+                                    `InsertDataOption`_ in the Sheets API
+                                    reference.
+        :type insert_data_option: str
+        :param table_range: (optional) The A1 notation of a range to search for
+                             a logical table of data. Values are appended after
+                             the last row of the table.
+                             Examples: `A1` or `B2:D4`
+        :type table_range: str
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+        .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
 
         """
+
+        range_label = (
+            '%s!%s' % (self.title, table_range)
+            if table_range
+            else self.title
+        )
+
         params = {
-            'valueInputOption': value_input_option
+            'valueInputOption': value_input_option,
+            'insertDataOption': insert_data_option
         }
 
         body = {
             'values': [values]
         }
 
-        return self.spreadsheet.values_append(self.title, params, body)
+        return self.spreadsheet.values_append(range_label, params, body)
 
     def insert_row(
         self,
