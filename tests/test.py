@@ -245,7 +245,6 @@ class ClientTest(GspreadTest):
         self.assertEqual(error.exception.args[0]['status'], 'NOT_FOUND')
 
 
-
 class SpreadsheetTest(GspreadTest):
 
     """Test for gspread.Spreadsheet."""
@@ -362,6 +361,7 @@ class SpreadsheetTest(GspreadTest):
             for rowix, ele in enumerate(rng['values']):
                 self.assertEqual(values[rowix][colix], ele[0])
         self.spreadsheet.del_worksheet(worksheet)
+
 
 class WorksheetTest(GspreadTest):
 
@@ -693,6 +693,30 @@ class WorksheetTest(GspreadTest):
         value_list = [next(sg) for i in range(10)]
         self.sheet.append_row(value_list)
         read_values = self.sheet.row_values(1)
+        self.assertEqual(value_list, read_values)
+
+    def test_append_row_with_empty_value(self):
+        sg = self._sequence_generator()
+        value_list = [next(sg) for i in range(3)]
+        value_list[1] = ''  # Skip one cell to create two "tables" as in #537
+        self.sheet.append_row(value_list)
+        # Append it again
+        self.sheet.append_row(value_list)
+        # This should produce a shift in rows as in #537
+        shifted_value_list = ['', ''] + value_list
+        read_values = self.sheet.row_values(2)
+        self.assertEqual(shifted_value_list, read_values)
+
+    def test_append_row_with_empty_value_and_table_range(self):
+        sg = self._sequence_generator()
+        value_list = [next(sg) for i in range(3)]
+        value_list[1] = ''  # Skip one cell to create two "tables" as in #537
+        self.sheet.append_row(value_list)
+        # Append it again
+        self.sheet.append_row(value_list, table_range='A1')
+        # This should produce no shift in rows
+        # contrary to test_append_row_with_empty_value
+        read_values = self.sheet.row_values(2)
         self.assertEqual(value_list, read_values)
 
     def test_insert_row(self):
