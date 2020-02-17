@@ -34,6 +34,14 @@ GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py
 
 where `YOUR_CREDS.json` is a path to the file you downloaded in step 1.
 
+**Tip:** To run a specific test method append its name in the form of `:TestClassName.test_method_name` to `tests/test.py`. 
+
+Example:
+
+```
+GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py:WorksheetTest.test_find
+```
+
 **Note:** gspread uses [Betamax](https://github.com/betamaxpy/betamax) to record and replay HTTP interactions with Sheets API.
 You can control Betamax's [Record Mode](https://betamax.readthedocs.io/en/latest/record_modes.html) using `GS_RECORD_MODE` environment variable:
 
