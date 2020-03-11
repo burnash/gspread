@@ -775,6 +775,102 @@ class WorksheetTest(GspreadTest):
         self.sheet.clear()
         self.assertEqual(self.sheet.get_all_values(), [])
 
+    def test_update_and_get(self):
+        values = [
+            ['A1', 'B1', '', 'D1'],
+            ['', 'b2', '', ''],
+            ['', '', '', ''],
+            ['A4', 'B4', '', 'D4'],
+        ]
+
+        self.sheet.update('A1', values)
+
+        read_data = self.sheet.get('A1:D4')
+
+        self.assertEqual(read_data, [
+            ['A1', 'B1', '', 'D1'],
+            ['', 'b2'],
+            [],
+            ['A4', 'B4', '', 'D4']]
+        )
+
+    def test_batch_get(self):
+        values = [
+            ['A1', 'B1', '', 'D1'],
+            ['', 'b2', '', ''],
+            ['', '', '', ''],
+            ['A4', 'B4', '', 'D4'],
+        ]
+
+        self.sheet.update('A1', values)
+
+        value_ranges = self.sheet.batch_get(['A1:B1', 'B4:D4'])
+
+        self.assertEqual(value_ranges, [[['A1', 'B1']], [['B4', '', 'D4']]])
+        self.assertEqual(value_ranges[0].range, 'wksht_test!A1:B1')
+        self.assertEqual(value_ranges[1].range, 'wksht_test!B4:D4')
+        self.assertEqual(value_ranges[0].first(), 'A1')
+
+    def test_batch_update(self):
+        self.sheet.batch_update([{
+            'range': 'A1:D1',
+            'values': [['A1', 'B1', '', 'D1']],
+        }, {
+            'range': 'A4:D4',
+            'values': [['A4', 'B4', '', 'D4']],
+        }])
+
+        data = self.sheet.get('A1:D4')
+
+        self.assertEqual(data, [
+            ['A1', 'B1', '', 'D1'],
+            [],
+            [],
+            ['A4', 'B4', '', 'D4']
+        ])
+
+    def test_format(self):
+        cell_format = {
+            "backgroundColor": {
+              "green": 1,
+              "blue": 1
+            },
+            "horizontalAlignment": "CENTER",
+            "textFormat": {
+              "foregroundColor": {
+                "red": 1,
+                "green": 1,
+              },
+              "fontSize": 12,
+              "bold": True
+            }
+        }
+        self.maxDiff = None
+        self.sheet.format("A2:B2", cell_format)
+
+        data = self.spreadsheet._spreadsheets_get({
+            'includeGridData': False,
+            'ranges': ['wksht_test!A2'],
+            'fields': 'sheets.data.rowData.values.userEnteredFormat'
+        })
+
+        uef = (
+            data
+            ['sheets'][0]
+            ['data'][0]
+            ['rowData'][0]
+            ['values'][0]
+            ['userEnteredFormat']
+        )
+
+        del uef['backgroundColorStyle']
+        del uef['textFormat']['foregroundColorStyle']
+
+        self.assertEqual(
+            uef,
+            cell_format
+        )
+
 
 class CellTest(GspreadTest):
 
