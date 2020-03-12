@@ -22,7 +22,8 @@ from .utils import (
     is_scalar,
     filter_dict_values,
     absolute_range_name,
-    a1_range_to_grid_range
+    a1_range_to_grid_range,
+    accepted_kwargs
 )
 
 from .urls import (
@@ -860,13 +861,12 @@ class Worksheet(object):
 
         return data
 
-    def get(
-        self,
-        range_name=None,
+    @accepted_kwargs(
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None
-    ):
+    )
+    def get(self, range_name=None, **kwargs):
         """Reads values of a single range or a cell of a sheet.
 
         :param str range_name: (optional) Cell range in the A1 notation or
@@ -907,22 +907,21 @@ class Worksheet(object):
             range_name = self.title
 
         params = filter_dict_values({
-            'majorDimension': major_dimension,
-            'valueRenderOption': value_render_option,
-            'dateTimeRenderOption': date_time_render_option
+            'majorDimension': kwargs['major_dimension'],
+            'valueRenderOption': kwargs['value_render_option'],
+            'dateTimeRenderOption': kwargs['date_time_render_option']
         })
 
         response = self.spreadsheet.values_get(range_name, params=params)
 
         return ValueRange.from_json(response)
 
-    def batch_get(
-        self,
-        ranges,
+    @accepted_kwargs(
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None
-    ):
+    )
+    def batch_get(self, ranges, **kwargs):
         """Returns one or more ranges of values from the sheet.
 
         :param list ranges: List of cell ranges in the A1 notation or named
@@ -951,9 +950,9 @@ class Worksheet(object):
         ranges = ['%s!%s' % (self.title, r) for r in ranges if r]
 
         params = filter_dict_values({
-            'majorDimension': major_dimension,
-            'valueRenderOption': value_render_option,
-            'dateTimeRenderOption': date_time_render_option
+            'majorDimension': kwargs['major_dimension'],
+            'valueRenderOption': kwargs['value_render_option'],
+            'dateTimeRenderOption': kwargs['date_time_render_option']
         })
 
         response = self.spreadsheet.values_batch_get(
@@ -963,17 +962,15 @@ class Worksheet(object):
 
         return [ValueRange.from_json(x) for x in response['valueRanges']]
 
-    def update(
-        self,
-        range_name,
-        values=None,
+    @accepted_kwargs(
         raw=True,
         major_dimension=None,
         value_input_option=None,
         include_values_in_response=None,
         response_value_render_option=None,
         response_date_time_render_option=None
-    ):
+    )
+    def update(self, range_name, values=None, **kwargs):
         """Sets values in a cell range of the sheet.
 
         :param str range_name: (optional) The A1 notation of the values
@@ -1029,14 +1026,20 @@ class Worksheet(object):
         if is_scalar(values):
             values = [[values]]
 
-        if not value_input_option:
-            value_input_option = 'RAW' if raw else 'USER_ENTERED'
+        if not kwargs['value_input_option']:
+            kwargs['value_input_option'] = (
+                'RAW' if kwargs['raw'] else 'USER_ENTERED'
+            )
 
         params = filter_dict_values({
-            'valueInputOption': value_input_option,
-            'includeValuesInResponse': include_values_in_response,
-            'responseValueRenderOption': response_value_render_option,
-            'responseDateTimeRenderOption': response_date_time_render_option
+            'valueInputOption': kwargs['value_input_option'],
+            'includeValuesInResponse': kwargs['include_values_in_response'],
+            'responseValueRenderOption': kwargs[
+                'response_value_render_option'
+            ],
+            'responseDateTimeRenderOption': kwargs[
+                'response_date_time_render_option'
+            ]
         })
 
         response = self.spreadsheet.values_update(
@@ -1044,21 +1047,20 @@ class Worksheet(object):
             params=params,
             body=filter_dict_values({
                 'values': values,
-                'majorDimension': major_dimension
+                'majorDimension': kwargs['major_dimension']
             })
         )
 
         return response
 
-    def batch_update(
-        self,
-        data,
+    @accepted_kwargs(
         raw=True,
         value_input_option=None,
         include_values_in_response=None,
         response_value_render_option=None,
         response_date_time_render_option=None
-    ):
+    )
+    def batch_update(self, data, **kwargs):
         """
         Examples::
 
@@ -1077,8 +1079,10 @@ class Worksheet(object):
         .. versionadded:: 3.3
 
         """
-        if not value_input_option:
-            value_input_option = 'RAW' if raw else 'USER_ENTERED'
+        if not kwargs['value_input_option']:
+            kwargs['value_input_option'] = (
+                'RAW' if kwargs['raw'] else 'USER_ENTERED'
+            )
 
         data = [
             dict(vr, range=absolute_range_name(self.title, vr['range']))
@@ -1086,10 +1090,14 @@ class Worksheet(object):
         ]
 
         body = filter_dict_values({
-            'valueInputOption': value_input_option,
-            'includeValuesInResponse': include_values_in_response,
-            'responseValueRenderOption': response_value_render_option,
-            'responseDateTimeRenderOption': response_date_time_render_option,
+            'valueInputOption': kwargs['value_input_option'],
+            'includeValuesInResponse': kwargs['include_values_in_response'],
+            'responseValueRenderOption': kwargs[
+                'response_value_render_option'
+            ],
+            'responseDateTimeRenderOption': kwargs[
+                'response_date_time_render_option'
+            ],
             'data': data
         })
 
@@ -1129,8 +1137,10 @@ class Worksheet(object):
                   "bold": True
                 }
             })
-        """
 
+        .. versionadded:: 3.3
+
+        """
         grid_range = a1_range_to_grid_range(range_name, self.id)
 
         fields = "userEnteredFormat(%s)" % ','.join(cell_format.keys())
