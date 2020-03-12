@@ -161,7 +161,6 @@ worksheet.update('B1', 'Bingo!')
 # Update a range
 worksheet.update('A1:B2', [[1, 2], [3, 4]])
 
-
 # Update multiple ranges at once
 worksheet.batch_update([{
     'range': 'A1:B2',
