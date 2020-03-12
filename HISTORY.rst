@@ -1,6 +1,21 @@
 Release History
 ===============
 
+3.3.0 (2020-03-12)
+------------------
+
+* Added `Spreadsheet.values_batch_update()` (#731)
+* Added:
+    * `Worksheet.get()`
+    * `Worksheet.batch_get()`
+    * `Worksheet.update()`
+    * `Worksheet.batch_update()`
+    * `Worksheet.format()`
+
+* Added more parameters to `Worksheet.append_row()` (#726)
+* Fix usage of client.openall when a title is passed in (#572 by @aiguofer)
+
+
 3.2.0 (2020-01-30)
 ------------------
 
