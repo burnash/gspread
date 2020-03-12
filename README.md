@@ -29,13 +29,14 @@ import gspread
 
 gc = gspread.authorize(credentials)
 
-# Open a worksheet from spreadsheet with one shot
+# Open a sheet from a spreadsheet with one go
 wks = gc.open("Where is the money Lebowski?").sheet1
 
-wks.update_acell('B2', "it's down there somewhere, let me take another look.")
+# Update a range of cells using a top left corner address
+wks.update('A1', [[1, 2], [3, 4]])
 
-# Fetch a cell range
-cell_list = wks.range('A1:B7')
+# Or update a single cell
+wks.update('B42', "it's down there somewhere, let me take another look.")
 ```
 
 ## More Examples
@@ -102,7 +103,7 @@ sh.del_worksheet(worksheet)
 
 ```python
 # With label
-val = worksheet.acell('B1').value
+val = worksheet.get('B1').first()
 
 # With coords
 val = worksheet.cell(1, 2).value
@@ -148,33 +149,24 @@ criteria_re = re.compile(r'(Small|Room-tiering) rug')
 cell_list = worksheet.findall(criteria_re)
 ```
 
-### Cell Object
-
-Each cell has a value and coordinates properties.
-
-```python
-
-value = cell.value
-row_number = cell.row
-column_number = cell.col
-```
-
 ### Updating Cells
 
 ```python
-worksheet.update_acell('B1', 'Bingo!')
+# Update a single cell
+worksheet.update('B1', 'Bingo!')
 
-# Or
-worksheet.update_cell(1, 2, 'Bingo!')
+# Update a range
+worksheet.update('A1:B2', [[1, 2], [3, 4]])
 
-# Select a range
-cell_list = worksheet.range('A1:C7')
 
-for cell in cell_list:
-    cell.value = 'O_o'
-
-# Update in batch
-worksheet.update_cells(cell_list)
+# Update multiple ranges at once
+worksheet.batch_update([{
+    'range': 'A1:B2',
+    'values': [['A1', 'B1'], ['A2', 'B2']],
+}, {
+    'range': 'J42:K43',
+    'values': [[1, 2], [3, 4]],
+}])
 ```
 
 ## [Documentation](http://gspread.readthedocs.org/)
