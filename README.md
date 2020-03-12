@@ -29,7 +29,7 @@ import gspread
 
 gc = gspread.authorize(credentials)
 
-# Open a sheet from a spreadsheet with one go
+# Open a sheet from a spreadsheet in one go
 wks = gc.open("Where is the money Lebowski?").sheet1
 
 # Update a range of cells using a top left corner address
