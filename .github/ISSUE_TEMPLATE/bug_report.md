@@ -7,6 +7,12 @@ assignees: ''
 
 ---
 
+**Important**: Please do not post usage questions here. 
+To get a quick response, please ask a question on Stack Overflow using `gspread` tag.
+See existing questions: https://stackoverflow.com/questions/tagged/gspread
+
+---
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
