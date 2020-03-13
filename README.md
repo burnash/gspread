@@ -32,7 +32,7 @@ gc = gspread.authorize(credentials)
 # Open a sheet from a spreadsheet in one go
 wks = gc.open("Where is the money Lebowski?").sheet1
 
-# Update a range of cells using a top left corner address
+# Update a range of cells using the top left corner address
 wks.update('A1', [[1, 2], [3, 4]])
 
 # Or update a single cell
