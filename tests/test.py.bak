@@ -18,9 +18,9 @@ import gspread
 from gspread import utils
 
 try:
-    str
+    unicode
 except NameError:
-    str = str = str
+    basestring = unicode = str
 
 
 CREDS_FILENAME = os.getenv('GS_CREDS_FILENAME')
@@ -31,7 +31,7 @@ SCOPE = [
 ]
 DUMMY_ACCESS_TOKEN = '<ACCESS_TOKEN>'
 
-I18N_STR = 'Iñtërnâtiônàlizætiøn'  # .encode('utf8')
+I18N_STR = u'Iñtërnâtiônàlizætiøn'  # .encode('utf8')
 
 Betamax.register_serializer(JSONBodySerializer)
 
@@ -64,7 +64,7 @@ def read_credentials(filename):
 def prefixed_counter(prefix, start=1):
     c = itertools.count(start)
     for value in c:
-        yield '%s %s' % (prefix, value)
+        yield u'%s %s' % (prefix, value)
 
 
 def get_method_name(self_id):
@@ -279,15 +279,15 @@ class SpreadsheetTest(GspreadTest):
     def test_values_get(self):
         sg = self._sequence_generator()
 
-        worksheet1_name = '%s %s' % ('🌵', next(sg))
+        worksheet1_name = u'%s %s' % (u'🌵', next(sg))
 
         worksheet = self.spreadsheet.add_worksheet(worksheet1_name, 10, 10)
 
         range_label = '%s!%s' % (worksheet1_name, 'A1')
 
         values = [
-            ['🍇', '🍉', '🍋'],
-            ['🍐', '🍎', '🍓']
+            [u'🍇', u'🍉', u'🍋'],
+            [u'🍐', u'🍎', u'🍓']
         ]
 
         self.spreadsheet.values_update(
@@ -333,15 +333,15 @@ class SpreadsheetTest(GspreadTest):
     def test_values_batch_get(self):
         sg = self._sequence_generator()
 
-        worksheet1_name = '%s %s' % ('🌵', next(sg))
+        worksheet1_name = u'%s %s' % (u'🌵', next(sg))
 
         worksheet = self.spreadsheet.add_worksheet(worksheet1_name, 10, 10)
 
         range_label = '%s!%s' % (worksheet1_name, 'A1')
 
         values = [
-            ['🍇', '🍉', '🍋'],
-            ['🍐', '🍎', '🍓']
+            [u'🍇', u'🍉', u'🍋'],
+            [u'🍐', u'🍎', u'🍓']
         ]
 
         self.spreadsheet.values_update(
@@ -422,8 +422,8 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cell(1, 2, 42.01)
         self.assertEqual(self.sheet.cell(1, 2).value, '42.01')
 
-        self.sheet.update_cell(1, 2, 'Артур')
-        self.assertEqual(self.sheet.cell(1, 2).value, 'Артур')
+        self.sheet.update_cell(1, 2, u'Артур')
+        self.assertEqual(self.sheet.cell(1, 2).value, u'Артур')
 
     def test_update_cell_multiline(self):
         sg = self._sequence_generator()
@@ -626,26 +626,26 @@ class WorksheetTest(GspreadTest):
 
         # first, read empty strings to empty strings
         read_records = self.sheet.get_all_records()
-        d0 = dict(list(zip(rows[0], rows[1])))
-        d1 = dict(list(zip(rows[0], rows[2])))
-        d2 = dict(list(zip(rows[0], rows[3])))
+        d0 = dict(zip(rows[0], rows[1]))
+        d1 = dict(zip(rows[0], rows[2]))
+        d2 = dict(zip(rows[0], rows[3]))
         self.assertEqual(read_records[0], d0)
         self.assertEqual(read_records[1], d1)
         self.assertEqual(read_records[2], d2)
 
         # then, read empty strings to zeros
         read_records = self.sheet.get_all_records(empty2zero=True)
-        d1 = dict(list(zip(rows[0], (0, 0, 0, 0))))
+        d1 = dict(zip(rows[0], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to None
         read_records = self.sheet.get_all_records(default_blank=None)
-        d1 = dict(list(zip(rows[0], (None, None, None, None))))
+        d1 = dict(zip(rows[0], (None, None, None, None)))
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to something else
         read_records = self.sheet.get_all_records(default_blank='foo')
-        d1 = dict(list(zip(rows[0], ('foo', 'foo', 'foo', 'foo'))))
+        d1 = dict(zip(rows[0], ('foo', 'foo', 'foo', 'foo')))
         self.assertEqual(read_records[1], d1)
 
     def test_get_all_records_different_header(self):
@@ -666,26 +666,26 @@ class WorksheetTest(GspreadTest):
 
         # first, read empty strings to empty strings
         read_records = self.sheet.get_all_records(head=3)
-        d0 = dict(list(zip(rows[2], rows[3])))
-        d1 = dict(list(zip(rows[2], rows[4])))
-        d2 = dict(list(zip(rows[2], rows[5])))
+        d0 = dict(zip(rows[2], rows[3]))
+        d1 = dict(zip(rows[2], rows[4]))
+        d2 = dict(zip(rows[2], rows[5]))
         self.assertEqual(read_records[0], d0)
         self.assertEqual(read_records[1], d1)
         self.assertEqual(read_records[2], d2)
 
         # then, read empty strings to zeros
         read_records = self.sheet.get_all_records(empty2zero=True, head=3)
-        d1 = dict(list(zip(rows[2], (0, 0, 0, 0))))
+        d1 = dict(zip(rows[2], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to None
         read_records = self.sheet.get_all_records(default_blank=None, head=3)
-        d1 = dict(list(zip(rows[2], (None, None, None, None))))
+        d1 = dict(zip(rows[2], (None, None, None, None)))
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to something else
         read_records = self.sheet.get_all_records(default_blank='foo', head=3)
-        d1 = dict(list(zip(rows[2], ('foo', 'foo', 'foo', 'foo'))))
+        d1 = dict(zip(rows[2], ('foo', 'foo', 'foo', 'foo')))
         self.assertEqual(read_records[1], d1)
 
     def test_append_row(self):
