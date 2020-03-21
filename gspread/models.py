@@ -36,11 +36,6 @@ from .urls import (
     SPREADSHEET_VALUES_BATCH_UPDATE_URL
 )
 
-try:
-    str
-except NameError:
-    str = str = str
-
 
 class ValueRange(list):
     @classmethod
