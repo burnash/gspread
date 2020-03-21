@@ -8,7 +8,6 @@ Features:
 -  Google Sheets API v4.
 -  Open a spreadsheet by its **title** or **url**.
 -  Extract range, entire row or column values.
--  Python 3 support.
 
 
 Installation
@@ -19,7 +18,7 @@ Installation
    pip install gspread
 
 
-Requirements: Python 2.7+ or Python 3+.
+Requirements: Python Python 3.4+.
 
 
 Example Usage
