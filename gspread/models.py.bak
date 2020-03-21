@@ -33,15 +33,13 @@ from .urls import (
     SPREADSHEET_BATCH_UPDATE_URL,
     SPREADSHEET_VALUES_APPEND_URL,
     SPREADSHEET_VALUES_CLEAR_URL,
-    SPREADSHEET_DRIVE_URL,
-    WORKSHEET_DRIVE_URL,
     SPREADSHEET_VALUES_BATCH_UPDATE_URL
 )
 
 try:
-    str
+    unicode
 except NameError:
-    str = str = str
+    basestring = unicode = str
 
 
 class ValueRange(list):
@@ -94,11 +92,6 @@ class Spreadsheet(object):
             metadata = self.fetch_sheet_metadata()
             self._properties.update(metadata['properties'])
             return self._properties['title']
-
-    @property
-    def url(self):
-        """Spreadsheet URL"""
-        return SPREADSHEET_DRIVE_URL % self.id
 
     @property
     def updated(self):
@@ -320,7 +313,7 @@ class Spreadsheet(object):
         except (StopIteration, KeyError):
             raise WorksheetNotFound(title)
 
-    def add_worksheet(self, title, rows, cols, index=None):
+    def add_worksheet(self, title, rows, cols):
         """Adds a new worksheet to a spreadsheet.
 
         :param title: A title of a new worksheet.
@@ -329,8 +322,6 @@ class Spreadsheet(object):
         :type rows: int
         :param cols: Number of columns.
         :type cols: int
-        :param index: Position of the sheet.
-        :type index: int
 
         :returns: a newly created :class:`worksheets <gspread.models.Worksheet>`.
         """
@@ -348,9 +339,6 @@ class Spreadsheet(object):
                 }
             }]
         }
-
-        if index is not None:
-            body["requests"][0]["addSheet"]["properties"]["index"] = index
 
         data = self.batch_update(body)
 
@@ -524,11 +512,6 @@ class Worksheet(object):
         return self._properties['title']
 
     @property
-    def url(self):
-        """Worksheet URL"""
-        return WORKSHEET_DRIVE_URL % (self.spreadsheet.id, self.id)
-
-    @property
     def updated(self):
         """.. deprecated:: 2.0
 
@@ -551,16 +534,6 @@ class Worksheet(object):
     def col_count(self):
         """Number of columns."""
         return self._properties['gridProperties']['columnCount']
-
-    @property
-    def frozen_row_count(self):
-        """Number of frozen rows."""
-        return self._properties['gridProperties'].get('frozenRowCount', 0)
-
-    @property
-    def frozen_col_count(self):
-        """Number of frozen columns."""
-        return self._properties['gridProperties'].get('frozenColumnCount', 0)
 
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
         """Returns an instance of a :class:`gspread.models.Cell`.
@@ -675,25 +648,15 @@ class Worksheet(object):
             for j, value in enumerate(row)
         ]
 
-    def get_all_values(self, value_render_option='FORMATTED_VALUE'):
+    def get_all_values(self):
         """Returns a list of lists containing all cells' values as strings.
-
-        :param value_render_option: (optional) Determines how values should be
-                                    rendered in the the output. See
-                                    `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: str
-
-        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
         .. note::
 
             Empty trailing rows and columns will not be included.
         """
 
-        data = self.spreadsheet.values_get(
-            "'{}'".format(self.title),
-            params={'valueRenderOption': value_render_option}
-        )
+        data = self.spreadsheet.values_get(self.title)
 
         try:
             return fill_gaps(data['values'])
@@ -750,7 +713,7 @@ class Worksheet(object):
             for row in data[idx + 1:]
         ]
 
-        return [dict(list(zip(keys, row))) for row in values]
+        return [dict(zip(keys, row)) for row in values]
 
     def row_values(self, row, value_render_option='FORMATTED_VALUE'):
         """Returns a list of all values in a `row`.
@@ -1180,7 +1143,7 @@ class Worksheet(object):
         """
         grid_range = a1_range_to_grid_range(range_name, self.id)
 
-        fields = "userEnteredFormat(%s)" % ','.join(list(cell_format.keys()))
+        fields = "userEnteredFormat(%s)" % ','.join(cell_format.keys())
 
         body = {
             "requests": [{
@@ -1216,7 +1179,7 @@ class Worksheet(object):
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
         fields = ','.join(
-            'gridProperties/%s' % p for p in list(grid_properties.keys())
+            'gridProperties/%s' % p for p in grid_properties.keys()
         )
 
         body = {
@@ -1416,7 +1379,7 @@ class Worksheet(object):
             for j, value in enumerate(row)
         ]
 
-        if isinstance(query, str):
+        if isinstance(query, basestring):
             match = lambda x: x.value == query
         else:
             match = lambda x: query.search(x.value)
@@ -1443,96 +1406,6 @@ class Worksheet(object):
 
         """
         return list(self._finder(filter, query))
-
-    def freeze(self, rows=None, cols=None):
-        """Freeze rows and/or columns on the worksheet.
-
-        :param rows: Number of rows to freeze.
-        :param cols: Number of columns to freeze.
-        """
-        grid_properties = {}
-
-        if rows is not None:
-            grid_properties['frozenRowCount'] = rows
-
-        if cols is not None:
-            grid_properties['frozenColumnCount'] = cols
-
-        if not grid_properties:
-            raise TypeError("Either 'rows' or 'cols' should be specified.")
-
-        fields = ','.join(
-            'gridProperties/%s' % p for p in grid_properties.keys()
-        )
-
-        body = {
-            'requests': [{
-                'updateSheetProperties': {
-                    'properties': {
-                        'sheetId': self.id,
-                        'gridProperties': grid_properties
-                    },
-                    'fields': fields
-                }
-            }]
-        }
-
-        return self.spreadsheet.batch_update(body)
-
-    @cast_to_a1_notation
-    def add_basic_filter(self, name=None):
-        """Add a basic filter to the worksheet. If a range or bundaries
-        are passed, the filter will be limited to the given range.
-
-        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
-
-        Alternatively, you may specify numeric boundaries. All values
-        index from 1 (one):
-
-        :param first_row: Integer row number
-        :param first_col: Integer row number
-        :param last_row: Integer row number
-        :param last_col: Integer row number
-        """
-        rng = {
-            'sheetId': self.id,
-        }
-
-        if name is not None:
-            start, end = name.split(':')
-            (row_offset, column_offset) = a1_to_rowcol(start)
-            (last_row, last_column) = a1_to_rowcol(end)
-            rng['startRowIndex'] = row_offset - 1
-            rng['endRowIndex'] = last_row
-            rng['startColumnIndex'] = column_offset - 1
-            rng['endColumnIndex'] = last_column
-
-        filter_settings = {
-            'range': rng
-        }
-
-        body = {
-            'requests': [{
-                'setBasicFilter': {
-                    'filter': filter_settings
-                }
-            }]
-        }
-
-        return self.spreadsheet.batch_update(body)
-
-    def remove_basic_filter(self):
-        """Remove the basic filter from a worksheet.
-        """
-        body = {
-            'requests': [{
-                'clearBasicFilter': {
-                    'sheetId': self.id,
-                }
-            }]
-        }
-
-        return self.spreadsheet.batch_update(body)
 
     def export(self, format):
         """.. deprecated:: 2.0

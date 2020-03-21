@@ -18,9 +18,9 @@ import gspread
 from gspread import utils
 
 try:
-    str
+    unicode
 except NameError:
-    str = str = str
+    basestring = unicode = str
 
 
 CREDS_FILENAME = os.getenv('GS_CREDS_FILENAME')
@@ -31,7 +31,7 @@ SCOPE = [
 ]
 DUMMY_ACCESS_TOKEN = '<ACCESS_TOKEN>'
 
-I18N_STR = 'Iñtërnâtiônàlizætiøn'  # .encode('utf8')
+I18N_STR = u'Iñtërnâtiônàlizætiøn'  # .encode('utf8')
 
 Betamax.register_serializer(JSONBodySerializer)
 
@@ -64,7 +64,7 @@ def read_credentials(filename):
 def prefixed_counter(prefix, start=1):
     c = itertools.count(start)
     for value in c:
-        yield '%s %s' % (prefix, value)
+        yield u'%s %s' % (prefix, value)
 
 
 def get_method_name(self_id):
@@ -279,15 +279,15 @@ class SpreadsheetTest(GspreadTest):
     def test_values_get(self):
         sg = self._sequence_generator()
 
-        worksheet1_name = '%s %s' % ('🌵', next(sg))
+        worksheet1_name = u'%s %s' % (u'🌵', next(sg))
 
         worksheet = self.spreadsheet.add_worksheet(worksheet1_name, 10, 10)
 
         range_label = '%s!%s' % (worksheet1_name, 'A1')
 
         values = [
-            ['🍇', '🍉', '🍋'],
-            ['🍐', '🍎', '🍓']
+            [u'🍇', u'🍉', u'🍋'],
+            [u'🍐', u'🍎', u'🍓']
         ]
 
         self.spreadsheet.values_update(
@@ -333,15 +333,15 @@ class SpreadsheetTest(GspreadTest):
     def test_values_batch_get(self):
         sg = self._sequence_generator()
 
-        worksheet1_name = '%s %s' % ('🌵', next(sg))
+        worksheet1_name = u'%s %s' % (u'🌵', next(sg))
 
         worksheet = self.spreadsheet.add_worksheet(worksheet1_name, 10, 10)
 
         range_label = '%s!%s' % (worksheet1_name, 'A1')
 
         values = [
-            ['🍇', '🍉', '🍋'],
-            ['🍐', '🍎', '🍓']
+            [u'🍇', u'🍉', u'🍋'],
+            [u'🍐', u'🍎', u'🍓']
         ]
 
         self.spreadsheet.values_update(
@@ -422,8 +422,8 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cell(1, 2, 42.01)
         self.assertEqual(self.sheet.cell(1, 2).value, '42.01')
 
-        self.sheet.update_cell(1, 2, 'Артур')
-        self.assertEqual(self.sheet.cell(1, 2).value, 'Артур')
+        self.sheet.update_cell(1, 2, u'Артур')
+        self.assertEqual(self.sheet.cell(1, 2).value, u'Артур')
 
     def test_update_cell_multiline(self):
         sg = self._sequence_generator()
@@ -533,74 +533,6 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(grid_props['rowCount'], new_rows)
         self.assertEqual(grid_props['columnCount'], new_cols)
 
-    def test_freeze(self):
-        freeze_cols = 1
-        freeze_rows = 2
-
-        def get_grid_props():
-            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()['sheets']
-            return utils.finditem(
-                lambda x: x['properties']['sheetId'] == self.sheet.id, sheets
-            )['properties']['gridProperties']
-
-        self.sheet.freeze(freeze_rows)
-
-        grid_props = get_grid_props()
-
-        self.assertEqual(grid_props['frozenRowCount'], freeze_rows)
-
-        self.sheet.freeze(cols=freeze_cols)
-
-        grid_props = get_grid_props()
-
-        self.assertEqual(grid_props['frozenColumnCount'], freeze_cols)
-
-        self.sheet.freeze(0, 0)
-
-        grid_props = get_grid_props()
-
-        self.assertTrue('frozenRowCount' not in grid_props)
-        self.assertTrue('frozenColumnCount' not in grid_props)
-
-    def test_basic_filters(self):
-        def get_sheet():
-            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()['sheets']
-            return utils.finditem(
-                lambda x: x['properties']['sheetId'] == self.sheet.id, sheets
-            )
-
-        def get_basic_filter_range():
-            return get_sheet()['basicFilter']['range']
-
-        self.sheet.resize(20, 20)
-
-        self.sheet.add_basic_filter()
-        filter_range = get_basic_filter_range()
-
-        self.assertEquals(filter_range['startRowIndex'], 0)
-        self.assertEquals(filter_range['startColumnIndex'], 0)
-        self.assertEquals(filter_range['endRowIndex'], 20)
-        self.assertEquals(filter_range['endColumnIndex'], 20)
-
-        self.sheet.add_basic_filter('B1:C2')
-        filter_range = get_basic_filter_range()
-
-        self.assertEquals(filter_range['startRowIndex'], 0)
-        self.assertEquals(filter_range['startColumnIndex'], 1)
-        self.assertEquals(filter_range['endRowIndex'], 2)
-        self.assertEquals(filter_range['endColumnIndex'], 3)
-
-        self.sheet.add_basic_filter(1, 2, 2, 3)
-        filter_range = get_basic_filter_range()
-
-        self.assertEquals(filter_range['startRowIndex'], 0)
-        self.assertEquals(filter_range['startColumnIndex'], 1)
-        self.assertEquals(filter_range['endRowIndex'], 2)
-        self.assertEquals(filter_range['endColumnIndex'], 3)
-
-        self.sheet.remove_basic_filter()
-        self.assertTrue('basicFilter' not in get_sheet())
-
     def test_find(self):
         sg = self._sequence_generator()
         value = next(sg)
@@ -678,31 +610,6 @@ class WorksheetTest(GspreadTest):
         # values should match with original lists
         self.assertEqual(read_data, rows)
 
-    def test_get_all_values_title_is_a1_notation(self):
-        self.sheet.resize(4, 4)
-        # renames sheet to contain single and double quotes
-        self.sheet.update_title("D3")
-        # put in new values, made from three lists
-        rows = [
-            ["A1", "B1", "", "D1"],
-            ["", "b2", "", ""],
-            ["", "", "", ""],
-            ["A4", "B4", "", "d4"],
-        ]
-        cell_list = self.sheet.range('A1:D1')
-
-        cell_list.extend(self.sheet.range('A2:D2'))
-        cell_list.extend(self.sheet.range('A3:D3'))
-        cell_list.extend(self.sheet.range('A4:D4'))
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
-
-        # read values with get_all_values, get a list of lists
-        read_data = self.sheet.get_all_values()
-        # values should match with original lists
-        self.assertEqual(read_data, rows)
-
     def test_get_all_records(self):
         self.sheet.resize(4, 4)
         # put in new values, made from three lists
@@ -719,26 +626,26 @@ class WorksheetTest(GspreadTest):
 
         # first, read empty strings to empty strings
         read_records = self.sheet.get_all_records()
-        d0 = dict(list(zip(rows[0], rows[1])))
-        d1 = dict(list(zip(rows[0], rows[2])))
-        d2 = dict(list(zip(rows[0], rows[3])))
+        d0 = dict(zip(rows[0], rows[1]))
+        d1 = dict(zip(rows[0], rows[2]))
+        d2 = dict(zip(rows[0], rows[3]))
         self.assertEqual(read_records[0], d0)
         self.assertEqual(read_records[1], d1)
         self.assertEqual(read_records[2], d2)
 
         # then, read empty strings to zeros
         read_records = self.sheet.get_all_records(empty2zero=True)
-        d1 = dict(list(zip(rows[0], (0, 0, 0, 0))))
+        d1 = dict(zip(rows[0], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to None
         read_records = self.sheet.get_all_records(default_blank=None)
-        d1 = dict(list(zip(rows[0], (None, None, None, None))))
+        d1 = dict(zip(rows[0], (None, None, None, None)))
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to something else
         read_records = self.sheet.get_all_records(default_blank='foo')
-        d1 = dict(list(zip(rows[0], ('foo', 'foo', 'foo', 'foo'))))
+        d1 = dict(zip(rows[0], ('foo', 'foo', 'foo', 'foo')))
         self.assertEqual(read_records[1], d1)
 
     def test_get_all_records_different_header(self):
@@ -759,26 +666,26 @@ class WorksheetTest(GspreadTest):
 
         # first, read empty strings to empty strings
         read_records = self.sheet.get_all_records(head=3)
-        d0 = dict(list(zip(rows[2], rows[3])))
-        d1 = dict(list(zip(rows[2], rows[4])))
-        d2 = dict(list(zip(rows[2], rows[5])))
+        d0 = dict(zip(rows[2], rows[3]))
+        d1 = dict(zip(rows[2], rows[4]))
+        d2 = dict(zip(rows[2], rows[5]))
         self.assertEqual(read_records[0], d0)
         self.assertEqual(read_records[1], d1)
         self.assertEqual(read_records[2], d2)
 
         # then, read empty strings to zeros
         read_records = self.sheet.get_all_records(empty2zero=True, head=3)
-        d1 = dict(list(zip(rows[2], (0, 0, 0, 0))))
+        d1 = dict(zip(rows[2], (0, 0, 0, 0)))
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to None
         read_records = self.sheet.get_all_records(default_blank=None, head=3)
-        d1 = dict(list(zip(rows[2], (None, None, None, None))))
+        d1 = dict(zip(rows[2], (None, None, None, None)))
         self.assertEqual(read_records[1], d1)
 
         # then, read empty strings to something else
         read_records = self.sheet.get_all_records(default_blank='foo', head=3)
-        d1 = dict(list(zip(rows[2], ('foo', 'foo', 'foo', 'foo'))))
+        d1 = dict(zip(rows[2], ('foo', 'foo', 'foo', 'foo')))
         self.assertEqual(read_records[1], d1)
 
     def test_append_row(self):
