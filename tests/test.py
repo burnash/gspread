@@ -17,11 +17,6 @@ from betamax_json_body_serializer import JSONBodySerializer
 import gspread
 from gspread import utils
 
-try:
-    str
-except NameError:
-    str = str = str
-
 
 CREDS_FILENAME = os.getenv('GS_CREDS_FILENAME')
 

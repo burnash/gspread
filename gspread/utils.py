@@ -10,22 +10,12 @@ This module contains utility functions.
 
 import sys
 import re
+import urllib.request, urllib.parse, urllib.error
 from functools import wraps
 from collections import defaultdict, Sequence
 from itertools import chain
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
-
-
-if sys.version_info.major == 2:
-    import urllib.request, urllib.parse, urllib.error
-elif sys.version_info.major == 3:
-    import urllib.parse as urllib
-
-try:
-    str
-except NameError:
-    str = str = str
 
 
 MAGIC_NUMBER = 64
