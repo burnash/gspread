@@ -194,7 +194,12 @@ class ClientTest(GspreadTest):
 
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
+        spreadsheet_list2 = self.gc.openall(spreadsheet_list[0].title)
+
+        self.assertTrue(len(spreadsheet_list2) < len(spreadsheet_list))
         for s in spreadsheet_list:
+            self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
+        for s in spreadsheet_list2:
             self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
 
     def test_create(self):
@@ -238,7 +243,6 @@ class ClientTest(GspreadTest):
         self.assertEqual(error.exception.args[0]['code'], 404)
         self.assertEqual(error.exception.args[0]['message'], 'Requested entity was not found.')
         self.assertEqual(error.exception.args[0]['status'], 'NOT_FOUND')
-
 
 
 class SpreadsheetTest(GspreadTest):
@@ -325,6 +329,38 @@ class SpreadsheetTest(GspreadTest):
         worksheet_list = self.spreadsheet.worksheets()
         self.assertEqual(len(worksheet_list), 1)
         self.assertEqual(worksheet_list[0].title, existing_sheet_title)
+
+    def test_values_batch_get(self):
+        sg = self._sequence_generator()
+
+        worksheet1_name = u'%s %s' % (u'🌵', next(sg))
+
+        worksheet = self.spreadsheet.add_worksheet(worksheet1_name, 10, 10)
+
+        range_label = '%s!%s' % (worksheet1_name, 'A1')
+
+        values = [
+            [u'🍇', u'🍉', u'🍋'],
+            [u'🍐', u'🍎', u'🍓']
+        ]
+
+        self.spreadsheet.values_update(
+            range_label,
+            params={
+                'valueInputOption': 'RAW'
+            },
+            body={
+                'values': values
+            }
+        )
+        ranges = ["%s!%s:%s" % (worksheet1_name, col, col) for col in ["A", "B", "C"]]
+
+        read_data = self.spreadsheet.values_batch_get(ranges)
+
+        for colix, rng in enumerate(read_data['valueRanges']):
+            for rowix, ele in enumerate(rng['values']):
+                self.assertEqual(values[rowix][colix], ele[0])
+        self.spreadsheet.del_worksheet(worksheet)
 
 
 class WorksheetTest(GspreadTest):
@@ -574,6 +610,31 @@ class WorksheetTest(GspreadTest):
         # values should match with original lists
         self.assertEqual(read_data, rows)
 
+    def test_get_all_values_title_is_a1_notation(self):
+        self.sheet.resize(4, 4)
+        # renames sheet to contain single and double quotes
+        self.sheet.update_title("D3")
+        # put in new values, made from three lists
+        rows = [
+            ["A1", "B1", "", "D1"],
+            ["", "b2", "", ""],
+            ["", "", "", ""],
+            ["A4", "B4", "", "d4"],
+        ]
+        cell_list = self.sheet.range('A1:D1')
+
+        cell_list.extend(self.sheet.range('A2:D2'))
+        cell_list.extend(self.sheet.range('A3:D3'))
+        cell_list.extend(self.sheet.range('A4:D4'))
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        # read values with get_all_values, get a list of lists
+        read_data = self.sheet.get_all_values()
+        # values should match with original lists
+        self.assertEqual(read_data, rows)
+
     def test_get_all_records(self):
         self.sheet.resize(4, 4)
         # put in new values, made from three lists
@@ -659,6 +720,30 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(1)
         self.assertEqual(value_list, read_values)
 
+    def test_append_row_with_empty_value(self):
+        sg = self._sequence_generator()
+        value_list = [next(sg) for i in range(3)]
+        value_list[1] = ''  # Skip one cell to create two "tables" as in #537
+        self.sheet.append_row(value_list)
+        # Append it again
+        self.sheet.append_row(value_list)
+        # This should produce a shift in rows as in #537
+        shifted_value_list = ['', ''] + value_list
+        read_values = self.sheet.row_values(2)
+        self.assertEqual(shifted_value_list, read_values)
+
+    def test_append_row_with_empty_value_and_table_range(self):
+        sg = self._sequence_generator()
+        value_list = [next(sg) for i in range(3)]
+        value_list[1] = ''  # Skip one cell to create two "tables" as in #537
+        self.sheet.append_row(value_list)
+        # Append it again
+        self.sheet.append_row(value_list, table_range='A1')
+        # This should produce no shift in rows
+        # contrary to test_append_row_with_empty_value
+        read_values = self.sheet.row_values(2)
+        self.assertEqual(value_list, read_values)
+
     def test_insert_row(self):
         sg = self._sequence_generator()
 
@@ -714,6 +799,102 @@ class WorksheetTest(GspreadTest):
 
         self.sheet.clear()
         self.assertEqual(self.sheet.get_all_values(), [])
+
+    def test_update_and_get(self):
+        values = [
+            ['A1', 'B1', '', 'D1'],
+            ['', 'b2', '', ''],
+            ['', '', '', ''],
+            ['A4', 'B4', '', 'D4'],
+        ]
+
+        self.sheet.update('A1', values)
+
+        read_data = self.sheet.get('A1:D4')
+
+        self.assertEqual(read_data, [
+            ['A1', 'B1', '', 'D1'],
+            ['', 'b2'],
+            [],
+            ['A4', 'B4', '', 'D4']]
+        )
+
+    def test_batch_get(self):
+        values = [
+            ['A1', 'B1', '', 'D1'],
+            ['', 'b2', '', ''],
+            ['', '', '', ''],
+            ['A4', 'B4', '', 'D4'],
+        ]
+
+        self.sheet.update('A1', values)
+
+        value_ranges = self.sheet.batch_get(['A1:B1', 'B4:D4'])
+
+        self.assertEqual(value_ranges, [[['A1', 'B1']], [['B4', '', 'D4']]])
+        self.assertEqual(value_ranges[0].range, 'wksht_test!A1:B1')
+        self.assertEqual(value_ranges[1].range, 'wksht_test!B4:D4')
+        self.assertEqual(value_ranges[0].first(), 'A1')
+
+    def test_batch_update(self):
+        self.sheet.batch_update([{
+            'range': 'A1:D1',
+            'values': [['A1', 'B1', '', 'D1']],
+        }, {
+            'range': 'A4:D4',
+            'values': [['A4', 'B4', '', 'D4']],
+        }])
+
+        data = self.sheet.get('A1:D4')
+
+        self.assertEqual(data, [
+            ['A1', 'B1', '', 'D1'],
+            [],
+            [],
+            ['A4', 'B4', '', 'D4']
+        ])
+
+    def test_format(self):
+        cell_format = {
+            "backgroundColor": {
+              "green": 1,
+              "blue": 1
+            },
+            "horizontalAlignment": "CENTER",
+            "textFormat": {
+              "foregroundColor": {
+                "red": 1,
+                "green": 1,
+              },
+              "fontSize": 12,
+              "bold": True
+            }
+        }
+        self.maxDiff = None
+        self.sheet.format("A2:B2", cell_format)
+
+        data = self.spreadsheet._spreadsheets_get({
+            'includeGridData': False,
+            'ranges': ['wksht_test!A2'],
+            'fields': 'sheets.data.rowData.values.userEnteredFormat'
+        })
+
+        uef = (
+            data
+            ['sheets'][0]
+            ['data'][0]
+            ['rowData'][0]
+            ['values'][0]
+            ['userEnteredFormat']
+        )
+
+        del uef['backgroundColorStyle']
+        del uef['textFormat']['foregroundColorStyle']
+
+        self.assertEqual(
+            uef,
+            cell_format
+        )
 
 
 class CellTest(GspreadTest):
