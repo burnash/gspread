@@ -610,6 +610,31 @@ class WorksheetTest(GspreadTest):
         # values should match with original lists
         self.assertEqual(read_data, rows)
 
+    def test_get_all_values_title_is_a1_notation(self):
+        self.sheet.resize(4, 4)
+        # renames sheet to contain single and double quotes
+        self.sheet.update_title("D3")
+        # put in new values, made from three lists
+        rows = [
+            ["A1", "B1", "", "D1"],
+            ["", "b2", "", ""],
+            ["", "", "", ""],
+            ["A4", "B4", "", "d4"],
+        ]
+        cell_list = self.sheet.range('A1:D1')
+
+        cell_list.extend(self.sheet.range('A2:D2'))
+        cell_list.extend(self.sheet.range('A3:D3'))
+        cell_list.extend(self.sheet.range('A4:D4'))
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        # read values with get_all_values, get a list of lists
+        read_data = self.sheet.get_all_values()
+        # values should match with original lists
+        self.assertEqual(read_data, rows)
+
     def test_get_all_records(self):
         self.sheet.resize(4, 4)
         # put in new values, made from three lists

@@ -656,7 +656,7 @@ class Worksheet(object):
             Empty trailing rows and columns will not be included.
         """
 
-        data = self.spreadsheet.values_get("'%s'" % self.title)
+        data = self.spreadsheet.values_get("'{}'".format(self.title))
 
         try:
             return fill_gaps(data['values'])
