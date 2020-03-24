@@ -1,121 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2018-10-18T17:25:43",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "{\"requests\": [{\"addSheet\": {\"properties\": {\"title\": \"\\ud83c\\udf35 test_values_get 1\", \"sheetType\": \"GRID\", \"gridProperties\": {\"rowCount\": 10, \"columnCount\": 10}}}}]}"
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "Content-Length": [
-            "165"
-          ],
-          "Content-Type": [
-            "application/json"
-          ],
-          "User-Agent": [
-            "python-requests/2.19.1"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "json_body": {
-          "requests": [
-            {
-              "addSheet": {
-                "properties": {
-                  "gridProperties": {
-                    "columnCount": 10,
-                    "rowCount": 10
-                  },
-                  "sheetType": "GRID",
-                  "title": "\ud83c\udf35 test_values_get 1"
-                }
-              }
-            }
-          ]
-        },
-        "method": "POST",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI:batchUpdate"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 1959985975,\n          \"title\": \"\ud83c\udf35 test_values_get 1\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 10,\n            \"columnCount\": 10\n          }\n        }\n      }\n    }\n  ]\n}\n"
-        },
-        "headers": {
-          "Accept-Ranges": [
-            "none"
-          ],
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
-          ],
-          "Cache-Control": [
-            "private"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Thu, 18 Oct 2018 17:25:43 GMT"
-          ],
-          "Server": [
-            "ESF"
-          ],
-          "Transfer-Encoding": [
-            "chunked"
-          ],
-          "Vary": [
-            "X-Origin",
-            "Referer",
-            "Origin,Accept-Encoding"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "1; mode=block"
-          ]
-        },
-        "json_body": {
-          "replies": [
-            {
-              "addSheet": {
-                "properties": {
-                  "gridProperties": {
-                    "columnCount": 10,
-                    "rowCount": 10
-                  },
-                  "index": 1,
-                  "sheetId": 1959985975,
-                  "sheetType": "GRID",
-                  "title": "\ud83c\udf35 test_values_get 1"
-                }
-              }
-            }
-          ],
-          "spreadsheetId": "11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI"
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI:batchUpdate"
-      }
-    },
-    {
-      "recorded_at": "2018-10-18T17:25:43",
+      "recorded_at": "2019-11-09T04:27:13",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -138,7 +24,7 @@
             "application/json"
           ],
           "User-Agent": [
-            "python-requests/2.19.1"
+            "python-requests/2.21.0"
           ],
           "accept-encoding": [
             "identity"
@@ -159,19 +45,19 @@
           ]
         },
         "method": "PUT",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
             "none"
           ],
           "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
           ],
           "Cache-Control": [
             "private"
@@ -180,7 +66,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Thu, 18 Oct 2018 17:25:43 GMT"
+            "Sat, 09 Nov 2019 04:27:12 GMT"
           ],
           "Server": [
             "ESF"
@@ -197,125 +83,25 @@
             "SAMEORIGIN"
           ],
           "X-XSS-Protection": [
-            "1; mode=block"
+            "0"
           ]
         },
         "json_body": {
-          "spreadsheetId": "11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI",
+          "spreadsheetId": "1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI",
           "updatedCells": 6,
           "updatedColumns": 3,
-          "updatedRange": "'\ud83c\udf35 test_values_get 1'!A1:C2",
+          "updatedRange": "'\ud83c\udf35 test_values_batch_get 1'!A1:C2",
           "updatedRows": 2
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/11dGRH0KNbRiLMu7Hd-QYa_hCMIARsrDK3lIWSzWm4wI/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       }
     },
     {
-      "recorded_at": "2018-10-18T17:26:54",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "{\"values\": [[\"\\ud83c\\udf47\", \"\\ud83c\\udf49\", \"\\ud83c\\udf4b\"], [\"\\ud83c\\udf50\", \"\\ud83c\\udf4e\", \"\\ud83c\\udf53\"]]}"
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "Content-Length": [
-            "112"
-          ],
-          "Content-Type": [
-            "application/json"
-          ],
-          "User-Agent": [
-            "python-requests/2.19.1"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "json_body": {
-          "values": [
-            [
-              "\ud83c\udf47",
-              "\ud83c\udf49",
-              "\ud83c\udf4b"
-            ],
-            [
-              "\ud83c\udf50",
-              "\ud83c\udf4e",
-              "\ud83c\udf53"
-            ]
-          ]
-        },
-        "method": "PUT",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
-        },
-        "headers": {
-          "Accept-Ranges": [
-            "none"
-          ],
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
-          ],
-          "Cache-Control": [
-            "private"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Thu, 18 Oct 2018 17:26:53 GMT"
-          ],
-          "Server": [
-            "ESF"
-          ],
-          "Transfer-Encoding": [
-            "chunked"
-          ],
-          "Vary": [
-            "X-Origin",
-            "Referer",
-            "Origin,Accept-Encoding"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "1; mode=block"
-          ]
-        },
-        "json_body": {
-          "spreadsheetId": "1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY",
-          "updatedCells": 6,
-          "updatedColumns": 3,
-          "updatedRange": "'\ud83c\udf35 test_values_get 1'!A1:C2",
-          "updatedRows": 2
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
-      }
-    },
-    {
-      "recorded_at": "2018-10-18T17:26:54",
+      "recorded_at": "2019-11-09T04:27:13",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -332,26 +118,26 @@
             "keep-alive"
           ],
           "User-Agent": [
-            "python-requests/2.19.1"
+            "python-requests/2.21.0"
           ],
           "accept-encoding": [
             "identity"
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY/values/%F0%9F%8C%B5%20test_values_get%201"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"'\ud83c\udf35 test_values_get 1'!A1:J10\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"\ud83c\udf47\",\n      \"\ud83c\udf49\",\n      \"\ud83c\udf4b\"\n    ],\n    [\n      \"\ud83c\udf50\",\n      \"\ud83c\udf4e\",\n      \"\ud83c\udf53\"\n    ]\n  ]\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI\",\n  \"valueRanges\": [\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:A10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf47\"\n        ],\n        [\n          \"\ud83c\udf50\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!B1:B10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf49\"\n        ],\n        [\n          \"\ud83c\udf4e\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!C1:C10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf4b\"\n        ],\n        [\n          \"\ud83c\udf53\"\n        ]\n      ]\n    }\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
             "none"
           ],
           "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
           ],
           "Cache-Control": [
             "private"
@@ -360,7 +146,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Thu, 18 Oct 2018 17:26:54 GMT"
+            "Sat, 09 Nov 2019 04:27:13 GMT"
           ],
           "Server": [
             "ESF"
@@ -377,38 +163,63 @@
             "SAMEORIGIN"
           ],
           "X-XSS-Protection": [
-            "1; mode=block"
+            "0"
           ]
         },
         "json_body": {
-          "majorDimension": "ROWS",
-          "range": "'\ud83c\udf35 test_values_get 1'!A1:J10",
-          "values": [
-            [
-              "\ud83c\udf47",
-              "\ud83c\udf49",
-              "\ud83c\udf4b"
-            ],
-            [
-              "\ud83c\udf50",
-              "\ud83c\udf4e",
-              "\ud83c\udf53"
-            ]
+          "spreadsheetId": "1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI",
+          "valueRanges": [
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!A1:A10",
+              "values": [
+                [
+                  "\ud83c\udf47"
+                ],
+                [
+                  "\ud83c\udf50"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!B1:B10",
+              "values": [
+                [
+                  "\ud83c\udf49"
+                ],
+                [
+                  "\ud83c\udf4e"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!C1:C10",
+              "values": [
+                [
+                  "\ud83c\udf4b"
+                ],
+                [
+                  "\ud83c\udf53"
+                ]
+              ]
+            }
           ]
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY/values/%F0%9F%8C%B5%20test_values_get%201"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       }
     },
     {
-      "recorded_at": "2018-10-18T17:26:54",
+      "recorded_at": "2019-11-09T04:27:13",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 109032874}}]}"
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1259095174}}]}"
         },
         "headers": {
           "Accept": [
@@ -421,13 +232,13 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "55"
+            "56"
           ],
           "Content-Type": [
             "application/json"
           ],
           "User-Agent": [
-            "python-requests/2.19.1"
+            "python-requests/2.21.0"
           ],
           "accept-encoding": [
             "identity"
@@ -437,25 +248,25 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 109032874
+                "sheetId": 1259095174
               }
             }
           ]
         },
         "method": "POST",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY:batchUpdate"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI:batchUpdate"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY\",\n  \"replies\": [\n    {}\n  ]\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI\",\n  \"replies\": [\n    {}\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
             "none"
           ],
           "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
           ],
           "Cache-Control": [
             "private"
@@ -464,7 +275,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Thu, 18 Oct 2018 17:26:54 GMT"
+            "Sat, 09 Nov 2019 04:27:13 GMT"
           ],
           "Server": [
             "ESF"
@@ -481,366 +292,24 @@
             "SAMEORIGIN"
           ],
           "X-XSS-Protection": [
-            "1; mode=block"
+            "0"
           ]
         },
         "json_body": {
           "replies": [
             {}
           ],
-          "spreadsheetId": "1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY"
+          "spreadsheetId": "1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI"
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1jOLc31Ndd0n4mU34VU1vTtHiTs7oZLCGJSr0Oa6ZdUY:batchUpdate"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1DRq2FvckqRKrkjo19gPTnWWPKmktyl4Z_3kDB7JQhtI:batchUpdate"
       }
     },
     {
-      "recorded_at": "2018-10-18T17:27:51",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "{\"requests\": [{\"addSheet\": {\"properties\": {\"sheetType\": \"GRID\", \"gridProperties\": {\"columnCount\": 10, \"rowCount\": 10}, \"title\": \"\\ud83c\\udf35 test_values_get 1\"}}}]}"
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "Content-Length": [
-            "165"
-          ],
-          "Content-Type": [
-            "application/json"
-          ],
-          "User-Agent": [
-            "python-requests/2.19.1"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "json_body": {
-          "requests": [
-            {
-              "addSheet": {
-                "properties": {
-                  "gridProperties": {
-                    "columnCount": 10,
-                    "rowCount": 10
-                  },
-                  "sheetType": "GRID",
-                  "title": "\ud83c\udf35 test_values_get 1"
-                }
-              }
-            }
-          ]
-        },
-        "method": "POST",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/11AkZD6EiaNYT6PZbzlLAfyUua6cplvH5WguNo4p8tZI:batchUpdate"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"11AkZD6EiaNYT6PZbzlLAfyUua6cplvH5WguNo4p8tZI\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 1863784223,\n          \"title\": \"\ud83c\udf35 test_values_get 1\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 10,\n            \"columnCount\": 10\n          }\n        }\n      }\n    }\n  ]\n}\n"
-        },
-        "headers": {
-          "Accept-Ranges": [
-            "none"
-          ],
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
-          ],
-          "Cache-Control": [
-            "private"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Thu, 18 Oct 2018 17:27:51 GMT"
-          ],
-          "Server": [
-            "ESF"
-          ],
-          "Transfer-Encoding": [
-            "chunked"
-          ],
-          "Vary": [
-            "X-Origin",
-            "Referer",
-            "Origin,Accept-Encoding"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "1; mode=block"
-          ]
-        },
-        "json_body": {
-          "replies": [
-            {
-              "addSheet": {
-                "properties": {
-                  "gridProperties": {
-                    "columnCount": 10,
-                    "rowCount": 10
-                  },
-                  "index": 1,
-                  "sheetId": 1863784223,
-                  "sheetType": "GRID",
-                  "title": "\ud83c\udf35 test_values_get 1"
-                }
-              }
-            }
-          ],
-          "spreadsheetId": "11AkZD6EiaNYT6PZbzlLAfyUua6cplvH5WguNo4p8tZI"
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/11AkZD6EiaNYT6PZbzlLAfyUua6cplvH5WguNo4p8tZI:batchUpdate"
-      }
-    },
-    {
-      "recorded_at": "2018-10-18T17:28:40",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "{\"requests\": [{\"addSheet\": {\"properties\": {\"sheetType\": \"GRID\", \"gridProperties\": {\"columnCount\": 10, \"rowCount\": 10}, \"title\": \"\\ud83c\\udf35 test_values_get 1\"}}}]}"
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "Content-Length": [
-            "165"
-          ],
-          "Content-Type": [
-            "application/json"
-          ],
-          "User-Agent": [
-            "python-requests/2.19.1"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "json_body": {
-          "requests": [
-            {
-              "addSheet": {
-                "properties": {
-                  "gridProperties": {
-                    "columnCount": 10,
-                    "rowCount": 10
-                  },
-                  "sheetType": "GRID",
-                  "title": "\ud83c\udf35 test_values_get 1"
-                }
-              }
-            }
-          ]
-        },
-        "method": "POST",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1vsl2YIZyp9GqtYDI9sQMwhGcXtYUARw-mApJSNukxqs:batchUpdate"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1vsl2YIZyp9GqtYDI9sQMwhGcXtYUARw-mApJSNukxqs\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 1021845880,\n          \"title\": \"\ud83c\udf35 test_values_get 1\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 10,\n            \"columnCount\": 10\n          }\n        }\n      }\n    }\n  ]\n}\n"
-        },
-        "headers": {
-          "Accept-Ranges": [
-            "none"
-          ],
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
-          ],
-          "Cache-Control": [
-            "private"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Thu, 18 Oct 2018 17:28:40 GMT"
-          ],
-          "Server": [
-            "ESF"
-          ],
-          "Transfer-Encoding": [
-            "chunked"
-          ],
-          "Vary": [
-            "X-Origin",
-            "Referer",
-            "Origin,Accept-Encoding"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "1; mode=block"
-          ]
-        },
-        "json_body": {
-          "replies": [
-            {
-              "addSheet": {
-                "properties": {
-                  "gridProperties": {
-                    "columnCount": 10,
-                    "rowCount": 10
-                  },
-                  "index": 1,
-                  "sheetId": 1021845880,
-                  "sheetType": "GRID",
-                  "title": "\ud83c\udf35 test_values_get 1"
-                }
-              }
-            }
-          ],
-          "spreadsheetId": "1vsl2YIZyp9GqtYDI9sQMwhGcXtYUARw-mApJSNukxqs"
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1vsl2YIZyp9GqtYDI9sQMwhGcXtYUARw-mApJSNukxqs:batchUpdate"
-      }
-    },
-    {
-      "recorded_at": "2018-10-18T17:29:49",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "{\"requests\": [{\"addSheet\": {\"properties\": {\"sheetType\": \"GRID\", \"gridProperties\": {\"columnCount\": 10, \"rowCount\": 10}, \"title\": \"\\ud83c\\udf35 test_values_get 1\"}}}]}"
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "Content-Length": [
-            "165"
-          ],
-          "Content-Type": [
-            "application/json"
-          ],
-          "User-Agent": [
-            "python-requests/2.19.1"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "json_body": {
-          "requests": [
-            {
-              "addSheet": {
-                "properties": {
-                  "gridProperties": {
-                    "columnCount": 10,
-                    "rowCount": 10
-                  },
-                  "sheetType": "GRID",
-                  "title": "\ud83c\udf35 test_values_get 1"
-                }
-              }
-            }
-          ]
-        },
-        "method": "POST",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg:batchUpdate"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 300816892,\n          \"title\": \"\ud83c\udf35 test_values_get 1\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 10,\n            \"columnCount\": 10\n          }\n        }\n      }\n    }\n  ]\n}\n"
-        },
-        "headers": {
-          "Accept-Ranges": [
-            "none"
-          ],
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
-          ],
-          "Cache-Control": [
-            "private"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Thu, 18 Oct 2018 17:29:49 GMT"
-          ],
-          "Server": [
-            "ESF"
-          ],
-          "Transfer-Encoding": [
-            "chunked"
-          ],
-          "Vary": [
-            "X-Origin",
-            "Referer",
-            "Origin,Accept-Encoding"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "1; mode=block"
-          ]
-        },
-        "json_body": {
-          "replies": [
-            {
-              "addSheet": {
-                "properties": {
-                  "gridProperties": {
-                    "columnCount": 10,
-                    "rowCount": 10
-                  },
-                  "index": 1,
-                  "sheetId": 300816892,
-                  "sheetType": "GRID",
-                  "title": "\ud83c\udf35 test_values_get 1"
-                }
-              }
-            }
-          ],
-          "spreadsheetId": "1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg"
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1QBVAjiDEXqaFl2R-de5N3lS6Ms73U3m37-V9iLTGXWg:batchUpdate"
-      }
-    },
-    {
-      "recorded_at": "2020-02-15T18:17:03",
+      "recorded_at": "2020-02-15T18:17:01",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -884,12 +353,12 @@
           ]
         },
         "method": "PUT",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -905,7 +374,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sat, 15 Feb 2020 18:17:03 GMT"
+            "Sat, 15 Feb 2020 18:17:01 GMT"
           ],
           "Server": [
             "ESF"
@@ -929,18 +398,18 @@
           "spreadsheetId": "1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4",
           "updatedCells": 6,
           "updatedColumns": 3,
-          "updatedRange": "'\ud83c\udf35 test_values_get 1'!A1:C2",
+          "updatedRange": "'\ud83c\udf35 test_values_batch_get 1'!A1:C2",
           "updatedRows": 2
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       }
     },
     {
-      "recorded_at": "2020-02-15T18:17:03",
+      "recorded_at": "2020-02-15T18:17:01",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -964,12 +433,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4/values/%F0%9F%8C%B5%20test_values_get%201"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"'\ud83c\udf35 test_values_get 1'!A1:J10\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"\ud83c\udf47\",\n      \"\ud83c\udf49\",\n      \"\ud83c\udf4b\"\n    ],\n    [\n      \"\ud83c\udf50\",\n      \"\ud83c\udf4e\",\n      \"\ud83c\udf53\"\n    ]\n  ]\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4\",\n  \"valueRanges\": [\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:A10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf47\"\n        ],\n        [\n          \"\ud83c\udf50\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!B1:B10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf49\"\n        ],\n        [\n          \"\ud83c\udf4e\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!C1:C10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf4b\"\n        ],\n        [\n          \"\ud83c\udf53\"\n        ]\n      ]\n    }\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -985,7 +454,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sat, 15 Feb 2020 18:17:03 GMT"
+            "Sat, 15 Feb 2020 18:17:01 GMT"
           ],
           "Server": [
             "ESF"
@@ -1006,34 +475,59 @@
           ]
         },
         "json_body": {
-          "majorDimension": "ROWS",
-          "range": "'\ud83c\udf35 test_values_get 1'!A1:J10",
-          "values": [
-            [
-              "\ud83c\udf47",
-              "\ud83c\udf49",
-              "\ud83c\udf4b"
-            ],
-            [
-              "\ud83c\udf50",
-              "\ud83c\udf4e",
-              "\ud83c\udf53"
-            ]
+          "spreadsheetId": "1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4",
+          "valueRanges": [
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!A1:A10",
+              "values": [
+                [
+                  "\ud83c\udf47"
+                ],
+                [
+                  "\ud83c\udf50"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!B1:B10",
+              "values": [
+                [
+                  "\ud83c\udf49"
+                ],
+                [
+                  "\ud83c\udf4e"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!C1:C10",
+              "values": [
+                [
+                  "\ud83c\udf4b"
+                ],
+                [
+                  "\ud83c\udf53"
+                ]
+              ]
+            }
           ]
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4/values/%F0%9F%8C%B5%20test_values_get%201"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1-Ja6lq2ef2cyvjzn8kMLdHyRm5oOS75w88sTHA6lwI4/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       }
     },
     {
-      "recorded_at": "2020-02-15T18:17:04",
+      "recorded_at": "2020-02-15T18:17:02",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1931787567}}]}"
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1285953287}}]}"
         },
         "headers": {
           "Accept": [
@@ -1062,7 +556,7 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 1931787567
+                "sheetId": 1285953287
               }
             }
           ]
@@ -1089,7 +583,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sat, 15 Feb 2020 18:17:04 GMT"
+            "Sat, 15 Feb 2020 18:17:02 GMT"
           ],
           "Server": [
             "ESF"
@@ -1123,7 +617,7 @@
       }
     },
     {
-      "recorded_at": "2020-02-15T18:50:33",
+      "recorded_at": "2020-02-15T18:50:31",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -1167,12 +661,12 @@
           ]
         },
         "method": "PUT",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -1188,7 +682,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sat, 15 Feb 2020 18:50:33 GMT"
+            "Sat, 15 Feb 2020 18:50:31 GMT"
           ],
           "Server": [
             "ESF"
@@ -1212,18 +706,18 @@
           "spreadsheetId": "1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew",
           "updatedCells": 6,
           "updatedColumns": 3,
-          "updatedRange": "'\ud83c\udf35 test_values_get 1'!A1:C2",
+          "updatedRange": "'\ud83c\udf35 test_values_batch_get 1'!A1:C2",
           "updatedRows": 2
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       }
     },
     {
-      "recorded_at": "2020-02-15T18:50:34",
+      "recorded_at": "2020-02-15T18:50:31",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -1247,12 +741,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew/values/%F0%9F%8C%B5%20test_values_get%201"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"'\ud83c\udf35 test_values_get 1'!A1:J10\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"\ud83c\udf47\",\n      \"\ud83c\udf49\",\n      \"\ud83c\udf4b\"\n    ],\n    [\n      \"\ud83c\udf50\",\n      \"\ud83c\udf4e\",\n      \"\ud83c\udf53\"\n    ]\n  ]\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew\",\n  \"valueRanges\": [\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:A10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf47\"\n        ],\n        [\n          \"\ud83c\udf50\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!B1:B10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf49\"\n        ],\n        [\n          \"\ud83c\udf4e\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!C1:C10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf4b\"\n        ],\n        [\n          \"\ud83c\udf53\"\n        ]\n      ]\n    }\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -1268,7 +762,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sat, 15 Feb 2020 18:50:33 GMT"
+            "Sat, 15 Feb 2020 18:50:31 GMT"
           ],
           "Server": [
             "ESF"
@@ -1289,34 +783,59 @@
           ]
         },
         "json_body": {
-          "majorDimension": "ROWS",
-          "range": "'\ud83c\udf35 test_values_get 1'!A1:J10",
-          "values": [
-            [
-              "\ud83c\udf47",
-              "\ud83c\udf49",
-              "\ud83c\udf4b"
-            ],
-            [
-              "\ud83c\udf50",
-              "\ud83c\udf4e",
-              "\ud83c\udf53"
-            ]
+          "spreadsheetId": "1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew",
+          "valueRanges": [
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!A1:A10",
+              "values": [
+                [
+                  "\ud83c\udf47"
+                ],
+                [
+                  "\ud83c\udf50"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!B1:B10",
+              "values": [
+                [
+                  "\ud83c\udf49"
+                ],
+                [
+                  "\ud83c\udf4e"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!C1:C10",
+              "values": [
+                [
+                  "\ud83c\udf4b"
+                ],
+                [
+                  "\ud83c\udf53"
+                ]
+              ]
+            }
           ]
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew/values/%F0%9F%8C%B5%20test_values_get%201"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sKkJEx3ua-_X5XEUPP2sFJx6sVBOLyoPSlp_UQTY_Ew/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       }
     },
     {
-      "recorded_at": "2020-02-15T18:50:34",
+      "recorded_at": "2020-02-15T18:50:32",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1924714935}}]}"
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 589865156}}]}"
         },
         "headers": {
           "Accept": [
@@ -1329,7 +848,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "56"
+            "55"
           ],
           "Content-Type": [
             "application/json"
@@ -1345,7 +864,7 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 1924714935
+                "sheetId": 589865156
               }
             }
           ]
@@ -1372,7 +891,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sat, 15 Feb 2020 18:50:34 GMT"
+            "Sat, 15 Feb 2020 18:50:32 GMT"
           ],
           "Server": [
             "ESF"
@@ -1406,7 +925,7 @@
       }
     },
     {
-      "recorded_at": "2020-02-17T13:19:58",
+      "recorded_at": "2020-02-17T13:19:55",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -1450,12 +969,12 @@
           ]
         },
         "method": "PUT",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -1471,7 +990,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 17 Feb 2020 13:19:58 GMT"
+            "Mon, 17 Feb 2020 13:19:55 GMT"
           ],
           "Server": [
             "ESF"
@@ -1495,18 +1014,18 @@
           "spreadsheetId": "1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ",
           "updatedCells": 6,
           "updatedColumns": 3,
-          "updatedRange": "'\ud83c\udf35 test_values_get 1'!A1:C2",
+          "updatedRange": "'\ud83c\udf35 test_values_batch_get 1'!A1:C2",
           "updatedRows": 2
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       }
     },
     {
-      "recorded_at": "2020-02-17T13:19:59",
+      "recorded_at": "2020-02-17T13:19:56",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -1530,12 +1049,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ/values/%F0%9F%8C%B5%20test_values_get%201"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"'\ud83c\udf35 test_values_get 1'!A1:J10\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"\ud83c\udf47\",\n      \"\ud83c\udf49\",\n      \"\ud83c\udf4b\"\n    ],\n    [\n      \"\ud83c\udf50\",\n      \"\ud83c\udf4e\",\n      \"\ud83c\udf53\"\n    ]\n  ]\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ\",\n  \"valueRanges\": [\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:A10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf47\"\n        ],\n        [\n          \"\ud83c\udf50\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!B1:B10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf49\"\n        ],\n        [\n          \"\ud83c\udf4e\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!C1:C10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf4b\"\n        ],\n        [\n          \"\ud83c\udf53\"\n        ]\n      ]\n    }\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -1551,7 +1070,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 17 Feb 2020 13:19:59 GMT"
+            "Mon, 17 Feb 2020 13:19:56 GMT"
           ],
           "Server": [
             "ESF"
@@ -1572,34 +1091,59 @@
           ]
         },
         "json_body": {
-          "majorDimension": "ROWS",
-          "range": "'\ud83c\udf35 test_values_get 1'!A1:J10",
-          "values": [
-            [
-              "\ud83c\udf47",
-              "\ud83c\udf49",
-              "\ud83c\udf4b"
-            ],
-            [
-              "\ud83c\udf50",
-              "\ud83c\udf4e",
-              "\ud83c\udf53"
-            ]
+          "spreadsheetId": "1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ",
+          "valueRanges": [
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!A1:A10",
+              "values": [
+                [
+                  "\ud83c\udf47"
+                ],
+                [
+                  "\ud83c\udf50"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!B1:B10",
+              "values": [
+                [
+                  "\ud83c\udf49"
+                ],
+                [
+                  "\ud83c\udf4e"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!C1:C10",
+              "values": [
+                [
+                  "\ud83c\udf4b"
+                ],
+                [
+                  "\ud83c\udf53"
+                ]
+              ]
+            }
           ]
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ/values/%F0%9F%8C%B5%20test_values_get%201"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1bAfMoMh-JMruFCWRbhT8xAZ5unLlPXJ5lJXseb8KZvQ/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       }
     },
     {
-      "recorded_at": "2020-02-17T13:19:59",
+      "recorded_at": "2020-02-17T13:19:57",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 671751600}}]}"
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1686907936}}]}"
         },
         "headers": {
           "Accept": [
@@ -1612,7 +1156,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "55"
+            "56"
           ],
           "Content-Type": [
             "application/json"
@@ -1628,7 +1172,7 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 671751600
+                "sheetId": 1686907936
               }
             }
           ]
@@ -1655,7 +1199,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 17 Feb 2020 13:19:59 GMT"
+            "Mon, 17 Feb 2020 13:19:56 GMT"
           ],
           "Server": [
             "ESF"
@@ -1689,7 +1233,7 @@
       }
     },
     {
-      "recorded_at": "2020-02-17T18:13:16",
+      "recorded_at": "2020-02-17T18:13:13",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -1734,10 +1278,10 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 17 Feb 2020 18:13:16 GMT"
+            "Mon, 17 Feb 2020 18:13:13 GMT"
           ],
           "Expires": [
-            "Mon, 17 Feb 2020 18:13:16 GMT"
+            "Mon, 17 Feb 2020 18:13:13 GMT"
           ],
           "Server": [
             "GSE"
@@ -1950,7 +1494,7 @@
       }
     },
     {
-      "recorded_at": "2020-02-17T18:13:17",
+      "recorded_at": "2020-02-17T18:13:14",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -1994,12 +1538,12 @@
           ]
         },
         "method": "PUT",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -2015,7 +1559,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 17 Feb 2020 18:13:17 GMT"
+            "Mon, 17 Feb 2020 18:13:14 GMT"
           ],
           "Server": [
             "ESF"
@@ -2039,18 +1583,18 @@
           "spreadsheetId": "1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8",
           "updatedCells": 6,
           "updatedColumns": 3,
-          "updatedRange": "'\ud83c\udf35 test_values_get 1'!A1:C2",
+          "updatedRange": "'\ud83c\udf35 test_values_batch_get 1'!A1:C2",
           "updatedRows": 2
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8/values/%F0%9F%8C%B5%20test_values_get%201%21A1?valueInputOption=RAW"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
       }
     },
     {
-      "recorded_at": "2020-02-17T18:13:18",
+      "recorded_at": "2020-02-17T18:13:15",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -2074,12 +1618,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8/values/%F0%9F%8C%B5%20test_values_get%201"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"'\ud83c\udf35 test_values_get 1'!A1:J10\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"\ud83c\udf47\",\n      \"\ud83c\udf49\",\n      \"\ud83c\udf4b\"\n    ],\n    [\n      \"\ud83c\udf50\",\n      \"\ud83c\udf4e\",\n      \"\ud83c\udf53\"\n    ]\n  ]\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8\",\n  \"valueRanges\": [\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:A10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf47\"\n        ],\n        [\n          \"\ud83c\udf50\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!B1:B10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf49\"\n        ],\n        [\n          \"\ud83c\udf4e\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!C1:C10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf4b\"\n        ],\n        [\n          \"\ud83c\udf53\"\n        ]\n      ]\n    }\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -2095,7 +1639,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 17 Feb 2020 18:13:18 GMT"
+            "Mon, 17 Feb 2020 18:13:15 GMT"
           ],
           "Server": [
             "ESF"
@@ -2116,34 +1660,59 @@
           ]
         },
         "json_body": {
-          "majorDimension": "ROWS",
-          "range": "'\ud83c\udf35 test_values_get 1'!A1:J10",
-          "values": [
-            [
-              "\ud83c\udf47",
-              "\ud83c\udf49",
-              "\ud83c\udf4b"
-            ],
-            [
-              "\ud83c\udf50",
-              "\ud83c\udf4e",
-              "\ud83c\udf53"
-            ]
+          "spreadsheetId": "1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8",
+          "valueRanges": [
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!A1:A10",
+              "values": [
+                [
+                  "\ud83c\udf47"
+                ],
+                [
+                  "\ud83c\udf50"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!B1:B10",
+              "values": [
+                [
+                  "\ud83c\udf49"
+                ],
+                [
+                  "\ud83c\udf4e"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!C1:C10",
+              "values": [
+                [
+                  "\ud83c\udf4b"
+                ],
+                [
+                  "\ud83c\udf53"
+                ]
+              ]
+            }
           ]
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8/values/%F0%9F%8C%B5%20test_values_get%201"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1Q-j7RHrz9b_elDNjwS0wXzAG16Bq9mT7qg55e3dyxR8/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
       }
     },
     {
-      "recorded_at": "2020-02-17T18:13:19",
+      "recorded_at": "2020-02-17T18:13:16",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 193907426}}]}"
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 523205721}}]}"
         },
         "headers": {
           "Accept": [
@@ -2172,7 +1741,7 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 193907426
+                "sheetId": 523205721
               }
             }
           ]
@@ -2199,7 +1768,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 17 Feb 2020 18:13:19 GMT"
+            "Mon, 17 Feb 2020 18:13:15 GMT"
           ],
           "Server": [
             "ESF"
