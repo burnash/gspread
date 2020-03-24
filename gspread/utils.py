@@ -76,8 +76,10 @@ def numericise(value, empty2zero=False, default_blank="", allow_underscores_in_n
     >>>
     """
     if value is not None:
-        if "_" in value and not allow_underscores_in_numeric_literals:
-            return value
+        if "_" in value:
+            if not allow_underscores_in_numeric_literals:
+                return value
+            value = value.replace("_", "")
         try:
             value = int(value)
         except ValueError:
