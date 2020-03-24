@@ -533,6 +533,74 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(grid_props['rowCount'], new_rows)
         self.assertEqual(grid_props['columnCount'], new_cols)
 
+    def test_freeze(self):
+        freeze_cols = 1
+        freeze_rows = 2
+
+        def get_grid_props():
+            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()['sheets']
+            return utils.finditem(
+                lambda x: x['properties']['sheetId'] == self.sheet.id, sheets
+            )['properties']['gridProperties']
+
+        self.sheet.freeze(freeze_rows)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['frozenRowCount'], freeze_rows)
+
+        self.sheet.freeze(cols=freeze_cols)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['frozenColumnCount'], freeze_cols)
+
+        self.sheet.freeze(0, 0)
+
+        grid_props = get_grid_props()
+
+        self.assertTrue('frozenRowCount' not in grid_props)
+        self.assertTrue('frozenColumnCount' not in grid_props)
+
+    def test_basic_filters(self):
+        def get_sheet():
+            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()['sheets']
+            return utils.finditem(
+                lambda x: x['properties']['sheetId'] == self.sheet.id, sheets
+            )
+
+        def get_basic_filter_range():
+            return get_sheet()['basicFilter']['range']
+
+        self.sheet.resize(20, 20)
+
+        self.sheet.add_basic_filter()
+        filter_range = get_basic_filter_range()
+
+        self.assertEquals(filter_range['startRowIndex'], 0)
+        self.assertEquals(filter_range['startColumnIndex'], 0)
+        self.assertEquals(filter_range['endRowIndex'], 20)
+        self.assertEquals(filter_range['endColumnIndex'], 20)
+
+        self.sheet.add_basic_filter('B1:C2')
+        filter_range = get_basic_filter_range()
+
+        self.assertEquals(filter_range['startRowIndex'], 0)
+        self.assertEquals(filter_range['startColumnIndex'], 1)
+        self.assertEquals(filter_range['endRowIndex'], 2)
+        self.assertEquals(filter_range['endColumnIndex'], 3)
+
+        self.sheet.add_basic_filter(1, 2, 2, 3)
+        filter_range = get_basic_filter_range()
+
+        self.assertEquals(filter_range['startRowIndex'], 0)
+        self.assertEquals(filter_range['startColumnIndex'], 1)
+        self.assertEquals(filter_range['endRowIndex'], 2)
+        self.assertEquals(filter_range['endColumnIndex'], 3)
+
+        self.sheet.remove_basic_filter()
+        self.assertTrue('basicFilter' not in get_sheet())
+
     def test_find(self):
         sg = self._sequence_generator()
         value = next(sg)

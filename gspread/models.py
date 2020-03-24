@@ -552,6 +552,16 @@ class Worksheet(object):
         """Number of columns."""
         return self._properties['gridProperties']['columnCount']
 
+    @property
+    def frozen_row_count(self):
+        """Number of frozen rows."""
+        return self._properties['gridProperties'].get('frozenRowCount', 0)
+
+    @property
+    def frozen_col_count(self):
+        """Number of frozen columns."""
+        return self._properties['gridProperties'].get('frozenColumnCount', 0)
+
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
         """Returns an instance of a :class:`gspread.models.Cell`.
 
@@ -1433,6 +1443,96 @@ class Worksheet(object):
 
         """
         return list(self._finder(filter, query))
+
+    def freeze(self, rows=None, cols=None):
+        """Freeze rows and/or columns on the worksheet.
+
+        :param rows: Number of rows to freeze.
+        :param cols: Number of columns to freeze.
+        """
+        grid_properties = {}
+
+        if rows is not None:
+            grid_properties['frozenRowCount'] = rows
+
+        if cols is not None:
+            grid_properties['frozenColumnCount'] = cols
+
+        if not grid_properties:
+            raise TypeError("Either 'rows' or 'cols' should be specified.")
+
+        fields = ','.join(
+            'gridProperties/%s' % p for p in grid_properties.keys()
+        )
+
+        body = {
+            'requests': [{
+                'updateSheetProperties': {
+                    'properties': {
+                        'sheetId': self.id,
+                        'gridProperties': grid_properties
+                    },
+                    'fields': fields
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    @cast_to_a1_notation
+    def add_basic_filter(self, name=None):
+        """Add a basic filter to the worksheet. If a range or bundaries
+        are passed, the filter will be limited to the given range.
+
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param first_row: Integer row number
+        :param first_col: Integer row number
+        :param last_row: Integer row number
+        :param last_col: Integer row number
+        """
+        rng = {
+            'sheetId': self.id,
+        }
+
+        if name is not None:
+            start, end = name.split(':')
+            (row_offset, column_offset) = a1_to_rowcol(start)
+            (last_row, last_column) = a1_to_rowcol(end)
+            rng['startRowIndex'] = row_offset - 1
+            rng['endRowIndex'] = last_row
+            rng['startColumnIndex'] = column_offset - 1
+            rng['endColumnIndex'] = last_column
+
+        filter_settings = {
+            'range': rng
+        }
+
+        body = {
+            'requests': [{
+                'setBasicFilter': {
+                    'filter': filter_settings
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def remove_basic_filter(self):
+        """Remove the basic filter from a worksheet.
+        """
+        body = {
+            'requests': [{
+                'clearBasicFilter': {
+                    'sheetId': self.id,
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
 
     def export(self, format):
         """.. deprecated:: 2.0
