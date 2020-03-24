@@ -82,7 +82,7 @@ class Client(object):
     def list_spreadsheet_files(self):
         files = []
         page_token = ''
-        url = DRIVE_FILES_API_V3_URL,
+        url = DRIVE_FILES_API_V3_URL
 
         params = {
             'q': "mimeType='application/vnd.google-apps.spreadsheet'",
