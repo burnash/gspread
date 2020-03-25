@@ -10,22 +10,12 @@ This module contains utility functions.
 
 import sys
 import re
+import urllib.request, urllib.parse, urllib.error
 from functools import wraps
 from collections import defaultdict, Sequence
 from itertools import chain
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
-
-
-if sys.version_info.major == 2:
-    import urllib
-elif sys.version_info.major == 3:
-    import urllib.parse as urllib
-
-try:
-    unicode
-except NameError:
-    basestring = unicode = str
 
 
 MAGIC_NUMBER = 64
@@ -361,9 +351,9 @@ def cell_list_to_rect(cell_list):
     if not rows:
         return []
 
-    all_row_keys = chain.from_iterable(row.keys() for row in rows.values())
-    rect_cols = range(max(all_row_keys) + 1)
-    rect_rows = range(max(rows.keys()) + 1)
+    all_row_keys = chain.from_iterable(list(row.keys()) for row in list(rows.values()))
+    rect_cols = list(range(max(all_row_keys) + 1))
+    rect_rows = list(range(max(rows.keys()) + 1))
 
     # Return the values of the cells as a list of lists where each sublist
     # contains all of the values for one row. The Google API requires a rectangle
@@ -373,7 +363,7 @@ def cell_list_to_rect(cell_list):
 
 
 def quote(value, safe='', encoding='utf-8'):
-    return urllib.quote(value.encode(encoding), safe)
+    return urllib.parse.quote(value.encode(encoding), safe)
 
 
 def absolute_range_name(sheet_name, range_name):
@@ -413,7 +403,7 @@ def is_scalar(x):
     True
     """
     return (
-        isinstance(x, basestring)
+        isinstance(x, str)
         or not isinstance(x, Sequence)
     )
 
@@ -433,7 +423,7 @@ def filter_dict_values(D):
     >>> filter_dict_values({'imnone': None})
     {}
     """
-    return {k: v for k, v in D.items() if v is not None}
+    return {k: v for k, v in list(D.items()) if v is not None}
 
 
 def accepted_kwargs(**default_kwargs):
@@ -480,7 +470,7 @@ def accepted_kwargs(**default_kwargs):
                 err = '%s got unexpected keyword arguments: %s'
                 raise TypeError(err % (f.__name__, list(unexpected_kwargs)))
 
-            for k, v in default_kwargs.items():
+            for k, v in list(default_kwargs.items()):
                 kwargs.setdefault(k, v)
 
             return f(*args, **kwargs)

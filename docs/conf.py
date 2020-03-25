@@ -52,8 +52,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'gspread'
-copyright = u'%s, Anton Burnashev' % date.today().year
+project = 'gspread'
+copyright = '%s, Anton Burnashev' % date.today().year
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -195,8 +195,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'gspread.tex', u'gspread Documentation',
-   u'Anton Burnashev', 'manual'),
+  ('index', 'gspread.tex', 'gspread Documentation',
+   'Anton Burnashev', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -225,8 +225,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'gspread', u'gspread Documentation',
-     [u'Anton Burnashev'], 1)
+    ('index', 'gspread', 'gspread Documentation',
+     ['Anton Burnashev'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -239,8 +239,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'gspread', u'gspread Documentation',
-   u'Anton Burnashev', 'gspread', 'Google Spreadsheets Python API.',
+  ('index', 'gspread', 'gspread Documentation',
+   'Anton Burnashev', 'gspread', 'Google Spreadsheets Python API.',
    'Miscellaneous'),
 ]
 
@@ -257,10 +257,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'gspread'
-epub_author = u'Anton Burnashev'
-epub_publisher = u'Anton Burnashev'
-epub_copyright = u'%s, Anton Burnashev' % date.today().year
+epub_title = 'gspread'
+epub_author = 'Anton Burnashev'
+epub_publisher = 'Anton Burnashev'
+epub_copyright = '%s, Anton Burnashev' % date.today().year
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

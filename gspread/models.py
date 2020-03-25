@@ -36,11 +36,6 @@ from .urls import (
     SPREADSHEET_VALUES_BATCH_UPDATE_URL
 )
 
-try:
-    unicode
-except NameError:
-    basestring = unicode = str
-
 
 class ValueRange(list):
     @classmethod
@@ -713,7 +708,7 @@ class Worksheet(object):
             for row in data[idx + 1:]
         ]
 
-        return [dict(zip(keys, row)) for row in values]
+        return [dict(list(zip(keys, row))) for row in values]
 
     def row_values(self, row, value_render_option='FORMATTED_VALUE'):
         """Returns a list of all values in a `row`.
@@ -1143,7 +1138,7 @@ class Worksheet(object):
         """
         grid_range = a1_range_to_grid_range(range_name, self.id)
 
-        fields = "userEnteredFormat(%s)" % ','.join(cell_format.keys())
+        fields = "userEnteredFormat(%s)" % ','.join(list(cell_format.keys()))
 
         body = {
             "requests": [{
@@ -1179,7 +1174,7 @@ class Worksheet(object):
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
         fields = ','.join(
-            'gridProperties/%s' % p for p in grid_properties.keys()
+            'gridProperties/%s' % p for p in list(grid_properties.keys())
         )
 
         body = {
@@ -1379,7 +1374,7 @@ class Worksheet(object):
             for j, value in enumerate(row)
         ]
 
-        if isinstance(query, basestring):
+        if isinstance(query, str):
             match = lambda x: x.value == query
         else:
             match = lambda x: query.search(x.value)

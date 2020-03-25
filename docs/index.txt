@@ -9,4 +9,3 @@ Features
 * Open a spreadsheet by its *title*, *url* or *key*.
 * Select cells by labels, e.g. 'A1'.
 * Extract range, entire row or column values.
-* Python 3 support.
