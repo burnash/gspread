@@ -1398,6 +1398,28 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
+    def delete_rows(self, start_index, end_index):
+        """"Deletes multi rows from the worksheet at the specified index.
+
+        :param start_index: Index of a first row for deletion.
+        :param end_index: Index of a last row for deletion.
+        :type index: int
+        """
+        body = {
+            "requests": [{
+                "deleteDimension": {
+                    "range": {
+                      "sheetId": self.id,
+                      "dimension": "ROWS",
+                      "startIndex": start_index - 1,
+                      "endIndex": end_index - 1
+                    }
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
     def clear(self):
         """Clears all cells in the worksheet.
         """
