@@ -690,8 +690,9 @@ class Worksheet(object):
             Empty trailing rows and columns will not be included.
         """
 
+        title = self.title.replace("'", "''")
         data = self.spreadsheet.values_get(
-            "'{}'".format(self.title),
+            "'{}'".format(title),
             params={'valueRenderOption': value_render_option}
         )
 
