@@ -1425,7 +1425,7 @@ class Worksheet(object):
         """
         return self.spreadsheet.values_clear(self.title)
 
-    def _finder(self, func, query):
+    def _finder(self, func, query, col):
         data = self.spreadsheet.values_get(self.title)
 
         try:
@@ -1433,11 +1433,7 @@ class Worksheet(object):
         except KeyError:
             values = []
 
-        cells = [
-            Cell(row=i + 1, col=j + 1, value=value)
-            for i, row in enumerate(values)
-            for j, value in enumerate(row)
-        ]
+        cells = self.get_cells(values, col)
 
         if isinstance(query, basestring):
             match = lambda x: x.value == query
@@ -1446,7 +1442,24 @@ class Worksheet(object):
 
         return func(match, cells)
 
-    def find(self, query):
+    def get_cells(self, values, col):
+        """ Returns an array of cell objects.
+        :param values: Array with row, colums and values
+        :param col: Number of colum to find
+        """
+        if column:
+            return [
+                Cell(row=i + 1, col=col, value=row[col])
+                for i, row in enumerate(values)
+            ]
+        else:
+            return [
+                Cell(row=i + 1, col=j + 1, value=value)
+                for i, row in enumerate(values)
+                for j, value in enumerate(row)
+            ]
+
+    def find(self, query, col=None):
         """Finds the first cell matching the query.
 
         :param query: A literal string to match or compiled regular expression.
@@ -1454,7 +1467,7 @@ class Worksheet(object):
 
         """
         try:
-            return self._finder(finditem, query)
+            return self._finder(finditem, query, col)
         except StopIteration:
             raise CellNotFound(query)
 
