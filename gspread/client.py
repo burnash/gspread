@@ -14,8 +14,13 @@ from google.auth.transport.requests import AuthorizedSession
 
 from .exceptions import APIError, SpreadsheetNotFound
 from .models import Spreadsheet
-from .urls import DRIVE_FILES_API_V2_URL, DRIVE_FILES_UPLOAD_API_V2_URL
 from .utils import convert_credentials, extract_id_from_url, finditem
+
+from .urls import (
+    DRIVE_FILES_API_V2_URL,
+    DRIVE_FILES_API_V3_URL,
+    DRIVE_FILES_UPLOAD_API_V2_URL
+)
 
 
 class Client(object):
@@ -68,13 +73,18 @@ class Client(object):
         else:
             raise APIError(response)
 
-    def list_spreadsheet_files(self):
+    def list_spreadsheet_files(self, title=None):
         files = []
         page_token = ''
-        url = "https://www.googleapis.com/drive/v3/files"
+        url = DRIVE_FILES_API_V3_URL
+
+        q = 'mimeType="application/vnd.google-apps.spreadsheet"'
+        if title:
+            q += ' and name = "{}"'.format(title)
+
         params = {
-            'q': "mimeType='application/vnd.google-apps.spreadsheet'",
-            "pageSize": 1000,
+            'q': q,
+            'pageSize': 1000,
             'supportsTeamDrives': True,
             'includeTeamDriveItems': True,
         }
@@ -110,7 +120,7 @@ class Client(object):
         try:
             properties = finditem(
                 lambda x: x['name'] == title,
-                self.list_spreadsheet_files()
+                self.list_spreadsheet_files(title)
             )
 
             # Drive uses different terminology
@@ -161,7 +171,12 @@ class Client(object):
         :returns: a list of :class:`~gspread.models.Spreadsheet` instances.
 
         """
-        spreadsheet_files = self.list_spreadsheet_files()
+        spreadsheet_files = self.list_spreadsheet_files(title)
+
+        if title:
+            spreadsheet_files = [
+                spread for spread in spreadsheet_files if title == spread["name"]
+            ]
 
         return [
             Spreadsheet(self, dict(title=x['name'], **x))
@@ -193,12 +208,12 @@ class Client(object):
 
         """
         payload = {
-            'title': title,
+            'name': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
         r = self.request(
             'post',
-            DRIVE_FILES_API_V2_URL,
+            DRIVE_FILES_API_V3_URL,
             json=payload
         )
         spreadsheet_id = r.json()['id']
@@ -282,7 +297,7 @@ class Client(object):
         :type file_id: str
         """
         url = '{0}/{1}'.format(
-            DRIVE_FILES_API_V2_URL,
+            DRIVE_FILES_API_V3_URL,
             file_id
         )
 
@@ -363,7 +378,7 @@ class Client(object):
         :type notify: str
         :param email_message: (optional) An email message to be sent if notify=True.
         :type email_message: str
-        
+
         :param with_link: (optional) Whether the link is required for this permission to be active.
         :type with_link: bool
 
@@ -400,7 +415,8 @@ class Client(object):
 
         params = {
             'sendNotificationEmails': notify,
-            'emailMessage': email_message
+            'emailMessage': email_message,
+            'supportsTeamDrives': 'true'
         }
 
         self.request(
