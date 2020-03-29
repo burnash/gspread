@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2020-03-25T16:45:02",
+      "recorded_at": "2020-03-25T16:44:36",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -49,10 +49,10 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:02 GMT"
+            "Wed, 25 Mar 2020 16:44:36 GMT"
           ],
           "Expires": [
-            "Wed, 25 Mar 2020 16:45:02 GMT"
+            "Wed, 25 Mar 2020 16:44:36 GMT"
           ],
           "Server": [
             "GSE"
@@ -97,7 +97,7 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:02",
+      "recorded_at": "2020-03-25T16:44:37",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -148,7 +148,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 1198681943,\n          \"title\": \"wksht_test\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 20,\n            \"columnCount\": 20\n          }\n        }\n      }\n    }\n  ]\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 1143010596,\n          \"title\": \"wksht_test\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 20,\n            \"columnCount\": 20\n          }\n        }\n      }\n    }\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -164,7 +164,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:02 GMT"
+            "Wed, 25 Mar 2020 16:44:36 GMT"
           ],
           "Server": [
             "ESF"
@@ -194,7 +194,7 @@
                     "rowCount": 20
                   },
                   "index": 1,
-                  "sheetId": 1198681943,
+                  "sheetId": 1143010596,
                   "sheetType": "GRID",
                   "title": "wksht_test"
                 }
@@ -211,11 +211,11 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:03",
+      "recorded_at": "2020-03-25T16:44:37",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 1198681943, \"gridProperties\": {\"rowCount\": 30}}, \"fields\": \"gridProperties/rowCount\"}}]}"
+          "string": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 1143010596, \"gridProperties\": {\"frozenRowCount\": 2}}, \"fields\": \"gridProperties/frozenRowCount\"}}]}"
         },
         "headers": {
           "Accept": [
@@ -228,7 +228,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "155"
+            "166"
           ],
           "Content-Type": [
             "application/json"
@@ -244,12 +244,12 @@
           "requests": [
             {
               "updateSheetProperties": {
-                "fields": "gridProperties/rowCount",
+                "fields": "gridProperties/frozenRowCount",
                 "properties": {
                   "gridProperties": {
-                    "rowCount": 30
+                    "frozenRowCount": 2
                   },
-                  "sheetId": 1198681943
+                  "sheetId": 1143010596
                 }
               }
             }
@@ -277,7 +277,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:02 GMT"
+            "Wed, 25 Mar 2020 16:44:37 GMT"
           ],
           "Server": [
             "ESF"
@@ -311,7 +311,7 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:03",
+      "recorded_at": "2020-03-25T16:44:37",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -340,7 +340,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    },\n    {\n      \"properties\": {\n        \"sheetId\": 1198681943,\n        \"title\": \"wksht_test\",\n        \"index\": 1,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 30,\n          \"columnCount\": 20\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/edit\"\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    },\n    {\n      \"properties\": {\n        \"sheetId\": 1143010596,\n        \"title\": \"wksht_test\",\n        \"index\": 1,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 20,\n          \"columnCount\": 20,\n          \"frozenRowCount\": 2\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/edit\"\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -356,7 +356,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:03 GMT"
+            "Wed, 25 Mar 2020 16:44:37 GMT"
           ],
           "Server": [
             "ESF"
@@ -525,10 +525,11 @@
               "properties": {
                 "gridProperties": {
                   "columnCount": 20,
-                  "rowCount": 30
+                  "frozenRowCount": 2,
+                  "rowCount": 20
                 },
                 "index": 1,
-                "sheetId": 1198681943,
+                "sheetId": 1143010596,
                 "sheetType": "GRID",
                 "title": "wksht_test"
               }
@@ -545,11 +546,11 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:03",
+      "recorded_at": "2020-03-25T16:44:37",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 1198681943, \"gridProperties\": {\"columnCount\": 30}}, \"fields\": \"gridProperties/columnCount\"}}]}"
+          "string": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 1143010596, \"gridProperties\": {\"frozenColumnCount\": 1}}, \"fields\": \"gridProperties/frozenColumnCount\"}}]}"
         },
         "headers": {
           "Accept": [
@@ -562,7 +563,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "161"
+            "172"
           ],
           "Content-Type": [
             "application/json"
@@ -578,12 +579,12 @@
           "requests": [
             {
               "updateSheetProperties": {
-                "fields": "gridProperties/columnCount",
+                "fields": "gridProperties/frozenColumnCount",
                 "properties": {
                   "gridProperties": {
-                    "columnCount": 30
+                    "frozenColumnCount": 1
                   },
-                  "sheetId": 1198681943
+                  "sheetId": 1143010596
                 }
               }
             }
@@ -611,7 +612,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:03 GMT"
+            "Wed, 25 Mar 2020 16:44:37 GMT"
           ],
           "Server": [
             "ESF"
@@ -645,7 +646,7 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:04",
+      "recorded_at": "2020-03-25T16:44:38",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -674,7 +675,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    },\n    {\n      \"properties\": {\n        \"sheetId\": 1198681943,\n        \"title\": \"wksht_test\",\n        \"index\": 1,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 30,\n          \"columnCount\": 30\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/edit\"\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    },\n    {\n      \"properties\": {\n        \"sheetId\": 1143010596,\n        \"title\": \"wksht_test\",\n        \"index\": 1,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 20,\n          \"columnCount\": 20,\n          \"frozenRowCount\": 2,\n          \"frozenColumnCount\": 1\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/edit\"\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -690,7 +691,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:03 GMT"
+            "Wed, 25 Mar 2020 16:44:38 GMT"
           ],
           "Server": [
             "ESF"
@@ -858,11 +859,13 @@
             {
               "properties": {
                 "gridProperties": {
-                  "columnCount": 30,
-                  "rowCount": 30
+                  "columnCount": 20,
+                  "frozenColumnCount": 1,
+                  "frozenRowCount": 2,
+                  "rowCount": 20
                 },
                 "index": 1,
-                "sheetId": 1198681943,
+                "sheetId": 1143010596,
                 "sheetType": "GRID",
                 "title": "wksht_test"
               }
@@ -879,11 +882,11 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:04",
+      "recorded_at": "2020-03-25T16:44:38",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 1198681943, \"gridProperties\": {\"rowCount\": 20, \"columnCount\": 20}}, \"fields\": \"gridProperties/rowCount,gridProperties/columnCount\"}}]}"
+          "string": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 1143010596, \"gridProperties\": {\"frozenRowCount\": 0, \"frozenColumnCount\": 0}}, \"fields\": \"gridProperties/frozenRowCount,gridProperties/frozenColumnCount\"}}]}"
         },
         "headers": {
           "Accept": [
@@ -896,7 +899,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "201"
+            "223"
           ],
           "Content-Type": [
             "application/json"
@@ -912,13 +915,13 @@
           "requests": [
             {
               "updateSheetProperties": {
-                "fields": "gridProperties/rowCount,gridProperties/columnCount",
+                "fields": "gridProperties/frozenRowCount,gridProperties/frozenColumnCount",
                 "properties": {
                   "gridProperties": {
-                    "columnCount": 20,
-                    "rowCount": 20
+                    "frozenColumnCount": 0,
+                    "frozenRowCount": 0
                   },
-                  "sheetId": 1198681943
+                  "sheetId": 1143010596
                 }
               }
             }
@@ -946,7 +949,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:04 GMT"
+            "Wed, 25 Mar 2020 16:44:38 GMT"
           ],
           "Server": [
             "ESF"
@@ -980,7 +983,7 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:04",
+      "recorded_at": "2020-03-25T16:44:39",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -1009,7 +1012,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    },\n    {\n      \"properties\": {\n        \"sheetId\": 1198681943,\n        \"title\": \"wksht_test\",\n        \"index\": 1,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 20,\n          \"columnCount\": 20\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/edit\"\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    },\n    {\n      \"properties\": {\n        \"sheetId\": 1143010596,\n        \"title\": \"wksht_test\",\n        \"index\": 1,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 20,\n          \"columnCount\": 20\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/edit\"\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -1025,7 +1028,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:04 GMT"
+            "Wed, 25 Mar 2020 16:44:38 GMT"
           ],
           "Server": [
             "ESF"
@@ -1197,7 +1200,7 @@
                   "rowCount": 20
                 },
                 "index": 1,
-                "sheetId": 1198681943,
+                "sheetId": 1143010596,
                 "sheetType": "GRID",
                 "title": "wksht_test"
               }
@@ -1214,11 +1217,11 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:05",
+      "recorded_at": "2020-03-25T16:44:39",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1198681943}}]}"
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1143010596}}]}"
         },
         "headers": {
           "Accept": [
@@ -1247,7 +1250,7 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 1198681943
+                "sheetId": 1143010596
               }
             }
           ]
@@ -1274,7 +1277,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:04 GMT"
+            "Wed, 25 Mar 2020 16:44:39 GMT"
           ],
           "Server": [
             "ESF"
