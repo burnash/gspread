@@ -8,7 +8,7 @@ import itertools
 from collections import namedtuple
 
 from gspread.exceptions import APIError
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 
 from betamax import Betamax
 from betamax.fixtures.unittest import BetamaxTestCase
@@ -58,7 +58,7 @@ with Betamax.configure() as config:
 
 
 def read_credentials(filename):
-    return ServiceAccountCredentials.from_json_keyfile_name(filename, SCOPE)
+    return Credentials.from_service_account_file(filename, scopes=SCOPE)
 
 
 def prefixed_counter(prefix, start=1):
@@ -71,7 +71,7 @@ def get_method_name(self_id):
     return self_id.split('.')[-1]
 
 
-DummyCredentials = namedtuple('DummyCredentials', 'access_token')
+DummyCredentials = namedtuple('DummyCredentials', 'token')
 
 
 class BetamaxGspreadTest(BetamaxTestCase):
