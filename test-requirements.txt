@@ -1,3 +1,5 @@
 nose
 requests[security]
-oauth2client
+google-auth
+betamax==0.8.1
+-e git+https://github.com/burnash/betamax-json-body-serializer.git#egg=betamax_json_body_serializer

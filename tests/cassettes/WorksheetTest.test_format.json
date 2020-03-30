@@ -1,0 +1,545 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-03-25T16:44:34",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+WorksheetTest%22&pageSize=1000&supportsTeamDrives=True&includeTeamDriveItems=True"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n \"kind\": \"drive#fileList\",\n \"incompleteSearch\": false,\n \"files\": [\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n   \"name\": \"Test WorksheetTest\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"19BlScYdZNWd-L5gITpjkZUpOajl4LFJkwvzeibI2JJs\",\n   \"name\": \"Test WorksheetTest\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  }\n ]\n}\n"
+        },
+        "headers": {
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private, max-age=0, must-revalidate, no-transform"
+          ],
+          "Content-Length": [
+            "435"
+          ],
+          "Content-Security-Policy": [
+            "frame-ancestors 'self'"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 25 Mar 2020 16:44:34 GMT"
+          ],
+          "Expires": [
+            "Wed, 25 Mar 2020 16:44:34 GMT"
+          ],
+          "Server": [
+            "GSE"
+          ],
+          "Vary": [
+            "Origin",
+            "X-Origin"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "files": [
+            {
+              "id": "1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE",
+              "kind": "drive#file",
+              "mimeType": "application/vnd.google-apps.spreadsheet",
+              "name": "Test WorksheetTest"
+            },
+            {
+              "id": "19BlScYdZNWd-L5gITpjkZUpOajl4LFJkwvzeibI2JJs",
+              "kind": "drive#file",
+              "mimeType": "application/vnd.google-apps.spreadsheet",
+              "name": "Test WorksheetTest"
+            }
+          ],
+          "incompleteSearch": false,
+          "kind": "drive#fileList"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+WorksheetTest%22&pageSize=1000&supportsTeamDrives=True&includeTeamDriveItems=True"
+      }
+    },
+    {
+      "recorded_at": "2020-03-25T16:44:35",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"addSheet\": {\"properties\": {\"title\": \"wksht_test\", \"sheetType\": \"GRID\", \"gridProperties\": {\"rowCount\": 20, \"columnCount\": 20}}}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "145"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 20,
+                    "rowCount": 20
+                  },
+                  "sheetType": "GRID",
+                  "title": "wksht_test"
+                }
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 864741588,\n          \"title\": \"wksht_test\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 20,\n            \"columnCount\": 20\n          }\n        }\n      }\n    }\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 25 Mar 2020 16:44:34 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {
+              "addSheet": {
+                "properties": {
+                  "gridProperties": {
+                    "columnCount": 20,
+                    "rowCount": 20
+                  },
+                  "index": 1,
+                  "sheetId": 864741588,
+                  "sheetType": "GRID",
+                  "title": "wksht_test"
+                }
+              }
+            }
+          ],
+          "spreadsheetId": "1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE:batchUpdate"
+      }
+    },
+    {
+      "recorded_at": "2020-03-25T16:44:35",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"repeatCell\": {\"range\": {\"sheetId\": 864741588, \"startRowIndex\": 1, \"endRowIndex\": 2, \"startColumnIndex\": 0, \"endColumnIndex\": 2}, \"cell\": {\"userEnteredFormat\": {\"backgroundColor\": {\"green\": 1, \"blue\": 1}, \"horizontalAlignment\": \"CENTER\", \"textFormat\": {\"foregroundColor\": {\"red\": 1, \"green\": 1}, \"fontSize\": 12, \"bold\": true}}}, \"fields\": \"userEnteredFormat(backgroundColor,horizontalAlignment,textFormat)\"}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "425"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "repeatCell": {
+                "cell": {
+                  "userEnteredFormat": {
+                    "backgroundColor": {
+                      "blue": 1,
+                      "green": 1
+                    },
+                    "horizontalAlignment": "CENTER",
+                    "textFormat": {
+                      "bold": true,
+                      "fontSize": 12,
+                      "foregroundColor": {
+                        "green": 1,
+                        "red": 1
+                      }
+                    }
+                  }
+                },
+                "fields": "userEnteredFormat(backgroundColor,horizontalAlignment,textFormat)",
+                "range": {
+                  "endColumnIndex": 2,
+                  "endRowIndex": 2,
+                  "sheetId": 864741588,
+                  "startColumnIndex": 0,
+                  "startRowIndex": 1
+                }
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"replies\": [\n    {}\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 25 Mar 2020 16:44:35 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {}
+          ],
+          "spreadsheetId": "1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE:batchUpdate"
+      }
+    },
+    {
+      "recorded_at": "2020-03-25T16:44:35",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE?includeGridData=False&ranges=wksht_test%21A2&fields=sheets.data.rowData.values.userEnteredFormat"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"sheets\": [\n    {\n      \"data\": [\n        {\n          \"rowData\": [\n            {\n              \"values\": [\n                {\n                  \"userEnteredFormat\": {\n                    \"backgroundColor\": {\n                      \"green\": 1,\n                      \"blue\": 1\n                    },\n                    \"horizontalAlignment\": \"CENTER\",\n                    \"textFormat\": {\n                      \"foregroundColor\": {\n                        \"red\": 1,\n                        \"green\": 1\n                      },\n                      \"fontSize\": 12,\n                      \"bold\": true,\n                      \"foregroundColorStyle\": {\n                        \"rgbColor\": {\n                          \"red\": 1,\n                          \"green\": 1\n                        }\n                      }\n                    },\n                    \"backgroundColorStyle\": {\n                      \"rgbColor\": {\n                        \"green\": 1,\n                        \"blue\": 1\n                      }\n                    }\n                  }\n                }\n              ]\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 25 Mar 2020 16:44:35 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "sheets": [
+            {
+              "data": [
+                {
+                  "rowData": [
+                    {
+                      "values": [
+                        {
+                          "userEnteredFormat": {
+                            "backgroundColor": {
+                              "blue": 1,
+                              "green": 1
+                            },
+                            "backgroundColorStyle": {
+                              "rgbColor": {
+                                "blue": 1,
+                                "green": 1
+                              }
+                            },
+                            "horizontalAlignment": "CENTER",
+                            "textFormat": {
+                              "bold": true,
+                              "fontSize": 12,
+                              "foregroundColor": {
+                                "green": 1,
+                                "red": 1
+                              },
+                              "foregroundColorStyle": {
+                                "rgbColor": {
+                                  "green": 1,
+                                  "red": 1
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE?includeGridData=False&ranges=wksht_test%21A2&fields=sheets.data.rowData.values.userEnteredFormat"
+      }
+    },
+    {
+      "recorded_at": "2020-03-25T16:44:36",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 864741588}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "55"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "deleteSheet": {
+                "sheetId": 864741588
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"replies\": [\n    {}\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 25 Mar 2020 16:44:35 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {}
+          ],
+          "spreadsheetId": "1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE:batchUpdate"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

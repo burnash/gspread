@@ -30,7 +30,14 @@ from  gspread import __version__
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.ifconfig']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.todo',
+    'sphinx.ext.coverage',
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.intersphinx',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -233,7 +240,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'gspread', u'gspread Documentation',
-   u'Anton Burnashev', 'gspread', 'One line description of project.',
+   u'Anton Burnashev', 'gspread', 'Google Spreadsheets Python API.',
    'Miscellaneous'),
 ]
 
@@ -288,3 +295,9 @@ epub_copyright = u'%s, Anton Burnashev' % date.today().year
 
 # Allow duplicate toc entries.
 #epub_tocdup = True
+
+# Intersphinx configuration
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3.6',
+               (None, 'python-inv.txt')),
+}
