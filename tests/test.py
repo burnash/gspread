@@ -1070,3 +1070,9 @@ class CellTest(GspreadTest):
         self.sheet.update_acell('A1', 'Non-numeric value')
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, None)
+
+    def test_merge_cells(self):
+        self.sheet.update_cell(1, 1, '42')
+        self.sheet.update_cell(1, 2, '80')
+        self.sheet.merge_cells(1, 1, 1, 2)
+        cell = self.sheet.cell(1, 1)
