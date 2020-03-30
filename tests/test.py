@@ -976,6 +976,18 @@ class WorksheetTest(GspreadTest):
             cell_format
         )
 
+    def test_reorder_worksheets(self):
+        w = self.spreadsheet.worksheets()
+        w.reverse()
+        self.spreadsheet.reorder_worksheets(w)
+        self.assertEqual([ i.id for i in w ], [ i.id for i in self.spreadsheet.worksheets() ])
+
+    def test_worksheet_update_index(self):
+        w = self.spreadsheet.worksheets()
+        last_sheet = w[-1]
+        last_sheet.update_index(0)
+        w = self.spreadsheet.worksheets()
+        self.assertEqual(w[0].id, last_sheet.id)
 
 class CellTest(GspreadTest):
 
