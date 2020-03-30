@@ -500,6 +500,18 @@ class WorksheetTest(GspreadTest):
         test_values[-1] = bottom_right_value
         self.assertEqual(test_values, read_values)
 
+    def test_update_cell_objects(self):
+        test_values = ('cell row 1, col 2', 'cell row 2 col 1')
+
+        cell_list = [gspread.models.Cell(1, 2, test_values[0]), gspread.models.Cell(2, 1, test_values[1])]
+        self.sheet.update_cells(cell_list)
+
+        # Re-fetch cells
+        cell_list = (self.sheet.cell(1, 2), self.sheet.cell(2, 1))
+        read_values = [c.value for c in cell_list]
+
+        self.assertEqual(test_values, read_values)
+
     def test_resize(self):
         add_num = 10
         new_rows = self.sheet.row_count + add_num
