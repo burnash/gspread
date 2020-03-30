@@ -1468,6 +1468,29 @@ class Worksheet(object):
         }
 
         return self.spreadsheet.values_append(self.title, params, body)
+    
+    def append_rows(self, values, value_input_option='RAW'):
+        """Adds rows to the worksheet and populates it with values.
+        Widens the worksheet if there are more values than columns.
+
+        :param values: Values for new rows. Values must be a list of lists.
+        :param value_input_option: (optional) Determines how input data should
+                                    be interpreted. See `ValueInputOption`_ in
+                                    the Sheets API.
+        :type value_input_option: str
+
+        .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+
+        """
+        params = {
+            'valueInputOption': value_input_option
+        }
+
+        body = {
+            'values': values
+        }
+
+        return self.spreadsheet.values_append(self.title, params, body)
 
     def insert_row(
         self,
