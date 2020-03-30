@@ -545,6 +545,59 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(grid_props['rowCount'], new_rows)
         self.assertEqual(grid_props['columnCount'], new_cols)
 
+    def test_sort(self):
+        rows = [
+            ["Apple", "2012", "4"],
+            ["Banana", "2013", "3"],
+            ["Canada", "2007", "1"],
+            ["Dinosaur", "2013", "6"],
+            ["Elephant", "2019", "2"],
+            ["Fox", "2077", "5"],
+        ]
+
+        self.sheet.resize(6, 3)
+        cell_list = self.sheet.range('A1:C6')
+        for c, v in zip(cell_list, itertools.chain(*rows)):
+            c.value = v
+        self.sheet.update_cells(cell_list)
+
+        specs = [
+            (3, 'asc'),
+        ]
+        self.sheet.sort(*specs, range='A1:C6')
+        rows = sorted(rows, key=lambda x: int(x[2]), reverse=False)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
+        specs = [
+            (1, 'des'),
+        ]
+        self.sheet.sort(*specs, range='A1:C6')
+        rows = sorted(rows, key=lambda x: x[0], reverse=True)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
+        specs = [
+            (2, 'asc'),
+            (3, 'asc'),
+        ]
+        self.sheet.sort(*specs, range='A1:C6')
+        rows = sorted(rows, key=lambda x: (x[1], int(x[2])), reverse=False)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
+        specs = [
+            (3, 'asc'),
+        ]
+        self.sheet.sort(*specs)
+        rows = sorted(rows, key=lambda x: int(x[2]), reverse=False)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
+        specs = [
+            (3, 'des'),
+        ]
+        self.sheet._properties['gridProperties']['frozenRowCount'] = 1
+        self.sheet.sort(*specs)
+        rows = [rows[0]] + sorted(rows[1:], key=lambda x: int(x[2]), reverse=True)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
     def test_freeze(self):
         freeze_cols = 1
         freeze_rows = 2
