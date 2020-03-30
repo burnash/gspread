@@ -254,7 +254,7 @@ class Spreadsheet(object):
         r = self.client.request('get', url, params=params)
         return r.json()
 
-    def fetch_sheet_metadata(self):
+    def fetch_sheet_metadata(self, params=None):
         if params is None:
             params = {'includeGridData': 'false'}
 
@@ -422,7 +422,7 @@ class Spreadsheet(object):
         return self.batch_update(body)
 
     def reorder_worksheets(self, worksheets_in_desired_order):
-        """Updates the ``index`` property of each Worksheets to reflect 
+        """Updates the ``index`` property of each Worksheets to reflect
         its index in the provided sequence of Worksheets.
 
         :param worksheets_in_desired_order: Iterable of Worksheet objects in desired order.
@@ -1360,9 +1360,9 @@ class Worksheet(object):
         return response
 
     def update_index(self, index):
-        """Updates the ``index`` property for the worksheet. 
+        """Updates the ``index`` property for the worksheet.
 
-        See the `Sheets API documentation 
+        See the `Sheets API documentation
         <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#sheetproperties>`_
         for information on how updating the index property affects the order of worksheets
         in a spreadsheet.
