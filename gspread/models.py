@@ -1325,6 +1325,23 @@ class Worksheet(object):
 
         return self.spreadsheet.values_append(range_label, params, body)
 
+    def append_rows(self, values, value_input_option='RAW'):
+        """Adds multiple rows to the worksheet and populates them with values.
+        Widens the worksheet if there are more values than columns.
+
+        :param values: List of rows each row is List of values for the new row.
+
+        """
+        params = {
+            'valueInputOption': value_input_option
+        }
+
+        body = {
+            'values': values
+        }
+
+        return self.spreadsheet.values_append(self.title, params, body)
+
     def insert_row(
         self,
         values,
