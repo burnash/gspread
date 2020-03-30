@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2020-03-25T16:45:13",
+      "recorded_at": "2020-03-25T16:44:11",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -49,10 +49,10 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:13 GMT"
+            "Wed, 25 Mar 2020 16:44:11 GMT"
           ],
           "Expires": [
-            "Wed, 25 Mar 2020 16:45:13 GMT"
+            "Wed, 25 Mar 2020 16:44:11 GMT"
           ],
           "Server": [
             "GSE"
@@ -97,7 +97,7 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:14",
+      "recorded_at": "2020-03-25T16:44:12",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -148,7 +148,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 2093924948,\n          \"title\": \"wksht_test\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 20,\n            \"columnCount\": 20\n          }\n        }\n      }\n    }\n  ]\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"replies\": [\n    {\n      \"addSheet\": {\n        \"properties\": {\n          \"sheetId\": 1855583806,\n          \"title\": \"wksht_test\",\n          \"index\": 1,\n          \"sheetType\": \"GRID\",\n          \"gridProperties\": {\n            \"rowCount\": 20,\n            \"columnCount\": 20\n          }\n        }\n      }\n    }\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -164,7 +164,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:14 GMT"
+            "Wed, 25 Mar 2020 16:44:11 GMT"
           ],
           "Server": [
             "ESF"
@@ -194,7 +194,7 @@
                     "rowCount": 20
                   },
                   "index": 1,
-                  "sheetId": 2093924948,
+                  "sheetId": 1855583806,
                   "sheetType": "GRID",
                   "title": "wksht_test"
                 }
@@ -211,11 +211,11 @@
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:14",
+      "recorded_at": "2020-03-25T16:44:12",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"values\": [[\"test_update_cell_multiline 1\\ntest_update_cell_multiline 1\"]]}"
+          "string": "{\"valueInputOption\": \"RAW\", \"data\": [{\"range\": \"wksht_test!A1:D1\", \"values\": [[\"A1\", \"B1\", \"\", \"D1\"]]}, {\"range\": \"wksht_test!A4:D4\", \"values\": [[\"A4\", \"B4\", \"\", \"D4\"]]}]}"
         },
         "headers": {
           "Accept": [
@@ -228,7 +228,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "76"
+            "171"
           ],
           "Content-Type": [
             "application/json"
@@ -241,19 +241,39 @@
           ]
         },
         "json_body": {
-          "values": [
-            [
-              "test_update_cell_multiline 1\ntest_update_cell_multiline 1"
-            ]
-          ]
+          "data": [
+            {
+              "range": "wksht_test!A1:D1",
+              "values": [
+                [
+                  "A1",
+                  "B1",
+                  "",
+                  "D1"
+                ]
+              ]
+            },
+            {
+              "range": "wksht_test!A4:D4",
+              "values": [
+                [
+                  "A4",
+                  "B4",
+                  "",
+                  "D4"
+                ]
+              ]
+            }
+          ],
+          "valueInputOption": "RAW"
         },
-        "method": "PUT",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/values/wksht_test%21B1?valueInputOption=USER_ENTERED"
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/values:batchUpdate"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"updatedRange\": \"wksht_test!B1\",\n  \"updatedRows\": 1,\n  \"updatedColumns\": 1,\n  \"updatedCells\": 1\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n  \"totalUpdatedRows\": 2,\n  \"totalUpdatedColumns\": 4,\n  \"totalUpdatedCells\": 8,\n  \"totalUpdatedSheets\": 1,\n  \"responses\": [\n    {\n      \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n      \"updatedRange\": \"wksht_test!A1:D1\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 4,\n      \"updatedCells\": 4\n    },\n    {\n      \"spreadsheetId\": \"1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE\",\n      \"updatedRange\": \"wksht_test!A4:D4\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 4,\n      \"updatedCells\": 4\n    }\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -269,7 +289,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:14 GMT"
+            "Wed, 25 Mar 2020 16:44:12 GMT"
           ],
           "Server": [
             "ESF"
@@ -290,21 +310,37 @@
           ]
         },
         "json_body": {
+          "responses": [
+            {
+              "spreadsheetId": "1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE",
+              "updatedCells": 4,
+              "updatedColumns": 4,
+              "updatedRange": "wksht_test!A1:D1",
+              "updatedRows": 1
+            },
+            {
+              "spreadsheetId": "1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE",
+              "updatedCells": 4,
+              "updatedColumns": 4,
+              "updatedRange": "wksht_test!A4:D4",
+              "updatedRows": 1
+            }
+          ],
           "spreadsheetId": "1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE",
-          "updatedCells": 1,
-          "updatedColumns": 1,
-          "updatedRange": "wksht_test!B1",
-          "updatedRows": 1
+          "totalUpdatedCells": 8,
+          "totalUpdatedColumns": 4,
+          "totalUpdatedRows": 2,
+          "totalUpdatedSheets": 1
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/values/wksht_test%21B1?valueInputOption=USER_ENTERED"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/values:batchUpdate"
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:14",
+      "recorded_at": "2020-03-25T16:44:13",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -328,12 +364,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/values/wksht_test%21B1?valueRenderOption=FORMATTED_VALUE"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/values/wksht_test%21A1%3AD4"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"wksht_test!B1\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_update_cell_multiline 1\\ntest_update_cell_multiline 1\"\n    ]\n  ]\n}\n"
+          "string": "{\n  \"range\": \"wksht_test!A1:D4\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [],\n    [],\n    [\n      \"A4\",\n      \"B4\",\n      \"\",\n      \"D4\"\n    ]\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -349,7 +385,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:14 GMT"
+            "Wed, 25 Mar 2020 16:44:12 GMT"
           ],
           "Server": [
             "ESF"
@@ -371,10 +407,21 @@
         },
         "json_body": {
           "majorDimension": "ROWS",
-          "range": "wksht_test!B1",
+          "range": "wksht_test!A1:D4",
           "values": [
             [
-              "test_update_cell_multiline 1\ntest_update_cell_multiline 1"
+              "A1",
+              "B1",
+              "",
+              "D1"
+            ],
+            [],
+            [],
+            [
+              "A4",
+              "B4",
+              "",
+              "D4"
             ]
           ]
         },
@@ -382,15 +429,15 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/values/wksht_test%21B1?valueRenderOption=FORMATTED_VALUE"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1sCYg-HCMaBc-SQuYKGsPyNtxaSxVMEtxCR0kx3ocuEE/values/wksht_test%21A1%3AD4"
       }
     },
     {
-      "recorded_at": "2020-03-25T16:45:15",
+      "recorded_at": "2020-03-25T16:44:14",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 2093924948}}]}"
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1855583806}}]}"
         },
         "headers": {
           "Accept": [
@@ -419,7 +466,7 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 2093924948
+                "sheetId": 1855583806
               }
             }
           ]
@@ -446,7 +493,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 25 Mar 2020 16:45:15 GMT"
+            "Wed, 25 Mar 2020 16:44:13 GMT"
           ],
           "Server": [
             "ESF"

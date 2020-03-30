@@ -20,6 +20,7 @@ from .models import Spreadsheet
 
 from .urls import (
     DRIVE_FILES_API_V2_URL,
+    DRIVE_FILES_API_V3_URL,
     DRIVE_FILES_UPLOAD_API_V2_URL
 )
 
@@ -28,8 +29,8 @@ class Client(object):
     """An instance of this class communicates with Google API.
 
     :param auth: An OAuth2 credential object. Credential objects
-                 are those created by the oauth2client library.
-                 https://github.com/google/oauth2client
+                 are those created by the google-auth library.
+                 https://github.com/googleapis/google-auth-library-python
     :param session: (optional) A session object capable of making HTTP requests
                     while persisting some parameters across requests.
                     Defaults to `requests.Session <http://docs.python-requests.org/en/master/api/#request-sessions>`_.
@@ -43,15 +44,13 @@ class Client(object):
 
     def login(self):
         """Authorize client."""
-        if not self.auth.access_token or \
-                (hasattr(self.auth, 'access_token_expired') and self.auth.access_token_expired):
-            import httplib2
+        if not self.auth.token or (hasattr(self.auth, 'expired') and self.auth.expired):
+            from google.auth.transport.requests import Request
 
-            http = httplib2.Http()
-            self.auth.refresh(http)
+            self.auth.refresh(Request())
 
         self.session.headers.update({
-            'Authorization': 'Bearer %s' % self.auth.access_token
+            'Authorization': 'Bearer %s' % self.auth.token
         })
 
     def request(
@@ -78,15 +77,20 @@ class Client(object):
         else:
             raise APIError(response)
 
-    def list_spreadsheet_files(self):
+    def list_spreadsheet_files(self, title=None):
         files = []
         page_token = ''
-        url = "https://www.googleapis.com/drive/v3/files"
+        url = DRIVE_FILES_API_V3_URL
+
+        q = 'mimeType="application/vnd.google-apps.spreadsheet"'
+        if title:
+            q += ' and name = "{}"'.format(title)
+
         params = {
-            'q': "mimeType='application/vnd.google-apps.spreadsheet'",
-            "pageSize": 1000,
-            'supportsTeamDrives': True,
-            'includeTeamDriveItems': True,
+            'q': q,
+            'pageSize': 1000,
+            'supportsAllDrives': True,
+            'includeItemsFromAllDrives': True,
         }
 
         while page_token is not None:
@@ -120,7 +124,7 @@ class Client(object):
         try:
             properties = finditem(
                 lambda x: x['name'] == title,
-                self.list_spreadsheet_files()
+                self.list_spreadsheet_files(title)
             )
 
             # Drive uses different terminology
@@ -171,7 +175,12 @@ class Client(object):
         :returns: a list of :class:`~gspread.models.Spreadsheet` instances.
 
         """
-        spreadsheet_files = self.list_spreadsheet_files()
+        spreadsheet_files = self.list_spreadsheet_files(title)
+
+        if title:
+            spreadsheet_files = [
+                spread for spread in spreadsheet_files if title == spread["name"]
+            ]
 
         return [
             Spreadsheet(self, dict(title=x['name'], **x))
@@ -203,12 +212,12 @@ class Client(object):
 
         """
         payload = {
-            'title': title,
+            'name': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
         r = self.request(
             'post',
-            DRIVE_FILES_API_V2_URL,
+            DRIVE_FILES_API_V3_URL,
             json=payload
         )
         spreadsheet_id = r.json()['id']
@@ -257,10 +266,14 @@ class Client(object):
             'title': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
+        params = {
+            'supportsAllDrives': True
+        }
         r = self.request(
             'post',
             url,
-            json=payload
+            json=payload,
+            params=params
         )
         spreadsheet_id = r.json()['id']
 
@@ -292,11 +305,14 @@ class Client(object):
         :type file_id: str
         """
         url = '{0}/{1}'.format(
-            DRIVE_FILES_API_V2_URL,
+            DRIVE_FILES_API_V3_URL,
             file_id
         )
 
-        self.request('delete', url)
+        params = {
+            'supportsAllDrives': True
+        }
+        self.request('delete', url, params=params)
 
     def import_csv(self, file_id, data):
         """Imports data into the first page of the spreadsheet.
@@ -327,7 +343,8 @@ class Client(object):
             data=data,
             params={
                 'uploadType': 'media',
-                'convert': True
+                'convert': True,
+                'supportsAllDrives': True
             },
             headers=headers
         )
@@ -340,7 +357,10 @@ class Client(object):
         """
         url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
 
-        r = self.request('get', url)
+        params = {
+            'supportsAllDrives': True
+        }
+        r = self.request('get', url, params=params)
 
         return r.json()['items']
 
@@ -373,7 +393,7 @@ class Client(object):
         :type notify: str
         :param email_message: (optional) An email message to be sent if notify=True.
         :type email_message: str
-        
+
         :param with_link: (optional) Whether the link is required for this permission to be active.
         :type with_link: bool
 
@@ -411,7 +431,7 @@ class Client(object):
         params = {
             'sendNotificationEmails': notify,
             'emailMessage': email_message,
-            'supportsTeamDrives': 'true'
+            'supportsAllDrives': 'true'
         }
 
         self.request(
@@ -435,4 +455,7 @@ class Client(object):
             permission_id
         )
 
-        self.request('delete', url)
+        params = {
+            'supportsAllDrives': True
+        }
+        self.request('delete', url, params=params)
