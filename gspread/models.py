@@ -18,21 +18,60 @@ from .utils import (
     finditem,
     fill_gaps,
     cell_list_to_rect,
-    quote
+    quote,
+    is_scalar,
+    filter_dict_values,
+    absolute_range_name,
+    a1_range_to_grid_range,
+    accepted_kwargs
 )
 
 from .urls import (
     SPREADSHEET_URL,
     SPREADSHEET_VALUES_URL,
+    SPREADSHEET_VALUES_BATCH_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
     SPREADSHEET_VALUES_APPEND_URL,
-    SPREADSHEET_VALUES_CLEAR_URL
+    SPREADSHEET_VALUES_CLEAR_URL,
+    SPREADSHEET_DRIVE_URL,
+    WORKSHEET_DRIVE_URL,
+    SPREADSHEET_VALUES_BATCH_UPDATE_URL
 )
 
 try:
     unicode
 except NameError:
     basestring = unicode = str
+
+
+class ValueRange(list):
+    @classmethod
+    def from_json(cls, json):
+        new_obj = cls(json['values'])
+        new_obj._json = {
+            'range': json['range'],
+            'majorDimension': json['majorDimension']
+        }
+
+        return new_obj
+
+    @property
+    def range(self):
+        return self._json['range']
+
+    @property
+    def major_dimension(self):
+        return self._json['majorDimension']
+
+    def first(self, default=None):
+        """
+        Returns the value of a first cell in a range.
+        If the range is empty, return the default value.
+        """
+        try:
+            return self[0][0]
+        except IndexError:
+            return default
 
 
 class Spreadsheet(object):
@@ -55,6 +94,11 @@ class Spreadsheet(object):
             metadata = self.fetch_sheet_metadata()
             self._properties.update(metadata['properties'])
             return self._properties['title']
+
+    @property
+    def url(self):
+        """Spreadsheet URL"""
+        return SPREADSHEET_DRIVE_URL % self.id
 
     @property
     def updated(self):
@@ -148,6 +192,27 @@ class Spreadsheet(object):
         r = self.client.request('get', url, params=params)
         return r.json()
 
+    def values_batch_get(self, ranges, params=None):
+        """
+        Lower-level method that directly calls `spreadsheets.values.batchGet
+        <https://develop
+        ers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet>`_.
+
+        :param ranges: List of ranges in the `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
+        :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#query-parameters>`_.
+        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
+        :rtype: dict
+
+        """
+        if params is None:
+            params = {}
+
+        params.update(ranges=ranges)
+
+        url = SPREADSHEET_VALUES_BATCH_URL % (self.id)
+        r = self.client.request("get", url, params=params)
+        return r.json()
+
     def values_update(self, range, params=None, body=None):
         """Lower-level method that directly calls `spreadsheets.values.update <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update>`_.
 
@@ -176,8 +241,22 @@ class Spreadsheet(object):
         r = self.client.request('put', url, params=params, json=body)
         return r.json()
 
-    def fetch_sheet_metadata(self):
-        params = {'includeGridData': 'false'}
+    def values_batch_update(self, params=None, body=None):
+        url = SPREADSHEET_VALUES_BATCH_UPDATE_URL % self.id
+        r = self.client.request('post', url, params=params, json=body)
+        return r.json()
+
+    def _spreadsheets_get(self, params=None):
+        """
+        A method stub that directly calls `spreadsheets.batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/get>`_.
+        """
+        url = SPREADSHEET_URL % self.id
+        r = self.client.request('get', url, params=params)
+        return r.json()
+
+    def fetch_sheet_metadata(self, params=None):
+        if params is None:
+            params = {'includeGridData': 'false'}
 
         url = SPREADSHEET_URL % self.id
 
@@ -242,7 +321,7 @@ class Spreadsheet(object):
         except (StopIteration, KeyError):
             raise WorksheetNotFound(title)
 
-    def add_worksheet(self, title, rows, cols):
+    def add_worksheet(self, title, rows, cols, index=None):
         """Adds a new worksheet to a spreadsheet.
 
         :param title: A title of a new worksheet.
@@ -251,6 +330,8 @@ class Spreadsheet(object):
         :type rows: int
         :param cols: Number of columns.
         :type cols: int
+        :param index: Position of the sheet.
+        :type index: int
 
         :returns: a newly created :class:`worksheets <gspread.models.Worksheet>`.
         """
@@ -268,6 +349,9 @@ class Spreadsheet(object):
                 }
             }]
         }
+
+        if index is not None:
+            body["requests"][0]["addSheet"]["properties"]["index"] = index
 
         data = self.batch_update(body)
 
@@ -331,8 +415,44 @@ class Spreadsheet(object):
         """
         body = {
             'requests': [{
-                'deleteSheet': {'sheetId': worksheet._properties['sheetId']}
+                'deleteSheet': {'sheetId': worksheet.id}
             }]
+        }
+
+        return self.batch_update(body)
+
+    def reorder_worksheets(self, worksheets_in_desired_order):
+        """Updates the ``index`` property of each Worksheets to reflect
+        its index in the provided sequence of Worksheets.
+
+        :param worksheets_in_desired_order: Iterable of Worksheet objects in desired order.
+
+        Note: If you omit some of the Spreadsheet's existing Worksheet objects from
+        the provided sequence, those Worksheets will be appended to the end of the sequence
+        in the order that they appear in the list returned by ``Spreadsheet.worksheets()``.
+        """
+        idx_map = {}
+        for idx, w in enumerate(worksheets_in_desired_order):
+            idx_map[w.id] = idx
+        for w in self.worksheets():
+            if w.id in idx_map:
+                continue
+            idx += 1
+            idx_map[w.id] = idx
+
+        body = {
+            'requests': [
+                {
+                    'updateSheetProperties': {
+                        'properties': {
+                            'sheetId': key,
+                            'index': val
+                        },
+                        'fields': 'index'
+                    }
+                }
+                for key, val in idx_map.items()
+            ]
         }
 
         return self.batch_update(body)
@@ -405,7 +525,7 @@ class Spreadsheet(object):
 
         filtered_id_list = [
             p['id'] for p in permission_list
-            if p[key] == value and (p['role'] == role or role == 'any')
+            if p.get(key) == value and (p['role'] == role or role == 'any')
         ]
 
         for permission_id in filtered_id_list:
@@ -441,6 +561,11 @@ class Worksheet(object):
         return self._properties['title']
 
     @property
+    def url(self):
+        """Worksheet URL"""
+        return WORKSHEET_DRIVE_URL % (self.spreadsheet.id, self.id)
+
+    @property
     def updated(self):
         """.. deprecated:: 2.0
 
@@ -463,6 +588,16 @@ class Worksheet(object):
     def col_count(self):
         """Number of columns."""
         return self._properties['gridProperties']['columnCount']
+
+    @property
+    def frozen_row_count(self):
+        """Number of frozen rows."""
+        return self._properties['gridProperties'].get('frozenRowCount', 0)
+
+    @property
+    def frozen_col_count(self):
+        """Number of frozen columns."""
+        return self._properties['gridProperties'].get('frozenColumnCount', 0)
 
     def acell(self, label, value_render_option='FORMATTED_VALUE'):
         """Returns an instance of a :class:`gspread.models.Cell`.
@@ -577,15 +712,26 @@ class Worksheet(object):
             for j, value in enumerate(row)
         ]
 
-    def get_all_values(self):
+    def get_all_values(self, value_render_option='FORMATTED_VALUE'):
         """Returns a list of lists containing all cells' values as strings.
+
+        :param value_render_option: (optional) Determines how values should be
+                                    rendered in the the output. See
+                                    `ValueRenderOption`_ in the Sheets API.
+        :type value_render_option: str
+
+        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
         .. note::
 
             Empty trailing rows and columns will not be included.
         """
 
-        data = self.spreadsheet.values_get(self.title)
+        title = self.title.replace("'", "''")
+        data = self.spreadsheet.values_get(
+            "'{}'".format(title),
+            params={'valueRenderOption': value_render_option}
+        )
 
         try:
             return fill_gaps(data['values'])
@@ -801,6 +947,304 @@ class Worksheet(object):
 
         return data
 
+    @accepted_kwargs(
+        major_dimension=None,
+        value_render_option=None,
+        date_time_render_option=None
+    )
+    def get(self, range_name=None, **kwargs):
+        """Reads values of a single range or a cell of a sheet.
+
+        :param str range_name: (optional) Cell range in the A1 notation or
+            a named range.
+
+        :param str major_dimension: (optional) The major dimension that results
+            should use.
+
+        :param str value_render_option: (optional) How values should be
+            represented in the output. The default render option is
+            `FORMATTED_VALUE`.
+
+        :param str date_time_render_option: (optional) How dates, times, and
+            durations should be represented in the output. This is ignored if
+            value_render_option is FORMATTED_VALUE. The default dateTime render
+            option is `SERIAL_NUMBER`.
+
+        Examples::
+
+            # Return all values from the sheet
+            worksheet.get()
+
+            # Return value of 'A1' cell
+            worksheet.get('A1')
+
+            # Return values of 'A1:B2' range
+            worksheet.get('A1:B2')
+
+            # Return values of 'my_range' named range
+            worksheet.get('my_range')
+
+        .. versionadded:: 3.3
+
+        """
+        if range_name:
+            range_name = '%s!%s' % (self.title, range_name)
+        else:
+            range_name = self.title
+
+        params = filter_dict_values({
+            'majorDimension': kwargs['major_dimension'],
+            'valueRenderOption': kwargs['value_render_option'],
+            'dateTimeRenderOption': kwargs['date_time_render_option']
+        })
+
+        response = self.spreadsheet.values_get(range_name, params=params)
+
+        return ValueRange.from_json(response)
+
+    @accepted_kwargs(
+        major_dimension=None,
+        value_render_option=None,
+        date_time_render_option=None
+    )
+    def batch_get(self, ranges, **kwargs):
+        """Returns one or more ranges of values from the sheet.
+
+        :param list ranges: List of cell ranges in the A1 notation or named
+            ranges.
+
+        :param str major_dimension: (optional) The major dimension that results
+            should use.
+
+        :param str value_render_option: (optional) How values should be
+            represented in the output. The default render option
+            is `FORMATTED_VALUE`.
+
+        :param str date_time_render_option: (optional) How dates, times, and
+            durations should be represented in the output. This is ignored if
+            value_render_option is FORMATTED_VALUE. The default dateTime render
+            option is `SERIAL_NUMBER`.
+
+        .. versionadded:: 3.3
+
+        Examples::
+
+            # Read values from 'A1:B2' range and 'F12' cell
+            worksheet.batch_get(['A1:B2', 'F12'])
+
+        """
+        ranges = ['%s!%s' % (self.title, r) for r in ranges if r]
+
+        params = filter_dict_values({
+            'majorDimension': kwargs['major_dimension'],
+            'valueRenderOption': kwargs['value_render_option'],
+            'dateTimeRenderOption': kwargs['date_time_render_option']
+        })
+
+        response = self.spreadsheet.values_batch_get(
+            ranges=ranges,
+            params=params
+        )
+
+        return [ValueRange.from_json(x) for x in response['valueRanges']]
+
+    @accepted_kwargs(
+        raw=True,
+        major_dimension=None,
+        value_input_option=None,
+        include_values_in_response=None,
+        response_value_render_option=None,
+        response_date_time_render_option=None
+    )
+    def update(self, range_name, values=None, **kwargs):
+        """Sets values in a cell range of the sheet.
+
+        :param str range_name: (optional) The A1 notation of the values
+            to update.
+        :param list values: The data to be written.
+        :param str major_dimension: (optional) The major dimension that results
+            should use.
+
+        :param str value_input_option: (optional) How the input data should be
+            interpreted.
+
+            Possible values are:
+
+            RAW             The values the user has entered will not be parsed
+                            and will be stored as-is.
+            USER_ENTERED    The values will be parsed as if the user typed them
+                            into the UI. Numbers will stay as numbers, but
+                            strings may be converted to numbers, dates, etc.
+                            following the same rules that are applied when
+                            entering text into a cell via the Google Sheets UI.
+
+        Examples::
+
+            # Sets 'Hello world' in 'A2' cell
+            worksheet.update('A2', 'Hello world')
+
+            # Updates cells A1, B1, C1 with values 42, 43, 44 respectively
+            worksheet.update([42, 43, 44])
+
+            # Updates A2 and A3 with values 42 and 43
+            # Note that update range can be bigger than values array
+            worksheet.update('A2:B4', [[42], [43]])
+
+            # Add a formula
+            worksheet.update('A5', '=SUM(A1:A4)', raw=False)
+
+            # Update 'my_range' named range with values 42 and 43
+            worksheet.update('my_range', [[42], [43]])
+
+            # Note: named ranges are defined in the scope of
+            # a spreadsheet, so even if `my_range` does not belong to
+            # this sheet it is still updated
+
+        .. versionadded:: 3.3
+
+        """
+        if is_scalar(range_name):
+            range_name = '%s!%s' % (self.title, range_name)
+        else:
+            values = range_name
+            range_name = self.title
+
+        if is_scalar(values):
+            values = [[values]]
+
+        if not kwargs['value_input_option']:
+            kwargs['value_input_option'] = (
+                'RAW' if kwargs['raw'] else 'USER_ENTERED'
+            )
+
+        params = filter_dict_values({
+            'valueInputOption': kwargs['value_input_option'],
+            'includeValuesInResponse': kwargs['include_values_in_response'],
+            'responseValueRenderOption': kwargs[
+                'response_value_render_option'
+            ],
+            'responseDateTimeRenderOption': kwargs[
+                'response_date_time_render_option'
+            ]
+        })
+
+        response = self.spreadsheet.values_update(
+            range_name,
+            params=params,
+            body=filter_dict_values({
+                'values': values,
+                'majorDimension': kwargs['major_dimension']
+            })
+        )
+
+        return response
+
+    @accepted_kwargs(
+        raw=True,
+        value_input_option=None,
+        include_values_in_response=None,
+        response_value_render_option=None,
+        response_date_time_render_option=None
+    )
+    def batch_update(self, data, **kwargs):
+        """
+        Examples::
+
+            worksheet.batch_update([{
+                'range': 'A1:B1',
+                'values': [['42', '43']],
+            }, {
+                'range': 'my_range',
+                'values': [['44', '45']],
+            }])
+
+            # Note: named ranges are defined in the scope of
+            # a spreadsheet, so even if `my_range` does not belong to
+            # this sheet it is still updated
+
+        .. versionadded:: 3.3
+
+        """
+        if not kwargs['value_input_option']:
+            kwargs['value_input_option'] = (
+                'RAW' if kwargs['raw'] else 'USER_ENTERED'
+            )
+
+        data = [
+            dict(vr, range=absolute_range_name(self.title, vr['range']))
+            for vr in data
+        ]
+
+        body = filter_dict_values({
+            'valueInputOption': kwargs['value_input_option'],
+            'includeValuesInResponse': kwargs['include_values_in_response'],
+            'responseValueRenderOption': kwargs[
+                'response_value_render_option'
+            ],
+            'responseDateTimeRenderOption': kwargs[
+                'response_date_time_render_option'
+            ],
+            'data': data
+        })
+
+        response = self.spreadsheet.values_batch_update(body=body)
+
+        return response
+
+    def format(self, range_name, cell_format):
+        """Formats a cell or a group of cells.
+
+        :param str range_name: Target range in the A1 notation.
+        :param cell_format: Dictionary containing the fields to update.
+
+        https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat
+
+        Examples::
+
+            # Set 'A4' cell's text format to bold
+            worksheet.format("A4", {"textFormat": {"bold": True}})
+
+            # Color the background of 'A2:B2' cell range in black,
+            # change horizontal alignment, text color and font size
+            worksheet.format("A2:B2", {
+                "backgroundColor": {
+                  "red": 0.0,
+                  "green": 0.0,
+                  "blue": 0.0
+                },
+                "horizontalAlignment": "CENTER",
+                "textFormat": {
+                  "foregroundColor": {
+                    "red": 1.0,
+                    "green": 1.0,
+                    "blue": 1.0
+                  },
+                  "fontSize": 12,
+                  "bold": True
+                }
+            })
+
+        .. versionadded:: 3.3
+
+        """
+        grid_range = a1_range_to_grid_range(range_name, self.id)
+
+        fields = "userEnteredFormat(%s)" % ','.join(cell_format.keys())
+
+        body = {
+            "requests": [{
+                "repeatCell": {
+                    "range": grid_range,
+                    "cell": {
+                      "userEnteredFormat":  cell_format
+                    },
+                    "fields": fields
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
     def resize(self, rows=None, cols=None):
         """Resizes the worksheet. Specify one of ``rows`` or ``cols``.
 
@@ -838,6 +1282,70 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
+    def sort(self, *specs, range=None):
+        """Sorts worksheet using given sort orders.
+
+        :param specs: The sort order per column. Each sort order represented
+        by a tuple where the 1st element is a column index and 2nd element is
+        the order itself: 'asc' or 'des'.
+        :type specs: List[Tuple[int, str]]
+        :param range: The range to sort. By default sorts whole sheet excluding
+        frozen rows. Range notation: 'A1:A1'.
+        :type range: str
+
+        Example::
+
+            # Sort sheet A -> Z by column 'B'
+            wks.sort((2, 'asc'))
+
+            # Sort range A2:G8 basing on column 'G' A -> Z and column 'B' Z -> A
+            wks.sort((7, 'asc'), (2, 'des'), range='A2:G8')
+
+        """
+
+        if range:
+            start_a1, end_a1 = range.split(':')
+            start_row, start_col = a1_to_rowcol(start_a1)
+            end_row, end_col = a1_to_rowcol(end_a1)
+        else:
+            start_row = self._properties['gridProperties'].get('frozenRowCount', 0) + 1
+            start_col = 1
+            end_row = self.row_count
+            end_col = self.col_count
+        request_range = {
+            'sheetId': self.id,
+            'startRowIndex': start_row - 1,
+            'endRowIndex': end_row,
+            'startColumnIndex': start_col - 1,
+            'endColumnIndex': end_col
+        }
+
+        request_sort_specs = list()
+        for col, order in specs:
+            if order == 'asc':
+                request_order = 'ASCENDING'
+            elif order == 'des':
+                request_order = 'DESCENDING'
+            else:
+                raise ValueError("Either 'asc' or 'des' should be specified as sort order.")
+            request_sort_spec = {
+                "dimensionIndex": col - 1,
+                "sortOrder": request_order
+            }
+            request_sort_specs.append(request_sort_spec)
+
+        body = {
+            'requests': [{
+                "sortRange": {
+                    'range': request_range,
+                    'sortSpecs': request_sort_specs
+                }
+            }]
+        }
+
+        response = self.spreadsheet.batch_update(body)
+        return response
+
     def update_title(self, title):
         """Renames the worksheet.
 
@@ -862,6 +1370,32 @@ class Worksheet(object):
         self._properties['title'] = title
         return response
 
+    def update_index(self, index):
+        """Updates the ``index`` property for the worksheet.
+
+        See the `Sheets API documentation
+        <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#sheetproperties>`_
+        for information on how updating the index property affects the order of worksheets
+        in a spreadsheet.
+
+        To reorder all worksheets in a spreadsheet, see `Spreadsheet.reorder_worksheets`.
+
+        """
+
+        body = {
+            'requests': [{
+                'updateSheetProperties': {
+                    'properties': {
+                        'sheetId': self.id,
+                        'index': index
+                    },
+                    'fields': 'index'
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
     def add_rows(self, rows):
         """Adds rows to worksheet.
 
@@ -880,11 +1414,60 @@ class Worksheet(object):
         """
         self.resize(cols=self.col_count + cols)
 
-    def append_row(self, values, value_input_option='RAW'):
+    def append_row(
+        self,
+        values,
+        value_input_option='RAW',
+        insert_data_option=None,
+        table_range=None
+    ):
         """Adds a row to the worksheet and populates it with values.
         Widens the worksheet if there are more values than columns.
 
         :param values: List of values for the new row.
+        :param value_input_option: (optional) Determines how the input data
+                                    should be interpreted. See
+                                    `ValueInputOption`_ in the Sheets API
+                                    reference.
+        :type value_input_option: str
+        :param insert_data_option: (optional) Determines how the input data
+                                    should be inserted. See
+                                    `InsertDataOption`_ in the Sheets API
+                                    reference.
+        :type insert_data_option: str
+        :param table_range: (optional) The A1 notation of a range to search for
+                             a logical table of data. Values are appended after
+                             the last row of the table.
+                             Examples: `A1` or `B2:D4`
+        :type table_range: str
+
+        .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+        .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
+
+        """
+
+        range_label = (
+            '%s!%s' % (self.title, table_range)
+            if table_range
+            else self.title
+        )
+
+        params = {
+            'valueInputOption': value_input_option,
+            'insertDataOption': insert_data_option
+        }
+
+        body = {
+            'values': [values]
+        }
+
+        return self.spreadsheet.values_append(range_label, params, body)
+
+    def append_rows(self, values, value_input_option='RAW'):
+        """Adds multiple rows to the worksheet and populates them with values.
+        Widens the worksheet if there are more values than columns.
+
+        :param values: List of rows each row is List of values for the new row.
         :param value_input_option: (optional) Determines how input data should
                                     be interpreted. See `ValueInputOption`_ in
                                     the Sheets API.
@@ -898,7 +1481,7 @@ class Worksheet(object):
         }
 
         body = {
-            'values': [values]
+            'values': values
         }
 
         return self.spreadsheet.values_append(self.title, params, body)
@@ -976,6 +1559,28 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
+    def delete_rows(self, start_index, end_index):
+        """"Deletes multi rows from the worksheet at the specified index.
+
+        :param start_index: Index of a first row for deletion.
+        :param end_index: Index of a last row for deletion.
+        :type index: int
+        """
+        body = {
+            "requests": [{
+                "deleteDimension": {
+                    "range": {
+                      "sheetId": self.id,
+                      "dimension": "ROWS",
+                      "startIndex": start_index - 1,
+                      "endIndex": end_index - 1
+                    }
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
     def clear(self):
         """Clears all cells in the worksheet.
         """
@@ -1023,6 +1628,96 @@ class Worksheet(object):
         """
         return list(self._finder(filter, query))
 
+    def freeze(self, rows=None, cols=None):
+        """Freeze rows and/or columns on the worksheet.
+
+        :param rows: Number of rows to freeze.
+        :param cols: Number of columns to freeze.
+        """
+        grid_properties = {}
+
+        if rows is not None:
+            grid_properties['frozenRowCount'] = rows
+
+        if cols is not None:
+            grid_properties['frozenColumnCount'] = cols
+
+        if not grid_properties:
+            raise TypeError("Either 'rows' or 'cols' should be specified.")
+
+        fields = ','.join(
+            'gridProperties/%s' % p for p in grid_properties.keys()
+        )
+
+        body = {
+            'requests': [{
+                'updateSheetProperties': {
+                    'properties': {
+                        'sheetId': self.id,
+                        'gridProperties': grid_properties
+                    },
+                    'fields': fields
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    @cast_to_a1_notation
+    def add_basic_filter(self, name=None):
+        """Add a basic filter to the worksheet. If a range or bundaries
+        are passed, the filter will be limited to the given range.
+
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param first_row: Integer row number
+        :param first_col: Integer row number
+        :param last_row: Integer row number
+        :param last_col: Integer row number
+        """
+        rng = {
+            'sheetId': self.id,
+        }
+
+        if name is not None:
+            start, end = name.split(':')
+            (row_offset, column_offset) = a1_to_rowcol(start)
+            (last_row, last_column) = a1_to_rowcol(end)
+            rng['startRowIndex'] = row_offset - 1
+            rng['endRowIndex'] = last_row
+            rng['startColumnIndex'] = column_offset - 1
+            rng['endColumnIndex'] = last_column
+
+        filter_settings = {
+            'range': rng
+        }
+
+        body = {
+            'requests': [{
+                'setBasicFilter': {
+                    'filter': filter_settings
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def remove_basic_filter(self):
+        """Remove the basic filter from a worksheet.
+        """
+        body = {
+            'requests': [{
+                'clearBasicFilter': {
+                    'sheetId': self.id,
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
     def export(self, format):
         """.. deprecated:: 2.0
 
@@ -1066,6 +1761,42 @@ class Worksheet(object):
             new_sheet_id,
             new_sheet_name
         )
+
+    def merge_cells(
+        self,
+        startRowIndex,
+        endRowIndex,
+        startColIndex,
+        endColIndex
+    ):
+        """Merge cells, using index coordonates.
+
+        :param int startRowIndex: index of the row where merge start
+        :param int endRowIndex: index of the row where merge stops
+        :param int startColIndex: index of the column where merge starts
+        :param int endColIndex: index of the column where merge stops
+
+        :return the response body from the request
+        """
+
+        body = {
+            "requests": [
+                {
+                    "mergeCells": {
+                        "mergeType": "MERGE_ROWS",
+                        "range": {
+                            "sheetId": self.id,
+                            "startRowIndex": startRowIndex,
+                            "endRowIndex": endRowIndex,
+                            "startColumnIndex": startColIndex,
+                            "endColumnIndex": endColIndex,
+                        }
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
 
 
 class Cell(object):
