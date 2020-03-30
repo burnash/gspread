@@ -1425,7 +1425,7 @@ class Worksheet(object):
         """
         return self.spreadsheet.values_clear(self.title)
 
-    def _finder(self, func, query, col):
+    def _finder(self, func, query, col=None, row=None):
         data = self.spreadsheet.values_get(self.title)
 
         try:
@@ -1433,7 +1433,7 @@ class Worksheet(object):
         except KeyError:
             values = []
 
-        cells = self.get_cells(values, col)
+        cells = self.get_cells(values, col, row)
 
         if isinstance(query, basestring):
             match = lambda x: x.value == query
@@ -1442,7 +1442,7 @@ class Worksheet(object):
 
         return func(match, cells)
 
-    def get_cells(self, values, col):
+    def get_cells(self, values, col=None, row=None):
         """ Returns an array of cell objects.
         :param values: Array with row, colums and values
         :param col: Number of colum to find
@@ -1452,6 +1452,11 @@ class Worksheet(object):
                 Cell(row=i + 1, col=col, value=row[col])
                 for i, row in enumerate(values)
             ]
+        elif row:
+            return [
+                Cell(row=row, col=j + 1, value=value):
+                for j, value in enumerate(row)
+            ]
         else:
             return [
                 Cell(row=i + 1, col=j + 1, value=value)
@@ -1459,15 +1464,40 @@ class Worksheet(object):
                 for j, value in enumerate(row)
             ]
 
-    def find(self, query, col=None):
+    def find(self, query):
         """Finds the first cell matching the query.
 
         :param query: A literal string to match or compiled regular expression.
+        :param col: optional number of col to find
         :type query: str, :py:class:`re.RegexObject`
 
         """
         try:
-            return self._finder(finditem, query, col)
+            return self._finder(finditem, query)
+        except StopIteration:
+            raise CellNotFound(query)
+
+    def find_in_coll(self, query, col):
+        """Finds the first cell matching the query in specific row.
+
+        :param query: A literal string to match or compiled regular expression.
+        :param col: Integer that selects the column to find
+        :type query: str, :py:class:`re.RegexObject`
+        """
+        try:
+            return self._finder(finditem, query, col=col)
+        except StopIteration:
+            raise CellNotFound(query)
+
+    def find_in_row(self, query, row):
+        """Finds the first cell matching the query in specific row.
+
+        :param query: A literal string to match or compiled regular expression.
+        :param row: Integer that selects the row to find
+        :type query: str, :py:class:`re.RegexObject`
+        """
+        try:
+            return self._finder(finditem, query, row=row)
         except StopIteration:
             raise CellNotFound(query)
 
