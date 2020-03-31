@@ -1751,23 +1751,28 @@ class Worksheet(object):
             new_sheet_name
         )
 
-    def merge_cells(
-        self,
-        startRowIndex,
-        endRowIndex,
-        startColIndex,
-        endColIndex
-    ):
-        """Merge cells, using index coordonates.
+    @cast_to_a1_notation
+    def merge_cells(self, name):
+        """
+        Merge cells.
 
-        :param int startRowIndex: index of the row where merge start
-        :param int endRowIndex: index of the row where merge stops
-        :param int startColIndex: index of the column where merge starts
-        :param int endColIndex: index of the column where merge stops
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param first_row: Integer row number
+        :param first_col: Integer row number
+        :param last_row: Integer row number
+        :param last_col: Integer row number
 
         :return the response body from the request
         """
 
+        start, end = name.split(':')
+        (row_offset, column_offset) = a1_to_rowcol(start)
+        (last_row, last_column) = a1_to_rowcol(end)
+        
         body = {
             "requests": [
                 {
@@ -1775,10 +1780,10 @@ class Worksheet(object):
                         "mergeType": "MERGE_ROWS",
                         "range": {
                             "sheetId": self.id,
-                            "startRowIndex": startRowIndex,
-                            "endRowIndex": endRowIndex,
-                            "startColumnIndex": startColIndex,
-                            "endColumnIndex": endColIndex,
+                            "startRowIndex": row_offset - 1,
+                            "endRowIndex": last_row,
+                            "startColumnIndex": column_offset - 1,
+                            "endColumnIndex": last_column,
                         }
                     }
                 }
