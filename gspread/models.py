@@ -1752,11 +1752,14 @@ class Worksheet(object):
         )
 
     @cast_to_a1_notation
-    def merge_cells(self, name):
+    def merge_cells(self, name, merge_type="MERGE_ROWS"):
         """
-        Merge cells.
+        Merge cells. There are 3 merge types: MERGE_ROWS, MERGE_COLUMNS,
+        and MERGE_ALL.
 
         :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+        :param merge_type: (optional) one of MERGE_ROWS, MERGE_COLUMNS,
+                           or MERGE_ALL. Default MERGE_ROWS
 
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
@@ -1777,7 +1780,7 @@ class Worksheet(object):
             "requests": [
                 {
                     "mergeCells": {
-                        "mergeType": "MERGE_ROWS",
+                        "mergeType": merge_type,
                         "range": {
                             "sheetId": self.id,
                             "startRowIndex": row_offset - 1,

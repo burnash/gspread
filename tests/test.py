@@ -1075,6 +1075,7 @@ class CellTest(GspreadTest):
         self.sheet.update_cell(1, 1, '42')
         self.sheet.update_cell(1, 2, '80')
 
+        # test merge rows
         self.sheet.merge_cells(1, 1, 1, 2)
 
         meta = self.sheet.spreadsheet.fetch_sheet_metadata()
@@ -1082,3 +1083,13 @@ class CellTest(GspreadTest):
             lambda x: x['properties']['sheetId'] == self.sheet.id, meta
         )['merges']
         self.assertEqual(len(merges), 2)
+
+        # test merge all
+        self.sheet.merge_cells(1, 1, 1, 2, merge_type="MERGE_ALL")
+
+        meta = self.sheet.spreadsheet.fetch_sheet_metadata()
+        merges = utils.finditem(
+            lambda x: x['properties']['sheetId'] == self.sheet.id, meta
+        )['merges']
+        
+        self.assertEqual(len(merges), 1)
