@@ -743,6 +743,11 @@ class WorksheetTest(GspreadTest):
         # values should match with original lists
         self.assertEqual(read_data, rows)
 
+        # test that merged values are all filled in
+        self.sheet.merge_cells(0, 4, 0, 4)
+        read_data = self.sheet.get_all_values()
+        self.assertEqual(read_data, [[row[0] for _ in range(4)] for row in rows])
+
     def test_get_all_values_title_is_a1_notation(self):
         self.sheet.resize(4, 4)
         # renames sheet to contain single and double quotes

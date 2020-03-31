@@ -23,7 +23,8 @@ from .utils import (
     filter_dict_values,
     absolute_range_name,
     a1_range_to_grid_range,
-    accepted_kwargs
+    accepted_kwargs,
+    fix_merge_values
 )
 
 from .urls import (
@@ -732,9 +733,18 @@ class Worksheet(object):
             "'{}'".format(title),
             params={'valueRenderOption': value_render_option}
         )
+        spreadsheet_meta = self.spreadsheet.fetch_sheet_metadata()
+
+        # not catching StopIteration becuase Worksheet exists
+        # potential issue if this Worksheet
+        worksheet_meta = finditem(
+            lambda x: x['properties']['title'] == self.title,
+            spreadsheet_meta['sheets']
+        )
 
         try:
-            return fill_gaps(data['values'])
+            values = fill_gaps(data['values'])
+            return fix_merge_values(worksheet_meta, values)
         except KeyError:
             return []
 

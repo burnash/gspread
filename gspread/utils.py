@@ -533,6 +533,23 @@ def accepted_kwargs(**default_kwargs):
     return decorate
 
 
+def fix_merge_values(worksheet_metadata, values):
+    """Assign the top-left value to all cells in a merged range."""
+    for merge in worksheet_metadata.get("merges", []):
+        start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
+        start_col, end_col = (merge["startColumnIndex"], merge["endColumnIndex"])
+
+        # ignore merge cells outside the data range
+        if start_row < len(values) and start_col < len(values[0]):
+            orig_val = values[start_row][start_col]
+            for row in values[start_row:end_row]:
+                row[start_col:end_col] = [
+                    orig_val for i in range(start_col, end_col)
+                ]
+
+    return values
+
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
