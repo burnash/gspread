@@ -736,7 +736,7 @@ class Worksheet(object):
         spreadsheet_meta = self.spreadsheet.fetch_sheet_metadata()
 
         # not catching StopIteration becuase Worksheet exists
-        # potential issue if this Worksheet
+        # potential issue if this Worksheet is deleted
         worksheet_meta = finditem(
             lambda x: x['properties']['title'] == self.title,
             spreadsheet_meta['sheets']
