@@ -961,7 +961,7 @@ class Worksheet(object):
         return self.spreadsheet.batch_update(body)
     
     def add_protect_ranges(self, start_row_index,end_row_index,start_column_index,end_column_index,
-                           description=None,  request_user_edit=False):
+                           description=None,  request_user_edit=False, editors_emails=None):
         """"Add protect ranges into the selected worksheet. Only the editors can edit the protected ranges
 
         :param start_row_index: Index of the start row.
@@ -976,8 +976,18 @@ class Worksheet(object):
         :type description: str
         :param request_user_edit: True if the user who requested this protected range can edit the protected area.
         :type request_user_edit: boolean
+        :param editors_emails: List for more editors email
+        :type editors_emails: list
         """
         emailAddresses = []
+        if (editors_emails != None) & (isinstance(editors_emails,list)):
+            for email in editors_emails:
+                emailAddresses.append(str(email))
+        elif editors_emails != None:
+            pass
+        else:
+            raise Exception('Invalid type for editors_emails, only list is accepted')
+            
         for permission in self.client.list_permissions(self.spreadsheet.id):
             try:
                 email = permission['emailAddress']
