@@ -960,8 +960,8 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
     
-    def add_protect_ranges(self, start_row_index,end_row_index,start_column_index,end_column_index, editors_emails=None,
-                           description=None,  request_user_edit=False):
+    def add_protect_ranges(self, start_row_index,end_row_index,start_column_index,end_column_index, 
+                           editors_emails=None, description=None,  request_user_edit=False):
         """"Add protect ranges into the selected worksheet. Only the editors can edit the protected ranges
 
         :param start_row_index: Index of the start row.
