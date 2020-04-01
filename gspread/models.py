@@ -744,7 +744,7 @@ class Worksheet(object):
         head=1,
         default_blank="",
         allow_underscores_in_numeric_literals=False,
-        numericise_ignore=[]
+        numericise_ignore=None
     ):
         """Returns a list of dictionaries, all of them having the contents
             of the spreadsheet with the head row as keys and each of these
@@ -1786,7 +1786,7 @@ class Worksheet(object):
         start, end = name.split(':')
         (row_offset, column_offset) = a1_to_rowcol(start)
         (last_row, last_column) = a1_to_rowcol(end)
-        
+
         body = {
             "requests": [
                 {
