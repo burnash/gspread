@@ -1,6 +1,11 @@
 Release History
 ===============
 
+3.3.1 (2020-04-01)
+------------------
+
+* Support old and new collections.abc.Sequence  (#745 by @timgates42)
+
 3.3.0 (2020-03-12)
 ------------------
 
