@@ -142,7 +142,7 @@ def numericise(value, empty2zero=False, default_blank="", allow_underscores_in_n
     return value
 
 def numericise_all(input, empty2zero=False, default_blank="", allow_underscores_in_numeric_literals=False,
-                   ignore=[]):
+                   ignore=None):
     """
     Returns a list of numericised values from strings except those
     from the row specified as ignore
