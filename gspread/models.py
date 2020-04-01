@@ -1008,7 +1008,7 @@ class Worksheet(object):
         if (editors_emails != None) & (isinstance(editors_emails,list)):
             for email in editors_emails:
                 emailAddresses.append(str(email))
-        elif editors_emails != None:
+        elif editors_emails == None:
             pass
         else:
             raise Exception('Invalid type for editors_emails, only list is accepted')
