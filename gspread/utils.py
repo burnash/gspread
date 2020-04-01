@@ -11,7 +11,11 @@ This module contains utility functions.
 import sys
 import re
 from functools import wraps
-from collections import defaultdict, Sequence
+from collections import defaultdict
+try:
+    from collections.abc import Sequence
+except ImportError:
+    from collections import Sequence
 from itertools import chain
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
