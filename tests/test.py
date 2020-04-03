@@ -1042,8 +1042,8 @@ class WorksheetTest(GspreadTest):
         w = self.spreadsheet.worksheets()
         self.assertEqual(w[0].id, last_sheet.id)
 
-class CellTest(GspreadTest):
 
+class CellTest(GspreadTest):
     """Test for gspread.Cell."""
 
     def setUp(self):
@@ -1072,24 +1072,24 @@ class CellTest(GspreadTest):
         self.assertEqual(cell.numeric_value, None)
 
     def test_merge_cells(self):
-        self.sheet.update_cell(1, 1, '42')
-        self.sheet.update_cell(1, 2, '80')
+        self.sheet.update('A1:B2', [[42, 43], [43, 44]])
 
         # test merge rows
-        self.sheet.merge_cells(1, 1, 1, 2)
-
+        self.sheet.merge_cells(1, 1, 2, 2, merge_type="MERGE_ROWS")
         meta = self.sheet.spreadsheet.fetch_sheet_metadata()
         merges = utils.finditem(
-            lambda x: x['properties']['sheetId'] == self.sheet.id, meta
+            lambda x: x['properties']['sheetId'] == self.sheet.id,
+            meta['sheets']
         )['merges']
         self.assertEqual(len(merges), 2)
 
         # test merge all
-        self.sheet.merge_cells(1, 1, 1, 2, merge_type="MERGE_ALL")
+        self.sheet.merge_cells(1, 1, 2, 2)
 
         meta = self.sheet.spreadsheet.fetch_sheet_metadata()
         merges = utils.finditem(
-            lambda x: x['properties']['sheetId'] == self.sheet.id, meta
+            lambda x: x['properties']['sheetId'] == self.sheet.id,
+            meta['sheets']
         )['merges']
-        
+
         self.assertEqual(len(merges), 1)
