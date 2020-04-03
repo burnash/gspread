@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2020-04-03T19:35:24",
+      "recorded_at": "2020-04-03T19:37:08",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -49,10 +49,10 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:24 GMT"
+            "Fri, 03 Apr 2020 19:37:08 GMT"
           ],
           "Expires": [
-            "Fri, 03 Apr 2020 19:35:24 GMT"
+            "Fri, 03 Apr 2020 19:37:08 GMT"
           ],
           "Server": [
             "GSE"
@@ -91,11 +91,11 @@
       }
     },
     {
-      "recorded_at": "2020-04-03T19:35:25",
+      "recorded_at": "2020-04-03T19:37:09",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"values\": [[\"A1\", \"B1\", \"\", \"D1\"], [\"\", \"b2\", \"\", \"\"], [\"\", \"\", \"\", \"\"], [\"A4\", \"B4\", \"\", \"D4\"]]}"
+          "string": "{\"values\": [[null, \"cell row 1, col 2\"], [\"cell row 2 col 1\", null]]}"
         },
         "headers": {
           "Accept": [
@@ -108,7 +108,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "98"
+            "69"
           ],
           "Content-Type": [
             "application/json"
@@ -123,38 +123,22 @@
         "json_body": {
           "values": [
             [
-              "A1",
-              "B1",
-              "",
-              "D1"
+              null,
+              "cell row 1, col 2"
             ],
             [
-              "",
-              "b2",
-              "",
-              ""
-            ],
-            [
-              "",
-              "",
-              "",
-              ""
-            ],
-            [
-              "A4",
-              "B4",
-              "",
-              "D4"
+              "cell row 2 col 1",
+              null
             ]
           ]
         },
         "method": "PUT",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1?valueInputOption=RAW"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3AB2?valueInputOption=RAW"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n  \"updatedRange\": \"wksht_test!A1:D4\",\n  \"updatedRows\": 4,\n  \"updatedColumns\": 4,\n  \"updatedCells\": 16\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n  \"updatedRange\": \"wksht_test!A1:B2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 2,\n  \"updatedCells\": 2\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -170,7 +154,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:25 GMT"
+            "Fri, 03 Apr 2020 19:37:09 GMT"
           ],
           "Server": [
             "ESF"
@@ -192,20 +176,20 @@
         },
         "json_body": {
           "spreadsheetId": "1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w",
-          "updatedCells": 16,
-          "updatedColumns": 4,
-          "updatedRange": "wksht_test!A1:D4",
-          "updatedRows": 4
+          "updatedCells": 2,
+          "updatedColumns": 2,
+          "updatedRange": "wksht_test!A1:B2",
+          "updatedRows": 2
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1?valueInputOption=RAW"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3AB2?valueInputOption=RAW"
       }
     },
     {
-      "recorded_at": "2020-04-03T19:35:25",
+      "recorded_at": "2020-04-03T19:37:10",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -229,12 +213,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values:batchGet?ranges=wksht_test%21A1%3AB1&ranges=wksht_test%21B4%3AD4"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21B1?valueRenderOption=FORMATTED_VALUE"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n  \"valueRanges\": [\n    {\n      \"range\": \"wksht_test!A1:B1\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"A1\",\n          \"B1\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"wksht_test!B4:D4\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"B4\",\n          \"\",\n          \"D4\"\n        ]\n      ]\n    }\n  ]\n}\n"
+          "string": "{\n  \"range\": \"wksht_test!B1\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"cell row 1, col 2\"\n    ]\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -250,7 +234,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:25 GMT"
+            "Fri, 03 Apr 2020 19:37:10 GMT"
           ],
           "Server": [
             "ESF"
@@ -271,44 +255,109 @@
           ]
         },
         "json_body": {
-          "spreadsheetId": "1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w",
-          "valueRanges": [
-            {
-              "majorDimension": "ROWS",
-              "range": "wksht_test!A1:B1",
-              "values": [
-                [
-                  "A1",
-                  "B1"
-                ]
-              ]
-            },
-            {
-              "majorDimension": "ROWS",
-              "range": "wksht_test!B4:D4",
-              "values": [
-                [
-                  "B4",
-                  "",
-                  "D4"
-                ]
-              ]
-            }
+          "majorDimension": "ROWS",
+          "range": "wksht_test!B1",
+          "values": [
+            [
+              "cell row 1, col 2"
+            ]
           ]
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values:batchGet?ranges=wksht_test%21A1%3AB1&ranges=wksht_test%21B4%3AD4"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21B1?valueRenderOption=FORMATTED_VALUE"
       }
     },
     {
-      "recorded_at": "2020-04-03T19:35:26",
+      "recorded_at": "2020-04-03T19:37:10",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 850587273}}]}"
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A2?valueRenderOption=FORMATTED_VALUE"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"range\": \"wksht_test!A2\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"cell row 2 col 1\"\n    ]\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:37:10 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "majorDimension": "ROWS",
+          "range": "wksht_test!A2",
+          "values": [
+            [
+              "cell row 2 col 1"
+            ]
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A2?valueRenderOption=FORMATTED_VALUE"
+      }
+    },
+    {
+      "recorded_at": "2020-04-03T19:37:11",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1907632365}}]}"
         },
         "headers": {
           "Accept": [
@@ -321,7 +370,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "55"
+            "56"
           ],
           "Content-Type": [
             "application/json"
@@ -337,7 +386,7 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 850587273
+                "sheetId": 1907632365
               }
             }
           ]
@@ -364,7 +413,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:25 GMT"
+            "Fri, 03 Apr 2020 19:37:11 GMT"
           ],
           "Server": [
             "ESF"
