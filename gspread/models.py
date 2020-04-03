@@ -1752,14 +1752,15 @@ class Worksheet(object):
         )
 
     @cast_to_a1_notation
-    def merge_cells(self, name, merge_type="MERGE_ROWS"):
+    def merge_cells(self, name, merge_type="MERGE_ALL"):
         """
-        Merge cells. There are 3 merge types: MERGE_ROWS, MERGE_COLUMNS,
-        and MERGE_ALL.
+        Merge cells. There are 3 merge types: MERGE_ALL, MERGE_COLUMNS,
+        and MERGE_ROWS.
 
         :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
-        :param merge_type: (optional) one of MERGE_ROWS, MERGE_COLUMNS,
-                           or MERGE_ALL. Default MERGE_ROWS
+        :param merge_type: (optional) one of MERGE_ALL, MERGE_COLUMNS,
+                           or MERGE_ROWS. Default MERGE_ROWS
+                           See `MergeType`_ in the Sheets API reference.
 
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
@@ -1770,12 +1771,15 @@ class Worksheet(object):
         :param last_col: Integer row number
 
         :return the response body from the request
+
+        .. MergeType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#MergeType
+
         """
 
         start, end = name.split(':')
         (row_offset, column_offset) = a1_to_rowcol(start)
         (last_row, last_column) = a1_to_rowcol(end)
-        
+
         body = {
             "requests": [
                 {
