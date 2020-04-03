@@ -15,6 +15,8 @@ from betamax_json_body_serializer import JSONBodySerializer
 
 import gspread
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
+from google.oauth2.credentials import Credentials as UserCredentials
+
 from gspread import utils
 
 try:
@@ -71,7 +73,8 @@ def get_method_name(self_id):
     return self_id.split('.')[-1]
 
 
-DummyCredentials = namedtuple('DummyCredentials', 'token')
+class DummyCredentials(UserCredentials):
+    pass
 
 
 class BetamaxGspreadTest(BetamaxTestCase):
@@ -82,8 +85,13 @@ class BetamaxGspreadTest(BetamaxTestCase):
     @classmethod
     def setUpClass(cls):
         if CREDS_FILENAME:
+            from google.auth.transport.requests import Request
+
             cls.auth_credentials = read_credentials(CREDS_FILENAME)
             cls.base_gc = gspread.authorize(cls.auth_credentials)
+
+            cls.auth_credentials.refresh(Request(cls.base_gc.session))
+
             title = 'Test %s' % cls.__name__
             cls.temporary_spreadsheet = cls.base_gc.create(title)
         else:
@@ -100,7 +108,10 @@ class BetamaxGspreadTest(BetamaxTestCase):
         super(BetamaxGspreadTest, self).setUp()
         self.session.headers.update({'accept-encoding': 'identity'})
         self.gc = gspread.Client(self.auth_credentials, session=self.session)
-        self.gc.login()
+
+        self.session.headers.update({
+            'Authorization': 'Bearer %s' % self.auth_credentials.token
+        })
 
         self.assertTrue(isinstance(self.gc, gspread.client.Client))
 
@@ -501,9 +512,12 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(test_values, read_values)
 
     def test_update_cell_objects(self):
-        test_values = ('cell row 1, col 2', 'cell row 2 col 1')
+        test_values = ['cell row 1, col 2', 'cell row 2 col 1']
 
-        cell_list = [gspread.models.Cell(1, 2, test_values[0]), gspread.models.Cell(2, 1, test_values[1])]
+        cell_list = [
+            gspread.models.Cell(1, 2, test_values[0]),
+            gspread.models.Cell(2, 1, test_values[1])
+        ]
         self.sheet.update_cells(cell_list)
 
         # Re-fetch cells
