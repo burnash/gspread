@@ -425,17 +425,37 @@ def quote(value, safe='', encoding='utf-8'):
     return urllib.quote(value.encode(encoding), safe)
 
 
-def absolute_range_name(sheet_name, range_name):
+def absolute_range_name(sheet_name, range_name=None):
     """Return an absolutized path of a range.
 
-    >>> absolute_range_name('Sheet1', 'A1:B1')
-    'Sheet1!A1:B1'
+    >>> absolute_range_name("Sheet1", "A1:B1")
+    "'Sheet1'!A1:B1"
 
-    >>> absolute_range_name('Sheet1', 'A1')
-    'Sheet1!A1'
+    >>> absolute_range_name("Sheet1", "A1")
+    "'Sheet1'!A1"
+
+    >>> absolute_range_name("Sheet1")
+    "'Sheet1'"
+
+    >>> absolute_range_name("Sheet'1")
+    "'Sheet''1'"
+
+    >>> absolute_range_name("Sheet''1")
+    "'Sheet''''1'"
+
+    >>> absolute_range_name("''sheet12''", "A1:B2")
+    "'''''sheet12'''''!A1:B2"
 
     """
-    return '%s!%s' % (sheet_name, range_name)
+
+    sheet_name = "'{}'".format(
+        sheet_name.replace("'", "''")
+    )
+
+    if range_name:
+        return '{}!{}'.format(sheet_name, range_name)
+    else:
+        return sheet_name
 
 
 def is_scalar(x):
