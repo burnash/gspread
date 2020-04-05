@@ -48,7 +48,11 @@ def convert_credentials(credentials):
     cls = credentials.__class__.__name__
     if 'oauth2client' in module and cls == 'ServiceAccountCredentials':
         return _convert_service_account(credentials)
-    elif 'oauth2client' in module and cls == 'OAuth2Credentials':
+    elif 'oauth2client' in module and cls in (
+        'OAuth2Credentials',
+        'AccessTokenCredentials',
+        'GoogleCredentials'
+    ):
         return _convert_oauth(credentials)
     elif isinstance(credentials, Credentials):
         return credentials
