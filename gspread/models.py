@@ -430,6 +430,9 @@ class Spreadsheet(object):
         Note: If you omit some of the Spreadsheet's existing Worksheet objects from
         the provided sequence, those Worksheets will be appended to the end of the sequence
         in the order that they appear in the list returned by ``Spreadsheet.worksheets()``.
+
+        .. versionadded:: 3.4
+
         """
         idx_map = {}
         for idx, w in enumerate(worksheets_in_desired_order):
@@ -646,14 +649,13 @@ class Worksheet(object):
 
         """
 
-        range_label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
-        data = self.spreadsheet.values_get(
-            range_label,
-            params={'valueRenderOption': value_render_option}
-        )
-
         try:
-            value = data['values'][0][0]
+            data = self.get(
+                rowcol_to_a1(row, col),
+                value_render_option=value_render_option
+            )
+
+            value = data.first()
         except KeyError:
             value = ''
 
@@ -690,7 +692,7 @@ class Worksheet(object):
 
         """
 
-        range_label = '%s!%s' % (self.title, name)
+        range_label = absolute_range_name(self.title, name)
 
         data = self.spreadsheet.values_get(range_label)
 
@@ -726,10 +728,10 @@ class Worksheet(object):
 
             Empty trailing rows and columns will not be included.
         """
+        range_name = absolute_range_name(self.title)
 
-        title = self.title.replace("'", "''")
         data = self.spreadsheet.values_get(
-            "'{}'".format(title),
+            range_name,
             params={'valueRenderOption': value_render_option}
         )
 
@@ -790,7 +792,12 @@ class Worksheet(object):
 
         return [dict(zip(keys, row)) for row in values]
 
-    def row_values(self, row, value_render_option='FORMATTED_VALUE'):
+    @accepted_kwargs(
+        major_dimension=None,
+        value_render_option=None,
+        date_time_render_option=None
+    )
+    def row_values(self, row, **kwargs):
         """Returns a list of all values in a `row`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -805,16 +812,9 @@ class Worksheet(object):
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
         """
-
-        range_label = '%s!A%s:%s' % (self.title, row, row)
-
-        data = self.spreadsheet.values_get(
-            range_label,
-            params={'valueRenderOption': value_render_option}
-        )
-
         try:
-            return data['values'][0]
+            data = self.get('A{}:{}'.format(row, row), **kwargs)
+            return data[0]
         except KeyError:
             return []
 
@@ -835,10 +835,12 @@ class Worksheet(object):
         """
 
         start_label = rowcol_to_a1(1, col)
-        range_label = '%s!%s:%s' % (self.title, start_label, start_label[:-1])
+        range_label = '{}:{}'.format(start_label, start_label[:-1])
+
+        range_name = absolute_range_name(self.title, range_label)
 
         data = self.spreadsheet.values_get(
-            range_label,
+            range_name,
             params={
                 'valueRenderOption': value_render_option,
                 'majorDimension': 'COLUMNS'
@@ -879,10 +881,10 @@ class Worksheet(object):
             worksheet.update_cell(1, 1, '42')
 
         """
-        range_label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
+        range_name = absolute_range_name(self.title, rowcol_to_a1(row, col))
 
         data = self.spreadsheet.values_update(
-            range_label,
+            range_name,
             params={
                 'valueInputOption': 'USER_ENTERED'
             },
@@ -922,10 +924,13 @@ class Worksheet(object):
         start = rowcol_to_a1(min(c.row for c in cell_list), min(c.col for c in cell_list))
         end = rowcol_to_a1(max(c.row for c in cell_list), max(c.col for c in cell_list))
 
-        range_label = '%s!%s:%s' % (self.title, start, end)
+        range_name = absolute_range_name(
+            self.title,
+            '{}:{}'.format(start, end)
+        )
 
         data = self.spreadsheet.values_update(
-            range_label,
+            range_name,
             params={
                 'valueInputOption': value_input_option
             },
@@ -976,10 +981,7 @@ class Worksheet(object):
         .. versionadded:: 3.3
 
         """
-        if range_name:
-            range_name = '%s!%s' % (self.title, range_name)
-        else:
-            range_name = self.title
+        range_name = absolute_range_name(self.title, range_name)
 
         params = filter_dict_values({
             'majorDimension': kwargs['major_dimension'],
@@ -1022,7 +1024,7 @@ class Worksheet(object):
             worksheet.batch_get(['A1:B2', 'F12'])
 
         """
-        ranges = ['%s!%s' % (self.title, r) for r in ranges if r]
+        ranges = [absolute_range_name(self.title, r) for r in ranges if r]
 
         params = filter_dict_values({
             'majorDimension': kwargs['major_dimension'],
@@ -1093,10 +1095,10 @@ class Worksheet(object):
 
         """
         if is_scalar(range_name):
-            range_name = '%s!%s' % (self.title, range_name)
+            range_name = absolute_range_name(self.title, range_name)
         else:
             values = range_name
-            range_name = self.title
+            range_name = absolute_range_name(self.title)
 
         if is_scalar(values):
             values = [[values]]
@@ -1290,8 +1292,9 @@ class Worksheet(object):
             # Sort range A2:G8 basing on column 'G' A -> Z and column 'B' Z -> A
             wks.sort((7, 'asc'), (2, 'des'), range='A2:G8')
 
-        """
+        .. versionadded:: 3.4
 
+        """
         if range:
             start_a1, end_a1 = range.split(':')
             start_row, start_col = a1_to_rowcol(start_a1)
@@ -1301,6 +1304,7 @@ class Worksheet(object):
             start_col = 1
             end_row = self.row_count
             end_col = self.col_count
+
         request_range = {
             'sheetId': self.id,
             'startRowIndex': start_row - 1,
@@ -1369,8 +1373,9 @@ class Worksheet(object):
 
         To reorder all worksheets in a spreadsheet, see `Spreadsheet.reorder_worksheets`.
 
-        """
+        .. versionadded:: 3.4
 
+        """
         body = {
             'requests': [{
                 'updateSheetProperties': {
@@ -1434,25 +1439,20 @@ class Worksheet(object):
         .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
 
         """
-
-        range_label = (
-            '%s!%s' % (self.title, table_range)
-            if table_range
-            else self.title
+        return self.append_rows(
+            [values],
+            value_input_option=value_input_option,
+            insert_data_option=insert_data_option,
+            table_range=table_range
         )
 
-        params = {
-            'valueInputOption': value_input_option,
-            'insertDataOption': insert_data_option
-        }
-
-        body = {
-            'values': [values]
-        }
-
-        return self.spreadsheet.values_append(range_label, params, body)
-
-    def append_rows(self, values, value_input_option='RAW'):
+    def append_rows(
+        self,
+        values,
+        value_input_option='RAW',
+        insert_data_option=None,
+        table_range=None
+    ):
         """Adds multiple rows to the worksheet and populates them with values.
         Widens the worksheet if there are more values than columns.
 
@@ -1461,19 +1461,33 @@ class Worksheet(object):
                                     be interpreted. See `ValueInputOption`_ in
                                     the Sheets API.
         :type value_input_option: str
+        :param insert_data_option: (optional) Determines how the input data
+                                    should be inserted. See
+                                    `InsertDataOption`_ in the Sheets API
+                                    reference.
+        :type insert_data_option: str
+        :param table_range: (optional) The A1 notation of a range to search for
+                             a logical table of data. Values are appended after
+                             the last row of the table.
+                             Examples: `A1` or `B2:D4`
+        :type table_range: str
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+        .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
 
         """
+        range_label = absolute_range_name(self.title, table_range)
+
         params = {
-            'valueInputOption': value_input_option
+            'valueInputOption': value_input_option,
+            'insertDataOption': insert_data_option
         }
 
         body = {
             'values': values
         }
 
-        return self.spreadsheet.values_append(self.title, params, body)
+        return self.spreadsheet.values_append(range_label, params, body)
 
     def insert_row(
         self,
@@ -1513,7 +1527,7 @@ class Worksheet(object):
 
         self.spreadsheet.batch_update(body)
 
-        range_label = '%s!%s' % (self.title, 'A%s' % index)
+        range_label = absolute_range_name(self.title, 'A%s' % index)
 
         data = self.spreadsheet.values_update(
             range_label,
@@ -1573,10 +1587,13 @@ class Worksheet(object):
     def clear(self):
         """Clears all cells in the worksheet.
         """
-        return self.spreadsheet.values_clear(self.title)
+        return self.spreadsheet.values_clear(
+            absolute_range_name(self.title)
+        )
 
     def _finder(self, func, query):
-        data = self.spreadsheet.values_get(self.title)
+
+        data = self.spreadsheet.values_get(absolute_range_name(self.title))
 
         try:
             values = fill_gaps(data['values'])
@@ -1666,6 +1683,9 @@ class Worksheet(object):
         :param first_col: Integer row number
         :param last_row: Integer row number
         :param last_col: Integer row number
+
+        .. versionadded:: 3.4
+
         """
         rng = {
             'sheetId': self.id,
@@ -1696,6 +1716,9 @@ class Worksheet(object):
 
     def remove_basic_filter(self):
         """Remove the basic filter from a worksheet.
+
+        .. versionadded:: 3.4
+
         """
         body = {
             'requests': [{
