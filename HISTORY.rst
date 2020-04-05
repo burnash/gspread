@@ -1,6 +1,12 @@
 Release History
 ===============
 
+3.4.1 (2020-04-05)
+------------------
+
+* Fix `TypeError` when using gspread in google colab (#750)
+
+
 3.4.0 (2020-04-05)
 ------------------
 
