@@ -1670,7 +1670,7 @@ class Worksheet(object):
         return self.spreadsheet.batch_update(body)
 
     @cast_to_a1_notation
-    def add_basic_filter(self, name=None):
+    def set_basic_filter(self, name=None):
         """Add a basic filter to the worksheet. If a range or bundaries
         are passed, the filter will be limited to the given range.
 
@@ -1714,7 +1714,7 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
-    def remove_basic_filter(self):
+    def clear_basic_filter(self):
         """Remove the basic filter from a worksheet.
 
         .. versionadded:: 3.4
