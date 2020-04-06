@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2020-04-03T19:35:06",
+      "recorded_at": "2020-04-03T19:35:54",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -49,10 +49,10 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:06 GMT"
+            "Fri, 03 Apr 2020 19:35:54 GMT"
           ],
           "Expires": [
-            "Fri, 03 Apr 2020 19:35:06 GMT"
+            "Fri, 03 Apr 2020 19:35:54 GMT"
           ],
           "Server": [
             "GSE"
@@ -91,112 +91,7 @@
       }
     },
     {
-      "recorded_at": "2020-04-03T19:35:07",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "{\"values\": [[\"test_append_row 1\", \"test_append_row 2\", \"test_append_row 3\", \"test_append_row 4\", \"test_append_row 5\", \"test_append_row 6\", \"test_append_row 7\", \"test_append_row 8\", \"test_append_row 9\", \"test_append_row 10\"]]}"
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "Content-Length": [
-            "225"
-          ],
-          "Content-Type": [
-            "application/json"
-          ],
-          "User-Agent": [
-            "python-requests/2.20.0"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "json_body": {
-          "values": [
-            [
-              "test_append_row 1",
-              "test_append_row 2",
-              "test_append_row 3",
-              "test_append_row 4",
-              "test_append_row 5",
-              "test_append_row 6",
-              "test_append_row 7",
-              "test_append_row 8",
-              "test_append_row 9",
-              "test_append_row 10"
-            ]
-          ]
-        },
-        "method": "POST",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test:append?valueInputOption=RAW"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n  \"updates\": {\n    \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n    \"updatedRange\": \"wksht_test!A1:J1\",\n    \"updatedRows\": 1,\n    \"updatedColumns\": 10,\n    \"updatedCells\": 10\n  }\n}\n"
-        },
-        "headers": {
-          "Accept-Ranges": [
-            "none"
-          ],
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
-          ],
-          "Cache-Control": [
-            "private"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Fri, 03 Apr 2020 19:35:07 GMT"
-          ],
-          "Server": [
-            "ESF"
-          ],
-          "Transfer-Encoding": [
-            "chunked"
-          ],
-          "Vary": [
-            "X-Origin",
-            "Referer",
-            "Origin,Accept-Encoding"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "0"
-          ]
-        },
-        "json_body": {
-          "spreadsheetId": "1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w",
-          "updates": {
-            "spreadsheetId": "1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w",
-            "updatedCells": 10,
-            "updatedColumns": 10,
-            "updatedRange": "wksht_test!A1:J1",
-            "updatedRows": 1
-          }
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test:append?valueInputOption=RAW"
-      }
-    },
-    {
-      "recorded_at": "2020-04-03T19:35:07",
+      "recorded_at": "2020-04-03T19:35:56",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -220,12 +115,12 @@
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3A1?valueRenderOption=FORMATTED_VALUE"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w?includeGridData=False&ranges=wksht_test%21A2&fields=sheets.data.rowData.values.userEnteredFormat"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"wksht_test!A1:T1\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_append_row 1\",\n      \"test_append_row 2\",\n      \"test_append_row 3\",\n      \"test_append_row 4\",\n      \"test_append_row 5\",\n      \"test_append_row 6\",\n      \"test_append_row 7\",\n      \"test_append_row 8\",\n      \"test_append_row 9\",\n      \"test_append_row 10\"\n    ]\n  ]\n}\n"
+          "string": "{\n  \"sheets\": [\n    {\n      \"data\": [\n        {\n          \"rowData\": [\n            {\n              \"values\": [\n                {\n                  \"userEnteredFormat\": {\n                    \"backgroundColor\": {\n                      \"green\": 1,\n                      \"blue\": 1\n                    },\n                    \"horizontalAlignment\": \"CENTER\",\n                    \"textFormat\": {\n                      \"foregroundColor\": {\n                        \"red\": 1,\n                        \"green\": 1\n                      },\n                      \"fontSize\": 12,\n                      \"bold\": true,\n                      \"foregroundColorStyle\": {\n                        \"rgbColor\": {\n                          \"red\": 1,\n                          \"green\": 1\n                        }\n                      }\n                    },\n                    \"backgroundColorStyle\": {\n                      \"rgbColor\": {\n                        \"green\": 1,\n                        \"blue\": 1\n                      }\n                    }\n                  }\n                }\n              ]\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -241,7 +136,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:07 GMT"
+            "Fri, 03 Apr 2020 19:35:56 GMT"
           ],
           "Server": [
             "ESF"
@@ -262,36 +157,63 @@
           ]
         },
         "json_body": {
-          "majorDimension": "ROWS",
-          "range": "wksht_test!A1:T1",
-          "values": [
-            [
-              "test_append_row 1",
-              "test_append_row 2",
-              "test_append_row 3",
-              "test_append_row 4",
-              "test_append_row 5",
-              "test_append_row 6",
-              "test_append_row 7",
-              "test_append_row 8",
-              "test_append_row 9",
-              "test_append_row 10"
-            ]
+          "sheets": [
+            {
+              "data": [
+                {
+                  "rowData": [
+                    {
+                      "values": [
+                        {
+                          "userEnteredFormat": {
+                            "backgroundColor": {
+                              "blue": 1,
+                              "green": 1
+                            },
+                            "backgroundColorStyle": {
+                              "rgbColor": {
+                                "blue": 1,
+                                "green": 1
+                              }
+                            },
+                            "horizontalAlignment": "CENTER",
+                            "textFormat": {
+                              "bold": true,
+                              "fontSize": 12,
+                              "foregroundColor": {
+                                "green": 1,
+                                "red": 1
+                              },
+                              "foregroundColorStyle": {
+                                "rgbColor": {
+                                  "green": 1,
+                                  "red": 1
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           ]
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3A1?valueRenderOption=FORMATTED_VALUE"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w?includeGridData=False&ranges=wksht_test%21A2&fields=sheets.data.rowData.values.userEnteredFormat"
       }
     },
     {
-      "recorded_at": "2020-04-03T19:35:08",
+      "recorded_at": "2020-04-03T19:35:56",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 552042680}}]}"
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1840392869}}]}"
         },
         "headers": {
           "Accept": [
@@ -304,7 +226,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "55"
+            "56"
           ],
           "Content-Type": [
             "application/json"
@@ -320,7 +242,7 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 552042680
+                "sheetId": 1840392869
               }
             }
           ]
@@ -347,7 +269,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:07 GMT"
+            "Fri, 03 Apr 2020 19:35:56 GMT"
           ],
           "Server": [
             "ESF"

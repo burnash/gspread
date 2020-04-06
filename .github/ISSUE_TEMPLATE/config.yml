@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+    - name: Questions and Help
+      url: http://stackoverflow.com/questions/tagged/gspread
+      about: This issue tracker is not for support questions. To get a quick response from the community, please ask a question on Stack Overflow using `gspread` tag.

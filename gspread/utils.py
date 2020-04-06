@@ -12,22 +12,79 @@ import sys
 import re
 from functools import wraps
 from collections import defaultdict
+try:
+    from collections.abc import Sequence
+except ImportError:
+    from collections import Sequence
 from itertools import chain
 
-from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
+from google.auth.credentials import Credentials as Credentials
+from google.oauth2.credentials import Credentials as UserCredentials
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
+from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
 
 if sys.version_info.major == 2:
     import urllib
 elif sys.version_info.major == 3:
     import urllib.parse as urllib
 
+try:
+    unicode
+except NameError:
+    basestring = unicode = str
+
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r'([A-Za-z]+)([1-9]\d*)')
+A1_ADDR_ROW_COL_RE = re.compile(r'([A-Za-z]+)?([1-9]\d*)?$')
 
 URL_KEY_V1_RE = re.compile(r'key=([^&#]+)')
 URL_KEY_V2_RE = re.compile(r'/spreadsheets/d/([a-zA-Z0-9-_]+)')
+
+
+def convert_credentials(credentials):
+    module = credentials.__module__
+    cls = credentials.__class__.__name__
+    if 'oauth2client' in module and cls == 'ServiceAccountCredentials':
+        return _convert_service_account(credentials)
+    elif 'oauth2client' in module and cls in (
+        'OAuth2Credentials',
+        'AccessTokenCredentials',
+        'GoogleCredentials'
+    ):
+        return _convert_oauth(credentials)
+    elif isinstance(credentials, Credentials):
+        return credentials
+
+    raise TypeError(
+        'Credentials need to be from either oauth2client or from google-auth.'
+    )
+
+
+def _convert_oauth(credentials):
+    return UserCredentials(
+        credentials.access_token,
+        credentials.refresh_token,
+        credentials.id_token,
+        credentials.token_uri,
+        credentials.client_id,
+        credentials.client_secret,
+        credentials.scopes,
+    )
+
+
+def _convert_service_account(credentials):
+    data = credentials.serialization_data
+    data['token_uri'] = credentials.token_uri
+    scopes = credentials._scopes.split() or [
+        'https://www.googleapis.com/auth/drive',
+        'https://spreadsheets.google.com/feeds',
+    ]
+
+    return ServiceAccountCredentials.from_service_account_info(
+        data, scopes=scopes
+    )
 
 
 def finditem(func, seq):
@@ -70,8 +127,10 @@ def numericise(value, empty2zero=False, default_blank="", allow_underscores_in_n
     >>>
     """
     if value is not None:
-        if "_" in value and not allow_underscores_in_numeric_literals:
-            return value
+        if "_" in value:
+            if not allow_underscores_in_numeric_literals:
+                return value
+            value = value.replace("_", "")
         try:
             value = int(value)
         except ValueError:
@@ -162,6 +221,121 @@ def a1_to_rowcol(label):
     return (row, col)
 
 
+def _a1_to_rowcol_unbounded(label):
+    """Translates a cell's address in A1 notation to a tuple of integers.
+
+    Same as `a1_to_rowcol()` but allows for missing row or column part
+    (e.g. "A" for the first column)
+
+    :returns: a tuple containing `row` and `column` numbers. Both indexed
+              from 1 (one).
+
+    Example:
+
+    >>> _a1_to_rowcol_unbounded('A1')
+    (1, 1)
+
+    >>> _a1_to_rowcol_unbounded('A')
+    (None, 1)
+
+    >>> _a1_to_rowcol_unbounded('1')
+    (1, None)
+
+    >>> _a1_to_rowcol_unbounded('ABC123')
+    (123, 731)
+
+    >>> _a1_to_rowcol_unbounded('ABC')
+    (None, 731)
+
+    >>> _a1_to_rowcol_unbounded('123')
+    (123, None)
+
+    >>> _a1_to_rowcol_unbounded('1A')
+    Traceback (most recent call last):
+        ...
+    gspread.exceptions.IncorrectCellLabel: 1A
+
+    >>> _a1_to_rowcol_unbounded('')
+    (None, None)
+
+    """
+    m = A1_ADDR_ROW_COL_RE.match(label)
+    if m:
+        column_label, row = m.groups()
+
+        col = None
+        if column_label:
+            col = 0
+            for i, c in enumerate(reversed(column_label)):
+                col += (ord(c) - MAGIC_NUMBER) * (26 ** i)
+
+        if row:
+            row = int(row)
+    else:
+        raise IncorrectCellLabel(label)
+
+    return (row, col)
+
+
+def a1_range_to_grid_range(name, sheet_id=None):
+    """Converts a range defined in A1 notation to a dict representing a GridRange.
+
+    All indexes are zero-based. Indexes are half open, e.g the start
+    index is inclusive and the end index is exclusive:
+        [startIndex, endIndex).
+
+    Missing indexes indicate the range is unbounded on that side.
+
+    https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#GridRange
+
+    Examples::
+
+    >>> a1_range_to_grid_range('A1:A1')
+    {'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1}
+
+    >>> a1_range_to_grid_range('A3:B4')
+    {'startRowIndex': 2, 'endRowIndex': 4, 'startColumnIndex': 0, 'endColumnIndex': 2}
+
+    >>> a1_range_to_grid_range('A:B')
+    {'startColumnIndex': 0, 'endColumnIndex': 2}
+
+    >>> a1_range_to_grid_range('A5:B')
+    {'startRowIndex': 4, 'startColumnIndex': 0, 'endColumnIndex': 2}
+
+    >>> a1_range_to_grid_range('A1')
+    {'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1}
+
+    >>> a1_range_to_grid_range('A')
+    {'startColumnIndex': 0, 'endColumnIndex': 1}
+
+    >>> a1_range_to_grid_range('1')
+    {'startRowIndex': 0, 'endRowIndex': 1}
+
+    >>> a1_range_to_grid_range('A1', sheet_id=0)
+    {'sheetId': 0, 'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1}
+
+    """
+    start_label, _, end_label = name.partition(':')
+
+    start_indices = _a1_to_rowcol_unbounded(start_label)
+
+    start_row_index, start_column_index = [
+        x - 1 if x is not None else x for x in start_indices
+    ]
+
+    end_row_index, end_column_index = (
+        _a1_to_rowcol_unbounded(end_label) if end_label else start_indices
+    )
+
+    return filter_dict_values({
+        'sheetId': sheet_id,
+        'startRowIndex': start_row_index,
+        'endRowIndex': end_row_index,
+        'startColumnIndex': start_column_index,
+        'endColumnIndex': end_column_index
+    })
+
+
 def cast_to_a1_notation(method):
     """
     Decorator function casts wrapped arguments to A1 notation
@@ -173,12 +347,12 @@ def cast_to_a1_notation(method):
             if len(args):
                 int(args[0])
 
-            # Convert to A1 notation
-            range_start = rowcol_to_a1(*args[:2])
-            range_end = rowcol_to_a1(*args[-2:])
-            range_name = ':'.join((range_start, range_end))
+                # Convert to A1 notation
+                range_start = rowcol_to_a1(*args[:2])
+                range_end = rowcol_to_a1(*args[-2:])
+                range_name = ':'.join((range_start, range_end))
 
-            args = (range_name,) + args[4:]
+                args = (range_name,) + args[4:]
         except ValueError:
             pass
 
@@ -253,6 +427,138 @@ def cell_list_to_rect(cell_list):
 
 def quote(value, safe='', encoding='utf-8'):
     return urllib.quote(value.encode(encoding), safe)
+
+
+def absolute_range_name(sheet_name, range_name=None):
+    """Return an absolutized path of a range.
+
+    >>> absolute_range_name("Sheet1", "A1:B1")
+    "'Sheet1'!A1:B1"
+
+    >>> absolute_range_name("Sheet1", "A1")
+    "'Sheet1'!A1"
+
+    >>> absolute_range_name("Sheet1")
+    "'Sheet1'"
+
+    >>> absolute_range_name("Sheet'1")
+    "'Sheet''1'"
+
+    >>> absolute_range_name("Sheet''1")
+    "'Sheet''''1'"
+
+    >>> absolute_range_name("''sheet12''", "A1:B2")
+    "'''''sheet12'''''!A1:B2"
+
+    """
+
+    sheet_name = "'{}'".format(
+        sheet_name.replace("'", "''")
+    )
+
+    if range_name:
+        return '{}!{}'.format(sheet_name, range_name)
+    else:
+        return sheet_name
+
+
+def is_scalar(x):
+    """Return True if the value is scalar.
+
+    A scalar is not a sequence but can be a string.
+
+    >>> is_scalar([])
+    False
+
+    >>> is_scalar([1, 2])
+    False
+
+    >>> is_scalar(42)
+    True
+
+    >>> is_scalar('nice string')
+    True
+
+    >>> is_scalar({})
+    True
+
+    >>> is_scalar(set())
+    True
+    """
+    return (
+        isinstance(x, basestring)
+        or not isinstance(x, Sequence)
+    )
+
+
+def filter_dict_values(D):
+    """Return a shallow copy of D with all `None` values excluded.
+
+    >>> filter_dict_values({'a': 1, 'b': 2, 'c': None})
+    {'a': 1, 'b': 2}
+
+    >>> filter_dict_values({'a': 1, 'b': 2, 'c': 0})
+    {'a': 1, 'b': 2, 'c': 0}
+
+    >>> filter_dict_values({})
+    {}
+
+    >>> filter_dict_values({'imnone': None})
+    {}
+    """
+    return {k: v for k, v in D.items() if v is not None}
+
+
+def accepted_kwargs(**default_kwargs):
+    """
+    >>> @accepted_kwargs(d='d', e=None)
+    ... def foo(a, b, c='c', **kwargs):
+    ...     return {
+    ...         'a': a,
+    ...         'b': b,
+    ...         'c': c,
+    ...         'd': kwargs['d'],
+    ...         'e': kwargs['e'],
+    ...     }
+    ...
+
+    >>> foo('a', 'b')
+    {'a': 'a', 'b': 'b', 'c': 'c', 'd': 'd', 'e': None}
+
+    >>> foo('a', 'b', 'NEW C')
+    {'a': 'a', 'b': 'b', 'c': 'NEW C', 'd': 'd', 'e': None}
+
+    >>> foo('a', 'b', e='Not None')
+    {'a': 'a', 'b': 'b', 'c': 'c', 'd': 'd', 'e': 'Not None'}
+
+    >>> foo('a', 'b', d='NEW D')
+    {'a': 'a', 'b': 'b', 'c': 'c', 'd': 'NEW D', 'e': None}
+
+    >>> foo('a', 'b', a_typo='IS DETECTED')
+    Traceback (most recent call last):
+    ...
+    TypeError: foo got unexpected keyword arguments: ['a_typo']
+
+    >>> foo('a', 'b', d='NEW D', c='THIS DOES NOT WORK BECAUSE OF d')
+    Traceback (most recent call last):
+    ...
+    TypeError: foo got unexpected keyword arguments: ['c']
+
+    """
+    def decorate(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            unexpected_kwargs = set(kwargs) - set(default_kwargs)
+            if unexpected_kwargs:
+                err = '%s got unexpected keyword arguments: %s'
+                raise TypeError(err % (f.__name__, list(unexpected_kwargs)))
+
+            for k, v in default_kwargs.items():
+                kwargs.setdefault(k, v)
+
+            return f(*args, **kwargs)
+        return wrapper
+    return decorate
 
 
 if __name__ == '__main__':

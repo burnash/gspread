@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2020-04-03T19:35:38",
+      "recorded_at": "2020-04-03T19:35:09",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -49,10 +49,10 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:38 GMT"
+            "Fri, 03 Apr 2020 19:35:09 GMT"
           ],
           "Expires": [
-            "Fri, 03 Apr 2020 19:35:38 GMT"
+            "Fri, 03 Apr 2020 19:35:09 GMT"
           ],
           "Server": [
             "GSE"
@@ -91,11 +91,11 @@
       }
     },
     {
-      "recorded_at": "2020-04-03T19:35:40",
+      "recorded_at": "2020-04-03T19:35:11",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"values\": [[\"test_delete_row 41\", \"test_delete_row 42\", \"test_delete_row 43\", \"test_delete_row 44\", \"test_delete_row 45\", \"test_delete_row 46\", \"test_delete_row 47\", \"test_delete_row 48\", \"test_delete_row 49\", \"test_delete_row 50\"]]}"
+          "string": "{\"values\": [[\"test_append_row_with_empty_value 1\", \"\", \"test_append_row_with_empty_value 3\"]]}"
         },
         "headers": {
           "Accept": [
@@ -108,7 +108,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "234"
+            "94"
           ],
           "Content-Type": [
             "application/json"
@@ -123,16 +123,9 @@
         "json_body": {
           "values": [
             [
-              "test_delete_row 41",
-              "test_delete_row 42",
-              "test_delete_row 43",
-              "test_delete_row 44",
-              "test_delete_row 45",
-              "test_delete_row 46",
-              "test_delete_row 47",
-              "test_delete_row 48",
-              "test_delete_row 49",
-              "test_delete_row 50"
+              "test_append_row_with_empty_value 1",
+              "",
+              "test_append_row_with_empty_value 3"
             ]
           ]
         },
@@ -142,7 +135,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n  \"tableRange\": \"wksht_test!A1:J4\",\n  \"updates\": {\n    \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n    \"updatedRange\": \"wksht_test!A5:J5\",\n    \"updatedRows\": 1,\n    \"updatedColumns\": 10,\n    \"updatedCells\": 10\n  }\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n  \"tableRange\": \"wksht_test!C1\",\n  \"updates\": {\n    \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n    \"updatedRange\": \"wksht_test!C2:E2\",\n    \"updatedRows\": 1,\n    \"updatedColumns\": 3,\n    \"updatedCells\": 3\n  }\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -158,7 +151,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:40 GMT"
+            "Fri, 03 Apr 2020 19:35:11 GMT"
           ],
           "Server": [
             "ESF"
@@ -180,12 +173,12 @@
         },
         "json_body": {
           "spreadsheetId": "1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w",
-          "tableRange": "wksht_test!A1:J4",
+          "tableRange": "wksht_test!C1",
           "updates": {
             "spreadsheetId": "1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w",
-            "updatedCells": 10,
-            "updatedColumns": 10,
-            "updatedRange": "wksht_test!A5:J5",
+            "updatedCells": 3,
+            "updatedColumns": 3,
+            "updatedRange": "wksht_test!C2:E2",
             "updatedRows": 1
           }
         },
@@ -197,189 +190,7 @@
       }
     },
     {
-      "recorded_at": "2020-04-03T19:35:41",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "User-Agent": [
-            "python-requests/2.20.0"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A3%3A3?valueRenderOption=FORMATTED_VALUE"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"wksht_test!A3:T3\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_delete_row 21\",\n      \"test_delete_row 22\",\n      \"test_delete_row 23\",\n      \"test_delete_row 24\",\n      \"test_delete_row 25\",\n      \"test_delete_row 26\",\n      \"test_delete_row 27\",\n      \"test_delete_row 28\",\n      \"test_delete_row 29\",\n      \"test_delete_row 30\"\n    ]\n  ]\n}\n"
-        },
-        "headers": {
-          "Accept-Ranges": [
-            "none"
-          ],
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
-          ],
-          "Cache-Control": [
-            "private"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Fri, 03 Apr 2020 19:35:41 GMT"
-          ],
-          "Server": [
-            "ESF"
-          ],
-          "Transfer-Encoding": [
-            "chunked"
-          ],
-          "Vary": [
-            "X-Origin",
-            "Referer",
-            "Origin,Accept-Encoding"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "0"
-          ]
-        },
-        "json_body": {
-          "majorDimension": "ROWS",
-          "range": "wksht_test!A3:T3",
-          "values": [
-            [
-              "test_delete_row 21",
-              "test_delete_row 22",
-              "test_delete_row 23",
-              "test_delete_row 24",
-              "test_delete_row 25",
-              "test_delete_row 26",
-              "test_delete_row 27",
-              "test_delete_row 28",
-              "test_delete_row 29",
-              "test_delete_row 30"
-            ]
-          ]
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A3%3A3?valueRenderOption=FORMATTED_VALUE"
-      }
-    },
-    {
-      "recorded_at": "2020-04-03T19:35:42",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "User-Agent": [
-            "python-requests/2.20.0"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3A1?valueRenderOption=FORMATTED_VALUE"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"wksht_test!A1:T1\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_delete_row 1\",\n      \"test_delete_row 2\",\n      \"test_delete_row 3\",\n      \"test_delete_row 4\",\n      \"test_delete_row 5\",\n      \"test_delete_row 6\",\n      \"test_delete_row 7\",\n      \"test_delete_row 8\",\n      \"test_delete_row 9\",\n      \"test_delete_row 10\"\n    ]\n  ]\n}\n"
-        },
-        "headers": {
-          "Accept-Ranges": [
-            "none"
-          ],
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
-          ],
-          "Cache-Control": [
-            "private"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Fri, 03 Apr 2020 19:35:42 GMT"
-          ],
-          "Server": [
-            "ESF"
-          ],
-          "Transfer-Encoding": [
-            "chunked"
-          ],
-          "Vary": [
-            "X-Origin",
-            "Referer",
-            "Origin,Accept-Encoding"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "0"
-          ]
-        },
-        "json_body": {
-          "majorDimension": "ROWS",
-          "range": "wksht_test!A1:T1",
-          "values": [
-            [
-              "test_delete_row 1",
-              "test_delete_row 2",
-              "test_delete_row 3",
-              "test_delete_row 4",
-              "test_delete_row 5",
-              "test_delete_row 6",
-              "test_delete_row 7",
-              "test_delete_row 8",
-              "test_delete_row 9",
-              "test_delete_row 10"
-            ]
-          ]
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3A1?valueRenderOption=FORMATTED_VALUE"
-      }
-    },
-    {
-      "recorded_at": "2020-04-03T19:35:43",
+      "recorded_at": "2020-04-03T19:35:11",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -408,7 +219,7 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"range\": \"wksht_test!A2:T2\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_delete_row 21\",\n      \"test_delete_row 22\",\n      \"test_delete_row 23\",\n      \"test_delete_row 24\",\n      \"test_delete_row 25\",\n      \"test_delete_row 26\",\n      \"test_delete_row 27\",\n      \"test_delete_row 28\",\n      \"test_delete_row 29\",\n      \"test_delete_row 30\"\n    ]\n  ]\n}\n"
+          "string": "{\n  \"range\": \"wksht_test!A2:T2\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"\",\n      \"\",\n      \"test_append_row_with_empty_value 1\",\n      \"\",\n      \"test_append_row_with_empty_value 3\"\n    ]\n  ]\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
@@ -424,7 +235,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:42 GMT"
+            "Fri, 03 Apr 2020 19:35:11 GMT"
           ],
           "Server": [
             "ESF"
@@ -449,16 +260,11 @@
           "range": "wksht_test!A2:T2",
           "values": [
             [
-              "test_delete_row 21",
-              "test_delete_row 22",
-              "test_delete_row 23",
-              "test_delete_row 24",
-              "test_delete_row 25",
-              "test_delete_row 26",
-              "test_delete_row 27",
-              "test_delete_row 28",
-              "test_delete_row 29",
-              "test_delete_row 30"
+              "",
+              "",
+              "test_append_row_with_empty_value 1",
+              "",
+              "test_append_row_with_empty_value 3"
             ]
           ]
         },
@@ -470,11 +276,11 @@
       }
     },
     {
-      "recorded_at": "2020-04-03T19:35:43",
+      "recorded_at": "2020-04-03T19:35:12",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 723675087}}]}"
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 1886129647}}]}"
         },
         "headers": {
           "Accept": [
@@ -487,7 +293,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "55"
+            "56"
           ],
           "Content-Type": [
             "application/json"
@@ -503,7 +309,7 @@
           "requests": [
             {
               "deleteSheet": {
-                "sheetId": 723675087
+                "sheetId": 1886129647
               }
             }
           ]
@@ -530,7 +336,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 03 Apr 2020 19:35:43 GMT"
+            "Fri, 03 Apr 2020 19:35:11 GMT"
           ],
           "Server": [
             "ESF"

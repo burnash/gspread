@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2018-10-08T20:16:22",
+      "recorded_at": "2020-04-03T19:34:48",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -18,38 +18,41 @@
             "keep-alive"
           ],
           "User-Agent": [
-            "python-requests/2.19.1"
+            "python-requests/2.20.0"
           ],
           "accept-encoding": [
             "identity"
           ]
         },
         "method": "GET",
-        "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27&pageSize=1000&supportsTeamDrives=True&includeTeamDriveItems=True"
+        "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+SpreadsheetTest%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n \"kind\": \"drive#fileList\",\n \"incompleteSearch\": false,\n \"files\": [\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1O2zlN2GH6T1eudOjfUPKQouxFmN31zna-NT0nGxMLt0\",\n   \"name\": \"Test SpreadsheetTest\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"11A_X9wnyxVwt1o6iSrc8Px0AfeGqFBRyA_styQEkCSE\",\n   \"name\": \"Test Spreadsheet\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  }\n ]\n}\n"
+          "string": "{\n \"kind\": \"drive#fileList\",\n \"incompleteSearch\": false,\n \"files\": [\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo\",\n   \"name\": \"Test SpreadsheetTest\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  }\n ]\n}\n"
         },
         "headers": {
           "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
           ],
           "Cache-Control": [
             "private, max-age=0, must-revalidate, no-transform"
           ],
           "Content-Length": [
-            "435"
+            "256"
+          ],
+          "Content-Security-Policy": [
+            "frame-ancestors 'self'"
           ],
           "Content-Type": [
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 08 Oct 2018 20:16:22 GMT"
+            "Fri, 03 Apr 2020 19:34:47 GMT"
           ],
           "Expires": [
-            "Mon, 08 Oct 2018 20:16:22 GMT"
+            "Fri, 03 Apr 2020 19:34:47 GMT"
           ],
           "Server": [
             "GSE"
@@ -71,16 +74,10 @@
         "json_body": {
           "files": [
             {
-              "id": "1O2zlN2GH6T1eudOjfUPKQouxFmN31zna-NT0nGxMLt0",
+              "id": "1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo",
               "kind": "drive#file",
               "mimeType": "application/vnd.google-apps.spreadsheet",
               "name": "Test SpreadsheetTest"
-            },
-            {
-              "id": "11A_X9wnyxVwt1o6iSrc8Px0AfeGqFBRyA_styQEkCSE",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "Test Spreadsheet"
             }
           ],
           "incompleteSearch": false,
@@ -90,11 +87,11 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27&pageSize=1000&supportsTeamDrives=True&includeTeamDriveItems=True"
+        "url": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+SpreadsheetTest%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
       }
     },
     {
-      "recorded_at": "2018-10-08T20:16:24",
+      "recorded_at": "2020-04-03T19:34:48",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -111,26 +108,26 @@
             "keep-alive"
           ],
           "User-Agent": [
-            "python-requests/2.19.1"
+            "python-requests/2.20.0"
           ],
           "accept-encoding": [
             "identity"
           ]
         },
         "method": "GET",
-        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1O2zlN2GH6T1eudOjfUPKQouxFmN31zna-NT0nGxMLt0?includeGridData=false"
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo?includeGridData=false"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\n  \"spreadsheetId\": \"1O2zlN2GH6T1eudOjfUPKQouxFmN31zna-NT0nGxMLt0\",\n  \"properties\": {\n    \"title\": \"Test SpreadsheetTest\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false\n      }\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1O2zlN2GH6T1eudOjfUPKQouxFmN31zna-NT0nGxMLt0/edit\"\n}\n"
+          "string": "{\n  \"spreadsheetId\": \"1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo\",\n  \"properties\": {\n    \"title\": \"Test SpreadsheetTest\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo/edit\"\n}\n"
         },
         "headers": {
           "Accept-Ranges": [
             "none"
           ],
           "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"44,43,39,35\""
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
           ],
           "Cache-Control": [
             "private"
@@ -139,7 +136,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Mon, 08 Oct 2018 20:16:23 GMT"
+            "Fri, 03 Apr 2020 19:34:48 GMT"
           ],
           "Server": [
             "ESF"
@@ -156,7 +153,7 @@
             "SAMEORIGIN"
           ],
           "X-XSS-Protection": [
-            "1; mode=block"
+            "0"
           ]
         },
         "json_body": {
@@ -167,6 +164,13 @@
                 "blue": 1,
                 "green": 1,
                 "red": 1
+              },
+              "backgroundColorStyle": {
+                "rgbColor": {
+                  "blue": 1,
+                  "green": 1,
+                  "red": 1
+                }
               },
               "padding": {
                 "bottom": 2,
@@ -179,6 +183,9 @@
                 "fontFamily": "arial,sans,sans-serif",
                 "fontSize": 10,
                 "foregroundColor": {},
+                "foregroundColorStyle": {
+                  "rgbColor": {}
+                },
                 "italic": false,
                 "strikethrough": false,
                 "underline": false
@@ -187,6 +194,97 @@
               "wrapStrategy": "OVERFLOW_CELL"
             },
             "locale": "en_US",
+            "spreadsheetTheme": {
+              "primaryFontFamily": "Arial",
+              "themeColors": [
+                {
+                  "color": {
+                    "rgbColor": {
+                      "blue": 0.015686275,
+                      "green": 0.7372549,
+                      "red": 0.9843137
+                    }
+                  },
+                  "colorType": "ACCENT3"
+                },
+                {
+                  "color": {
+                    "rgbColor": {
+                      "blue": 0.95686275,
+                      "green": 0.52156866,
+                      "red": 0.25882354
+                    }
+                  },
+                  "colorType": "ACCENT1"
+                },
+                {
+                  "color": {
+                    "rgbColor": {
+                      "blue": 0.7764706,
+                      "green": 0.7411765,
+                      "red": 0.27450982
+                    }
+                  },
+                  "colorType": "ACCENT6"
+                },
+                {
+                  "color": {
+                    "rgbColor": {
+                      "blue": 0.003921569,
+                      "green": 0.42745098,
+                      "red": 1
+                    }
+                  },
+                  "colorType": "ACCENT5"
+                },
+                {
+                  "color": {
+                    "rgbColor": {
+                      "blue": 0.8,
+                      "green": 0.33333334,
+                      "red": 0.06666667
+                    }
+                  },
+                  "colorType": "LINK"
+                },
+                {
+                  "color": {
+                    "rgbColor": {
+                      "blue": 0.3254902,
+                      "green": 0.65882355,
+                      "red": 0.20392157
+                    }
+                  },
+                  "colorType": "ACCENT4"
+                },
+                {
+                  "color": {
+                    "rgbColor": {
+                      "blue": 1,
+                      "green": 1,
+                      "red": 1
+                    }
+                  },
+                  "colorType": "BACKGROUND"
+                },
+                {
+                  "color": {
+                    "rgbColor": {
+                      "blue": 0.20784314,
+                      "green": 0.2627451,
+                      "red": 0.91764706
+                    }
+                  },
+                  "colorType": "ACCENT2"
+                },
+                {
+                  "color": {
+                    "rgbColor": {}
+                  },
+                  "colorType": "TEXT"
+                }
+              ]
+            },
             "timeZone": "Etc/GMT",
             "title": "Test SpreadsheetTest"
           },
@@ -204,14 +302,14 @@
               }
             }
           ],
-          "spreadsheetId": "1O2zlN2GH6T1eudOjfUPKQouxFmN31zna-NT0nGxMLt0",
-          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1O2zlN2GH6T1eudOjfUPKQouxFmN31zna-NT0nGxMLt0/edit"
+          "spreadsheetId": "1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo",
+          "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo/edit"
         },
         "status": {
           "code": 200,
           "message": "OK"
         },
-        "url": "https://sheets.googleapis.com/v4/spreadsheets/1O2zlN2GH6T1eudOjfUPKQouxFmN31zna-NT0nGxMLt0?includeGridData=false"
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo?includeGridData=false"
       }
     }
   ],

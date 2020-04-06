@@ -8,13 +8,15 @@ import itertools
 from collections import namedtuple
 
 from gspread.exceptions import APIError
-from oauth2client.service_account import ServiceAccountCredentials
 
 from betamax import Betamax
 from betamax.fixtures.unittest import BetamaxTestCase
 from betamax_json_body_serializer import JSONBodySerializer
 
 import gspread
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
+from google.oauth2.credentials import Credentials as UserCredentials
+
 from gspread import utils
 
 try:
@@ -58,7 +60,7 @@ with Betamax.configure() as config:
 
 
 def read_credentials(filename):
-    return ServiceAccountCredentials.from_json_keyfile_name(filename, SCOPE)
+    return ServiceAccountCredentials.from_service_account_file(filename, scopes=SCOPE)
 
 
 def prefixed_counter(prefix, start=1):
@@ -71,7 +73,8 @@ def get_method_name(self_id):
     return self_id.split('.')[-1]
 
 
-DummyCredentials = namedtuple('DummyCredentials', 'access_token')
+class DummyCredentials(UserCredentials):
+    pass
 
 
 class BetamaxGspreadTest(BetamaxTestCase):
@@ -82,8 +85,13 @@ class BetamaxGspreadTest(BetamaxTestCase):
     @classmethod
     def setUpClass(cls):
         if CREDS_FILENAME:
+            from google.auth.transport.requests import Request
+
             cls.auth_credentials = read_credentials(CREDS_FILENAME)
             cls.base_gc = gspread.authorize(cls.auth_credentials)
+
+            cls.auth_credentials.refresh(Request(cls.base_gc.session))
+
             title = 'Test %s' % cls.__name__
             cls.temporary_spreadsheet = cls.base_gc.create(title)
         else:
@@ -100,7 +108,10 @@ class BetamaxGspreadTest(BetamaxTestCase):
         super(BetamaxGspreadTest, self).setUp()
         self.session.headers.update({'accept-encoding': 'identity'})
         self.gc = gspread.Client(self.auth_credentials, session=self.session)
-        self.gc.login()
+
+        self.session.headers.update({
+            'Authorization': 'Bearer %s' % self.auth_credentials.token
+        })
 
         self.assertTrue(isinstance(self.gc, gspread.client.Client))
 
@@ -194,7 +205,12 @@ class ClientTest(GspreadTest):
 
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
+        spreadsheet_list2 = self.gc.openall(spreadsheet_list[0].title)
+
+        self.assertTrue(len(spreadsheet_list2) < len(spreadsheet_list))
         for s in spreadsheet_list:
+            self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
+        for s in spreadsheet_list2:
             self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
 
     def test_create(self):
@@ -238,7 +254,6 @@ class ClientTest(GspreadTest):
         self.assertEqual(error.exception.args[0]['code'], 404)
         self.assertEqual(error.exception.args[0]['message'], 'Requested entity was not found.')
         self.assertEqual(error.exception.args[0]['status'], 'NOT_FOUND')
-
 
 
 class SpreadsheetTest(GspreadTest):
@@ -357,6 +372,7 @@ class SpreadsheetTest(GspreadTest):
             for rowix, ele in enumerate(rng['values']):
                 self.assertEqual(values[rowix][colix], ele[0])
         self.spreadsheet.del_worksheet(worksheet)
+
 
 class WorksheetTest(GspreadTest):
 
@@ -495,6 +511,21 @@ class WorksheetTest(GspreadTest):
         test_values[-1] = bottom_right_value
         self.assertEqual(test_values, read_values)
 
+    def test_update_cell_objects(self):
+        test_values = ['cell row 1, col 2', 'cell row 2 col 1']
+
+        cell_list = [
+            gspread.models.Cell(1, 2, test_values[0]),
+            gspread.models.Cell(2, 1, test_values[1])
+        ]
+        self.sheet.update_cells(cell_list)
+
+        # Re-fetch cells
+        cell_list = (self.sheet.cell(1, 2), self.sheet.cell(2, 1))
+        read_values = [c.value for c in cell_list]
+
+        self.assertEqual(test_values, read_values)
+
     def test_resize(self):
         add_num = 10
         new_rows = self.sheet.row_count + add_num
@@ -527,6 +558,127 @@ class WorksheetTest(GspreadTest):
 
         self.assertEqual(grid_props['rowCount'], new_rows)
         self.assertEqual(grid_props['columnCount'], new_cols)
+
+    def test_sort(self):
+        rows = [
+            ["Apple", "2012", "4"],
+            ["Banana", "2013", "3"],
+            ["Canada", "2007", "1"],
+            ["Dinosaur", "2013", "6"],
+            ["Elephant", "2019", "2"],
+            ["Fox", "2077", "5"],
+        ]
+
+        self.sheet.resize(6, 3)
+        cell_list = self.sheet.range('A1:C6')
+        for c, v in zip(cell_list, itertools.chain(*rows)):
+            c.value = v
+        self.sheet.update_cells(cell_list)
+
+        specs = [
+            (3, 'asc'),
+        ]
+        self.sheet.sort(*specs, range='A1:C6')
+        rows = sorted(rows, key=lambda x: int(x[2]), reverse=False)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
+        specs = [
+            (1, 'des'),
+        ]
+        self.sheet.sort(*specs, range='A1:C6')
+        rows = sorted(rows, key=lambda x: x[0], reverse=True)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
+        specs = [
+            (2, 'asc'),
+            (3, 'asc'),
+        ]
+        self.sheet.sort(*specs, range='A1:C6')
+        rows = sorted(rows, key=lambda x: (x[1], int(x[2])), reverse=False)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
+        specs = [
+            (3, 'asc'),
+        ]
+        self.sheet.sort(*specs)
+        rows = sorted(rows, key=lambda x: int(x[2]), reverse=False)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
+        specs = [
+            (3, 'des'),
+        ]
+        self.sheet._properties['gridProperties']['frozenRowCount'] = 1
+        self.sheet.sort(*specs)
+        rows = [rows[0]] + sorted(rows[1:], key=lambda x: int(x[2]), reverse=True)
+        self.assertEqual(self.sheet.get_all_values(), rows)
+
+    def test_freeze(self):
+        freeze_cols = 1
+        freeze_rows = 2
+
+        def get_grid_props():
+            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()['sheets']
+            return utils.finditem(
+                lambda x: x['properties']['sheetId'] == self.sheet.id, sheets
+            )['properties']['gridProperties']
+
+        self.sheet.freeze(freeze_rows)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['frozenRowCount'], freeze_rows)
+
+        self.sheet.freeze(cols=freeze_cols)
+
+        grid_props = get_grid_props()
+
+        self.assertEqual(grid_props['frozenColumnCount'], freeze_cols)
+
+        self.sheet.freeze(0, 0)
+
+        grid_props = get_grid_props()
+
+        self.assertTrue('frozenRowCount' not in grid_props)
+        self.assertTrue('frozenColumnCount' not in grid_props)
+
+    def test_basic_filters(self):
+        def get_sheet():
+            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()['sheets']
+            return utils.finditem(
+                lambda x: x['properties']['sheetId'] == self.sheet.id, sheets
+            )
+
+        def get_basic_filter_range():
+            return get_sheet()['basicFilter']['range']
+
+        self.sheet.resize(20, 20)
+
+        self.sheet.add_basic_filter()
+        filter_range = get_basic_filter_range()
+
+        self.assertEquals(filter_range['startRowIndex'], 0)
+        self.assertEquals(filter_range['startColumnIndex'], 0)
+        self.assertEquals(filter_range['endRowIndex'], 20)
+        self.assertEquals(filter_range['endColumnIndex'], 20)
+
+        self.sheet.add_basic_filter('B1:C2')
+        filter_range = get_basic_filter_range()
+
+        self.assertEquals(filter_range['startRowIndex'], 0)
+        self.assertEquals(filter_range['startColumnIndex'], 1)
+        self.assertEquals(filter_range['endRowIndex'], 2)
+        self.assertEquals(filter_range['endColumnIndex'], 3)
+
+        self.sheet.add_basic_filter(1, 2, 2, 3)
+        filter_range = get_basic_filter_range()
+
+        self.assertEquals(filter_range['startRowIndex'], 0)
+        self.assertEquals(filter_range['startColumnIndex'], 1)
+        self.assertEquals(filter_range['endRowIndex'], 2)
+        self.assertEquals(filter_range['endColumnIndex'], 3)
+
+        self.sheet.remove_basic_filter()
+        self.assertTrue('basicFilter' not in get_sheet())
 
     def test_find(self):
         sg = self._sequence_generator()
@@ -590,6 +742,31 @@ class WorksheetTest(GspreadTest):
             ["", "b2", "", ""],
             ["", "", "", ""],
             ["A4", "B4", "", "D4"],
+        ]
+        cell_list = self.sheet.range('A1:D1')
+
+        cell_list.extend(self.sheet.range('A2:D2'))
+        cell_list.extend(self.sheet.range('A3:D3'))
+        cell_list.extend(self.sheet.range('A4:D4'))
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        # read values with get_all_values, get a list of lists
+        read_data = self.sheet.get_all_values()
+        # values should match with original lists
+        self.assertEqual(read_data, rows)
+
+    def test_get_all_values_title_is_a1_notation(self):
+        self.sheet.resize(4, 4)
+        # renames sheet to contain single and double quotes
+        self.sheet.update_title("D3")
+        # put in new values, made from three lists
+        rows = [
+            ["A1", "B1", "", "D1"],
+            ["", "b2", "", ""],
+            ["", "", "", ""],
+            ["A4", "B4", "", "d4"],
         ]
         cell_list = self.sheet.range('A1:D1')
 
@@ -690,6 +867,30 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(1)
         self.assertEqual(value_list, read_values)
 
+    def test_append_row_with_empty_value(self):
+        sg = self._sequence_generator()
+        value_list = [next(sg) for i in range(3)]
+        value_list[1] = ''  # Skip one cell to create two "tables" as in #537
+        self.sheet.append_row(value_list)
+        # Append it again
+        self.sheet.append_row(value_list)
+        # This should produce a shift in rows as in #537
+        shifted_value_list = ['', ''] + value_list
+        read_values = self.sheet.row_values(2)
+        self.assertEqual(shifted_value_list, read_values)
+
+    def test_append_row_with_empty_value_and_table_range(self):
+        sg = self._sequence_generator()
+        value_list = [next(sg) for i in range(3)]
+        value_list[1] = ''  # Skip one cell to create two "tables" as in #537
+        self.sheet.append_row(value_list)
+        # Append it again
+        self.sheet.append_row(value_list, table_range='A1')
+        # This should produce no shift in rows
+        # contrary to test_append_row_with_empty_value
+        read_values = self.sheet.row_values(2)
+        self.assertEqual(value_list, read_values)
+
     def test_insert_row(self):
         sg = self._sequence_generator()
 
@@ -746,9 +947,117 @@ class WorksheetTest(GspreadTest):
         self.sheet.clear()
         self.assertEqual(self.sheet.get_all_values(), [])
 
+    def test_update_and_get(self):
+        values = [
+            ['A1', 'B1', '', 'D1'],
+            ['', 'b2', '', ''],
+            ['', '', '', ''],
+            ['A4', 'B4', '', 'D4'],
+        ]
+
+        self.sheet.update('A1', values)
+
+        read_data = self.sheet.get('A1:D4')
+
+        self.assertEqual(read_data, [
+            ['A1', 'B1', '', 'D1'],
+            ['', 'b2'],
+            [],
+            ['A4', 'B4', '', 'D4']]
+        )
+
+    def test_batch_get(self):
+        values = [
+            ['A1', 'B1', '', 'D1'],
+            ['', 'b2', '', ''],
+            ['', '', '', ''],
+            ['A4', 'B4', '', 'D4'],
+        ]
+
+        self.sheet.update('A1', values)
+
+        value_ranges = self.sheet.batch_get(['A1:B1', 'B4:D4'])
+
+        self.assertEqual(value_ranges, [[['A1', 'B1']], [['B4', '', 'D4']]])
+        self.assertEqual(value_ranges[0].range, 'wksht_test!A1:B1')
+        self.assertEqual(value_ranges[1].range, 'wksht_test!B4:D4')
+        self.assertEqual(value_ranges[0].first(), 'A1')
+
+    def test_batch_update(self):
+        self.sheet.batch_update([{
+            'range': 'A1:D1',
+            'values': [['A1', 'B1', '', 'D1']],
+        }, {
+            'range': 'A4:D4',
+            'values': [['A4', 'B4', '', 'D4']],
+        }])
+
+        data = self.sheet.get('A1:D4')
+
+        self.assertEqual(data, [
+            ['A1', 'B1', '', 'D1'],
+            [],
+            [],
+            ['A4', 'B4', '', 'D4']
+        ])
+
+    def test_format(self):
+        cell_format = {
+            "backgroundColor": {
+              "green": 1,
+              "blue": 1
+            },
+            "horizontalAlignment": "CENTER",
+            "textFormat": {
+              "foregroundColor": {
+                "red": 1,
+                "green": 1,
+              },
+              "fontSize": 12,
+              "bold": True
+            }
+        }
+        self.maxDiff = None
+        self.sheet.format("A2:B2", cell_format)
+
+        data = self.spreadsheet._spreadsheets_get({
+            'includeGridData': False,
+            'ranges': ['wksht_test!A2'],
+            'fields': 'sheets.data.rowData.values.userEnteredFormat'
+        })
+
+        uef = (
+            data
+            ['sheets'][0]
+            ['data'][0]
+            ['rowData'][0]
+            ['values'][0]
+            ['userEnteredFormat']
+        )
+
+        del uef['backgroundColorStyle']
+        del uef['textFormat']['foregroundColorStyle']
+
+        self.assertEqual(
+            uef,
+            cell_format
+        )
+
+    def test_reorder_worksheets(self):
+        w = self.spreadsheet.worksheets()
+        w.reverse()
+        self.spreadsheet.reorder_worksheets(w)
+        self.assertEqual([ i.id for i in w ], [ i.id for i in self.spreadsheet.worksheets() ])
+
+    def test_worksheet_update_index(self):
+        w = self.spreadsheet.worksheets()
+        last_sheet = w[-1]
+        last_sheet.update_index(0)
+        w = self.spreadsheet.worksheets()
+        self.assertEqual(w[0].id, last_sheet.id)
+
 
 class CellTest(GspreadTest):
-
     """Test for gspread.Cell."""
 
     def setUp(self):
@@ -775,3 +1084,26 @@ class CellTest(GspreadTest):
         self.sheet.update_acell('A1', 'Non-numeric value')
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, None)
+
+    def test_merge_cells(self):
+        self.sheet.update('A1:B2', [[42, 43], [43, 44]])
+
+        # test merge rows
+        self.sheet.merge_cells(1, 1, 2, 2, merge_type="MERGE_ROWS")
+        meta = self.sheet.spreadsheet.fetch_sheet_metadata()
+        merges = utils.finditem(
+            lambda x: x['properties']['sheetId'] == self.sheet.id,
+            meta['sheets']
+        )['merges']
+        self.assertEqual(len(merges), 2)
+
+        # test merge all
+        self.sheet.merge_cells(1, 1, 2, 2)
+
+        meta = self.sheet.spreadsheet.fetch_sheet_metadata()
+        merges = utils.finditem(
+            lambda x: x['properties']['sheetId'] == self.sheet.id,
+            meta['sheets']
+        )['merges']
+
+        self.assertEqual(len(merges), 1)
