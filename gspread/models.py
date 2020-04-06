@@ -1273,7 +1273,9 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
-    def sort(self, *specs, range=None):
+    # TODO(post Python 2): replace the method signature with
+    # def sort(self, *specs, range=None):
+    def sort(self, *specs, **kwargs):
         """Sorts worksheet using given sort orders.
 
         :param specs: The sort order per column. Each sort order represented
@@ -1295,8 +1297,10 @@ class Worksheet(object):
         .. versionadded:: 3.4
 
         """
-        if range:
-            start_a1, end_a1 = range.split(':')
+        range_name = kwargs.pop('range', None)
+
+        if range_name:
+            start_a1, end_a1 = range_name.split(':')
             start_row, start_col = a1_to_rowcol(start_a1)
             end_row, end_col = a1_to_rowcol(end_a1)
         else:
