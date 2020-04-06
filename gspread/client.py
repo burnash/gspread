@@ -9,7 +9,6 @@ Google API.
 
 """
 
-import requests
 from google.auth.transport.requests import AuthorizedSession
 
 from .exceptions import APIError, SpreadsheetNotFound
