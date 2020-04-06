@@ -986,17 +986,21 @@ class Worksheet(object):
         }
 
         return self.spreadsheet.batch_update(body)
-    def add_protect_ranges(self, start_row_index,end_row_index,start_column_index,end_column_index, 
-                           editors_emails=None, description=None,  request_user_edit=False):
+    @cast_to_a1_notation
+    def add_protect_ranges(self, name, editors_emails= [], description=None,  request_user_edit=False):
         """"Add protect ranges into the selected worksheet. Only the editors can edit the protected ranges
-        :param start_row_index: Index of the start row.
-        :type start_row_index: int
-        :param end_row_index: Index of the end row.
-        :type end_row_index: int
-        :param start_column_index: Index of the start column.
-        :type start_column_index: int
-        :param end_column_index: Index of the end column.
-        :type end_column_index: int
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+        :type name: str
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+        :param first_row: Row number
+        :type first_row: int
+        :param first_col: Row number
+        :type first_col: int
+        :param last_row: Row number
+        :type last_row: int
+        :param last_col: Row number
+        :type last_col: int
         :param editors_emails: List for more editors email
         :type editors_emails: list
         :param description: description for the protected ranges
@@ -1004,22 +1008,13 @@ class Worksheet(object):
         :param request_user_edit: True if the user who requested this protected range can edit the protected area.
         :type request_user_edit: boolean
         """
-        emailAddresses = []
-        if (editors_emails != None) & (isinstance(editors_emails,list)):
-            for email in editors_emails:
-                emailAddresses.append(str(email))
-        elif editors_emails == None:
-            pass
-        else:
-            raise Exception('Invalid type for editors_emails, only list is accepted')
+        
+        email_address = [permission.get('emailAddress') for permission in self.client.list_permissions(self.spreadsheet.id) if permission.get('emailAddress')]
+        email_address.extend(email for email in editors_emails if (isinstance(editors_emails,list)) & (len(editors_emails) > 0))
             
-        for permission in self.client.list_permissions(self.spreadsheet.id):
-            try:
-                email = permission['emailAddress']
-                emailAddresses.append(email)
-            except:
-                continue
-            
+        start, end = name.split(':')
+        (row_offset, column_offset) = a1_to_rowcol(start)
+        (last_row, last_column) = a1_to_rowcol(end)
                 
         body = {
           "requests": [{
@@ -1027,16 +1022,16 @@ class Worksheet(object):
                 'protectedRange': {
                   "range": {
                       "sheetId": self.id,
-                      "startRowIndex": start_row_index,
-                      "endRowIndex": end_row_index,
-                      "startColumnIndex": start_column_index,
-                      "endColumnIndex": end_column_index
+                      "startRowIndex": row_offset,
+                      "endRowIndex": last_row,
+                      "startColumnIndex": column_offset,
+                      "endColumnIndex": last_column
                       },
                   "description": description,
                   "warningOnly": False,
                   "requestingUserCanEdit": request_user_edit,
                   "editors":{
-                      "users": emailAddresses
+                      "users": email_address
                       }
                 }
               }
