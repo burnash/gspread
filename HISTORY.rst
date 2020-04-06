@@ -77,7 +77,7 @@ Release History
     * `Worksheet.batch_update()`
     * `Worksheet.format()`
 
-* Added more parameters to `Worksheet.append_row()` (#726)
+* Added more parameters to `Worksheet.append_row()` (#719 by @lobatt, #726)
 * Fix usage of client.openall when a title is passed in (#572 by @aiguofer)
 
 
