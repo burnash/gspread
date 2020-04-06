@@ -10,7 +10,7 @@ This module contains utility functions.
 
 import sys
 import re
-from functools import wraps, partial
+from functools import wraps
 from collections import defaultdict
 try:
     from collections.abc import Sequence
@@ -153,14 +153,9 @@ def numericise_all(input, empty2zero=False, default_blank="", allow_underscores_
                                                   in numeric literals
     :param ignore: list of ints of indices of the row (index 1) to ignore numericising
     """
-    _numericise = partial(numericise, empty2zero=empty2zero, default_blank=default_blank,
-                          allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals)
-    if not ignore:
-        numericised_list = [_numericise(s) for s in input]
-    else:
-        ignored_rows = [input[x-1] for x in ignore]
-        numericised_list = [s if s in ignored_rows else _numericise(s) for s in input]
-
+    ignored_rows = [input[x-1] for x in (ignore or [])]
+    numericised_list = [s if s in ignored_rows else numericise(s, empty2zero=empty2zero, default_blank=default_blank,
+                          allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals) for s in input]
     return numericised_list
 
 
