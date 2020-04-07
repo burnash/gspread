@@ -1616,6 +1616,7 @@ class Worksheet(object):
         """ Returns an array of cell objects.
         :param values: Array with row, colums and values
         :param col: Number of colum to find
+        :param row: Number of row to find
         """
         if col and row: raise TypeError("Either 'rows' or 'cols' should be specified.")
 
