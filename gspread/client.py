@@ -9,14 +9,11 @@ Google API.
 
 """
 
-import requests
+from google.auth.transport.requests import AuthorizedSession
 
-from .utils import finditem
-from .utils import extract_id_from_url
-
-from .exceptions import SpreadsheetNotFound
-from .exceptions import APIError
+from .exceptions import APIError, SpreadsheetNotFound
 from .models import Spreadsheet
+from .utils import convert_credentials, extract_id_from_url, finditem
 
 from .urls import (
     DRIVE_FILES_API_V2_URL,
@@ -29,8 +26,8 @@ class Client(object):
     """An instance of this class communicates with Google API.
 
     :param auth: An OAuth2 credential object. Credential objects
-                 are those created by the oauth2client library.
-                 https://github.com/google/oauth2client
+                 are those created by the google-auth library.
+                 https://github.com/googleapis/google-auth-library-python
     :param session: (optional) A session object capable of making HTTP requests
                     while persisting some parameters across requests.
                     Defaults to `requests.Session <http://docs.python-requests.org/en/master/api/#request-sessions>`_.
@@ -39,20 +36,16 @@ class Client(object):
 
     """
     def __init__(self, auth, session=None):
-        self.auth = auth
-        self.session = session or requests.Session()
+        self.auth = convert_credentials(auth)
+        self.session = session or AuthorizedSession(self.auth)
 
     def login(self):
-        """Authorize client."""
-        if not self.auth.access_token or \
-                (hasattr(self.auth, 'access_token_expired') and self.auth.access_token_expired):
-            import httplib2
+        from google.auth.transport.requests import Request
 
-            http = httplib2.Http()
-            self.auth.refresh(http)
+        self.auth.refresh(Request(self.session))
 
         self.session.headers.update({
-            'Authorization': 'Bearer %s' % self.auth.access_token
+            'Authorization': 'Bearer %s' % self.auth.token
         })
 
     def request(
@@ -91,8 +84,8 @@ class Client(object):
         params = {
             'q': q,
             'pageSize': 1000,
-            'supportsTeamDrives': True,
-            'includeTeamDriveItems': True,
+            'supportsAllDrives': True,
+            'includeItemsFromAllDrives': True,
         }
 
         while page_token is not None:
@@ -268,10 +261,14 @@ class Client(object):
             'title': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
+        params = {
+            'supportsAllDrives': True
+        }
         r = self.request(
             'post',
             url,
-            json=payload
+            json=payload,
+            params=params
         )
         spreadsheet_id = r.json()['id']
 
@@ -307,7 +304,10 @@ class Client(object):
             file_id
         )
 
-        self.request('delete', url)
+        params = {
+            'supportsAllDrives': True
+        }
+        self.request('delete', url, params=params)
 
     def import_csv(self, file_id, data):
         """Imports data into the first page of the spreadsheet.
@@ -338,7 +338,8 @@ class Client(object):
             data=data,
             params={
                 'uploadType': 'media',
-                'convert': True
+                'convert': True,
+                'supportsAllDrives': True
             },
             headers=headers
         )
@@ -351,7 +352,10 @@ class Client(object):
         """
         url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
 
-        r = self.request('get', url)
+        params = {
+            'supportsAllDrives': True
+        }
+        r = self.request('get', url, params=params)
 
         return r.json()['items']
 
@@ -422,7 +426,7 @@ class Client(object):
         params = {
             'sendNotificationEmails': notify,
             'emailMessage': email_message,
-            'supportsTeamDrives': 'true'
+            'supportsAllDrives': 'true'
         }
 
         self.request(
@@ -446,4 +450,7 @@ class Client(object):
             permission_id
         )
 
-        self.request('delete', url)
+        params = {
+            'supportsAllDrives': True
+        }
+        self.request('delete', url, params=params)

@@ -9,7 +9,7 @@ Google Spreadsheets client library.
 """
 
 
-__version__ = '3.3.0'
+__version__ = '3.4.2'
 __author__ = 'Anton Burnashev'
 
 
@@ -29,11 +29,11 @@ from .exceptions import (
 def authorize(credentials, client_class=Client):
     """Login to Google API using OAuth2 credentials.
     This is a shortcut function which
-    instantiates :class:`gspread.client.Client`
-    and performs login right away.
+    instantiates `client_class`.
+    By default :class:`gspread.client.Client` is used.
 
-    :returns: :class:`gspread.Client` instance.
+    :returns: `client_class` instance.
     """
+
     client = client_class(auth=credentials)
-    client.login()
     return client

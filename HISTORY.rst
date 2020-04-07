@@ -1,6 +1,71 @@
 Release History
 ===============
 
+3.4.2 (2020-04-06)
+------------------
+
+* Fix Python 2 `SyntaxError` in models.py #751 (#752)
+
+
+3.4.1 (2020-04-05)
+------------------
+
+* Fix `TypeError` when using gspread in google colab (#750)
+
+
+3.4.0 (2020-04-05)
+------------------
+
+* Remove `oauth2client` in favor of `google-auth` #472, #529 (#637 by @BigHeadGeorge)
+* Convert `oauth2client` credentials to `google-auth` (#711 by @aiguofer)
+* Remove unnecessary `login()` from `gspread.authorize`
+
+* Fix sheet name quoting issue (#554, #636, #716):
+    * Add quotes to worksheet title for get_all_values (#640 by @grlbrwrg, #717 by @zynaxsoft)
+    * Escaping title containing single quotes with double quotes (#730 by @vijay-shanker)
+    * Use `utils.absolute_range_name()` to handle range names (#748)
+
+* Fix `numericise()`: add underscores test to work in python2 and <python3.6 (#622 by @epicfaace)
+
+* Add `supportsAllDrives` to Drive API requests (#709 by @justinr1234)
+
+* Add `Worksheet.merge_cells()` (#713 by @lavigne958)
+* Improve `Worksheet.merge_cells()` and add `merge_type` parameter (#742 by @aiguofer)
+
+* Add `Worksheet.sort()` (#639 by @kirillgashkov)
+
+* Add ability to reorder worksheets #570 (#571 by @robin900)
+    * Add `Spreadsheet.reorder_worksheets()`
+    * Add `Worksheet.update_index()`
+
+* Add `test_update_cell_objects` (#698 by @ogroleg)
+
+* Add `Worksheet.append_rows()` (#556 by @martinwarby, #694 by @fabytm)
+
+* Add `Worksheet.delete_rows()` (#615 by @deverlex)
+
+* Add Python 3.8 to Travis CI (#738 by @artemrys)
+
+* Speed up `Client.open()` by querying files by title in Google Drive (#684 by @aiguofer)
+
+* Add `freeze`, `set_basic_filter` and `clear_basic_filter` methods to `Worksheet` (#574 by @aiguofer)
+
+* Use Drive API v3 for creating and deleting spreadsheets (#573 by @aiguofer)
+
+* Implement `value_render_option` in `get_all_values` (#648 by @mklaber)
+
+* Set position of a newly added worksheet (#688 by @djmgit)
+* Add url properties for `Spreadsheet` and `Worksheet` (#725 by @CrossNox)
+
+* Update docs: "APIs & auth" menu deprecation, remove outdated images in oauth2.rst (#706 by @manasouza)
+
+
+3.3.1 (2020-04-01)
+------------------
+
+* Support old and new collections.abc.Sequence in `utils` (#745 by @timgates42)
+
+
 3.3.0 (2020-03-12)
 ------------------
 
@@ -12,7 +77,7 @@ Release History
     * `Worksheet.batch_update()`
     * `Worksheet.format()`
 
-* Added more parameters to `Worksheet.append_row()` (#726)
+* Added more parameters to `Worksheet.append_row()` (#719 by @lobatt, #726)
 * Fix usage of client.openall when a title is passed in (#572 by @aiguofer)
 
 

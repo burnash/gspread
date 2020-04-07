@@ -254,8 +254,9 @@ class Spreadsheet(object):
         r = self.client.request('get', url, params=params)
         return r.json()
 
-    def fetch_sheet_metadata(self):
-        params = {'includeGridData': 'false'}
+    def fetch_sheet_metadata(self, params=None):
+        if params is None:
+            params = {'includeGridData': 'false'}
 
         url = SPREADSHEET_URL % self.id
 
@@ -414,8 +415,47 @@ class Spreadsheet(object):
         """
         body = {
             'requests': [{
-                'deleteSheet': {'sheetId': worksheet._properties['sheetId']}
+                'deleteSheet': {'sheetId': worksheet.id}
             }]
+        }
+
+        return self.batch_update(body)
+
+    def reorder_worksheets(self, worksheets_in_desired_order):
+        """Updates the ``index`` property of each Worksheets to reflect
+        its index in the provided sequence of Worksheets.
+
+        :param worksheets_in_desired_order: Iterable of Worksheet objects in desired order.
+
+        Note: If you omit some of the Spreadsheet's existing Worksheet objects from
+        the provided sequence, those Worksheets will be appended to the end of the sequence
+        in the order that they appear in the list returned by ``Spreadsheet.worksheets()``.
+
+        .. versionadded:: 3.4
+
+        """
+        idx_map = {}
+        for idx, w in enumerate(worksheets_in_desired_order):
+            idx_map[w.id] = idx
+        for w in self.worksheets():
+            if w.id in idx_map:
+                continue
+            idx += 1
+            idx_map[w.id] = idx
+
+        body = {
+            'requests': [
+                {
+                    'updateSheetProperties': {
+                        'properties': {
+                            'sheetId': key,
+                            'index': val
+                        },
+                        'fields': 'index'
+                    }
+                }
+                for key, val in idx_map.items()
+            ]
         }
 
         return self.batch_update(body)
@@ -609,14 +649,13 @@ class Worksheet(object):
 
         """
 
-        range_label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
-        data = self.spreadsheet.values_get(
-            range_label,
-            params={'valueRenderOption': value_render_option}
-        )
-
         try:
-            value = data['values'][0][0]
+            data = self.get(
+                rowcol_to_a1(row, col),
+                value_render_option=value_render_option
+            )
+
+            value = data.first()
         except KeyError:
             value = ''
 
@@ -653,7 +692,7 @@ class Worksheet(object):
 
         """
 
-        range_label = '%s!%s' % (self.title, name)
+        range_label = absolute_range_name(self.title, name)
 
         data = self.spreadsheet.values_get(range_label)
 
@@ -689,10 +728,10 @@ class Worksheet(object):
 
             Empty trailing rows and columns will not be included.
         """
+        range_name = absolute_range_name(self.title)
 
-        title = self.title.replace("'", "''")
         data = self.spreadsheet.values_get(
-            "'{}'".format(title),
+            range_name,
             params={'valueRenderOption': value_render_option}
         )
 
@@ -753,7 +792,12 @@ class Worksheet(object):
 
         return [dict(zip(keys, row)) for row in values]
 
-    def row_values(self, row, value_render_option='FORMATTED_VALUE'):
+    @accepted_kwargs(
+        major_dimension=None,
+        value_render_option=None,
+        date_time_render_option=None
+    )
+    def row_values(self, row, **kwargs):
         """Returns a list of all values in a `row`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -768,16 +812,9 @@ class Worksheet(object):
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
         """
-
-        range_label = '%s!A%s:%s' % (self.title, row, row)
-
-        data = self.spreadsheet.values_get(
-            range_label,
-            params={'valueRenderOption': value_render_option}
-        )
-
         try:
-            return data['values'][0]
+            data = self.get('A{}:{}'.format(row, row), **kwargs)
+            return data[0]
         except KeyError:
             return []
 
@@ -798,10 +835,12 @@ class Worksheet(object):
         """
 
         start_label = rowcol_to_a1(1, col)
-        range_label = '%s!%s:%s' % (self.title, start_label, start_label[:-1])
+        range_label = '{}:{}'.format(start_label, start_label[:-1])
+
+        range_name = absolute_range_name(self.title, range_label)
 
         data = self.spreadsheet.values_get(
-            range_label,
+            range_name,
             params={
                 'valueRenderOption': value_render_option,
                 'majorDimension': 'COLUMNS'
@@ -842,10 +881,10 @@ class Worksheet(object):
             worksheet.update_cell(1, 1, '42')
 
         """
-        range_label = '%s!%s' % (self.title, rowcol_to_a1(row, col))
+        range_name = absolute_range_name(self.title, rowcol_to_a1(row, col))
 
         data = self.spreadsheet.values_update(
-            range_label,
+            range_name,
             params={
                 'valueInputOption': 'USER_ENTERED'
             },
@@ -885,10 +924,13 @@ class Worksheet(object):
         start = rowcol_to_a1(min(c.row for c in cell_list), min(c.col for c in cell_list))
         end = rowcol_to_a1(max(c.row for c in cell_list), max(c.col for c in cell_list))
 
-        range_label = '%s!%s:%s' % (self.title, start, end)
+        range_name = absolute_range_name(
+            self.title,
+            '{}:{}'.format(start, end)
+        )
 
         data = self.spreadsheet.values_update(
-            range_label,
+            range_name,
             params={
                 'valueInputOption': value_input_option
             },
@@ -939,10 +981,7 @@ class Worksheet(object):
         .. versionadded:: 3.3
 
         """
-        if range_name:
-            range_name = '%s!%s' % (self.title, range_name)
-        else:
-            range_name = self.title
+        range_name = absolute_range_name(self.title, range_name)
 
         params = filter_dict_values({
             'majorDimension': kwargs['major_dimension'],
@@ -985,7 +1024,7 @@ class Worksheet(object):
             worksheet.batch_get(['A1:B2', 'F12'])
 
         """
-        ranges = ['%s!%s' % (self.title, r) for r in ranges if r]
+        ranges = [absolute_range_name(self.title, r) for r in ranges if r]
 
         params = filter_dict_values({
             'majorDimension': kwargs['major_dimension'],
@@ -1056,10 +1095,10 @@ class Worksheet(object):
 
         """
         if is_scalar(range_name):
-            range_name = '%s!%s' % (self.title, range_name)
+            range_name = absolute_range_name(self.title, range_name)
         else:
             values = range_name
-            range_name = self.title
+            range_name = absolute_range_name(self.title)
 
         if is_scalar(values):
             values = [[values]]
@@ -1234,6 +1273,76 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
+    # TODO(post Python 2): replace the method signature with
+    # def sort(self, *specs, range=None):
+    def sort(self, *specs, **kwargs):
+        """Sorts worksheet using given sort orders.
+
+        :param specs: The sort order per column. Each sort order represented
+        by a tuple where the 1st element is a column index and 2nd element is
+        the order itself: 'asc' or 'des'.
+        :type specs: List[Tuple[int, str]]
+        :param range: The range to sort. By default sorts whole sheet excluding
+        frozen rows. Range notation: 'A1:A1'.
+        :type range: str
+
+        Example::
+
+            # Sort sheet A -> Z by column 'B'
+            wks.sort((2, 'asc'))
+
+            # Sort range A2:G8 basing on column 'G' A -> Z and column 'B' Z -> A
+            wks.sort((7, 'asc'), (2, 'des'), range='A2:G8')
+
+        .. versionadded:: 3.4
+
+        """
+        range_name = kwargs.pop('range', None)
+
+        if range_name:
+            start_a1, end_a1 = range_name.split(':')
+            start_row, start_col = a1_to_rowcol(start_a1)
+            end_row, end_col = a1_to_rowcol(end_a1)
+        else:
+            start_row = self._properties['gridProperties'].get('frozenRowCount', 0) + 1
+            start_col = 1
+            end_row = self.row_count
+            end_col = self.col_count
+
+        request_range = {
+            'sheetId': self.id,
+            'startRowIndex': start_row - 1,
+            'endRowIndex': end_row,
+            'startColumnIndex': start_col - 1,
+            'endColumnIndex': end_col
+        }
+
+        request_sort_specs = list()
+        for col, order in specs:
+            if order == 'asc':
+                request_order = 'ASCENDING'
+            elif order == 'des':
+                request_order = 'DESCENDING'
+            else:
+                raise ValueError("Either 'asc' or 'des' should be specified as sort order.")
+            request_sort_spec = {
+                "dimensionIndex": col - 1,
+                "sortOrder": request_order
+            }
+            request_sort_specs.append(request_sort_spec)
+
+        body = {
+            'requests': [{
+                "sortRange": {
+                    'range': request_range,
+                    'sortSpecs': request_sort_specs
+                }
+            }]
+        }
+
+        response = self.spreadsheet.batch_update(body)
+        return response
+
     def update_title(self, title):
         """Renames the worksheet.
 
@@ -1257,6 +1366,33 @@ class Worksheet(object):
         response = self.spreadsheet.batch_update(body)
         self._properties['title'] = title
         return response
+
+    def update_index(self, index):
+        """Updates the ``index`` property for the worksheet.
+
+        See the `Sheets API documentation
+        <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#sheetproperties>`_
+        for information on how updating the index property affects the order of worksheets
+        in a spreadsheet.
+
+        To reorder all worksheets in a spreadsheet, see `Spreadsheet.reorder_worksheets`.
+
+        .. versionadded:: 3.4
+
+        """
+        body = {
+            'requests': [{
+                'updateSheetProperties': {
+                    'properties': {
+                        'sheetId': self.id,
+                        'index': index
+                    },
+                    'fields': 'index'
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
 
     def add_rows(self, rows):
         """Adds rows to worksheet.
@@ -1307,12 +1443,44 @@ class Worksheet(object):
         .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
 
         """
-
-        range_label = (
-            '%s!%s' % (self.title, table_range)
-            if table_range
-            else self.title
+        return self.append_rows(
+            [values],
+            value_input_option=value_input_option,
+            insert_data_option=insert_data_option,
+            table_range=table_range
         )
+
+    def append_rows(
+        self,
+        values,
+        value_input_option='RAW',
+        insert_data_option=None,
+        table_range=None
+    ):
+        """Adds multiple rows to the worksheet and populates them with values.
+        Widens the worksheet if there are more values than columns.
+
+        :param values: List of rows each row is List of values for the new row.
+        :param value_input_option: (optional) Determines how input data should
+                                    be interpreted. See `ValueInputOption`_ in
+                                    the Sheets API.
+        :type value_input_option: str
+        :param insert_data_option: (optional) Determines how the input data
+                                    should be inserted. See
+                                    `InsertDataOption`_ in the Sheets API
+                                    reference.
+        :type insert_data_option: str
+        :param table_range: (optional) The A1 notation of a range to search for
+                             a logical table of data. Values are appended after
+                             the last row of the table.
+                             Examples: `A1` or `B2:D4`
+        :type table_range: str
+
+        .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+        .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
+
+        """
+        range_label = absolute_range_name(self.title, table_range)
 
         params = {
             'valueInputOption': value_input_option,
@@ -1320,7 +1488,7 @@ class Worksheet(object):
         }
 
         body = {
-            'values': [values]
+            'values': values
         }
 
         return self.spreadsheet.values_append(range_label, params, body)
@@ -1363,7 +1531,7 @@ class Worksheet(object):
 
         self.spreadsheet.batch_update(body)
 
-        range_label = '%s!%s' % (self.title, 'A%s' % index)
+        range_label = absolute_range_name(self.title, 'A%s' % index)
 
         data = self.spreadsheet.values_update(
             range_label,
@@ -1423,17 +1591,19 @@ class Worksheet(object):
     def clear(self):
         """Clears all cells in the worksheet.
         """
-        return self.spreadsheet.values_clear(self.title)
+        return self.spreadsheet.values_clear(
+            absolute_range_name(self.title)
+        )
 
-    def _finder(self, func, query, col):
-        data = self.spreadsheet.values_get(self.title)
+    def _finder(self, func, query, col, row):
+        data = self.spreadsheet.values_get(absolute_range_name(self.title))
 
         try:
             values = fill_gaps(data['values'])
         except KeyError:
             values = []
 
-        cells = self.get_cells(values, col)
+        cells = self.__get_selected_cells(values, col, row)
 
         if isinstance(query, basestring):
             match = lambda x: x.value == query
@@ -1442,15 +1612,22 @@ class Worksheet(object):
 
         return func(match, cells)
 
-    def get_cells(self, values, col):
+    def __get_selected_cells(self, values, col, row):
         """ Returns an array of cell objects.
         :param values: Array with row, colums and values
         :param col: Number of colum to find
         """
-        if column:
+        if col and row: raise TypeError("Either 'rows' or 'cols' should be specified.")
+
+        if col:
             return [
                 Cell(row=i + 1, col=col, value=row[col])
                 for i, row in enumerate(values)
+            ]
+        elif row:
+            return [
+                Cell(row=row, col=j + 1, value=value)
+                for j, value in enumerate(row)
             ]
         else:
             return [
@@ -1459,7 +1636,7 @@ class Worksheet(object):
                 for j, value in enumerate(row)
             ]
 
-    def find(self, query, col=None):
+    def find(self, query, col=None, row=None):
         """Finds the first cell matching the query.
 
         :param query: A literal string to match or compiled regular expression.
@@ -1467,7 +1644,7 @@ class Worksheet(object):
 
         """
         try:
-            return self._finder(finditem, query, col)
+            return self._finder(finditem, query, col, row)
         except StopIteration:
             raise CellNotFound(query)
 
@@ -1516,7 +1693,7 @@ class Worksheet(object):
         return self.spreadsheet.batch_update(body)
 
     @cast_to_a1_notation
-    def add_basic_filter(self, name=None):
+    def set_basic_filter(self, name=None):
         """Add a basic filter to the worksheet. If a range or bundaries
         are passed, the filter will be limited to the given range.
 
@@ -1529,6 +1706,9 @@ class Worksheet(object):
         :param first_col: Integer row number
         :param last_row: Integer row number
         :param last_col: Integer row number
+
+        .. versionadded:: 3.4
+
         """
         rng = {
             'sheetId': self.id,
@@ -1557,8 +1737,11 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
-    def remove_basic_filter(self):
+    def clear_basic_filter(self):
         """Remove the basic filter from a worksheet.
+
+        .. versionadded:: 3.4
+
         """
         body = {
             'requests': [{
@@ -1613,6 +1796,54 @@ class Worksheet(object):
             new_sheet_id,
             new_sheet_name
         )
+
+    @cast_to_a1_notation
+    def merge_cells(self, name, merge_type="MERGE_ALL"):
+        """
+        Merge cells. There are 3 merge types: MERGE_ALL, MERGE_COLUMNS,
+        and MERGE_ROWS.
+
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+        :param merge_type: (optional) one of MERGE_ALL, MERGE_COLUMNS,
+                           or MERGE_ROWS. Default MERGE_ROWS
+                           See `MergeType`_ in the Sheets API reference.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param first_row: Integer row number
+        :param first_col: Integer row number
+        :param last_row: Integer row number
+        :param last_col: Integer row number
+
+        :return the response body from the request
+
+        .. MergeType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#MergeType
+
+        """
+
+        start, end = name.split(':')
+        (row_offset, column_offset) = a1_to_rowcol(start)
+        (last_row, last_column) = a1_to_rowcol(end)
+
+        body = {
+            "requests": [
+                {
+                    "mergeCells": {
+                        "mergeType": merge_type,
+                        "range": {
+                            "sheetId": self.id,
+                            "startRowIndex": row_offset - 1,
+                            "endRowIndex": last_row,
+                            "startColumnIndex": column_offset - 1,
+                            "endColumnIndex": last_column,
+                        }
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
 
 
 class Cell(object):

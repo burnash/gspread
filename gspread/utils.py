@@ -11,11 +11,18 @@ This module contains utility functions.
 import sys
 import re
 from functools import wraps
-from collections import defaultdict, Sequence
+from collections import defaultdict
+try:
+    from collections.abc import Sequence
+except ImportError:
+    from collections import Sequence
 from itertools import chain
 
-from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
+from google.auth.credentials import Credentials as Credentials
+from google.oauth2.credentials import Credentials as UserCredentials
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
+from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
 
 if sys.version_info.major == 2:
     import urllib
@@ -34,6 +41,50 @@ A1_ADDR_ROW_COL_RE = re.compile(r'([A-Za-z]+)?([1-9]\d*)?$')
 
 URL_KEY_V1_RE = re.compile(r'key=([^&#]+)')
 URL_KEY_V2_RE = re.compile(r'/spreadsheets/d/([a-zA-Z0-9-_]+)')
+
+
+def convert_credentials(credentials):
+    module = credentials.__module__
+    cls = credentials.__class__.__name__
+    if 'oauth2client' in module and cls == 'ServiceAccountCredentials':
+        return _convert_service_account(credentials)
+    elif 'oauth2client' in module and cls in (
+        'OAuth2Credentials',
+        'AccessTokenCredentials',
+        'GoogleCredentials'
+    ):
+        return _convert_oauth(credentials)
+    elif isinstance(credentials, Credentials):
+        return credentials
+
+    raise TypeError(
+        'Credentials need to be from either oauth2client or from google-auth.'
+    )
+
+
+def _convert_oauth(credentials):
+    return UserCredentials(
+        credentials.access_token,
+        credentials.refresh_token,
+        credentials.id_token,
+        credentials.token_uri,
+        credentials.client_id,
+        credentials.client_secret,
+        credentials.scopes,
+    )
+
+
+def _convert_service_account(credentials):
+    data = credentials.serialization_data
+    data['token_uri'] = credentials.token_uri
+    scopes = credentials._scopes.split() or [
+        'https://www.googleapis.com/auth/drive',
+        'https://spreadsheets.google.com/feeds',
+    ]
+
+    return ServiceAccountCredentials.from_service_account_info(
+        data, scopes=scopes
+    )
 
 
 def finditem(func, seq):
@@ -378,17 +429,37 @@ def quote(value, safe='', encoding='utf-8'):
     return urllib.quote(value.encode(encoding), safe)
 
 
-def absolute_range_name(sheet_name, range_name):
+def absolute_range_name(sheet_name, range_name=None):
     """Return an absolutized path of a range.
 
-    >>> absolute_range_name('Sheet1', 'A1:B1')
-    'Sheet1!A1:B1'
+    >>> absolute_range_name("Sheet1", "A1:B1")
+    "'Sheet1'!A1:B1"
 
-    >>> absolute_range_name('Sheet1', 'A1')
-    'Sheet1!A1'
+    >>> absolute_range_name("Sheet1", "A1")
+    "'Sheet1'!A1"
+
+    >>> absolute_range_name("Sheet1")
+    "'Sheet1'"
+
+    >>> absolute_range_name("Sheet'1")
+    "'Sheet''1'"
+
+    >>> absolute_range_name("Sheet''1")
+    "'Sheet''''1'"
+
+    >>> absolute_range_name("''sheet12''", "A1:B2")
+    "'''''sheet12'''''!A1:B2"
 
     """
-    return '%s!%s' % (sheet_name, range_name)
+
+    sheet_name = "'{}'".format(
+        sheet_name.replace("'", "''")
+    )
+
+    if range_name:
+        return '{}!{}'.format(sheet_name, range_name)
+    else:
+        return sheet_name
 
 
 def is_scalar(x):
