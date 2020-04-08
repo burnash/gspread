@@ -193,21 +193,6 @@ class Client(object):
 
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
-        .. note::
-
-           In order to use this method, you need to add
-           ``https://www.googleapis.com/auth/drive`` to your oAuth scope.
-
-           Example::
-
-              scope = [
-                  'https://spreadsheets.google.com/feeds',
-                  'https://www.googleapis.com/auth/drive'
-              ]
-
-           Otherwise you will get an ``Insufficient Permission`` error
-           when you try to create a new spreadsheet.
-
         """
         payload = {
             'name': title,
