@@ -182,11 +182,14 @@ class Client(object):
             for x in spreadsheet_files
         ]
 
-    def create(self, title):
+    def create(self, title, folder_id=None):
         """Creates a new spreadsheet.
 
         :param title: A title of a new spreadsheet.
         :type title: str
+
+        :param folder_id: Id of the folder where we want to save the spreadsheet.
+        :type folder_id: str
 
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
@@ -210,6 +213,10 @@ class Client(object):
             'name': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet'
         }
+
+        if folder_id is not None:
+            payload['parents'] = [folder_id]
+
         r = self.request(
             'post',
             DRIVE_FILES_API_V3_URL,
