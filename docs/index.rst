@@ -6,9 +6,10 @@ gspread
 Features:
 
 -  Google Sheets API v4.
--  Open a spreadsheet by its **title** or **url**.
--  Extract range, entire row or column values.
--  Python 3 support.
+-  Open a spreadsheet by title, key or url.
+-  Read, write, and format cell ranges.
+-  Sharing and access control.
+-  Batching updates.
 
 
 Installation
