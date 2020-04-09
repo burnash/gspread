@@ -785,7 +785,7 @@ class Worksheet(object):
         keys = data[idx]
 
         if numericise_ignore == ['all']:
-            values = [row for row in data[idx + 1]]
+            values = data[idx + 1:]
         else:
             values = [
                 numericise_all(
