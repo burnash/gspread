@@ -746,6 +746,7 @@ class Worksheet(object):
         head=1,
         default_blank="",
         allow_underscores_in_numeric_literals=False,
+        numericise_ignore=None
     ):
         """Returns a list of dictionaries, all of them having the contents
             of the spreadsheet with the head row as keys and each of these
@@ -753,7 +754,7 @@ class Worksheet(object):
             as values.
 
             Cell values are numericised (strings that can be read as ints
-            or floats are converted).
+            or floats are converted), unless specificed in numericise_ignore
 
             :param empty2zero: (optional) Determines whether empty cells are
                                converted to zeros.
@@ -769,6 +770,10 @@ class Worksheet(object):
                                                           in numeric literals,
                                                           as introduced in PEP 515
             :type allow_underscores_in_numeric_literals: bool
+            :param numericise_ignore: list of ints of indices of the row (starting at 1)
+                                      to ignore numericising, special use of ['all']
+                                      to ignore numericising on all columns.
+            :type numericise_ignore: list
             """
 
         idx = head - 1
@@ -780,15 +785,21 @@ class Worksheet(object):
             return []
 
         keys = data[idx]
-        values = [
-            numericise_all(
-                row,
-                empty2zero,
-                default_blank,
-                allow_underscores_in_numeric_literals,
-            )
-            for row in data[idx + 1:]
-        ]
+
+        if numericise_ignore == ['all']:
+            values = data[idx + 1:]
+        else:
+            values = [
+                numericise_all(
+                    row,
+                    empty2zero,
+                    default_blank,
+                    allow_underscores_in_numeric_literals,
+                    numericise_ignore
+                )
+                for row in data[idx + 1:]
+            ]
+
 
         return [dict(zip(keys, row)) for row in values]
 
