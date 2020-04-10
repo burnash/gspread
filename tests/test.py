@@ -653,7 +653,7 @@ class WorksheetTest(GspreadTest):
 
         self.sheet.resize(20, 20)
 
-        self.sheet.add_basic_filter()
+        self.sheet.set_basic_filter()
         filter_range = get_basic_filter_range()
 
         self.assertEquals(filter_range['startRowIndex'], 0)
@@ -661,7 +661,7 @@ class WorksheetTest(GspreadTest):
         self.assertEquals(filter_range['endRowIndex'], 20)
         self.assertEquals(filter_range['endColumnIndex'], 20)
 
-        self.sheet.add_basic_filter('B1:C2')
+        self.sheet.set_basic_filter('B1:C2')
         filter_range = get_basic_filter_range()
 
         self.assertEquals(filter_range['startRowIndex'], 0)
@@ -669,7 +669,7 @@ class WorksheetTest(GspreadTest):
         self.assertEquals(filter_range['endRowIndex'], 2)
         self.assertEquals(filter_range['endColumnIndex'], 3)
 
-        self.sheet.add_basic_filter(1, 2, 2, 3)
+        self.sheet.set_basic_filter(1, 2, 2, 3)
         filter_range = get_basic_filter_range()
 
         self.assertEquals(filter_range['startRowIndex'], 0)
@@ -677,7 +677,7 @@ class WorksheetTest(GspreadTest):
         self.assertEquals(filter_range['endRowIndex'], 2)
         self.assertEquals(filter_range['endColumnIndex'], 3)
 
-        self.sheet.remove_basic_filter()
+        self.sheet.clear_basic_filter()
         self.assertTrue('basicFilter' not in get_sheet())
 
     def test_find(self):
