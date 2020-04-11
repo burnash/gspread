@@ -83,6 +83,7 @@ class Client(object):
 
         params = {
             'q': q,
+            'corpora': 'allDrives',
             'pageSize': 1000,
             'supportsAllDrives': True,
             'includeItemsFromAllDrives': True,
