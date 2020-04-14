@@ -146,6 +146,26 @@ class Spreadsheet(object):
 
         return r.json()
 
+    def copy_worksheet_from_spreadsheet(self, sheetId, spreadsheetId, destinationSpreadsheetId):
+        """Lower-level method that directly calls `spreadsheets/{spreadsheetId}/sheets/{sheetId}:copyTo <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.sheets/copyTo>`._
+
+        :param str sheetId: `the worksheet index to copy`
+        :param str spreadsheetId: `the spreadsheet key to copy from`
+        :param str destinanationSpreadsheetId: `the spreadsheet key to copy into`
+        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#response-body>`_.
+        :rtype dict
+
+        """
+        endpoint = f'https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/sheets/{sheetId}:copyTo'
+        payload = {"destinationSpreadsheetId": destinationSpreadsheetId}
+        r = self.client.request(
+            'post',
+            endpoint,
+            json=payload
+        )
+
+        return r.json()
+
     def values_append(self, range, params, body):
         """Lower-level method that directly calls `spreadsheets.values.append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
 
@@ -1789,6 +1809,21 @@ class Worksheet(object):
             new_sheet_name
         )
 
+
+    def duplicate_to(
+        self,
+        target_spreadsheet_key,
+    ):
+        """Duplicates the contents of a sheet in this spreadsheet into another spreadsheet.
+
+        :param str target_spreadsheet_key: The key for which spreadsheet to copy to.
+        :returns: a dict with the response containing information about the new worksheet.
+        """
+
+        source_sheet_key = self.spreadsheet.id
+        r = self.spreadsheet.copy_worksheet_from_spreadsheet(self.id, source_sheet_key, target_spreadsheet_key)
+
+        return r
     @cast_to_a1_notation
     def merge_cells(self, name, merge_type="MERGE_ALL"):
         """
