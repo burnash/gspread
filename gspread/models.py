@@ -1557,7 +1557,7 @@ class Worksheet(object):
         return data
 
     def delete_row(self, index):
-        """"Deletes the row from the worksheet at the specified index.
+        """Deletes the row from the worksheet at the specified index.
 
         :param index: Index of a row for deletion.
         :type index: int
@@ -1578,7 +1578,7 @@ class Worksheet(object):
         return self.spreadsheet.batch_update(body)
 
     def delete_rows(self, start_index, end_index):
-        """"Deletes multi rows from the worksheet at the specified index.
+        """Deletes multi rows from the worksheet at the specified index.
 
         :param start_index: Index of a first row for deletion.
         :param end_index: Index of a last row for deletion.
@@ -1591,7 +1591,7 @@ class Worksheet(object):
                       "sheetId": self.id,
                       "dimension": "ROWS",
                       "startIndex": start_index - 1,
-                      "endIndex": end_index - 1
+                      "endIndex": end_index
                     }
                 }
             }]
