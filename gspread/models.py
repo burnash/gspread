@@ -1620,6 +1620,28 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
     
+    def delete_columns(self, start_index, end_index):
+        """Deletes multi columns from the worksheet at the specified index.
+
+        :param start_index: Index of a first column for deletion.
+        :param end_index: Index of a last column for deletion.
+        :type index: int
+        """
+        body = {
+            "requests": [{
+                "deleteDimension": {
+                    "range": {
+                      "sheetId": self.id,
+                      "dimension": "COLUMNS",
+                      "startIndex": start_index - 1,
+                      "endIndex": end_index
+                    }
+                }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+    
     def clear(self):
         """Clears all cells in the worksheet.
         """
