@@ -25,12 +25,34 @@ READONLY_SCOPES = [
 ]
 
 
-DEFAULT_CONFIG_DIR = os.path.expanduser('~/.config/gspread')
+def get_config_dir(config_dir_name='gspread', os_is_windows=os.name == 'nt'):
+    """Construct a config dir path.
+
+    By default:
+        * `%APPDATA%\gspread` on Windows
+        * `~/.config/gspread` everywhere else
+
+    """
+    if os_is_windows:
+        return os.path.join(
+            os.environ["APPDATA"],
+            config_dir_name
+        )
+    else:
+        return os.path.join(
+            os.path.expanduser('~'),
+            '.config',
+            config_dir_name
+        )
+
+
+DEFAULT_CONFIG_DIR = get_config_dir()
+
 DEFAULT_CREDENTIALS_FILENAME = os.path.join(
     DEFAULT_CONFIG_DIR,
     'credentials.json'
 )
-DEFAULT_AUTHORIZED_USER_FILE = os.path.join(
+DEFAULT_AUTHORIZED_USER_FILENAME = os.path.join(
     DEFAULT_CONFIG_DIR,
     'authorized_user.json'
 )
@@ -53,7 +75,7 @@ def console_flow(scopes):
     return flow.run_console()
 
 
-def load_credentials(filename=DEFAULT_AUTHORIZED_USER_FILE):
+def load_credentials(filename=DEFAULT_AUTHORIZED_USER_FILENAME):
     if os.path.exists(filename):
         return Credentials.from_authorized_user_file(filename)
 
@@ -62,7 +84,7 @@ def load_credentials(filename=DEFAULT_AUTHORIZED_USER_FILE):
 
 def store_credentials(
     creds,
-    filename=DEFAULT_AUTHORIZED_USER_FILE,
+    filename=DEFAULT_AUTHORIZED_USER_FILENAME,
     strip='token'
 ):
     with open(filename, 'w') as f:
