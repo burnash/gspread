@@ -1918,6 +1918,11 @@ class Cell(object):
             return None
 
     @property
+    def address(self):
+        """Cell address in A1 notation."""
+        return rowcol_to_a1(self.row, self.col)
+
+    @property
     def input_value(self):
         """.. deprecated:: 2.0
 

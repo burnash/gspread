@@ -1085,6 +1085,16 @@ class CellTest(GspreadTest):
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, None)
 
+    def test_a1_value(self):
+        cell = self.sheet.cell(4, 4)
+        self.assertEqual(cell.address, 'D4')
+        self.sheet.update_acell('B1', 'Dummy')
+        cell = self.sheet.find('Dummy')
+        self.assertEqual(cell.address, 'B1')
+        self.assertEqual(cell.value, 'Dummy')
+        cell = gspread.models.Cell(1, 2, 'Foo Bar')
+        self.assertEqual(cell.address, 'B1')
+
     def test_merge_cells(self):
         self.sheet.update('A1:B2', [[42, 43], [43, 44]])
 
