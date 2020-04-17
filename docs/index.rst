@@ -23,12 +23,8 @@ Installation
 Requirements: Python 2.7+ or Python 3+.
 
 
-Example Usage
+Quick Example
 -------------
-
-1. `Obtain OAuth2 credentials from Google Developers Console`_
-
-2. Update some cell values and format cells:
 
 .. code:: python
 
@@ -49,8 +45,8 @@ Example Usage
    wks.format('A1:B1', {'textFormat': {'bold': True}})
 
 
-Authentication
---------------
+Getting Started
+---------------
 
 .. toctree::
    :maxdepth: 2
@@ -58,8 +54,8 @@ Authentication
    oauth2
 
 
-More Examples
--------------
+Usage
+-----
 
 .. toctree::
     :maxdepth: 2

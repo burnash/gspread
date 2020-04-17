@@ -1,5 +1,5 @@
-More examples of gspread usage
-==============================
+Examples of gspread Usage
+=========================
 
 Opening a Spreadsheet
 ~~~~~~~~~~~~~~~~~~~~~
