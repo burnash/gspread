@@ -34,7 +34,7 @@ GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py
 
 where `YOUR_CREDS.json` is a path to the file you downloaded in step 1.
 
-**Tip:** To run a specific test method append its name in the form of `:TestClassName.test_method_name` to `tests/test.py`. 
+**Tip:** To run a specific test method append its name in the form of `:TestClassName.test_method_name` to `tests/test.py`.
 
 Example:
 
@@ -49,3 +49,20 @@ You can control Betamax's [Record Mode](https://betamax.readthedocs.io/en/latest
 GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py
 ```
 
+## Render Documentation
+
+The documentation uses [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html#rst-index) markup and is rendered by [Sphinx](http://www.sphinx-doc.org/).
+
+To build the documentation locally, install Sphinx:
+
+```
+pip install Sphinx
+```
+
+Then from the project directory, run:
+
+```
+sphinx-build -b html docs html
+```
+
+Once finished, the rendered documentation will be in `html` folder. `index.html` is an entry point.

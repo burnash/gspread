@@ -191,7 +191,7 @@ Before opening an issue, search the tracker for possible duplicates. If you find
 
 ### Improve Documentation
 
-If you spot areas in [documentation](https://gspread.readthedocs.io/) that you think could be better, please submit a pull request. Docs are located in [`docs`](https://github.com/burnash/gspread/tree/master/docs) folder, use [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html#rst-index) markup and rendered by [Sphinx](http://www.sphinx-doc.org/).
+[Documentation](https://gspread.readthedocs.io/) is as important as code. If you know how to make it more consistent, readable and clear, please submit a pull request. The documentation files are in [`docs`](https://github.com/burnash/gspread/tree/master/docs) folder, use [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html#rst-index) markup and rendered by [Sphinx](http://www.sphinx-doc.org/).
 
 ### Contribute code
 
