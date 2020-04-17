@@ -28,7 +28,7 @@ Example Usage
 
 1. `Obtain OAuth2 credentials from Google Developers Console`_
 
-2. Get a cell range from a spreadsheet:
+2. Update some cell values and format cells:
 
 .. code:: python
 
