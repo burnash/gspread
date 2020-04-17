@@ -43,7 +43,11 @@ setup(
     author_email='fuss.here@gmail.com',
     url='https://github.com/burnash/gspread',
     keywords=['spreadsheets', 'google-spreadsheets'],
-    install_requires=['requests>=2.2.1', 'google-auth'],
+    install_requires=[
+        'requests>=2.2.1',
+        'google-auth>=1.12.0',
+        'google-auth-oauthlib>=0.4.1'
+    ],
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
     classifiers=[
         "Programming Language :: Python",
