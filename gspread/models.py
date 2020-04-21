@@ -1576,6 +1576,60 @@ class Worksheet(object):
         }
 
         return self.spreadsheet.batch_update(body)
+    @cast_to_a1_notation
+    def add_protect_ranges(self, name, editors_emails= [], description=None,  request_user_edit=False):
+        """"Add protect ranges into the selected worksheet. Only the editors can edit the protected ranges
+        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+        :type name: str
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+        :param first_row: Row number
+        :type first_row: int
+        :param first_col: Row number
+        :type first_col: int
+        :param last_row: Row number
+        :type last_row: int
+        :param last_col: Row number
+        :type last_col: int
+        :param editors_emails: List for more editors email
+        :type editors_emails: list
+        :param description: description for the protected ranges
+        :type description: str
+        :param request_user_edit: True if the user who requested this protected range can edit the protected area.
+        :type request_user_edit: boolean
+        """
+        
+        email_address = [permission.get('emailAddress') for permission in self.client.list_permissions(self.spreadsheet.id) if permission.get('emailAddress')]
+        email_address.extend(email for email in editors_emails if (isinstance(editors_emails,list)) & (len(editors_emails) > 0))
+            
+        start, end = name.split(':')
+        (row_offset, column_offset) = a1_to_rowcol(start)
+        (last_row, last_column) = a1_to_rowcol(end)
+                
+        body = {
+          "requests": [{
+              "addProtectedRange": {
+                'protectedRange': {
+                  "range": {
+                      "sheetId": self.id,
+                      "startRowIndex": row_offset,
+                      "endRowIndex": last_row,
+                      "startColumnIndex": column_offset,
+                      "endColumnIndex": last_column
+                      },
+                  "description": description,
+                  "warningOnly": False,
+                  "requestingUserCanEdit": request_user_edit,
+                  "editors":{
+                      "users": email_address
+                      }
+                }
+              }
+            }]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
 
     def delete_rows(self, start_index, end_index):
         """Deletes multi rows from the worksheet at the specified index.
