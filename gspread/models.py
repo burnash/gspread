@@ -1339,7 +1339,7 @@ class Worksheet(object):
 
         return data
 
-        def insert_rows(self, values, index=1, value_input_option='RAW'):
+    def insert_rows(self, values, index=1, value_input_option='RAW'):
         """Adds multiple rows to the worksheet at the specified index
         and populates it with values.
         The input should be a list of lists, with the lists each
