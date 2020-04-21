@@ -1562,20 +1562,14 @@ class Worksheet(object):
         :param index: Index of a row for deletion.
         :type index: int
         """
-        body = {
-            "requests": [{
-                "deleteDimension": {
-                    "range": {
-                      "sheetId": self.id,
-                      "dimension": "ROWS",
-                      "startIndex": index - 1,
-                      "endIndex": index
-                    }
-                }
-            }]
-        }
-
-        return self.spreadsheet.batch_update(body)
+        import warnings
+        warnings.warn(
+            "Worksheet.delete_row() is deprecated, "
+            "Please use `Worksheet.delete_rows()` instead.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.delete_rows(index)
 
     @cast_to_a1_notation
     def add_protected_range(
@@ -1646,19 +1640,24 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
-    def delete_rows(self, start_index, end_index):
+    def delete_dimension(self, dimension, start_index, end_index=None):
         """Deletes multi rows from the worksheet at the specified index.
 
-        :param start_index: Index of a first row for deletion.
-        :param end_index: Index of a last row for deletion.
-        :type index: int
+        :param str dimension: A dimension to delete. "ROWS" or "COLUMNS".
+        :param int start_index: Index of a first row for deletion.
+        :param int end_index: Index of a last row for deletion.
+                              When end_index is not specified this method
+                              only deletes a single row at ``start_index``.
         """
+        if end_index is None:
+            end_index = start_index
+
         body = {
             "requests": [{
                 "deleteDimension": {
                     "range": {
                       "sheetId": self.id,
-                      "dimension": "ROWS",
+                      "dimension": dimension,
                       "startIndex": start_index - 1,
                       "endIndex": end_index
                     }
@@ -1668,48 +1667,34 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
-    def delete_column(self, index):
-        """Deletes the column from the worksheet at the specified index.
+    def delete_rows(self, start_index, end_index=None):
+        """Deletes multi rows from the worksheet at the specified index.
 
-        :param index: Index of a column for deletion.
-        :type index: int
+        :param int start_index: Index of a first row for deletion.
+        :param int end_index: Index of a last row for deletion.
+                              When end_index is not specified this method
+                              only deletes a single row at ``start_index``.
+
+        Example::
+
+            # Delete rows 5 to 10 (inclusive)
+            worksheet.delete_rows(5, 10)
+
+            # Delete only the second row
+            worksheet.delete_rows(2)
+
         """
-        body = {
-            "requests": [{
-                "deleteDimension": {
-                    "range": {
-                      "sheetId": self.id,
-                      "dimension": "COLUMNS",
-                      "startIndex": index - 1,
-                      "endIndex": index
-                     }
-                 }
-            }]
-        }
+        return self.delete_dimension('ROWS', start_index, end_index)
 
-        return self.spreadsheet.batch_update(body)
-
-    def delete_columns(self, start_index, end_index):
+    def delete_columns(self, start_index, end_index=None):
         """Deletes multi columns from the worksheet at the specified index.
 
-        :param start_index: Index of a first column for deletion.
-        :param end_index: Index of a last column for deletion.
-        :type index: int
+        :param int start_index: Index of a first column for deletion.
+        :param int end_index: Index of a last column for deletion.
+                              When end_index is not specified this method
+                              only deletes a single column at ``start_index``.
         """
-        body = {
-            "requests": [{
-                "deleteDimension": {
-                    "range": {
-                      "sheetId": self.id,
-                      "dimension": "COLUMNS",
-                      "startIndex": start_index - 1,
-                      "endIndex": end_index
-                    }
-                }
-            }]
-        }
-
-        return self.spreadsheet.batch_update(body)
+        return self.delete_dimension('COLUMNS', start_index, end_index)
 
     def clear(self):
         """Clears all cells in the worksheet.
