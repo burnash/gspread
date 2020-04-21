@@ -1287,43 +1287,6 @@ class Worksheet(object):
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def append_rows(self, values, index=1, value_input_option='RAW'):
-        """Adds multiple rows to the worksheet at the specified index
-        and populates it with values.
-        The input should be a list of lists, with the lists each
-        containing one row's values.
-        Widens the worksheet if there are more values than columns.
-        :param values: List of row lists.
-        """
-
-        body = {
-            "requests": [{
-                "insertDimension": {
-                    "range": {
-                      "sheetId": self.id,
-                      "dimension": "ROWS",
-                      "startIndex": index - 1,
-                      "endIndex": len(values) + 1
-                    }
-                }
-            }]
-        }
-
-        self.spreadsheet.batch_update(body)
-
-        range_label = '%s!%s' % (self.title, 'A%s' % index)
-
-        params = {
-                'valueInputOption': value_input_option
-        }
-
-        body = {
-                'majorDimension': 'ROWS',
-                'values': values
-        }
-
-        return self.spreadsheet.values_append(range_label, params, body)
-    
     def insert_row(
         self,
         values,
@@ -1376,6 +1339,43 @@ class Worksheet(object):
 
         return data
 
+        def insert_rows(self, values, index=1, value_input_option='RAW'):
+        """Adds multiple rows to the worksheet at the specified index
+        and populates it with values.
+        The input should be a list of lists, with the lists each
+        containing one row's values.
+        Widens the worksheet if there are more values than columns.
+        :param values: List of row lists.
+        """
+
+        body = {
+            "requests": [{
+                "insertDimension": {
+                    "range": {
+                      "sheetId": self.id,
+                      "dimension": "ROWS",
+                      "startIndex": index - 1,
+                      "endIndex": len(values) + 1
+                    }
+                }
+            }]
+        }
+
+        self.spreadsheet.batch_update(body)
+
+        range_label = '%s!%s' % (self.title, 'A%s' % index)
+
+        params = {
+                'valueInputOption': value_input_option
+        }
+
+        body = {
+                'majorDimension': 'ROWS',
+                'values': values
+        }
+
+        return self.spreadsheet.values_append(range_label, params, body)
+    
     def delete_row(self, index):
         """"Deletes the row from the worksheet at the specified index.
 
