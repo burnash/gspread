@@ -1094,6 +1094,10 @@ class CellTest(GspreadTest):
         self.assertEqual(cell.value, 'Dummy')
         cell = gspread.models.Cell(1, 2, 'Foo Bar')
         self.assertEqual(cell.address, 'B1')
+        cell = gspread.models.Cell.from_address('A1', 'Foo Bar')
+        self.assertEqual(cell.address, 'A1')
+        self.assertEqual(cell.value, 'Foo Bar')
+        self.assertEqual((cell.row, cell.col), (1, 1))
 
     def test_merge_cells(self):
         self.sheet.update('A1:B2', [[42, 43], [43, 44]])
