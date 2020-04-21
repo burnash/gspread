@@ -1726,7 +1726,7 @@ class Worksheet(object):
         except KeyError:
             values = []
 
-        cells = self.__get_selected_cells(values, col, row)
+        cells = self._get_selected_cells(values, col, row)
 
         if isinstance(query, basestring):
             match = lambda x: x.value == query
@@ -1735,7 +1735,7 @@ class Worksheet(object):
 
         return func(match, cells)
 
-    def __get_selected_cells(self, values, col, row):
+    def _get_selected_cells(self, values, col, row):
         """ Returns an array of cell objects.
         :param values: Array with row, colums and values
         :param col: Number of colum to find
