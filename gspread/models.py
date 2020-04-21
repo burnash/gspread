@@ -1718,8 +1718,7 @@ class Worksheet(object):
             absolute_range_name(self.title)
         )
 
-    def _finder(self, func, query):
-
+    def _finder(self, func, query, col, row):
         data = self.spreadsheet.values_get(absolute_range_name(self.title))
 
         try:
@@ -1727,11 +1726,7 @@ class Worksheet(object):
         except KeyError:
             values = []
 
-        cells = [
-            Cell(row=i + 1, col=j + 1, value=value)
-            for i, row in enumerate(values)
-            for j, value in enumerate(row)
-        ]
+        cells = self.__get_selected_cells(values, col, row)
 
         if isinstance(query, basestring):
             match = lambda x: x.value == query
@@ -1740,7 +1735,32 @@ class Worksheet(object):
 
         return func(match, cells)
 
-    def find(self, query):
+    def __get_selected_cells(self, values, col, row):
+        """ Returns an array of cell objects.
+        :param values: Array with row, colums and values
+        :param col: Number of colum to find
+        :param row: Number of row to find
+        """
+        if col and row: raise TypeError("Either 'rows' or 'cols' should be specified.")
+
+        if col:
+            return [
+                Cell(row=i + 1, col=col, value=row[col])
+                for i, row in enumerate(values)
+            ]
+        elif row:
+            return [
+                Cell(row=row, col=j + 1, value=value)
+                for j, value in enumerate(row)
+            ]
+        else:
+            return [
+                Cell(row=i + 1, col=j + 1, value=value)
+                for i, row in enumerate(values)
+                for j, value in enumerate(row)
+            ]
+
+    def find(self, query, col=None, row=None):
         """Finds the first cell matching the query.
 
         :param query: A literal string to match or compiled regular expression.
@@ -1748,7 +1768,7 @@ class Worksheet(object):
 
         """
         try:
-            return self._finder(finditem, query)
+            return self._finder(finditem, query, col, row)
         except StopIteration:
             raise CellNotFound(query)
 
