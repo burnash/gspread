@@ -20,7 +20,7 @@ Requirements: Python 2.7+ or Python 3+.
 
 ## Basic Usage
 
-1. [Obtain OAuth2 credentials from Google Developers Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
+1. [Create credentials in Google API Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
 
 2. Start using gspread:
 
