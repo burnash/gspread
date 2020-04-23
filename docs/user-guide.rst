@@ -246,4 +246,7 @@ Color the background of **A2:B2** cell range in black, change horizontal alignme
        }
    })
 
-Full specification of format options is available at `CellFormat <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat>`_ in Sheet API Reference.
+The second argument to ``format`` method is a dictionary containing the fields to update. A full specification of format options is available at `CellFormat <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat>`_ in Sheet API Reference.
+
+.. Tip::
+    `gspread-formatting <https://github.com/robin900/gspread-formatting>`_ offers extensive functionality to help you when you go beyond basics.
