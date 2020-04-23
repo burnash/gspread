@@ -199,7 +199,7 @@ Using `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_
 
 .. code:: python
 
-   worksheet.update_acell('B1', 'Bingo!')
+   worksheet.update('B1', 'Bingo!')
 
 Or row and column coordinates:
 
@@ -207,16 +207,43 @@ Or row and column coordinates:
 
    worksheet.update_cell(1, 2, 'Bingo!')
 
-A more complicated example: fetch all cells in a range,
-change their values and send an API request that update
-cells in batch:
+Update a range
 
 .. code:: python
 
-   cell_list = worksheet.range('A1:C7')
+   worksheet.update('A1:B2', [[1, 2], [3, 4]])
 
-   for cell in cell_list:
-       cell.value = 'O_o'
+Formatting
+~~~~~~~~~~
 
-   # Update in batch
-   worksheet.update_cells(cell_list)
+Here's an example of basic formatting.
+
+Set **A1:B1** text format to bold:
+
+.. code:: python
+
+   worksheet.format('A1:B1', {'textFormat': {'bold': True}})
+
+Color the background of **A2:B2** cell range in black, change horizontal alignment, text color and font size:
+
+.. code:: python
+
+   worksheet.format("A2:B2", {
+       "backgroundColor": {
+         "red": 0.0,
+         "green": 0.0,
+         "blue": 0.0
+       },
+       "horizontalAlignment": "CENTER",
+       "textFormat": {
+         "foregroundColor": {
+           "red": 1.0,
+           "green": 1.0,
+           "blue": 1.0
+         },
+         "fontSize": 12,
+         "bold": True
+       }
+   })
+
+Full specification of format options is available at `CellFormat <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat>`_ in Sheet API Reference.
