@@ -1751,9 +1751,8 @@ class Worksheet(object):
 
         :param query: A literal string to match or compiled regular expression.
         :type query: str, :py:class:`re.RegexObject`
-        :param int in_row: (optional) One-based number of row to scope the
-                           search.
-        :param int in_column: (optional) One-based number of column to scope
+        :param int in_row: (optional) One-based row number to scope the search.
+        :param int in_column: (optional) One-based column number to scope
                               the search.
         """
         try:
@@ -1766,9 +1765,8 @@ class Worksheet(object):
 
         :param query: A literal string to match or compiled regular expression.
         :type query: str, :py:class:`re.RegexObject`
-        :param int in_row: (optional) One-based number of row to scope the
-                           search.
-        :param int in_column: (optional) One-based number of column to scope
+        :param int in_row: (optional) One-based row number to scope the search.
+        :param int in_column: (optional) One-based column number to scope
                               the search.
         """
         return list(self._finder(filter, query, in_row, in_column))
