@@ -671,14 +671,10 @@ class Worksheet(object):
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
 
-        :param first_row: Row number
-        :type first_row: int
-        :param first_col: Row number
-        :type first_col: int
-        :param last_row: Row number
-        :type last_row: int
-        :param last_col: Row number
-        :type last_col: int
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
 
         Example::
 
@@ -1588,14 +1584,10 @@ class Worksheet(object):
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
 
-        :param first_row: Row number
-        :type first_row: int
-        :param first_col: Row number
-        :type first_col: int
-        :param last_row: Row number
-        :type last_row: int
-        :param last_col: Row number
-        :type last_col: int
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
 
         :param editors_emails: List for more editors email
         :type editors_emails: list
@@ -1816,10 +1808,11 @@ class Worksheet(object):
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
 
-        :param first_row: Integer row number
-        :param first_col: Integer row number
-        :param last_row: Integer row number
-        :param last_col: Integer row number
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
+
 
         .. versionadded:: 3.4
 
@@ -1925,10 +1918,10 @@ class Worksheet(object):
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
 
-        :param first_row: Integer row number
-        :param first_col: Integer row number
-        :param last_row: Integer row number
-        :param last_col: Integer row number
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
 
         :return the response body from the request
 
