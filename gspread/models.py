@@ -1571,8 +1571,10 @@ class Worksheet(object):
     def add_protected_range(
         self,
         name,
-        editors_emails=None,
+        editor_users_emails=None,
+        editor_groups_emails=None,
         description=None,
+        warning_only=False,
         requesting_user_can_edit=False
     ):
         """"Add protected range to the sheet. Only the editors can edit
@@ -1589,20 +1591,34 @@ class Worksheet(object):
         :param int last_row: Last row number
         :param int last_col: Last column number
 
-        :param editors_emails: List for more editors email
-        :type editors_emails: list
-        :param description: description for the protected ranges
-        :type description: str
-        :param requesting_user_can_edit: True if the user who requested this
-                                         protected range can edit the protected
-                                         cells.
-        :type requesting_user_can_edit: boolean
+        :param list editor_users_emails: (optional) The email addresses of
+                                         users with edit access to the
+                                         protected range.
+        :param list editor_groups_emails: (optional) The email addresses of
+                                          groups with edit access to the
+                                          protected range.
+        :param str description: (optional) Description for the protected
+                                ranges.
+        :param boolean warning_only: (optional) When true this protected range
+                                     will show a warning when editing.
+                                     Defaults to ``False``.
+        :param boolean requesting_user_can_edit: (optional) True if the user
+                                                 who requested this protected
+                                                 range can edit the protected
+                                                 cells.
+                                                 Defaults to ``False``.
         """
 
-        email_address = [permission.get('emailAddress') for permission in self.client.list_permissions(self.spreadsheet.id) if permission.get('emailAddress')]
+        email_address = [
+            permission.get('emailAddress')
+            for permission in self.client.list_permissions(self.spreadsheet.id)
+            if permission.get('emailAddress')
+        ]
 
-        editors_emails = editors_emails or []
+        editors_emails = editor_users_emails or []
         email_address.extend(email for email in editors_emails)
+
+        editor_groups_emails = editor_groups_emails or []
 
         start, end = name.split(':')
         (row_offset, column_offset) = a1_to_rowcol(start)
@@ -1620,10 +1636,11 @@ class Worksheet(object):
                             "endColumnIndex": last_column
                         },
                         "description": description,
-                        "warningOnly": False,
+                        "warningOnly": warning_only,
                         "requestingUserCanEdit": requesting_user_can_edit,
                         "editors": {
-                            "users": email_address
+                            "users": email_address,
+                            "groups": editor_groups_emails
                         }
                     }
                 }
