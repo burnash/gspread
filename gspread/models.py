@@ -1703,7 +1703,7 @@ class Worksheet(object):
             absolute_range_name(self.title)
         )
 
-    def _finder(self, func, query, col, row):
+    def _finder(self, func, query, in_row=None, in_column=None):
         data = self.spreadsheet.values_get(absolute_range_name(self.title))
 
         try:
@@ -1711,7 +1711,7 @@ class Worksheet(object):
         except KeyError:
             values = []
 
-        cells = self._get_selected_cells(values, col, row)
+        cells = self._get_selected_cells(values, in_row, in_column)
 
         if isinstance(query, basestring):
             match = lambda x: x.value == query
@@ -1720,23 +1720,24 @@ class Worksheet(object):
 
         return func(match, cells)
 
-    def _get_selected_cells(self, values, col, row):
-        """ Returns an array of cell objects.
-        :param values: Array with row, colums and values
-        :param col: Number of colum to find
-        :param row: Number of row to find
+    def _get_selected_cells(self, values, in_row=None, in_column=None):
+        """Returns a list of ``Cell`` instances scoped by optional
+        ``in_row``` or ``in_column`` values (both one-based).
         """
-        if col and row: raise TypeError("Either 'rows' or 'cols' should be specified.")
+        if in_row and in_column:
+            raise TypeError(
+                "Either 'in_row' or 'in_column' should be specified."
+            )
 
-        if col:
+        if in_column:
             return [
-                Cell(row=i + 1, col=col, value=row[col])
+                Cell(row=i + 1, col=in_column, value=row[in_column - 1])
                 for i, row in enumerate(values)
             ]
-        elif row:
+        elif in_row:
             return [
-                Cell(row=row, col=j + 1, value=value)
-                for j, value in enumerate(row)
+                Cell(row=in_row, col=j + 1, value=value)
+                for j, value in enumerate(values[in_row - 1])
             ]
         else:
             return [
@@ -1745,26 +1746,32 @@ class Worksheet(object):
                 for j, value in enumerate(row)
             ]
 
-    def find(self, query, col=None, row=None):
+    def find(self, query, in_row=None, in_column=None):
         """Finds the first cell matching the query.
 
         :param query: A literal string to match or compiled regular expression.
         :type query: str, :py:class:`re.RegexObject`
-
+        :param int in_row: (optional) One-based number of row to scope the
+                           search.
+        :param int in_column: (optional) One-based number of column to scope
+                              the search.
         """
         try:
-            return self._finder(finditem, query, col, row)
+            return self._finder(finditem, query, in_row, in_column)
         except StopIteration:
             raise CellNotFound(query)
 
-    def findall(self, query):
+    def findall(self, query, in_row=None, in_column=None):
         """Finds all cells matching the query.
 
         :param query: A literal string to match or compiled regular expression.
         :type query: str, :py:class:`re.RegexObject`
-
+        :param int in_row: (optional) One-based number of row to scope the
+                           search.
+        :param int in_column: (optional) One-based number of column to scope
+                              the search.
         """
-        return list(self._finder(filter, query))
+        return list(self._finder(filter, query, in_row, in_column))
 
     def freeze(self, rows=None, cols=None):
         """Freeze rows and/or columns on the worksheet.
