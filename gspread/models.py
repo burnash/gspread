@@ -1620,21 +1620,13 @@ class Worksheet(object):
 
         editor_groups_emails = editor_groups_emails or []
 
-        start, end = name.split(':')
-        (row_offset, column_offset) = a1_to_rowcol(start)
-        (last_row, last_column) = a1_to_rowcol(end)
+        grid_range = a1_range_to_grid_range(name, self.id)
 
         body = {
             "requests": [{
                 "addProtectedRange": {
                     'protectedRange': {
-                        "range": {
-                            "sheetId": self.id,
-                            "startRowIndex": row_offset,
-                            "endRowIndex": last_row,
-                            "startColumnIndex": column_offset,
-                            "endColumnIndex": last_column
-                        },
+                        "range": grid_range,
                         "description": description,
                         "warningOnly": warning_only,
                         "requestingUserCanEdit": requesting_user_can_edit,
@@ -1834,27 +1826,15 @@ class Worksheet(object):
         .. versionadded:: 3.4
 
         """
-        rng = {
-            'sheetId': self.id,
-        }
 
-        if name is not None:
-            start, end = name.split(':')
-            (row_offset, column_offset) = a1_to_rowcol(start)
-            (last_row, last_column) = a1_to_rowcol(end)
-            rng['startRowIndex'] = row_offset - 1
-            rng['endRowIndex'] = last_row
-            rng['startColumnIndex'] = column_offset - 1
-            rng['endColumnIndex'] = last_column
-
-        filter_settings = {
-            'range': rng
-        }
+        grid_range = a1_range_to_grid_range(name, self.id) if name is not None else {'sheetId': self.id}
 
         body = {
             'requests': [{
                 'setBasicFilter': {
-                    'filter': filter_settings
+                    'filter': {
+                        'range': grid_range
+                    }
                 }
             }]
         }
@@ -1945,23 +1925,14 @@ class Worksheet(object):
         .. MergeType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#MergeType
 
         """
-
-        start, end = name.split(':')
-        (row_offset, column_offset) = a1_to_rowcol(start)
-        (last_row, last_column) = a1_to_rowcol(end)
+        grid_range = a1_range_to_grid_range(name, self.id)
 
         body = {
             "requests": [
                 {
                     "mergeCells": {
                         "mergeType": merge_type,
-                        "range": {
-                            "sheetId": self.id,
-                            "startRowIndex": row_offset - 1,
-                            "endRowIndex": last_row,
-                            "startColumnIndex": column_offset - 1,
-                            "endColumnIndex": last_column,
-                        }
+                        "range": grid_range
                     }
                 }
             ]
