@@ -9,7 +9,7 @@ Google Spreadsheets client library.
 """
 
 
-__version__ = '3.4.2'
+__version__ = '3.5.0'
 __author__ = 'Anton Burnashev'
 
 

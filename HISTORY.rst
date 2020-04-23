@@ -1,6 +1,30 @@
 Release History
 ===============
 
+3.5.0 (2020-04-23)
+------------------
+
+* Simplified OAuth2 flow (#762)
+
+* Fix `Worksheet.delete_rows()` index error (#760 by @rafa-guillermo)
+
+* Deprecate `Worksheet.delete_row()` (#766)
+
+* Scope `Worksheet.find()` to a specific row or a column (#739 by @alfonsocv12)
+
+* Add `Worksheet.add_protected_range()` #447 (#720 by @KesterChan01)
+
+* Add ability to fetch cell address in A1 notation (#763 by @tivaliy)
+
+* Add `Worksheet.delete_columns()` (#761 by @rafa-guillermo)
+
+* Ignore numericising specific columns in `get_all_records` (#701 by @benjamindhimes)
+
+* Add option ``folder_id`` when creating a spreadsheet (#754 by @Abdellam1994)
+
+* Add `insertDataOption` to `Worksheet.append_row()` and `Worksheet.append_rows()` (#719 by @lobatt)
+
+
 3.4.2 (2020-04-06)
 ------------------
 
