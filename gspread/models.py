@@ -1711,7 +1711,7 @@ class Worksheet(object):
         except KeyError:
             values = []
 
-        cells = self._get_selected_cells(values, in_row, in_column)
+        cells = self._list_cells(values, in_row, in_column)
 
         if isinstance(query, basestring):
             match = lambda x: x.value == query
@@ -1720,7 +1720,7 @@ class Worksheet(object):
 
         return func(match, cells)
 
-    def _get_selected_cells(self, values, in_row=None, in_column=None):
+    def _list_cells(self, values, in_row=None, in_column=None):
         """Returns a list of ``Cell`` instances scoped by optional
         ``in_row``` or ``in_column`` values (both one-based).
         """
