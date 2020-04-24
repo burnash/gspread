@@ -30,7 +30,7 @@ class Client(object):
                  https://github.com/googleapis/google-auth-library-python
     :param session: (optional) A session object capable of making HTTP requests
                     while persisting some parameters across requests.
-                    Defaults to `requests.Session <http://docs.python-requests.org/en/master/api/#request-sessions>`_.
+                    Defaults to `google.auth.transport.requests.AuthorizedSession <https://google-auth.readthedocs.io/en/latest/reference/google.auth.transport.requests.html#google.auth.transport.requests.AuthorizedSession>`_.
 
     >>> c = gspread.Client(auth=OAuthCredentialObject)
 
