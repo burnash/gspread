@@ -6,6 +6,7 @@ API Reference
 Top level
 ---------
 
+.. autofunction:: oauth
 .. autofunction:: authorize
 
 Client

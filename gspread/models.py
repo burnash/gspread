@@ -1920,9 +1920,10 @@ class Worksheet(object):
         :param int last_row: Last row number
         :param int last_col: Last column number
 
-        :return the response body from the request
+        :returns: the response body from the request
+        :rtype: dict
 
-        .. MergeType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#MergeType
+        .. _MergeType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#MergeType
 
         """
         grid_range = a1_range_to_grid_range(name, self.id)
