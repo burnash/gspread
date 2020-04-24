@@ -270,7 +270,11 @@ Here's a basic example for writing a dataframe to a sheet. This will put the hea
    import pandas as pd
 
    worksheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
-    
+
+For advanced pandas use cases check out these libraries:
+
+ * `gspread-pandas <https://github.com/aiguofer/gspread-pandas>`_
+ * `gspread-dataframe <https://github.com/robin900/gspread-dataframe>`_
 
 Using gspread with NumPy
 ~~~~~~~~~~~~~~~~~~~~~~~~
