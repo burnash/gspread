@@ -384,7 +384,7 @@ class Spreadsheet(object):
 
         :returns: a newly created :class:`<gspread.models.Worksheet>`.
 
-        .. versionadded:: 3.1.0
+        .. versionadded:: 3.1
 
         """
         body = {
@@ -1194,8 +1194,10 @@ class Worksheet(object):
 
         :param str range_name: Target range in the A1 notation.
         :param cell_format: Dictionary containing the fields to update.
+                            See `CellFormat`_ in the Sheets API for
+                            available fields.
 
-        https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat
+        .. _CellFormat: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat
 
         Examples::
 
@@ -1891,7 +1893,7 @@ class Worksheet(object):
 
         :returns: a newly created :class:`<gspread.models.Worksheet>`.
 
-        .. versionadded:: 3.1.0
+        .. versionadded:: 3.1
 
         """
         return self.spreadsheet.duplicate_sheet(

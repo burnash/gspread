@@ -290,14 +290,15 @@ def _a1_to_rowcol_unbounded(label):
 
 
 def a1_range_to_grid_range(name, sheet_id=None):
-    """Converts a range defined in A1 notation to a dict representing a GridRange.
+    """Converts a range defined in A1 notation to a dict representing
+    a `GridRange`_.
 
     All indexes are zero-based. Indexes are half open, e.g the start
     index is inclusive and the end index is exclusive: [startIndex, endIndex).
 
     Missing indexes indicate the range is unbounded on that side.
 
-    https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#GridRange
+    .. _GridRange: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#GridRange
 
     Examples::
 
