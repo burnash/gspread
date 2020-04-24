@@ -13,7 +13,7 @@ __version__ = '3.5.0'
 __author__ = 'Anton Burnashev'
 
 
-from .auth import oauth
+from .auth import oauth, service_account
 from .client import Client
 from .models import Spreadsheet, Worksheet, Cell
 
