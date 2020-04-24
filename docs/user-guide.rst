@@ -250,3 +250,50 @@ The second argument to ``format`` method is a dictionary containing the fields t
 
 .. Tip::
     `gspread-formatting <https://github.com/robin900/gspread-formatting>`_ offers extensive functionality to help you when you go beyond basics.
+
+
+Using gspread with pandas
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+`pandas <https://pandas.pydata.org/>`_ is a popular library for data analysis. The simplest way to get data from a sheet to a pandas DataFrame is with ``Worksheet.get_all_records()``: 
+
+.. code:: python
+   
+   import pandas as pd
+
+   dataframe = pd.DataFrame(worksheet.get_all_records())
+
+Here's a basic example for writing a dataframe to a sheet. This will put the header of a dataframe into the first row of a sheet followed by the values of a dataframe:
+
+.. code:: python
+
+   import pandas as pd
+
+   worksheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
+    
+
+Using gspread with NumPy
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+`NumPy <https://numpy.org/>`_ is a library for scientific computing in Python. It provides tools for working with high performance multi-dimensional arrays.
+
+Read contents of a sheet into a NumPy array:
+
+.. code:: python
+
+   import numpy as np
+   array = np.array(worksheet.get_all_values())
+
+The code above assumes that your data starts from the first row of the sheet. If you have a hearder row in the first row, you need replace ``worksheet.get_all_values()`` with ``worksheet.get_all_values()[1:]``.
+
+Write a NumPy array to a sheet:
+
+.. code:: python
+
+   import numpy as np
+   
+   array = np.array([[1, 2, 3], [4, 5, 6]])
+ 
+   # Write the array to worksheet starting from the A2 cell
+   worksheet.update('A2', array.tolist())
+   
