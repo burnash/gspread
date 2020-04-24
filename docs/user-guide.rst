@@ -246,7 +246,7 @@ Color the background of **A2:B2** cell range in black, change horizontal alignme
        }
    })
 
-The second argument to :meth:`~gspread.Worksheet.format` is a dictionary containing the fields to update. A full specification of format options is available at `CellFormat <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat>`_ in Sheet API Reference.
+The second argument to :meth:`~gspread.models.Worksheet.format` is a dictionary containing the fields to update. A full specification of format options is available at `CellFormat <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat>`_ in Sheet API Reference.
 
 .. Tip::
     `gspread-formatting <https://github.com/robin900/gspread-formatting>`_ offers extensive functionality to help you when you go beyond basics.
@@ -255,15 +255,15 @@ The second argument to :meth:`~gspread.Worksheet.format` is a dictionary contain
 Using gspread with pandas
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`pandas <https://pandas.pydata.org/>`_ is a popular library for data analysis. The simplest way to get data from a sheet to a pandas DataFrame is with :meth:`~gspread.Worksheet.get_all_records`: 
+`pandas <https://pandas.pydata.org/>`_ is a popular library for data analysis. The simplest way to get data from a sheet to a pandas DataFrame is with :meth:`~gspread.models.Worksheet.get_all_records`:
 
 .. code:: python
-   
+
    import pandas as pd
 
    dataframe = pd.DataFrame(worksheet.get_all_records())
 
-Here's a basic example for writing a dataframe to a sheet. With :meth:`~gspread.Worksheet.update` we put the header of a dataframe into the first row of a sheet followed by the values of a dataframe:
+Here's a basic example for writing a dataframe to a sheet. With :meth:`~gspread.models.Worksheet.update` we put the header of a dataframe into the first row of a sheet followed by the values of a dataframe:
 
 .. code:: python
 
@@ -295,9 +295,9 @@ Write a NumPy array to a sheet:
 .. code:: python
 
    import numpy as np
-   
+
    array = np.array([[1, 2, 3], [4, 5, 6]])
- 
+
    # Write the array to worksheet starting from the A2 cell
    worksheet.update('A2', array.tolist())
-   
+
