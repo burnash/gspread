@@ -293,8 +293,7 @@ def a1_range_to_grid_range(name, sheet_id=None):
     """Converts a range defined in A1 notation to a dict representing a GridRange.
 
     All indexes are zero-based. Indexes are half open, e.g the start
-    index is inclusive and the end index is exclusive:
-        [startIndex, endIndex).
+    index is inclusive and the end index is exclusive: [startIndex, endIndex).
 
     Missing indexes indicate the range is unbounded on that side.
 

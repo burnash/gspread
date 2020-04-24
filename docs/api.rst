@@ -36,7 +36,9 @@ Utils
 -----
 
 .. automodule:: gspread.utils
-   :members: rowcol_to_a1, a1_to_rowcol
+   :members: rowcol_to_a1, a1_to_rowcol, a1_range_to_grid_range,
+             cast_to_a1_notation, absolute_range_name, is_scalar,
+             filter_dict_values, accepted_kwargs
 
 Exceptions
 ----------
