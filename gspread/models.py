@@ -1957,6 +1957,10 @@ class Cell(object):
         #: Value of the cell.
         self.value = value
 
+    @classmethod
+    def from_address(cls, label, value=''):
+        return cls(*a1_to_rowcol(label), value=value)
+
     def __repr__(self):
         return '<%s R%sC%s %s>' % (self.__class__.__name__,
                                    self.row,
