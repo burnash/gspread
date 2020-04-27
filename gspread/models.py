@@ -1355,7 +1355,7 @@ class Worksheet(object):
                       "sheetId": self.id,
                       "dimension": "ROWS",
                       "startIndex": index - 1,
-                      "endIndex": len(values) + 1
+                      "endIndex": len(values) + index - 1
                     }
                 }
             }]
