@@ -1592,7 +1592,7 @@ class Worksheet(object):
 
         self.spreadsheet.batch_update(body)
 
-        range_label = '%s!%s' % (self.title, 'A%s' % index)
+        range_label = absolute_range_name(self.title, 'A%s' % index)
 
         params = {
                 'valueInputOption': value_input_option
@@ -1604,7 +1604,7 @@ class Worksheet(object):
         }
 
         return self.spreadsheet.values_append(range_label, params, body)
-    
+
     def delete_row(self, index):
         """Deletes the row from the worksheet at the specified index.
 
