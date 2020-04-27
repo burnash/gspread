@@ -35,7 +35,8 @@ from .urls import (
     SPREADSHEET_VALUES_CLEAR_URL,
     SPREADSHEET_DRIVE_URL,
     WORKSHEET_DRIVE_URL,
-    SPREADSHEET_VALUES_BATCH_UPDATE_URL
+    SPREADSHEET_VALUES_BATCH_UPDATE_URL,
+    SPREADSHEET_SHEETS_COPY_TO_URL
 )
 
 try:
@@ -146,26 +147,6 @@ class Spreadsheet(object):
 
         return r.json()
 
-    def copy_worksheet_from_spreadsheet(self, sheetId, spreadsheetId, destinationSpreadsheetId):
-        """Lower-level method that directly calls `spreadsheets/{spreadsheetId}/sheets/{sheetId}:copyTo <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.sheets/copyTo>`._
-
-        :param str sheetId: `the worksheet index to copy`
-        :param str spreadsheetId: `the spreadsheet key to copy from`
-        :param str destinanationSpreadsheetId: `the spreadsheet key to copy into`
-        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#response-body>`_.
-        :rtype dict
-
-        """
-        endpoint = f'https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/sheets/{sheetId}:copyTo'
-        payload = {"destinationSpreadsheetId": destinationSpreadsheetId}
-        r = self.client.request(
-            'post',
-            endpoint,
-            json=payload
-        )
-
-        return r.json()
-
     def values_append(self, range, params, body):
         """Lower-level method that directly calls `spreadsheets.values.append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
 
@@ -272,6 +253,19 @@ class Spreadsheet(object):
         """
         url = SPREADSHEET_URL % self.id
         r = self.client.request('get', url, params=params)
+        return r.json()
+
+    def _spreadsheets_sheets_copy_to(
+        self,
+        sheet_id,
+        destination_spreadsheet_id
+    ):
+        """Lower-level method that directly calls `spreadsheets.sheets.copyTo <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.sheets/copyTo>`_.
+        """
+        url = SPREADSHEET_SHEETS_COPY_TO_URL % (self.id, sheet_id)
+
+        body = {"destinationSpreadsheetId": destination_spreadsheet_id}
+        r = self.client.request('post', url, json=body)
         return r.json()
 
     def fetch_sheet_metadata(self, params=None):
@@ -1923,21 +1917,22 @@ class Worksheet(object):
             new_sheet_name
         )
 
-
-    def duplicate_to(
+    def copy_to(
         self,
-        target_spreadsheet_key,
+        spreadsheet_id,
     ):
-        """Duplicates the contents of a sheet in this spreadsheet into another spreadsheet.
+        """Copies this sheet to another spreadsheet.
 
-        :param str target_spreadsheet_key: The key for which spreadsheet to copy to.
-        :returns: a dict with the response containing information about the new worksheet.
+        :param str spreadsheet_id: The ID of the spreadsheet to copy
+                                   the sheet to.
+        :returns: a dict with the response containing information about
+                  the newly created sheet.
         """
+        return self.spreadsheet._spreadsheets_sheets_copy_to(
+            self.id,
+            spreadsheet_id
+        )
 
-        source_sheet_key = self.spreadsheet.id
-        r = self.spreadsheet.copy_worksheet_from_spreadsheet(self.id, source_sheet_key, target_spreadsheet_key)
-
-        return r
     @cast_to_a1_notation
     def merge_cells(self, name, merge_type="MERGE_ALL"):
         """
