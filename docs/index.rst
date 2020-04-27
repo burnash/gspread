@@ -1,58 +1,102 @@
-.. gspread documentation master file, created by
-   sphinx-quickstart on Thu Dec 15 14:44:32 2011.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+gspread
+=======
 
-gspread API Reference
-=====================
+`gspread`_ is a Python API for Google Sheets.
 
-`gspread <https://github.com/burnash/gspread>`_ is a Python client library for the `Google Sheets`_ API.
+Features:
 
-.. _Google Sheets: https://docs.google.com/spreadsheets/
+-  Google Sheets API v4.
+-  Open a spreadsheet by title, key or url.
+-  Read, write, and format cell ranges.
+-  Sharing and access control.
+-  Batching updates.
 
-.. module:: gspread
 
-.. contents:: :local:
+Installation
+------------
 
-Main Interface
---------------
+.. code:: sh
 
-.. autofunction:: authorize
+   pip install gspread
 
-.. autoclass:: gspread.Client
-   :members:
 
-Models
-------
+Requirements: Python 2.7+ or Python 3+.
 
-The models represent common spreadsheet objects: :class:`a spreadsheet <Spreadsheet>`,
-:class:`a worksheet <Worksheet>` and :class:`a cell <Cell>`.
 
-.. note::
+Quick Example
+-------------
 
-   The classes described below should not be instantiated by end-user. Their
-   instances result from calling other objects' methods.
+.. code:: python
 
-.. autoclass:: gspread.models.Spreadsheet
-   :members:
-.. autoclass:: gspread.models.Worksheet
-   :members:
-.. autoclass:: gspread.models.Cell
-   :members:
+   import gspread
 
-Utils
+   gc = gspread.authorize(credentials)
+
+   # Open a sheet from a spreadsheet in one go
+   wks = gc.open("Where is the money Lebowski?").sheet1
+
+   # Update a range of cells using the top left corner address
+   wks.update('A1', [[1, 2], [3, 4]])
+
+   # Or update a single cell
+   wks.update('B42', "it's down there somewhere, let me take another look.")
+
+   # Format the header
+   wks.format('A1:B1', {'textFormat': {'bold': True}})
+
+
+Getting Started
+---------------
+
+.. toctree::
+   :maxdepth: 2
+
+   oauth2
+
+
+Usage
 -----
 
-.. automodule:: gspread.utils
-   :members: rowcol_to_a1, a1_to_rowcol
+.. toctree::
+    :maxdepth: 2
 
-Exceptions
-----------
+    user-guide
 
-.. autoexception:: gspread.exceptions.GSpreadException
-.. autoexception:: gspread.exceptions.APIError
 
-.. _github issue: https://github.com/burnash/gspread/issues
+API Documentation
+---------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   api
+
+
+How to Contribute
+-----------------
+
+Please make sure to take a moment and read the `Code of Conduct`_.
+
+Ask Questions
+~~~~~~~~~~~~~
+
+The best way to get an answer to a question is to ask on `Stack Overflow
+with a gspread tag`_.
+
+Report Issues
+~~~~~~~~~~~~~
+
+Please report bugs and suggest features via the `GitHub Issues`_.
+
+Before opening an issue, search the tracker for possible duplicates. If
+you find a duplicate, please add a comment saying that you encountered
+the problem as well.
+
+Contribute code
+~~~~~~~~~~~~~~~
+
+Please make sure to read the `Contributing Guide`_ before making a pull
+request.
 
 Indices and tables
 ==================
@@ -60,3 +104,10 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. _gspread: https://github.com/burnash/gspread
+.. _Obtain OAuth2 credentials from Google Developers Console: oauth2.html
+.. _Code of Conduct: https://github.com/burnash/gspread/blob/master/.github/CODE_OF_CONDUCT.md
+.. _Stack Overflow with a gspread tag: http://stackoverflow.com/questions/tagged/gspread?sort=votes&pageSize=50
+.. _GitHub Issues: https://github.com/burnash/gspread/issues
+.. _Contributing Guide: https://github.com/burnash/gspread/blob/master/.github/CONTRIBUTING.md

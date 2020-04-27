@@ -1,17 +1,26 @@
-# Google Spreadsheets Python API
+# Google Spreadsheets Python API v4
 
-Manage your spreadsheets with _gspread_ in Python.
+Simple interface for working with Google Sheets.
 
 Features:
 
-* Google Sheets API v4.
-* Open a spreadsheet by its **title** or **url**.
-* Extract range, entire row or column values.
-* Python 3 support.
+* Open a spreadsheet by **title**, **key** or **url**.
+* Read, write, and format cell ranges.
+* Sharing and access control.
+* Batching updates.
+
+## Installation
+
+```sh
+pip install gspread
+```
+
+Requirements: Python 2.7+ or Python 3+.
+
 
 ## Basic Usage
 
-1. [Obtain OAuth2 credentials from Google Developers Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
+1. [Create credentials in Google API Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
 
 2. Start using gspread:
 
@@ -20,13 +29,17 @@ import gspread
 
 gc = gspread.authorize(credentials)
 
-# Open a worksheet from spreadsheet with one shot
+# Open a sheet from a spreadsheet in one go
 wks = gc.open("Where is the money Lebowski?").sheet1
 
-wks.update_acell('B2', "it's down there somewhere, let me take another look.")
+# Update a range of cells using the top left corner address
+wks.update('A1', [[1, 2], [3, 4]])
 
-# Fetch a cell range
-cell_list = wks.range('A1:B7')
+# Or update a single cell
+wks.update('B42', "it's down there somewhere, let me take another look.")
+
+# Format the header
+wks.format('A1:B1', {'textFormat': {'bold': True}})
 ```
 
 ## More Examples
@@ -93,14 +106,10 @@ sh.del_worksheet(worksheet)
 
 ```python
 # With label
-val = worksheet.acell('B1').value
+val = worksheet.get('B1').first()
 
 # With coords
 val = worksheet.cell(1, 2).value
-
-# To get a cell formula
-cell = worksheet.acell('B1') # or .cell(1, 2)
-cell.input_value
 ```
 
 ### Getting All Values From a Row or a Column
@@ -143,81 +152,32 @@ criteria_re = re.compile(r'(Small|Room-tiering) rug')
 cell_list = worksheet.findall(criteria_re)
 ```
 
-### Cell Object
-
-Each cell has a value and coordinates properties.
-
-```python
-
-value = cell.value
-row_number = cell.row
-column_number = cell.col
-```
-
 ### Updating Cells
 
 ```python
-worksheet.update_acell('B1', 'Bingo!')
+# Update a single cell
+worksheet.update('B1', 'Bingo!')
 
-# Or
-worksheet.update_cell(1, 2, 'Bingo!')
+# Update a range
+worksheet.update('A1:B2', [[1, 2], [3, 4]])
 
-# Select a range
-cell_list = worksheet.range('A1:C7')
-
-for cell in cell_list:
-    cell.value = 'O_o'
-
-# Update in batch
-worksheet.update_cells(cell_list)
+# Update multiple ranges at once
+worksheet.batch_update([{
+    'range': 'A1:B2',
+    'values': [['A1', 'B1'], ['A2', 'B2']],
+}, {
+    'range': 'J42:K43',
+    'values': [[1, 2], [3, 4]],
+}])
 ```
 
-## Installation
-
-### Requirements
-
-Python 2.6+ or Python 3+
-
-### From PyPI
-
-```sh
-pip install gspread
-```
-
-### From GitHub
-
-```sh
-git clone https://github.com/burnash/gspread.git
-cd gspread
-python setup.py install
-```
-
-## Documentation
-* [Getting Google API's credentials](http://gspread.readthedocs.io/en/latest/oauth2.html)
-* [gspread API Reference](http://gspread.readthedocs.org/)
-
-## Testing
-
-1. Go to Google Drive and create an empty spreadsheet you will use for testing.
-2. Create a configuration file from config dummy:
-
-    ```sh
-    cp tests/tests.config.example tests/tests.config
-    ```
-
-3. Open `tests.config` with your favorite editor and fill up config parameters with your testing spreadsheet's info.
-4. Install [Nose](http://nose.readthedocs.org).
-5. Download credentials json file(see [doc](http://gspread.readthedocs.io/en/latest/oauth2.html#using-signed-credentials)),
-rename it to `creds.json` and put it into the tests folder.
-6. Run tests:
-
-    ```sh
-    nosetests
-    ```
+## [Documentation](http://gspread.readthedocs.org/)
 
 ## [Contributors](https://github.com/burnash/gspread/graphs/contributors)
 
 ## How to Contribute
+
+Please make sure to take a moment and read the [Code of Conduct](https://github.com/burnash/gspread/blob/master/.github/CODE_OF_CONDUCT.md).
 
 ### Ask Questions
 
@@ -229,7 +189,10 @@ Please report bugs and suggest features via the [GitHub Issues](https://github.c
 
 Before opening an issue, search the tracker for possible duplicates. If you find a duplicate, please add a comment saying that you encountered the problem as well.
 
+### Improve Documentation
+
+[Documentation](https://gspread.readthedocs.io/) is as important as code. If you know how to make it more consistent, readable and clear, please submit a pull request. The documentation files are in [`docs`](https://github.com/burnash/gspread/tree/master/docs) folder, use [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html#rst-index) markup and rendered by [Sphinx](http://www.sphinx-doc.org/).
+
 ### Contribute code
 
-* Check the [GitHub Issues](https://github.com/burnash/gspread/issues) for open issues that need attention.
-* Follow the [Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/) Guide.
+Please make sure to read the [Contributing Guide](https://github.com/burnash/gspread/blob/master/.github/CONTRIBUTING.md) before making a pull request.

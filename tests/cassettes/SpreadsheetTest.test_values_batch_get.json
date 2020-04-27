@@ -1,0 +1,403 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-04-03T19:34:50",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+SpreadsheetTest%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n \"kind\": \"drive#fileList\",\n \"incompleteSearch\": false,\n \"files\": [\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo\",\n   \"name\": \"Test SpreadsheetTest\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  }\n ]\n}\n"
+        },
+        "headers": {
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private, max-age=0, must-revalidate, no-transform"
+          ],
+          "Content-Length": [
+            "256"
+          ],
+          "Content-Security-Policy": [
+            "frame-ancestors 'self'"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:34:50 GMT"
+          ],
+          "Expires": [
+            "Fri, 03 Apr 2020 19:34:50 GMT"
+          ],
+          "Server": [
+            "GSE"
+          ],
+          "Vary": [
+            "Origin",
+            "X-Origin"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "files": [
+            {
+              "id": "1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo",
+              "kind": "drive#file",
+              "mimeType": "application/vnd.google-apps.spreadsheet",
+              "name": "Test SpreadsheetTest"
+            }
+          ],
+          "incompleteSearch": false,
+          "kind": "drive#fileList"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+SpreadsheetTest%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
+      }
+    },
+    {
+      "recorded_at": "2020-04-03T19:34:51",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"values\": [[\"\\ud83c\\udf47\", \"\\ud83c\\udf49\", \"\\ud83c\\udf4b\"], [\"\\ud83c\\udf50\", \"\\ud83c\\udf4e\", \"\\ud83c\\udf53\"]]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "112"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "values": [
+            [
+              "\ud83c\udf47",
+              "\ud83c\udf49",
+              "\ud83c\udf4b"
+            ],
+            [
+              "\ud83c\udf50",
+              "\ud83c\udf4e",
+              "\ud83c\udf53"
+            ]
+          ]
+        },
+        "method": "PUT",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo\",\n  \"updatedRange\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:C2\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 6\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:34:51 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "spreadsheetId": "1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo",
+          "updatedCells": 6,
+          "updatedColumns": 3,
+          "updatedRange": "'\ud83c\udf35 test_values_batch_get 1'!A1:C2",
+          "updatedRows": 2
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo/values/%F0%9F%8C%B5%20test_values_batch_get%201%21A1?valueInputOption=RAW"
+      }
+    },
+    {
+      "recorded_at": "2020-04-03T19:34:52",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo\",\n  \"valueRanges\": [\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!A1:A10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf47\"\n        ],\n        [\n          \"\ud83c\udf50\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!B1:B10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf49\"\n        ],\n        [\n          \"\ud83c\udf4e\"\n        ]\n      ]\n    },\n    {\n      \"range\": \"'\ud83c\udf35 test_values_batch_get 1'!C1:C10\",\n      \"majorDimension\": \"ROWS\",\n      \"values\": [\n        [\n          \"\ud83c\udf4b\"\n        ],\n        [\n          \"\ud83c\udf53\"\n        ]\n      ]\n    }\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:34:52 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "spreadsheetId": "1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo",
+          "valueRanges": [
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!A1:A10",
+              "values": [
+                [
+                  "\ud83c\udf47"
+                ],
+                [
+                  "\ud83c\udf50"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!B1:B10",
+              "values": [
+                [
+                  "\ud83c\udf49"
+                ],
+                [
+                  "\ud83c\udf4e"
+                ]
+              ]
+            },
+            {
+              "majorDimension": "ROWS",
+              "range": "'\ud83c\udf35 test_values_batch_get 1'!C1:C10",
+              "values": [
+                [
+                  "\ud83c\udf4b"
+                ],
+                [
+                  "\ud83c\udf53"
+                ]
+              ]
+            }
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo/values:batchGet?ranges=%F0%9F%8C%B5+test_values_batch_get+1%21A%3AA&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21B%3AB&ranges=%F0%9F%8C%B5+test_values_batch_get+1%21C%3AC"
+      }
+    },
+    {
+      "recorded_at": "2020-04-03T19:34:52",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 180140317}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "55"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "deleteSheet": {
+                "sheetId": 180140317
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo\",\n  \"replies\": [\n    {}\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:34:52 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {}
+          ],
+          "spreadsheetId": "1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1NgMavkRy5XWIIbh670-7eaNy_vrltd3vnWvcDT1cSIo:batchUpdate"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

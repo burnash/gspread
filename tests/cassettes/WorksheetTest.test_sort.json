@@ -1,0 +1,495 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-04-03T19:36:45",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+WorksheetTest%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n \"kind\": \"drive#fileList\",\n \"incompleteSearch\": false,\n \"files\": [\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n   \"name\": \"Test WorksheetTest\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  }\n ]\n}\n"
+        },
+        "headers": {
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private, max-age=0, must-revalidate, no-transform"
+          ],
+          "Content-Length": [
+            "254"
+          ],
+          "Content-Security-Policy": [
+            "frame-ancestors 'self'"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:36:44 GMT"
+          ],
+          "Expires": [
+            "Fri, 03 Apr 2020 19:36:44 GMT"
+          ],
+          "Server": [
+            "GSE"
+          ],
+          "Vary": [
+            "Origin",
+            "X-Origin"
+          ],
+          "X-Content-Type-Options": [
+            "nosniff"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "1; mode=block"
+          ]
+        },
+        "json_body": {
+          "files": [
+            {
+              "id": "1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w",
+              "kind": "drive#file",
+              "mimeType": "application/vnd.google-apps.spreadsheet",
+              "name": "Test WorksheetTest"
+            }
+          ],
+          "incompleteSearch": false,
+          "kind": "drive#fileList"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+WorksheetTest%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
+      }
+    },
+    {
+      "recorded_at": "2020-04-03T19:36:46",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3AC6"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"range\": \"wksht_test!A1:C6\",\n  \"majorDimension\": \"ROWS\"\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:36:46 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "majorDimension": "ROWS",
+          "range": "wksht_test!A1:C6"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3AC6"
+      }
+    },
+    {
+      "recorded_at": "2020-04-03T19:36:47",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"values\": [[\"Apple\", \"2012\", \"4\"], [\"Banana\", \"2013\", \"3\"], [\"Canada\", \"2007\", \"1\"], [\"Dinosaur\", \"2013\", \"6\"], [\"Elephant\", \"2019\", \"2\"], [\"Fox\", \"2077\", \"5\"]]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "162"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "values": [
+            [
+              "Apple",
+              "2012",
+              "4"
+            ],
+            [
+              "Banana",
+              "2013",
+              "3"
+            ],
+            [
+              "Canada",
+              "2007",
+              "1"
+            ],
+            [
+              "Dinosaur",
+              "2013",
+              "6"
+            ],
+            [
+              "Elephant",
+              "2019",
+              "2"
+            ],
+            [
+              "Fox",
+              "2077",
+              "5"
+            ]
+          ]
+        },
+        "method": "PUT",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3AC6?valueInputOption=RAW"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n  \"updatedRange\": \"wksht_test!A1:C6\",\n  \"updatedRows\": 6,\n  \"updatedColumns\": 3,\n  \"updatedCells\": 18\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:36:47 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "spreadsheetId": "1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w",
+          "updatedCells": 18,
+          "updatedColumns": 3,
+          "updatedRange": "wksht_test!A1:C6",
+          "updatedRows": 6
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/wksht_test%21A1%3AC6?valueInputOption=RAW"
+      }
+    },
+    {
+      "recorded_at": "2020-04-03T19:36:51",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/%27wksht_test%27?valueRenderOption=FORMATTED_VALUE"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"range\": \"wksht_test!A1:C6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"Canada\",\n      \"2007\",\n      \"1\"\n    ],\n    [\n      \"Dinosaur\",\n      \"2013\",\n      \"6\"\n    ],\n    [\n      \"Fox\",\n      \"2077\",\n      \"5\"\n    ],\n    [\n      \"Apple\",\n      \"2012\",\n      \"4\"\n    ],\n    [\n      \"Banana\",\n      \"2013\",\n      \"3\"\n    ],\n    [\n      \"Elephant\",\n      \"2019\",\n      \"2\"\n    ]\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:36:50 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "majorDimension": "ROWS",
+          "range": "wksht_test!A1:C6",
+          "values": [
+            [
+              "Canada",
+              "2007",
+              "1"
+            ],
+            [
+              "Dinosaur",
+              "2013",
+              "6"
+            ],
+            [
+              "Fox",
+              "2077",
+              "5"
+            ],
+            [
+              "Apple",
+              "2012",
+              "4"
+            ],
+            [
+              "Banana",
+              "2013",
+              "3"
+            ],
+            [
+              "Elephant",
+              "2019",
+              "2"
+            ]
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w/values/%27wksht_test%27?valueRenderOption=FORMATTED_VALUE"
+      }
+    },
+    {
+      "recorded_at": "2020-04-03T19:36:51",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "{\"requests\": [{\"deleteSheet\": {\"sheetId\": 741072987}}]}"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Authorization": [
+            "Bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "55"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "User-Agent": [
+            "python-requests/2.20.0"
+          ],
+          "accept-encoding": [
+            "identity"
+          ]
+        },
+        "json_body": {
+          "requests": [
+            {
+              "deleteSheet": {
+                "sheetId": 741072987
+              }
+            }
+          ]
+        },
+        "method": "POST",
+        "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w:batchUpdate"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\n  \"spreadsheetId\": \"1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w\",\n  \"replies\": [\n    {}\n  ]\n}\n"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "none"
+          ],
+          "Alt-Svc": [
+            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 03 Apr 2020 19:36:51 GMT"
+          ],
+          "Server": [
+            "ESF"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Vary": [
+            "X-Origin",
+            "Referer",
+            "Origin,Accept-Encoding"
+          ],
+          "X-Frame-Options": [
+            "SAMEORIGIN"
+          ],
+          "X-XSS-Protection": [
+            "0"
+          ]
+        },
+        "json_body": {
+          "replies": [
+            {}
+          ],
+          "spreadsheetId": "1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1HiIX72LGxzpVlGy2Sg0XjjGyFnaUlKgOxQhiZXs3L8w:batchUpdate"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
