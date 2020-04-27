@@ -10,6 +10,9 @@ Simple authentication with OAuth.
 
 import os
 from google.oauth2.credentials import Credentials
+from google.oauth2.service_account import (
+    Credentials as ServiceAccountCredentials,
+)
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 from .client import Client
@@ -56,6 +59,10 @@ DEFAULT_AUTHORIZED_USER_FILENAME = os.path.join(
     DEFAULT_CONFIG_DIR,
     'authorized_user.json'
 )
+DEFAULT_SERVICE_ACCOUNT_FILENAME = os.path.join(
+    DEFAULT_CONFIG_DIR,
+    'service_account.json'
+)
 
 
 def _create_installed_app_flow(scopes):
@@ -100,3 +107,14 @@ def oauth(scopes=DEFAULT_SCOPES, flow=local_server_flow):
 
     client = Client(auth=creds)
     return client
+
+
+def service_account(
+    scopes=DEFAULT_SCOPES,
+    filename=DEFAULT_SERVICE_ACCOUNT_FILENAME
+):
+    creds = ServiceAccountCredentials.from_service_account_file(
+        filename,
+        scopes=scopes
+    )
+    return Client(auth=creds)
