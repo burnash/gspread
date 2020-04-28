@@ -12,6 +12,7 @@ import sys
 import re
 from functools import wraps
 from collections import defaultdict
+
 try:
     from collections.abc import Sequence
 except ImportError:
@@ -20,7 +21,9 @@ from itertools import chain
 
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
-from google.oauth2.service_account import Credentials as ServiceAccountCredentials
+from google.oauth2.service_account import (
+    Credentials as ServiceAccountCredentials,
+)
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
 
@@ -51,7 +54,7 @@ def convert_credentials(credentials):
     elif 'oauth2client' in module and cls in (
         'OAuth2Credentials',
         'AccessTokenCredentials',
-        'GoogleCredentials'
+        'GoogleCredentials',
     ):
         return _convert_oauth(credentials)
     elif isinstance(credentials, Credentials):
@@ -94,14 +97,19 @@ def finditem(func, seq):
     return next((item for item in seq if func(item)))
 
 
-def numericise(value, empty2zero=False, default_blank="", allow_underscores_in_numeric_literals=False):
+def numericise(
+    value,
+    empty2zero=False,
+    default_blank="",
+    allow_underscores_in_numeric_literals=False,
+):
     """Returns a value that depends on the input string:
         - Float if input can be converted to Float
         - Integer if input can be converted to integer
         - Zero if the input string is empty and empty2zero flag is set
         - The same input string, empty or not, otherwise.
 
-    Executable examples:
+    Examples::
 
     >>> numericise("faa")
     'faa'
@@ -145,21 +153,39 @@ def numericise(value, empty2zero=False, default_blank="", allow_underscores_in_n
 
     return value
 
-def numericise_all(input, empty2zero=False, default_blank="", allow_underscores_in_numeric_literals=False,
-                   ignore=None):
+
+def numericise_all(
+    input,
+    empty2zero=False,
+    default_blank="",
+    allow_underscores_in_numeric_literals=False,
+    ignore=None,
+):
+    """Returns a list of numericised values from strings except those from the
+    row specified as ignore.
+
+    :param list input: Input row
+    :param bool empty2zero: (optional) Whether or not to return empty cells
+        as 0 (zero). Defaults to ``False``.
+    :param str default_blank: Which value to use for blank cells,
+        defaults to empty string.
+    :param bool allow_underscores_in_numeric_literals: Whether or not to allow
+        visual underscores in numeric literals
+    :param list ignore: List of ints of indices of the row (index 1) to ignore
+        numericising.
     """
-    Returns a list of numericised values from strings except those
-    from the row specified as ignore
-    :param input: list row
-    :param empty2zero: bool indicating whether or not to return empty cells as 0, default False
-    :param default_blank: str determining which value to use for blank cells, default empty str
-    :param allow_underscores_in_numeric_literals: bool indicating whether or not to allow visual underscores
-                                                  in numeric literals
-    :param ignore: list of ints of indices of the row (index 1) to ignore numericising
-    """
-    ignored_rows = [input[x-1] for x in (ignore or [])]
-    numericised_list = [s if s in ignored_rows else numericise(s, empty2zero=empty2zero, default_blank=default_blank,
-                          allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals) for s in input]
+    ignored_rows = [input[x - 1] for x in (ignore or [])]
+    numericised_list = [
+        s
+        if s in ignored_rows
+        else numericise(
+            s,
+            empty2zero=empty2zero,
+            default_blank=default_blank,
+            allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals,
+        )
+        for s in input
+    ]
     return numericised_list
 
 
@@ -167,11 +193,11 @@ def rowcol_to_a1(row, col):
     """Translates a row and column cell address to A1 notation.
 
     :param row: The row of the cell to be converted.
-                Rows start at index 1.
+        Rows start at index 1.
     :type row: int, str
 
     :param col: The column of the cell to be converted.
-                Columns start at index 1.
+        Columns start at index 1.
     :type row: int, str
 
     :returns: a string containing the cell's coordinates in A1 notation.
@@ -206,12 +232,11 @@ def rowcol_to_a1(row, col):
 def a1_to_rowcol(label):
     """Translates a cell's address in A1 notation to a tuple of integers.
 
-    :param label: A cell label in A1 notation, e.g. 'B1'.
-                  Letter case is ignored.
-    :type label: str
-
+    :param str label: A cell label in A1 notation, e.g. 'B1'.
+        Letter case is ignored.
     :returns: a tuple containing `row` and `column` numbers. Both indexed
               from 1 (one).
+    :rtype: tuple
 
     Example:
 
@@ -240,7 +265,8 @@ def _a1_to_rowcol_unbounded(label):
     (e.g. "A" for the first column)
 
     :returns: a tuple containing `row` and `column` numbers. Both indexed
-              from 1 (one).
+        from 1 (one).
+    :rtype: tuple
 
     Example:
 
@@ -325,7 +351,6 @@ def a1_range_to_grid_range(name, sheet_id=None):
 
     >>> a1_range_to_grid_range('A1', sheet_id=0)
     {'sheetId': 0, 'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1}
-
     """
     start_label, _, end_label = name.partition(':')
 
@@ -339,20 +364,22 @@ def a1_range_to_grid_range(name, sheet_id=None):
         _a1_to_rowcol_unbounded(end_label) if end_label else start_indices
     )
 
-    return filter_dict_values({
-        'sheetId': sheet_id,
-        'startRowIndex': start_row_index,
-        'endRowIndex': end_row_index,
-        'startColumnIndex': start_column_index,
-        'endColumnIndex': end_column_index
-    })
+    return filter_dict_values(
+        {
+            'sheetId': sheet_id,
+            'startRowIndex': start_row_index,
+            'endRowIndex': end_row_index,
+            'startColumnIndex': start_column_index,
+            'endColumnIndex': end_column_index,
+        }
+    )
 
 
 def cast_to_a1_notation(method):
+    """Decorator function casts wrapped arguments to A1 notation in range
+    method calls.
     """
-    Decorator function casts wrapped arguments to A1 notation
-    in range method calls.
-    """
+
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         try:
@@ -461,12 +488,8 @@ def absolute_range_name(sheet_name, range_name=None):
 
     >>> absolute_range_name("''sheet12''", "A1:B2")
     "'''''sheet12'''''!A1:B2"
-
     """
-
-    sheet_name = "'{}'".format(
-        sheet_name.replace("'", "''")
-    )
+    sheet_name = "'{}'".format(sheet_name.replace("'", "''"))
 
     if range_name:
         return '{}!{}'.format(sheet_name, range_name)
@@ -497,10 +520,7 @@ def is_scalar(x):
     >>> is_scalar(set())
     True
     """
-    return (
-        isinstance(x, basestring)
-        or not isinstance(x, Sequence)
-    )
+    return isinstance(x, basestring) or not isinstance(x, Sequence)
 
 
 def filter_dict_values(D):
@@ -557,6 +577,7 @@ def accepted_kwargs(**default_kwargs):
     TypeError: foo got unexpected keyword arguments: ['c']
 
     """
+
     def decorate(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -569,10 +590,13 @@ def accepted_kwargs(**default_kwargs):
                 kwargs.setdefault(k, v)
 
             return f(*args, **kwargs)
+
         return wrapper
+
     return decorate
 
 
 if __name__ == '__main__':
     import doctest
+
     doctest.testmod()
