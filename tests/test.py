@@ -73,6 +73,28 @@ def get_method_name(self_id):
     return self_id.split('.')[-1]
 
 
+class SleepyClient(gspread.Client):
+    HTTP_TOO_MANY_REQUESTS = 429
+    DEFAULT_SLEEP_SECONDS = 1
+
+    def request(
+        self,
+        *args,
+        **kwargs
+    ):
+        try:
+            return super().request(*args, **kwargs)
+        except APIError as err:
+            data = err.response.json()
+
+            if data['error']['code'] == self.HTTP_TOO_MANY_REQUESTS:
+                import time
+                time.sleep(self.DEFAULT_SLEEP_SECONDS)
+                return self.request(*args, **kwargs)
+            else:
+                raise err
+
+
 class DummyCredentials(UserCredentials):
     pass
 
@@ -107,7 +129,7 @@ class BetamaxGspreadTest(BetamaxTestCase):
     def setUp(self):
         super(BetamaxGspreadTest, self).setUp()
         self.session.headers.update({'accept-encoding': 'identity'})
-        self.gc = gspread.Client(self.auth_credentials, session=self.session)
+        self.gc = SleepyClient(self.auth_credentials, session=self.session)
 
         self.session.headers.update({
             'Authorization': 'Bearer %s' % self.auth_credentials.token
