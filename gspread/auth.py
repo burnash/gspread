@@ -19,12 +19,12 @@ from .client import Client
 
 DEFAULT_SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',
-    'https://www.googleapis.com/auth/drive'
+    'https://www.googleapis.com/auth/drive',
 ]
 
 READONLY_SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets.readonly',
-    'https://www.googleapis.com/auth/drive.readonly'
+    'https://www.googleapis.com/auth/drive.readonly',
 ]
 
 
@@ -37,38 +37,29 @@ def get_config_dir(config_dir_name='gspread', os_is_windows=os.name == 'nt'):
 
     """
     if os_is_windows:
-        return os.path.join(
-            os.environ["APPDATA"],
-            config_dir_name
-        )
+        return os.path.join(os.environ["APPDATA"], config_dir_name)
     else:
         return os.path.join(
-            os.path.expanduser('~'),
-            '.config',
-            config_dir_name
+            os.path.expanduser('~'), '.config', config_dir_name
         )
 
 
 DEFAULT_CONFIG_DIR = get_config_dir()
 
 DEFAULT_CREDENTIALS_FILENAME = os.path.join(
-    DEFAULT_CONFIG_DIR,
-    'credentials.json'
+    DEFAULT_CONFIG_DIR, 'credentials.json'
 )
 DEFAULT_AUTHORIZED_USER_FILENAME = os.path.join(
-    DEFAULT_CONFIG_DIR,
-    'authorized_user.json'
+    DEFAULT_CONFIG_DIR, 'authorized_user.json'
 )
 DEFAULT_SERVICE_ACCOUNT_FILENAME = os.path.join(
-    DEFAULT_CONFIG_DIR,
-    'service_account.json'
+    DEFAULT_CONFIG_DIR, 'service_account.json'
 )
 
 
 def _create_installed_app_flow(scopes):
     return InstalledAppFlow.from_client_secrets_file(
-        DEFAULT_CREDENTIALS_FILENAME,
-        scopes
+        DEFAULT_CREDENTIALS_FILENAME, scopes
     )
 
 
@@ -90,9 +81,7 @@ def load_credentials(filename=DEFAULT_AUTHORIZED_USER_FILENAME):
 
 
 def store_credentials(
-    creds,
-    filename=DEFAULT_AUTHORIZED_USER_FILENAME,
-    strip='token'
+    creds, filename=DEFAULT_AUTHORIZED_USER_FILENAME, strip='token'
 ):
     with open(filename, 'w') as f:
         f.write(creds.to_json(strip))
@@ -110,11 +99,9 @@ def oauth(scopes=DEFAULT_SCOPES, flow=local_server_flow):
 
 
 def service_account(
-    filename=DEFAULT_SERVICE_ACCOUNT_FILENAME,
-    scopes=DEFAULT_SCOPES
+    filename=DEFAULT_SERVICE_ACCOUNT_FILENAME, scopes=DEFAULT_SCOPES
 ):
     creds = ServiceAccountCredentials.from_service_account_file(
-        filename,
-        scopes=scopes
+        filename, scopes=scopes
     )
     return Client(auth=creds)
