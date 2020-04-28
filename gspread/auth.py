@@ -110,8 +110,8 @@ def oauth(scopes=DEFAULT_SCOPES, flow=local_server_flow):
 
 
 def service_account(
-    scopes=DEFAULT_SCOPES,
-    filename=DEFAULT_SERVICE_ACCOUNT_FILENAME
+    filename=DEFAULT_SERVICE_ACCOUNT_FILENAME,
+    scopes=DEFAULT_SCOPES
 ):
     creds = ServiceAccountCredentials.from_service_account_file(
         filename,
