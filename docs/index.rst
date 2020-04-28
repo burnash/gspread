@@ -62,6 +62,14 @@ Usage
 
     user-guide
 
+Advanced
+--------
+
+.. toctree::
+    :maxdepth: 2
+
+    advanced
+
 
 API Documentation
 ---------------------------
