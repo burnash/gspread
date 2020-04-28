@@ -4,6 +4,22 @@ Advanced Usage
 Custom Authentication
 ---------------------
 
+Google Colaboratory
+~~~~~~~~~~~~~~~~~~~
+
+If you familiar with the Jupyter Notebook, `Google Colaboratory <https://colab.research.google.com/>`_ is probably the easiest way to get started using gspread::
+
+    from google.colab import auth
+    auth.authenticate_user()
+
+    import gspread
+    from oauth2client.client import GoogleCredentials
+
+    gc = gspread.authorize(GoogleCredentials.get_application_default())
+
+See the full example in the `External data: Local Files, Drive, Sheets, and Cloud Storage <https://colab.research.google.com/notebooks/io.ipynb#scrollTo=sOm9PFrT8mGG>`_ notebook.
+
+
 Using Authlib
 ~~~~~~~~~~~~~
 
