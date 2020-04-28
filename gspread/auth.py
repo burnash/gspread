@@ -88,6 +88,13 @@ def store_credentials(
 
 
 def oauth(scopes=DEFAULT_SCOPES, flow=local_server_flow):
+    """Authenticate with OAuth Client ID.
+
+    :param list scopes: The scopes used to obtain authorization.
+    :param function flow: OAuth flow to use for authentication.
+
+    :rtype: :class:`gspread.client.Client`
+    """
     creds = load_credentials()
 
     if not creds:
@@ -101,6 +108,13 @@ def oauth(scopes=DEFAULT_SCOPES, flow=local_server_flow):
 def service_account(
     filename=DEFAULT_SERVICE_ACCOUNT_FILENAME, scopes=DEFAULT_SCOPES
 ):
+    """Authenticate using a service account.
+
+    :param str filename: The path to the service account json file.
+    :param list scopes: The scopes used to obtain authorization.
+
+    :rtype: :class:`gspread.client.Client`
+    """
     creds = ServiceAccountCredentials.from_service_account_file(
         filename, scopes=scopes
     )

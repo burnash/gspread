@@ -7,6 +7,7 @@ Top level
 ---------
 
 .. autofunction:: oauth
+.. autofunction:: service_account
 .. autofunction:: authorize
 
 Client
