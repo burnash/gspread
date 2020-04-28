@@ -23,7 +23,7 @@ from .exceptions import (
     NoValidUrlKeyFound,
     IncorrectCellLabel,
     WorksheetNotFound,
-    CellNotFound
+    CellNotFound,
 )
 
 
