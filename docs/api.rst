@@ -42,6 +42,12 @@ Utils
              cast_to_a1_notation, absolute_range_name, is_scalar,
              filter_dict_values, accepted_kwargs
 
+Auth
+----
+
+.. automodule:: gspread.auth
+   :members: local_server_flow, console_flow
+
 Exceptions
 ----------
 

@@ -79,8 +79,7 @@ Ta-da!
 
     Make sure you store the credentials file in a safe place.
 
-
-For the curious, under the hood :meth:`~gspread.auth.service_account` loads your credentials and authorizes gspread. Similarly to the code
+For the curious, under the hood :meth:`~gspread.service_account` loads your credentials and authorizes gspread. Similarly to the code
 that has been used for authentication prio to the gspread version 3.6:
 
 ::

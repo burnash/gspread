@@ -30,7 +30,7 @@ Quick Example
 
    import gspread
 
-   gc = gspread.authorize(credentials)
+   gc = gspread.service_account()
 
    # Open a sheet from a spreadsheet in one go
    wks = gc.open("Where is the money Lebowski?").sheet1

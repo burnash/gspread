@@ -31,7 +31,7 @@ def authorize(credentials, client_class=Client):
     """Login to Google API using OAuth2 credentials.
     This is a shortcut function which
     instantiates `client_class`.
-    By default :class:`gspread.client.Client` is used.
+    By default :class:`gspread.Client` is used.
 
     :returns: `client_class` instance.
     """

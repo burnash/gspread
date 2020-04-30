@@ -64,11 +64,28 @@ def _create_installed_app_flow(scopes):
 
 
 def local_server_flow(scopes, port=0):
+    """Run an OAuth flow using a local server strategy.
+
+    Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_local_server <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_local_server>`_.
+    This will start a local web server and open the authorization URL in
+    the user’s browser.
+
+    Pass this function to ``flow`` parameter of :meth:`~gspread.oauth` to run
+    a local server flow.
+    """
+
     flow = _create_installed_app_flow(scopes)
     return flow.run_local_server(port=port)
 
 
 def console_flow(scopes):
+    """Run an OAuth flow using a console strategy.
+
+    Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_console <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_console>`_.
+
+    Pass this function to ``flow`` parameter of :meth:`~gspread.oauth` to run
+    a console strategy.
+    """
     flow = _create_installed_app_flow(scopes)
     return flow.run_console()
 
@@ -90,10 +107,43 @@ def store_credentials(
 def oauth(scopes=DEFAULT_SCOPES, flow=local_server_flow):
     """Authenticate with OAuth Client ID.
 
+    By default this function will use the local server strategy and open
+    the authorization URL in the user’s browser::
+
+        gc = gspread.oauth()
+
+    Another option is to run a console strategy. This way the user is
+    instructed to open the authorization URL in their browser. Once the
+    authorization is complete the user then must copy & paste
+    authorization code the application::
+
+        gc = gspread.oauth(flow=gspread.auth.console_flow)
+
+
+    ``scopes`` parameter defaults to read/write scope available in
+    ``gspread.auth.DEFAULT_SCOPES``. It's read/write for Sheets
+    and Drive API::
+
+        DEFAULT_SCOPES =[
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/drive'
+        ]
+
+    You can also use ``gspread.auth.READONLY_SCOPES`` for read only access.
+    Obviously any method of ``gspread`` that updates a spreadsheet
+    **will not work** in this case::
+
+        gc = gspread.oauth(scopes=gspread.auth.READONLY_SCOPES)
+
+        sh = gc.open("A spreadsheet")
+        sh.sheet1.update('A1', '42')   # <-- this will not work
+
+
     :param list scopes: The scopes used to obtain authorization.
     :param function flow: OAuth flow to use for authentication.
+        Defaults to :meth:`~gspread.auth.local_server_flow`
 
-    :rtype: :class:`gspread.client.Client`
+    :rtype: :class:`gspread.Client`
     """
     creds = load_credentials()
 
@@ -110,10 +160,23 @@ def service_account(
 ):
     """Authenticate using a service account.
 
+    ``scopes`` parameter defaults to read/write scope available in
+    ``gspread.auth.DEFAULT_SCOPES``. It's read/write for Sheets
+    and Drive API::
+
+        DEFAULT_SCOPES =[
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/drive'
+        ]
+
+    You can also use ``gspread.auth.READONLY_SCOPES`` for read only access.
+    Obviously any method of ``gspread`` that updates a spreadsheet
+    **will not work** in this case.
+
     :param str filename: The path to the service account json file.
     :param list scopes: The scopes used to obtain authorization.
 
-    :rtype: :class:`gspread.client.Client`
+    :rtype: :class:`gspread.Client`
     """
     creds = ServiceAccountCredentials.from_service_account_file(
         filename, scopes=scopes
