@@ -73,7 +73,7 @@ Remeber the path to the downloaded credentials file. Also, in the next step you'
 Ta-da!
 
 .. NOTE::
-    If you want to store the credentials file somewhere else, specify the path to `service_account.json` in :meth:`~gspread.auth.service_account`:
+    If you want to store the credentials file somewhere else, specify the path to `service_account.json` in :meth:`~gspread.service_account`:
     ::
         gc = gspread.service_account(filename='path/to/the/downloaded/file.json')
 
