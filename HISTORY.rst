@@ -8,7 +8,7 @@ Release History
 
 * Add `Worksheet.copy_to()` (#758 by @JoachimKoenigslieb)
 
-* Add ability to create cell instance using A1 notation (#765 by @tivaliy)
+* Add ability to create a cell instance using A1 notation (#765 by @tivaliy)
 
 * Add `auth.service_account()` (#768)
 
