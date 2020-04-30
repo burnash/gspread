@@ -1,6 +1,20 @@
 Release History
 ===============
 
+3.6.0 (2020-04-30)
+------------------
+
+* Add `Worksheet.insert_rows()` (#734 by @tr-fi)
+
+* Add `Worksheet.copy_to()` (#758 by @JoachimKoenigslieb)
+
+* Add ability to create cell instance using A1 notation (#765 by @tivaliy)
+
+* Add `auth.service_account()` (#768)
+
+* Add Authlib usage (#552 by @lepture)
+
+
 3.5.0 (2020-04-23)
 ------------------
 
