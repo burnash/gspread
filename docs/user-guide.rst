@@ -136,6 +136,30 @@ Get all values from the first column:
 
    values_list = worksheet.col_values(1)
 
+.. NOTE::
+    So far we've been fetching a limited amount of data from a sheet. This works great until
+    you need to get values from hundreds of cells or iterating over many rows or columns.
+
+    Under the hood, gspread uses `Google Sheets API v4 <https://developers.google.com/sheets/api>`_.
+    Most of the time when you call a gspread method to fetch or update a sheet gspread produces
+    one HTTP API call.
+
+    HTTP calls have performance costs. So if you find your app fetching values one by one in
+    a loop or iterating over rows or columns you can improve the performance of the app by fetching
+    data in one go.
+
+    What's more, Sheets API v4 introduced `Usage Limits <https://developers.google.com/sheets/api/limits>`_
+    (as of this writing, 500 requests per 100 seconds per project, and 100 requests per 100 seconds per user). When your
+    application hits that limit, you get an :meth:`~gspread.exceptions.APIError` `429 RESOURCE_EXHAUSTED`.
+
+    Here are the methods that may help you to reduce API calls:
+
+        * :meth:`~gspread.models.Worksheet.get_all_values` fetches values from all of the cells of the sheet.
+        * :meth:`~gspread.models.Worksheet.get` fetches all values from a range of cells.
+        * :meth:`~gspread.models.Worksheet.batch_get` can fetch values from multiple ranges of cells with one API call.
+        * :meth:`~gspread.models.Worksheet.update` lets you update a range of cells with a list of lists.
+        * :meth:`~gspread.models.Worksheet.batch_update` lets you update multiple ranges of cells with one API call.
+
 
 Getting All Values From a Worksheet as a List of Lists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -143,6 +167,14 @@ Getting All Values From a Worksheet as a List of Lists
 .. code:: python
 
    list_of_lists = worksheet.get_all_values()
+
+
+Getting All Values From a Worksheet as a List of Dictionaries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+   list_of_dicts = worksheet.get_all_records()
 
 
 Finding a Cell
