@@ -150,7 +150,7 @@ Get all values from the first column:
 
     What's more, Sheets API v4 introduced `Usage Limits <https://developers.google.com/sheets/api/limits>`_
     (as of this writing, 500 requests per 100 seconds per project, and 100 requests per 100 seconds per user). When your
-    application hits that limit, you get an :meth:`~gspread.exceptions.APIError` `429 RESOURCE_EXHAUSTED`.
+    application hits that limit, you get an :exc:`~gspread.exceptions.APIError` `429 RESOURCE_EXHAUSTED`.
 
     Here are the methods that may help you to reduce API calls:
 
