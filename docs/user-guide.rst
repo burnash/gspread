@@ -156,7 +156,7 @@ Get all values from the first column:
 
         * :meth:`~gspread.models.Worksheet.get_all_values` fetches values from all of the cells of the sheet.
         * :meth:`~gspread.models.Worksheet.get` fetches all values from a range of cells.
-        * :meth:`~gspread.models.Worksheet.batch_get` can fetch values form multiple ranges of cells with one API call.
+        * :meth:`~gspread.models.Worksheet.batch_get` can fetch values from multiple ranges of cells with one API call.
         * :meth:`~gspread.models.Worksheet.update` lets you update a range of cells with a list of lists.
         * :meth:`~gspread.models.Worksheet.batch_update` lets you update multiple ranges of cells with one API call.
 
