@@ -1,6 +1,9 @@
 Examples of gspread Usage
 =========================
 
+If you haven't yet authorized your app, read :doc:`oauth2` first.
+
+
 Opening a Spreadsheet
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -33,10 +36,11 @@ Use :meth:`~gspread.Client.create` to create a new blank spreadsheet:
 
    sh = gc.create('A new spreadsheet')
 
-However, this new spreadsheet will be visible only to your script's account.
-To be able to access newly created spreadsheet you *must* share it
-with your email. Which brings us to…
-
+.. NOTE::
+    If you're using a :ref:`service account <service-account>`, this new spreadsheet will be
+    visible only to this account. To be able to access newly created spreadsheet
+    from Google Sheets with your own Google account you *must* share it with your
+    email. See how to share a spreadsheet in the section below.
 
 Sharing a Spreadsheet
 ~~~~~~~~~~~~~~~~~~~~~
