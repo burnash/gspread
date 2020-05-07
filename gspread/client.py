@@ -110,8 +110,7 @@ class Client(object):
         :raises gspread.SpreadsheetNotFound: if no spreadsheet with
                                              specified `title` is found.
 
-        >>> c = gspread.authorize(credentials)
-        >>> c.open('My fancy spreadsheet')
+        >>> gc.open('My fancy spreadsheet')
         """
         try:
             properties = finditem(
@@ -132,8 +131,7 @@ class Client(object):
         :param str key: A key of a spreadsheet as it appears in a URL in a browser.
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
-        >>> c = gspread.authorize(credentials)
-        >>> c.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
+        >>> gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
         """
         return Spreadsheet(self, {'id': key})
 
@@ -147,8 +145,7 @@ class Client(object):
         :raises gspread.SpreadsheetNotFound: if no spreadsheet with
                                              specified `url` is found.
 
-        >>> c = gspread.authorize(credentials)
-        >>> c.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
+        >>> gc.open_by_url('https://docs.google.com/spreadsheet/ccc?key=0Bm...FE&hl')
         """
         return self.open_by_key(extract_id_from_url(url))
 
