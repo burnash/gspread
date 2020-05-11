@@ -23,7 +23,7 @@ See the full example in the `External data: Local Files, Drive, Sheets, and Clou
 Using Authlib
 ~~~~~~~~~~~~~
 
-Using ``Authlib`` instead of ``google-auth``. Authlib has an ``AssertionSession`` which can automatically refresh tokens.::
+Using ``Authlib`` instead of ``google-auth``. Similar to `google.auth.transport.requests.AuthorizedSession <https://google-auth.readthedocs.io/en/latest/reference/google.auth.transport.requests.html#google.auth.transport.requests.AuthorizedSession>`_ Authlib's ``AssertionSession`` can automatically refresh tokens.::
 
     import json
     from gspread import Client
