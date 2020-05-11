@@ -19,12 +19,12 @@ Client
 Models
 ------
 
-The models represent common spreadsheet objects: :class:`a spreadsheet <Spreadsheet>`,
-:class:`a worksheet <Worksheet>` and :class:`a cell <Cell>`.
+The models represent common spreadsheet entities: :class:`a spreadsheet <gspread.models.Spreadsheet>`,
+:class:`a worksheet <gspread.models.Worksheet>` and :class:`a cell <gspread.models.Cell>`.
 
 .. note::
 
-   The classes described below should not be instantiated by end-user. Their
+   The classes described below should not be instantiated by the end-user. Their
    instances result from calling other objects' methods.
 
 .. autoclass:: gspread.models.Spreadsheet

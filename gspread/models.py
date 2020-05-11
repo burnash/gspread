@@ -874,8 +874,21 @@ class Worksheet(object):
         """Updates many cells at once.
 
         :param list cell_list: List of :class:`Cell` objects to update.
-        :param str value_input_option: (optional) Determines how input data
-            should be interpreted. See `ValueInputOption`_ in the Sheets API.
+        :param str value_input_option: (optional) How the input data should be
+            interpreted. Possible values are:
+
+            ``RAW``
+                The values the user has entered will not be parsed and will be
+                stored as-is.
+
+            ``USER_ENTERED``
+                The values will be parsed as if the user typed them into the
+                UI. Numbers will stay as numbers, but strings may be converted
+                to numbers, dates, etc. following the same rules that are
+                applied when entering text into a cell via
+                the Google Sheets UI.
+
+            See `ValueInputOption`_ in the Sheets API.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
 
@@ -923,16 +936,16 @@ class Worksheet(object):
             a named range.
 
         :param str major_dimension: (optional) The major dimension that results
-            should use.
+            should use. Either ``ROWS`` or ``COLUMNS``.
 
         :param str value_render_option: (optional) How values should be
             represented in the output. The default render option is
-            `FORMATTED_VALUE`.
+            ``FORMATTED_VALUE``.
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output. This is ignored if
-            value_render_option is FORMATTED_VALUE. The default dateTime render
-            option is `SERIAL_NUMBER`.
+            value_render_option is ``FORMATTED_VALUE``. The default dateTime
+            render option is ``SERIAL_NUMBER``.
 
         Examples::
 
@@ -976,16 +989,16 @@ class Worksheet(object):
             ranges.
 
         :param str major_dimension: (optional) The major dimension that results
-            should use.
+            should use. Either ``ROWS`` or ``COLUMNS``.
 
         :param str value_render_option: (optional) How values should be
             represented in the output. The default render option
-            is `FORMATTED_VALUE`.
+            is ``FORMATTED_VALUE``.
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output. This is ignored if
-            value_render_option is FORMATTED_VALUE. The default dateTime render
-            option is `SERIAL_NUMBER`.
+            value_render_option is ``FORMATTED_VALUE``. The default dateTime
+            render option is ``SERIAL_NUMBER``.
 
         .. versionadded:: 3.3
 
@@ -1024,21 +1037,28 @@ class Worksheet(object):
         :param str range_name: (optional) The A1 notation of the values
             to update.
         :param list values: The data to be written.
-        :param str major_dimension: (optional) The major dimension that results
-            should use.
+
+        :param bool raw: The values will not be parsed by Sheets API and will
+            be stored as-is. For example, formulas will be rendered as plain
+            strings. Defaults to ``True``. This is a shortcut for
+            the ``value_input_option`` parameter.
+
+        :param str major_dimension: (optional) The major dimension of the
+            values. Either ``ROWS`` or ``COLUMNS``.
 
         :param str value_input_option: (optional) How the input data should be
-            interpreted.
+            interpreted. Possible values are:
 
-            Possible values are:
+            ``RAW``
+                The values the user has entered will not be parsed and will be
+                stored as-is.
 
-            RAW             The values the user has entered will not be parsed
-                            and will be stored as-is.
-            USER_ENTERED    The values will be parsed as if the user typed them
-                            into the UI. Numbers will stay as numbers, but
-                            strings may be converted to numbers, dates, etc.
-                            following the same rules that are applied when
-                            entering text into a cell via the Google Sheets UI.
+            ``USER_ENTERED``
+                The values will be parsed as if the user typed them into the
+                UI. Numbers will stay as numbers, but strings may be converted
+                to numbers, dates, etc. following the same rules that are
+                applied when entering text into a cell via
+                the Google Sheets UI.
 
         Examples::
 
@@ -1118,21 +1138,22 @@ class Worksheet(object):
             is a target range to update in A1 notation or a named range,
             and `values` is a list of lists containing new values.
 
-        :param str major_dimension: (optional) The major dimension that results
-            should use.
+        :param str major_dimension: (optional) The major dimension of the
+            values. Either ``ROWS`` or ``COLUMNS``.
 
         :param str value_input_option: (optional) How the input data should be
-            interpreted.
+            interpreted. Possible values are:
 
-            Possible values are:
+            ``RAW``
+                The values the user has entered will not be parsed and will be
+                stored as-is.
 
-            RAW             The values the user has entered will not be parsed
-                            and will be stored as-is.
-            USER_ENTERED    The values will be parsed as if the user typed them
-                            into the UI. Numbers will stay as numbers, but
-                            strings may be converted to numbers, dates, etc.
-                            following the same rules that are applied when
-                            entering text into a cell via the Google Sheets UI.
+            ``USER_ENTERED``
+                The values will be parsed as if the user typed them into the
+                UI. Numbers will stay as numbers, but strings may be converted
+                to numbers, dates, etc. following the same rules that are
+                applied when entering text into a cell via
+                the Google Sheets UI.
 
         Examples::
 
@@ -1428,7 +1449,7 @@ class Worksheet(object):
             reference.
         :param str table_range: (optional) The A1 notation of a range to search
             for a logical table of data. Values are appended after the last row
-            of the table. Examples: `A1` or `B2:D4`
+            of the table. Examples: ``A1`` or ``B2:D4``
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
@@ -1455,13 +1476,14 @@ class Worksheet(object):
         :param list values: List of rows each row is List of values for
             the new row.
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``RAW`` or
+            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
         :param str insert_data_option: (optional) Determines how the input data
             should be inserted. See `InsertDataOption`_ in the Sheets API
             reference.
         :param str table_range: (optional) The A1 notation of a range to search
             for a logical table of data. Values are appended after the last row
-            of the table. Examples: `A1` or `B2:D4`
+            of the table. Examples: ``A1`` or ``B2:D4``
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
@@ -1486,7 +1508,8 @@ class Worksheet(object):
         :param list values: List of values for the new row.
         :param int index: (optional) Offset for the newly inserted row.
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``RAW`` or
+            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         """
@@ -1526,6 +1549,9 @@ class Worksheet(object):
             each containing one row's values. Widens the worksheet if there are
             more values than columns.
         :param int row: Start row to update (one-based). Defaults to 1 (one).
+        :param str value_input_option: (optional) Determines how input data
+            should be interpreted. Possible values are ``RAW`` or
+            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
         """
         body = {
             "requests": [
@@ -1810,7 +1836,7 @@ class Worksheet(object):
         are passed, the filter will be limited to the given range.
 
         :param str name: A string with range value in A1 notation,
-            e.g. 'A1:A5'.
+            e.g. ``A1:A5``.
 
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
@@ -1896,13 +1922,13 @@ class Worksheet(object):
 
     @cast_to_a1_notation
     def merge_cells(self, name, merge_type="MERGE_ALL"):
-        """Merge cells. There are 3 merge types: MERGE_ALL, MERGE_COLUMNS,
-        and MERGE_ROWS.
+        """Merge cells. There are 3 merge types: ``MERGE_ALL``, ``MERGE_COLUMNS``,
+        and ``MERGE_ROWS``.
 
         :param str name: Range name in A1 notation, e.g. 'A1:A5'.
-        :param str merge_type: (optional) one of MERGE_ALL, MERGE_COLUMNS,
-            or MERGE_ROWS. Defaults to MERGE_ROWS. See `MergeType`_ in
-            the Sheets API reference.
+        :param str merge_type: (optional) one of ``MERGE_ALL``,
+            ``MERGE_COLUMNS``, or ``MERGE_ROWS``. Defaults to ``MERGE_ROWS``.
+            See `MergeType`_ in the Sheets API reference.
 
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
