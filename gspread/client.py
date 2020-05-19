@@ -36,8 +36,11 @@ class Client(object):
     """
 
     def __init__(self, auth, session=None):
-        self.auth = convert_credentials(auth)
-        self.session = session or AuthorizedSession(self.auth)
+        if auth is not None:
+            self.auth = convert_credentials(auth)
+            self.session = session or AuthorizedSession(self.auth)
+        else:
+            self.session = session
 
     def login(self):
         from google.auth.transport.requests import Request

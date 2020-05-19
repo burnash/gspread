@@ -27,7 +27,7 @@ Using ``Authlib`` instead of ``google-auth``. Similar to `google.auth.transport.
 
     import json
     from gspread import Client
-    from authlib.client import AssertionSession
+    from authlib.integrations.requests_client import AssertionSession
 
     def create_assertion_session(conf_file, scopes, subject=None):
         with open(conf_file, 'r') as f:
