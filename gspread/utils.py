@@ -103,11 +103,11 @@ def numericise(
     default_blank="",
     allow_underscores_in_numeric_literals=False,
 ):
-    """Returns a value that depends on the input string:
-        - Float if input can be converted to Float
-        - Integer if input can be converted to integer
-        - Zero if the input string is empty and empty2zero flag is set
-        - The same input string, empty or not, otherwise.
+    """Returns a value that depends on the input:
+        - Float if input is a string that can be converted to Float
+        - Integer if input is a string that can be converted to integer
+        - Zero if the input is a string that is empty and empty2zero flag is set
+        - The unmodified input value, otherwise.
 
     Examples::
 
@@ -134,7 +134,7 @@ def numericise(
     >>> numericise(None)
     >>>
     """
-    if value is not None:
+    if isinstance(value, str):
         if "_" in value:
             if not allow_underscores_in_numeric_literals:
                 return value

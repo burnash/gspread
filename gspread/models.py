@@ -736,6 +736,7 @@ class Worksheet(object):
         default_blank="",
         allow_underscores_in_numeric_literals=False,
         numericise_ignore=None,
+        value_render_option=None,
     ):
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
@@ -756,10 +757,15 @@ class Worksheet(object):
         :param list numericise_ignore: (optional) List of ints of indices of
             the row (starting at 1) to ignore numericising, special use
             of ['all'] to ignore numericising on all columns.
+        :param str value_render_option: (optional) Determines how values should
+            be rendered in the the output. See `ValueRenderOption`_ in
+            the Sheets API.
+
+        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
         """
         idx = head - 1
 
-        data = self.get_all_values()
+        data = self.get_all_values(value_render_option=value_render_option)
 
         # Return an empty list if the sheet doesn't have enough rows
         if len(data) <= idx:

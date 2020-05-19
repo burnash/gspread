@@ -882,6 +882,60 @@ class WorksheetTest(GspreadTest):
         d1 = dict(zip(rows[2], ('foo', 'foo', 'foo', 'foo')))
         self.assertEqual(read_records[1], d1)
 
+    def test_get_all_records_value_render_options(self):
+        self.sheet.resize(2, 4)
+        # put in new values, made from three lists
+        rows = [
+            ["=4/2", "2020-01-01", "string", 53],
+            ["=3/2", 0.12, "1999-01-02", ""],
+        ]
+        cell_list = self.sheet.range('A1:D2')
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list, value_input_option="USER_ENTERED")
+
+        # default, formatted read
+        read_records = self.sheet.get_all_records()
+        expected_keys = ["2", "2020-01-01", "string", "53"]
+        expected_values = [3/2, 0.12, "1999-01-02", ""]
+        d0 = dict(zip(expected_keys, expected_values))
+        self.assertEqual(read_records[0], d0)
+
+        # unformatted read
+        read_records = self.sheet.get_all_records(value_render_option="UNFORMATTED_VALUE")
+        expected_keys = [2, 43831, "string", 53]
+        expected_values = [3/2, 0.12, 36162, ""]
+        d0 = dict(zip(expected_keys, expected_values))
+        self.assertEqual(read_records[0], d0)
+
+        # formula read
+        read_records = self.sheet.get_all_records(value_render_option="FORMULA")
+        expected_keys = ["=4/2", 43831, "string", 53]
+        expected_values = ["=3/2", 0.12, 36162, ""]
+        d0 = dict(zip(expected_keys, expected_values))
+        self.assertEqual(read_records[0], d0)
+
+    def test_get_all_records_numericise_unformatted(self):
+        self.sheet.resize(2, 4)
+        # put in new values, made from three lists
+        rows = [
+            ["A", "", "C", "3_1_0"],
+            ["=3/2", 0.12, "", "3_2_1"],
+        ]
+        cell_list = self.sheet.range('A1:D2')
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list, value_input_option="USER_ENTERED")
+
+        read_records = self.sheet.get_all_records(
+            default_blank="empty",
+            allow_underscores_in_numeric_literals=True,
+            value_render_option="UNFORMATTED_VALUE",
+        )
+        expected_values = [3 / 2, 0.12, "empty", 321]
+        d0 = dict(zip(rows[0], expected_values))
+        self.assertEqual(read_records[0], d0)
+
     def test_append_row(self):
         sg = self._sequence_generator()
         value_list = [next(sg) for i in range(10)]
