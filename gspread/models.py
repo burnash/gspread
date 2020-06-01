@@ -1629,14 +1629,7 @@ class Worksheet(object):
             who requested this protected range can edit the protected cells.
             Defaults to ``False``.
         """
-        email_address = [
-            permission.get('emailAddress')
-            for permission in self.client.list_permissions(self.spreadsheet.id)
-            if permission.get('emailAddress')
-        ]
-
-        editors_emails = editor_users_emails or []
-        email_address.extend(email for email in editors_emails)
+        editor_users_emails = editor_users_emails or []
 
         editor_groups_emails = editor_groups_emails or []
 
@@ -1652,7 +1645,7 @@ class Worksheet(object):
                             "warningOnly": warning_only,
                             "requestingUserCanEdit": requesting_user_can_edit,
                             "editors": {
-                                "users": email_address,
+                                "users": editor_users_emails,
                                 "groups": editor_groups_emails,
                             },
                         }
