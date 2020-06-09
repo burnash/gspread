@@ -182,3 +182,30 @@ def service_account(
         filename, scopes=scopes
     )
     return Client(auth=creds)
+
+
+def service_account_from_dict(info, scopes=DEFAULT_SCOPES):
+    """Authenticate using a service account (json).
+
+    ``scopes`` parameter defaults to read/write scope available in
+    ``gspread.auth.DEFAULT_SCOPES``. It's read/write for Sheets
+    and Drive API::
+
+        DEFAULT_SCOPES =[
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/drive'
+        ]
+
+    You can also use ``gspread.auth.READONLY_SCOPES`` for read only access.
+    Obviously any method of ``gspread`` that updates a spreadsheet
+    **will not work** in this case.
+
+    :param info (Mapping[str, str]): The service account info in Google format
+    :param list scopes: The scopes used to obtain authorization.
+
+    :rtype: :class:`gspread.Client`
+    """
+    creds = ServiceAccountCredentials.from_service_account_info(
+        info=info, scopes=scopes,
+    )
+    return Client(auth=creds)
