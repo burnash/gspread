@@ -1780,7 +1780,7 @@ class Worksheet(object):
         try:
             return self._finder(finditem, query, in_row, in_column)
         except StopIteration:
-            raise CellNotFound(query)
+            return None
 
     def findall(self, query, in_row=None, in_column=None):
         """Finds all cells matching the query.
