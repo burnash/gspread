@@ -3,7 +3,7 @@ Authentication
 
 To access spreadsheets via Google Sheets API you need to authenticate and authorize your application.
 
-* If you plan to access spreadsheets on behalf of a bot account :ref:`Use Service Account <service-account>`.
+* If you plan to access spreadsheets on behalf of a bot account use :ref:`Service Account <service-account>`.
 * If you'd like to access spreadsheets on behalf of end users (including yourself) use :ref:`OAuth Client ID <oauth-client-id>`.
 
 .. _enable-api-access:
