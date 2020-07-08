@@ -13,9 +13,10 @@ Enable API Access for a Project
 
 1. Head to `Google Developers Console <https://console.developers.google.com/project>`_ and create a new project (or select the one you already have).
 
-2. Under "APIs & Services > Library", search for "Drive API" and enable it.
+2. In the box labeled "Search for APIs and Services", search for "Google Drive API" and enable it.
 
-3. Under "APIs & Services > Library", search for "Sheets API" and enable it.
+3. In the box labeled "Search for APIs and Services", search for "Google Sheets API" and enable it.
+
 
 .. _service-account:
 
@@ -114,11 +115,12 @@ For End Users: Using OAuth Client ID
 This is the case where your application or a script is accessing spreadsheets on behalf of an end user. When you use this scenario, your application or a script will ask the end user (or yourself if you're running it) to grant access to the user's data.
 
 1. :ref:`enable-api-access` if you haven't done it yet.
-2. Go to "APIs & Services > Credentials"
-3. Click "Create credentials", then select "OAuth client ID"
-4. Select "Other", name the credentials and click "Create". Click "Ok" in the "OAuth client created" popup.
-5. Download the credentials by clicking the Download JSON button in "OAuth 2.0 Client IDs" section.
-6. Move the downloaded file to ``~/.config/gspread/credentials.json``. Windows users should put this file to ``%APPDATA%\gspread\credentials.json``.
+2. Go to "APIs & Services > OAuth Consent Screen." Click the button for "Configure Consent Screen" and follow the directions to give your app a name; you don't need to fill out anything else on that screen. Click Save. 
+3. Go to "APIs & Services > Credentials"
+4. Click "+ Create credentials" at the top, then select "OAuth client ID".
+5. Select "Desktop app", name the credentials and click "Create". Click "Ok" in the "OAuth client created" popup.
+6. Download the credentials by clicking the Download JSON button in "OAuth 2.0 Client IDs" section.
+7. Move the downloaded file to ``~/.config/gspread/credentials.json``. Windows users should put this file to ``%APPDATA%\gspread\credentials.json``.
 
 Create a new Python file with this code:
 
