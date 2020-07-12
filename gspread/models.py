@@ -47,8 +47,8 @@ except NameError:
 
 class ValueRange(list):
     @classmethod
-    def from_json(cls, json):
-        values = json['values'] if 'values' in json else []
+    def from_json(cls, json: dict):
+        values = json.get('values', [])
         new_obj = cls(values)
         new_obj._json = {
             'range': json['range'],
