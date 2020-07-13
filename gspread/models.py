@@ -47,8 +47,9 @@ except NameError:
 
 class ValueRange(list):
     @classmethod
-    def from_json(cls, json):
-        new_obj = cls(json['values'])
+    def from_json(cls, json: dict):
+        values = json.get('values', [])
+        new_obj = cls(values)
         new_obj._json = {
             'range': json['range'],
             'majorDimension': json['majorDimension'],
