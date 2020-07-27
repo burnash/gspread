@@ -100,7 +100,7 @@ def load_credentials(filename=DEFAULT_AUTHORIZED_USER_FILENAME):
 def store_credentials(
     creds, filename=DEFAULT_AUTHORIZED_USER_FILENAME, strip='token'
 ):
-    with open(filename, 'w') as f:
+    with open(filename, 'w+') as f:
         f.write(creds.to_json(strip))
 
 
