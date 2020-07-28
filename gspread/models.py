@@ -1514,33 +1514,7 @@ class Worksheet(object):
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         """
-
-        body = {
-            "requests": [
-                {
-                    "insertDimension": {
-                        "range": {
-                            "sheetId": self.id,
-                            "dimension": "ROWS",
-                            "startIndex": index - 1,
-                            "endIndex": index,
-                        }
-                    }
-                }
-            ]
-        }
-
-        self.spreadsheet.batch_update(body)
-
-        range_label = absolute_range_name(self.title, 'A%s' % index)
-
-        data = self.spreadsheet.values_update(
-            range_label,
-            params={'valueInputOption': value_input_option},
-            body={'values': [values]},
-        )
-
-        return data
+        return self.insert_rows([values], 1, value_input_option='RAW')
 
     def insert_rows(self, values, row=1, value_input_option='RAW'):
         """Adds multiple rows to the worksheet at the specified index and
