@@ -662,7 +662,8 @@ class Worksheet(object):
     def range(self, name):
         """Returns a list of :class:`Cell` objects from a specified range.
 
-        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+        :param name: A string with range value in A1 notation (e.g. 'A1:A5')
+                     or the named range to fetch.
         :type name: str
 
         Alternatively, you may specify numeric boundaries. All values
@@ -682,12 +683,29 @@ class Worksheet(object):
             >>> # Same with numeric boundaries
             >>> worksheet.range(1, 1, 7, 2)
             [<Cell R1C1 "42">, ...]
+
+            >>> # Named ranges work as well
+            >>> worksheet.range('NamedRange')
+            [<Cell R1C1 "42">, ...]
         """
         range_label = absolute_range_name(self.title, name)
 
         data = self.spreadsheet.values_get(range_label)
 
-        start, end = name.split(':')
+        start = None
+        end = None
+
+        if ':' not in name:
+            range_name = data.get('range', None)
+            if range_name and '!' in range_name:
+                coordinates = range_name.split('!')[1]
+                if ':' in coordinates:
+                    start, end = coordinates.split(':')
+            if not start or not end:
+                raise ValueError('Cannot retrieve range coordinates')
+        else:
+            start, end = name.split(':')
+
         (row_offset, column_offset) = a1_to_rowcol(start)
         (last_row, last_column) = a1_to_rowcol(end)
 
