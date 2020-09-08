@@ -171,7 +171,7 @@ worksheet.batch_update([{
 }])
 ```
 
-## [Documentation](http://gspread.readthedocs.org/)
+## [Documentation](https://gspread.readthedocs.io/en/latest/)
 
 ## [Contributors](https://github.com/burnash/gspread/graphs/contributors)
 
