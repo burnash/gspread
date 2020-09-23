@@ -223,7 +223,7 @@ class Client(object):
                   'https://www.googleapis.com/auth/drive'
               ]
 
-           Otherwise you will get an ``Insufficient Permission`` error
+           Otherwise, you will get an ``Insufficient Permission`` error
            when you try to copy a spreadsheet.
 
         """
