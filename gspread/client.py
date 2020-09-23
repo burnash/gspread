@@ -212,9 +212,9 @@ class Client(object):
 
         .. note::
 
-           If you're using custom credentials without Drive scope, in order to use 
-           this method, you need to add ``https://www.googleapis.com/auth/drive`` 
-           to your OAuth scope.
+           If you're using custom credentials without the Drive scope, you need to add 
+           ``https://www.googleapis.com/auth/drive`` to your OAuth scope in order to use 
+           this method.
 
            Example::
 
