@@ -112,10 +112,10 @@ def oauth(scopes=DEFAULT_SCOPES, flow=local_server_flow):
 
         gc = gspread.oauth()
 
-    Another option is to run a console strategy. This way the user is
+    Another option is to run a console strategy. This way, the user is
     instructed to open the authorization URL in their browser. Once the
-    authorization is complete the user then must copy & paste
-    authorization code the application::
+    authorization is complete, the user must then copy & paste the
+    authorization code into the application::
 
         gc = gspread.oauth(flow=gspread.auth.console_flow)
 
