@@ -242,7 +242,7 @@ class Spreadsheet(object):
         return r.json()
 
     def _spreadsheets_get(self, params=None):
-        """A method stub that directly calls `spreadsheets.batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/get>`_. """
+        """A method stub that directly calls `spreadsheets.get <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/get>`_. """
         url = SPREADSHEET_URL % self.id
         r = self.client.request('get', url, params=params)
         return r.json()
@@ -1674,7 +1674,7 @@ class Worksheet(object):
         return self.spreadsheet.batch_update(body)
 
     def delete_rows(self, start_index, end_index=None):
-        """Deletes multi rows from the worksheet at the specified index.
+        """Deletes multiple rows from the worksheet at the specified index.
 
         :param int start_index: Index of a first row for deletion.
         :param int end_index: Index of a last row for deletion.
@@ -1693,7 +1693,7 @@ class Worksheet(object):
         return self.delete_dimension('ROWS', start_index, end_index)
 
     def delete_columns(self, start_index, end_index=None):
-        """Deletes multi columns from the worksheet at the specified index.
+        """Deletes multiple columns from the worksheet at the specified index.
 
         :param int start_index: Index of a first column for deletion.
         :param int end_index: Index of a last column for deletion.
