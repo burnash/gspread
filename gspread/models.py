@@ -1559,6 +1559,43 @@ class Worksheet(object):
 
         return self.spreadsheet.values_append(range_label, params, body)
 
+    def insert_cols(self, values, col=1, value_input_option='RAW'):
+        """Adds multiple new cols to the worksheet at specified index and
+        populates them with values.
+
+        :param list values: List of col lists. a list of lists, with the lists
+            each containing one col's values. Increases the number of rows
+            if there are more values than columns.
+        :param int row: Start col to update(one-based). Defaults to 1 (one).
+        :param str value_input_option: (optional) Determines how input data
+            should be interpreted. Possible values are ``RAW`` or
+            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+        """
+        body = {
+            "requests": [
+                {
+                    "insertDimension": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": "COLUMNS",
+                            "startIndex": col - 1,
+                            "endIndex": len(values) + col - 1,
+                        }
+                    }
+                }
+            ]
+        }
+
+        self.spreadsheet.batch_update(body)
+
+        range_label = absolute_range_name(self.title, rowcol_to_a1(1, col))
+
+        params = {'valueInputOption': value_input_option}
+
+        body = {'majorDimension': 'COLUMNS', 'values': values}
+
+        return self.spreadsheet.values_append(range_label, params, body)
+
     def delete_row(self, index):
         """Deletes the row from the worksheet at the specified index.
 
