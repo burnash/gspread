@@ -1442,6 +1442,7 @@ class Worksheet(object):
         value_input_option='RAW',
         insert_data_option=None,
         table_range=None,
+        include_values_in_response=False
     ):
         """Adds a row to the worksheet and populates it with values.
 
@@ -1457,6 +1458,9 @@ class Worksheet(object):
         :param str table_range: (optional) The A1 notation of a range to search
             for a logical table of data. Values are appended after the last row
             of the table. Examples: ``A1`` or ``B2:D4``
+        :param bool include_values_in_response: (optional) Determines if the
+            update response should include the values of the cells that were
+            appended. By default, responses do not include the updated values.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
@@ -1467,6 +1471,7 @@ class Worksheet(object):
             value_input_option=value_input_option,
             insert_data_option=insert_data_option,
             table_range=table_range,
+            include_values_in_response=include_values_in_response
         )
 
     def append_rows(
@@ -1475,6 +1480,7 @@ class Worksheet(object):
         value_input_option='RAW',
         insert_data_option=None,
         table_range=None,
+        include_values_in_response=False
     ):
         """Adds multiple rows to the worksheet and populates them with values.
 
@@ -1491,6 +1497,9 @@ class Worksheet(object):
         :param str table_range: (optional) The A1 notation of a range to search
             for a logical table of data. Values are appended after the last row
             of the table. Examples: ``A1`` or ``B2:D4``
+        :param bool include_values_in_response: (optional) Determines if the
+            update response should include the values of the cells that were
+            appended. By default, responses do not include the updated values.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
@@ -1500,6 +1509,7 @@ class Worksheet(object):
         params = {
             'valueInputOption': value_input_option,
             'insertDataOption': insert_data_option,
+            'includeValuesInResponse': include_values_in_response,
         }
 
         body = {'values': values}
