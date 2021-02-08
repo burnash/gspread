@@ -53,7 +53,7 @@ You will automatically download a JSON file with credentials. It may look like t
         ...
     }
 
-Remeber the path to the downloaded credentials file. Also, in the next step you'll need the value of *client_email* from this file.
+Remember the path to the downloaded credentials file. Also, in the next step you'll need the value of *client_email* from this file.
 
 6. Very important! Go to your spreadsheet and share it with a *client_email* from the step above. Just like you do with any other Google account. If you don't do this, you'll get a ``gspread.exceptions.SpreadsheetNotFound`` exception when trying to access this spreadsheet from your application or a script.
 
