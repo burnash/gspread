@@ -35,9 +35,13 @@ Here's how to get one:
 
 3. Fill out the form
 
-4. Click "Create key"
+4. Click "Create" and "Done".
 
-5. Select "JSON" and click "Create"
+5. Press "Manage service accounts" above Service Accounts.
+
+6. Press on **⋮** near recenlty created service account and select "Create key".
+
+7. Select JSON key type and press "Create".
 
 You will automatically download a JSON file with credentials. It may look like this:
 
