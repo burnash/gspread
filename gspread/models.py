@@ -1566,7 +1566,7 @@ class Worksheet(object):
         :param list values: List of col lists. a list of lists, with the lists
             each containing one col's values. Increases the number of rows
             if there are more values than columns.
-        :param int row: Start col to update(one-based). Defaults to 1 (one).
+        :param int col: Start col to update (one-based). Defaults to 1 (one).
         :param str value_input_option: (optional) Determines how input data
             should be interpreted. Possible values are ``RAW`` or
             ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
