@@ -1132,6 +1132,18 @@ class WorksheetTest(GspreadTest):
         w = self.spreadsheet.worksheets()
         self.assertEqual(w[0].id, last_sheet.id)
 
+    def test_worksheet_notes(self):
+        w = self.spreadsheet.worksheets()[0]
+
+        # will trigger a Exception in case of any issue
+        w.insert_note("A1", "This is a test note")
+        w.clear_note("A1")
+
+        with self.assertRaises(TypeError) as _:
+            w.insert_note("A1", 42)
+            w.insert_note("A1", ["asddf", "asdfqwebn"])
+            w.insert_note("A1", w)
+
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""

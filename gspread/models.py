@@ -1972,6 +1972,83 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
+    def update_note(self, cell, content):
+        """Update the content of the cell pointed by `cell`.
+
+        :param: str cell A string with a cell coordinates in A1 notation,
+            e.g. 'D7'.
+        :param: str note The text note to insert.
+        """
+
+        if not isinstance(content, str):
+            raise TypeError("Only string allowed as content for a note.")
+
+        (startRow, startColumn) = a1_to_rowcol(cell)
+
+        body = {
+            "requests": [
+                {
+                    "updateCells": {
+                        "range": {
+                            "sheetId": self.id,
+                            "startRowIndex": startRow - 1,
+                            "endRowIndex": startRow,
+                            "startColumnIndex": startColumn - 1,
+                            "endColumnIndex": startColumn,
+                        },
+                        "rows": [
+                            {
+                                "values": [
+                                    {
+                                        "note": content
+                                    }
+                                ]
+                            }
+                        ],
+                        "fields": "note"
+                    }
+                }
+            ]
+        }
+        self.spreadsheet.batch_update(body)
+
+    @cast_to_a1_notation
+    def insert_note(self, cell, content):
+        """Insert a note. The note is attached to a certain cell.
+
+        :param: str cell A string with a cell coordinates in A1 notation,
+            e.g. 'D7'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
+
+        :param: str note The text note to insert.
+        """
+        self.update_note(cell, content)
+
+    @cast_to_a1_notation
+    def clear_note(self, cell):
+        """Clear a note. The note is attached to a certain cell.
+
+        :param: str cell A string with a cell coordinates in A1 notation,
+            e.g. 'D7'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
+        """
+        # set the note to <empty string> will clear it
+        self.update_note(cell, "")
+
 
 class Cell(object):
     """An instance of this class represents a single cell
