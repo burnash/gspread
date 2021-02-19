@@ -104,7 +104,11 @@ def store_credentials(
         f.write(creds.to_json(strip))
 
 
-def oauth(scopes=DEFAULT_SCOPES, flow=local_server_flow):
+def oauth(
+    scopes=DEFAULT_SCOPES,
+    flow=local_server_flow,
+    authorized_user_filename=DEFAULT_AUTHORIZED_USER_FILENAME,
+):
     """Authenticate with OAuth Client ID.
 
     By default this function will use the local server strategy and open
@@ -138,14 +142,24 @@ def oauth(scopes=DEFAULT_SCOPES, flow=local_server_flow):
         sh = gc.open("A spreadsheet")
         sh.sheet1.update('A1', '42')   # <-- this will not work
 
+    If you're storing your user credentials in a place other than the
+    default, you may provide a path to that file like so::
+
+        gc = gspread.oauth(authorized_user_filename='/alternative/path/authorized_user.json')
+
 
     :param list scopes: The scopes used to obtain authorization.
     :param function flow: OAuth flow to use for authentication.
         Defaults to :meth:`~gspread.auth.local_server_flow`
+    :param str authorized_user_filename: Filepath (including name) pointing to
+        an authorized user `.json` file.
+        Defaults to DEFAULT_AUTHORIZED_USER_FILENAME:
+            * `%APPDATA%\gspread\authorized_user.json` on Windows
+            * `~/.config/gspread/authorized_user.json` everywhere else
 
     :rtype: :class:`gspread.Client`
     """
-    creds = load_credentials()
+    creds = load_credentials(filename=authorized_user_filename)
 
     if not creds:
         creds = flow(scopes=scopes)
@@ -206,6 +220,7 @@ def service_account_from_dict(info, scopes=DEFAULT_SCOPES):
     :rtype: :class:`gspread.Client`
     """
     creds = ServiceAccountCredentials.from_service_account_info(
-        info=info, scopes=scopes,
+        info=info,
+        scopes=scopes,
     )
     return Client(auth=creds)
