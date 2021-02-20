@@ -1635,6 +1635,8 @@ class Worksheet(object):
         :param int last_row: Last row number
         :param int last_col: Last column number
 
+        For both A1 and numeric notation:
+
         :param list editor_users_emails: (optional) The email addresses of
             users with edit access to the protected range.
         :param list editor_groups_emails: (optional) The email addresses of
@@ -1973,11 +1975,13 @@ class Worksheet(object):
         return self.spreadsheet.batch_update(body)
 
     def update_note(self, cell, content):
-        """Update the content of the cell pointed by `cell`.
+        """Update the content of the note located at `cell`.
 
-        :param: str cell A string with a cell coordinates in A1 notation,
+        :param str cell: A string with cell coordinates in A1 notation,
             e.g. 'D7'.
-        :param: str note The text note to insert.
+        :param str note: The text note to insert.
+
+        .. versionadded:: 3.7
         """
 
         if not isinstance(content, str):
@@ -2016,8 +2020,9 @@ class Worksheet(object):
     def insert_note(self, cell, content):
         """Insert a note. The note is attached to a certain cell.
 
-        :param: str cell A string with a cell coordinates in A1 notation,
+        :param str cell: A string with cell coordinates in A1 notation,
             e.g. 'D7'.
+        :param str content: The text note to insert.
 
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
@@ -2027,7 +2032,7 @@ class Worksheet(object):
         :param int last_row: Last row number
         :param int last_col: Last column number
 
-        :param: str note The text note to insert.
+        .. versionadded:: 3.7
         """
         self.update_note(cell, content)
 
@@ -2035,7 +2040,7 @@ class Worksheet(object):
     def clear_note(self, cell):
         """Clear a note. The note is attached to a certain cell.
 
-        :param: str cell A string with a cell coordinates in A1 notation,
+        :param str cell: A string with cell coordinates in A1 notation,
             e.g. 'D7'.
 
         Alternatively, you may specify numeric boundaries. All values
@@ -2045,6 +2050,8 @@ class Worksheet(object):
         :param int first_col: First column number
         :param int last_row: Last row number
         :param int last_col: Last column number
+
+        .. versionadded:: 3.7
         """
         # set the note to <empty string> will clear it
         self.update_note(cell, "")
