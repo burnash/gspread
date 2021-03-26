@@ -149,6 +149,22 @@ class Spreadsheet(object):
 
         return r.json()
 
+    def notes_get(self, range):
+        """Lower-level method that calls `spreadsheets.get <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/get>`_
+        and retrieves the notes field.
+
+        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
+        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
+        :rtype: dict
+        """
+        url = SPREADSHEET_URL % (self.id)
+        params = {
+            'ranges': range,
+            'fields': 'sheets/data/rowData/values/note'
+        }
+        r = self.client.request('get', url, params=params)
+        return r.json()
+
     def values_append(self, range, params, body):
         """Lower-level method that directly calls `spreadsheets.values.append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
 
@@ -1973,6 +1989,23 @@ class Worksheet(object):
         }
 
         return self.spreadsheet.batch_update(body)
+
+    def get_note(self, cell):
+        """Get the content of the note located at `cell`, or the empty string if the
+        cell does not have a note.
+
+        :param str cell: A string with cell coordinates in A1 notation,
+            e.g. 'D7'.
+        """
+        absolute_cell = absolute_range_name(self.title, cell)
+        response = self.spreadsheet.notes_get(absolute_cell)
+
+        try:
+            note = response['sheets'][0]['data'][0]['rowData'][0]['values'][0]['note']
+        except (IndexError, KeyError):
+            note = ''
+
+        return note
 
     def update_note(self, cell, content):
         """Update the content of the note located at `cell`.
