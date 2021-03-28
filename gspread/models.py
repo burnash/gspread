@@ -288,6 +288,34 @@ class Spreadsheet(object):
             return Worksheet(self, properties)
         except (KeyError, IndexError):
             return None
+    
+    def get_worksheet_by_id(self, id):
+        """Returns a worksheet with specified `worksheet id`.
+
+        :param id: The id of a worksheet. it can be seen in the url as the value of the parameter 'gid'.
+        :type id: int
+
+        :returns: an instance of :class:`gspread.models.Worksheet`
+                  or `None` if the worksheet is not found.
+
+        Example. To get first worksheet of a spreadsheet:
+
+        >>> sht = client.open('My fancy spreadsheet')
+        >>> worksheet = sht.get_worksheet_by_id(0):rtype: dict
+        """
+        sheet_data = self.fetch_sheet_metadata()
+
+        try:
+            sheets_length = len(sheet_data['sheets'])
+            print(sheet_data['sheets'])
+            for i in range(0,sheets_length):
+                
+                if id == sheet_data['sheets'][i]['properties']['sheetId']:
+                    properties = sheet_data['sheets'][i]['properties']
+                    return Worksheet(self, properties)
+            raise WorksheetNotFound
+        except (KeyError):
+            return None
 
     def worksheets(self):
         """Returns a list of all :class:`worksheets <gspread.models.Worksheet>`
