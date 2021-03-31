@@ -39,7 +39,7 @@ Here's how to get one:
 
 5. Press "Manage service accounts" above Service Accounts.
 
-6. Press on **⋮** near recenlty created service account and select "Create key".
+6. Press on **⋮** near recenlty created service account and select "Manage keys" and then click on "ADD KEY > Create new key".
 
 7. Select JSON key type and press "Create".
 
