@@ -149,22 +149,6 @@ class Spreadsheet(object):
 
         return r.json()
 
-    def notes_get(self, range):
-        """Lower-level method that calls `spreadsheets.get <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/get>`_
-        and retrieves the notes field.
-
-        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
-        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
-        :rtype: dict
-        """
-        url = SPREADSHEET_URL % (self.id)
-        params = {
-            'ranges': range,
-            'fields': 'sheets/data/rowData/values/note'
-        }
-        r = self.client.request('get', url, params=params)
-        return r.json()
-
     def values_append(self, range, params, body):
         """Lower-level method that directly calls `spreadsheets.values.append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
 
@@ -1998,10 +1982,17 @@ class Worksheet(object):
             e.g. 'D7'.
         """
         absolute_cell = absolute_range_name(self.title, cell)
-        response = self.spreadsheet.notes_get(absolute_cell)
+        url = SPREADSHEET_URL % (self.spreadsheet.id)
+        params = {
+            'ranges': absolute_cell,
+            'fields': 'sheets/data/rowData/values/note'
+        }
+        response = self.client.request('get', url, params=params)
+        response.raise_for_status()
+        response_json = response.json()
 
         try:
-            note = response['sheets'][0]['data'][0]['rowData'][0]['values'][0]['note']
+            note = response_json['sheets'][0]['data'][0]['rowData'][0]['values'][0]['note']
         except (IndexError, KeyError):
             note = ''
 
