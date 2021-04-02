@@ -1136,8 +1136,12 @@ class WorksheetTest(GspreadTest):
         w = self.spreadsheet.worksheets()[0]
 
         # will trigger a Exception in case of any issue
-        w.insert_note("A1", "This is a test note")
+        self.assertEqual(w.get_note("A1"), "")
+        test_note_string = "This is a test note"
+        w.insert_note("A1", test_note_string)
+        self.assertEqual(w.get_note("A1"), test_note_string)
         w.clear_note("A1")
+        self.assertEqual(w.get_note("A1"), "")
 
         with self.assertRaises(TypeError) as _:
             w.insert_note("A1", 42)

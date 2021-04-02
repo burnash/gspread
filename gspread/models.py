@@ -1974,6 +1974,30 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
+    def get_note(self, cell):
+        """Get the content of the note located at `cell`, or the empty string if the
+        cell does not have a note.
+
+        :param str cell: A string with cell coordinates in A1 notation,
+            e.g. 'D7'.
+        """
+        absolute_cell = absolute_range_name(self.title, cell)
+        url = SPREADSHEET_URL % (self.spreadsheet.id)
+        params = {
+            'ranges': absolute_cell,
+            'fields': 'sheets/data/rowData/values/note'
+        }
+        response = self.client.request('get', url, params=params)
+        response.raise_for_status()
+        response_json = response.json()
+
+        try:
+            note = response_json['sheets'][0]['data'][0]['rowData'][0]['values'][0]['note']
+        except (IndexError, KeyError):
+            note = ''
+
+        return note
+
     def update_note(self, cell, content):
         """Update the content of the note located at `cell`.
 
