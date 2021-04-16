@@ -103,6 +103,27 @@ that has been used for authentication prio to the gspread version 3.6:
 
     gc = gspread.authorize(credentials)
 
+There is also the option to pass credentials as a dictionary:
+
+::
+
+    import gspread
+    
+    credentials = {
+        "type": "service_account",
+        "project_id": "api-project-XXX",
+        "private_key_id": "2cd … ba4",
+        "private_key": "-----BEGIN PRIVATE KEY-----\nNrDyLw … jINQh/9\n-----END PRIVATE KEY-----\n",
+        "client_email": "473000000000-yoursisdifferent@developer.gserviceaccount.com",
+        "client_id": "473 … hd.apps.googleusercontent.com",
+        ...
+    }
+
+    gc = gspread.service_account_from_dict(credentials)
+
+    sh = gc.open("Example spreadsheet")
+
+    print(sh.sheet1.get('A1'))
 
 .. NOTE::
    Older versions of gspread have used `oauth2client <https://github.com/google/oauth2client>`_. Google has
