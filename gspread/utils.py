@@ -121,6 +121,8 @@ def numericise(
     '32'
     >>> numericise("3.1")
     3.1
+    >>> numericise("2,000.1")
+    2000.1
     >>> numericise("", empty2zero=True)
     0
     >>> numericise("", empty2zero=False)
@@ -139,6 +141,9 @@ def numericise(
             if not allow_underscores_in_numeric_literals:
                 return value
             value = value.replace("_", "")
+
+        # replace coma separating thousands to match python format
+        value = value.replace(",", "")
         try:
             value = int(value)
         except ValueError:
