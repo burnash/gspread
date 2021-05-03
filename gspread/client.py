@@ -174,13 +174,14 @@ class Client(object):
             for x in spreadsheet_files
         ]
 
-    def create(self, title, folder_id=None):
+    def create(self, title, folder_id=None, supports_all_drives=False):
         """Creates a new spreadsheet.
 
         :param str title: A title of a new spreadsheet.
 
-        :param str folder_id: Id of the folder where we want to save
-            the spreadsheet.
+        :param str folder_id: Id of the folder where we want to save the spreadsheet.
+
+        :param boolean supports_all_drives: whether to look for the folder_id in shared drives
 
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
@@ -193,7 +194,13 @@ class Client(object):
         if folder_id is not None:
             payload['parents'] = [folder_id]
 
-        r = self.request('post', DRIVE_FILES_API_V3_URL, json=payload)
+        params = None
+        if supports_all_drives:
+            params = {
+                'supportsAllDrives': True
+            }
+
+        r = self.request('post', DRIVE_FILES_API_V3_URL, json=payload, params=params)
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
