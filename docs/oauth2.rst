@@ -143,7 +143,7 @@ This is the case where your application or a script is accessing spreadsheets on
 2. Go to "APIs & Services > OAuth Consent Screen." Click the button for "Configure Consent Screen" and follow the directions to give your app a name; you don't need to fill out anything else on that screen. Click Save. 
 3. Go to "APIs & Services > Credentials"
 4. Click "+ Create credentials" at the top, then select "OAuth client ID".
-5. Select "Desktop app", name the credentials and click "Create". Click "Ok" in the "OAuth client created" popup.
+5. Select "Windows UI", name the credentials and click "Create". Click "Ok" in the "OAuth client created" popup.
 6. Download the credentials by clicking the Download JSON button in "OAuth 2.0 Client IDs" section.
 7. Move the downloaded file to ``~/.config/gspread/credentials.json``. Windows users should put this file to ``%APPDATA%\gspread\credentials.json``.
 
