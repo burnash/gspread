@@ -140,7 +140,7 @@ For End Users: Using OAuth Client ID
 This is the case where your application or a script is accessing spreadsheets on behalf of an end user. When you use this scenario, your application or a script will ask the end user (or yourself if you're running it) to grant access to the user's data.
 
 1. :ref:`enable-api-access` if you haven't done it yet.
-2. Go to "APIs & Services > OAuth Consent Screen." Click the button for "Configure Consent Screen" and follow the directions to give your app a name; you don't need to fill out anything else on that screen. Click Save. 
+2. Go to "APIs & Services > OAuth Consent Screen." Click the button for "Configure Consent Screen" and follow the directions to give your app a name; you don't need to fill out anything else on that screen. Click Save.
 3. Go to "APIs & Services > Credentials"
 4. Click "+ Create credentials" at the top, then select "OAuth client ID".
 5. Select "Desktop app", name the credentials and click "Create". Click "Ok" in the "OAuth client created" popup.
@@ -161,6 +161,13 @@ Create a new Python file with this code:
 
 When you run this code, it launches a browser asking you for authentication. Follow the instruction on the web page. Once finished, gspread stores authorized credentials in the config directory next to `credentials.json`.
 You only need to do authorization in the browser once, following runs will reuse stored credentials.
+
+.. NOTE::
+    If you want to store the credentials file somewhere else, specify the path to `authorized_user.json` in :meth:`~gspread.oauth`:
+    ::
+        gc = gspread.oauth(authorized_user_filename='path/to/the/downloaded/file.json')
+
+    Make sure you store the credentials file in a safe place.
 
 .. attention:: Security
     Credentials file and authorized credentials contain sensitive data. **Do not share these files with others** and treat them like private keys.
