@@ -426,15 +426,18 @@ def rightpad(row, max_len):
 
 def fill_gaps(L, rows=None, cols=None):
 
-    max_cols = max(len(row) for row in L) if cols is None else cols
-    max_rows = len(L) if rows is None else rows
+    try:
+        max_cols = max(len(row) for row in L) if cols is None else cols
+        max_rows = len(L) if rows is None else rows
 
-    pad_rows = max_rows - len(L)
+        pad_rows = max_rows - len(L)
 
-    if pad_rows:
-        L = L + ([[]] * pad_rows)
+        if pad_rows:
+            L = L + ([[]] * pad_rows)
 
-    return [rightpad(row, max_cols) for row in L]
+        return [rightpad(row, max_cols) for row in L]
+    except ValueError:
+        return []
 
 
 def cell_list_to_rect(cell_list):
