@@ -1173,6 +1173,15 @@ class CellTest(GspreadTest):
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, numeric_value)
         self.assertTrue(isinstance(cell.numeric_value, float))
+
+        # test value for popular format with long numbers
+        numeric_value = 2000000.01
+        self.sheet.update_acell('A1', '2,000,000.01')
+        cell = self.sheet.acell('A1')
+        self.assertEqual(cell.numeric_value, numeric_value)
+        self.assertTrue(isinstance(cell.numeric_value, float))
+
+        # test non numeric value
         self.sheet.update_acell('A1', 'Non-numeric value')
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, None)

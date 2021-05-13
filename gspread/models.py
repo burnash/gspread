@@ -14,6 +14,7 @@ from .utils import (
     a1_to_rowcol,
     rowcol_to_a1,
     cast_to_a1_notation,
+    numericise,
     numericise_all,
     finditem,
     fill_gaps,
@@ -2192,9 +2193,12 @@ class Cell(object):
 
     @property
     def numeric_value(self):
-        try:
-            return float(self.value)
-        except ValueError:
+        numeric_value = numericise(self.value, default_blank=None)
+
+        # if could not convert, return None
+        if type(numeric_value) == int or type(numeric_value) == float:
+            return numeric_value
+        else:
             return None
 
     @property
