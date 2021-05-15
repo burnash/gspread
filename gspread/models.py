@@ -761,7 +761,7 @@ class Worksheet(object):
             # Return all values from the sheet
             worksheet.get_values()
 
-            # Return all values from colums "A" and "B"
+            # Return all values from columns "A" and "B"
             worksheet.get_values('A:B')
 
             # Return values from range "A2:C10"
@@ -821,7 +821,7 @@ class Worksheet(object):
         values.
 
         Cell values are numericised (strings that can be read as ints or floats
-        are converted), unless specificed in numericise_ignore
+        are converted), unless specified in numericise_ignore
 
         :param bool empty2zero: (optional) Determines whether empty cells are
             converted to zeros.
@@ -1504,7 +1504,7 @@ class Worksheet(object):
         self.resize(rows=self.row_count + rows)
 
     def add_cols(self, cols):
-        """Adds colums to worksheet.
+        """Adds columns to worksheet.
 
         :param cols: Number of new columns to add.
         :type cols: int
