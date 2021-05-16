@@ -1,3 +1,4 @@
+six
 nose
 google-auth
 google-auth-oauthlib>=0.4.1

@@ -5,6 +5,7 @@ from .test import GspreadTest
 import gspread
 import gspread.utils as utils
 
+
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
 

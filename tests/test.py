@@ -126,6 +126,7 @@ class BetamaxGspreadTest(BetamaxTestCase):
 
         self.assertTrue(isinstance(self.gc, gspread.client.Client))
 
+
 class GspreadTest(BetamaxGspreadTest):
     def _sequence_generator(self):
         return prefixed_counter(get_method_name(self.id()))

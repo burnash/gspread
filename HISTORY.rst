@@ -10,7 +10,7 @@ Release History
 
 * Fix `copy_permission` argument comparison in `Client.copy()` method (#898 by @lavigne958)
 
-* Alow creation of spreadhsheets in a shared drive (#895 by @lavigne958)
+* Allow creation of spreadhsheets in a shared drive (#895 by @lavigne958)
 
 * Allow `gspread.oauth()` to accept a custom credential file (#891 by @slmtpz)
 

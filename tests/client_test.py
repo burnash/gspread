@@ -6,6 +6,7 @@ import gspread
 import gspread.utils as utils
 from gspread.exceptions import APIError
 
+
 class ClientTest(GspreadTest):
 
     """Test for gspread.client."""
@@ -65,4 +66,3 @@ class ClientTest(GspreadTest):
         self.assertEqual(error.exception.args[0]['code'], 404)
         self.assertEqual(error.exception.args[0]['message'], 'Requested entity was not found.')
         self.assertEqual(error.exception.args[0]['status'], 'NOT_FOUND')
-
