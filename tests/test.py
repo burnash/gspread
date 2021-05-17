@@ -231,19 +231,19 @@ class ClientTest(GspreadTest):
 
         self.assertTrue(len(spreadsheet_list2) < len(spreadsheet_list))
         for s in spreadsheet_list:
-            self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
+            self.assertTrue(isinstance(s, gspread.Spreadsheet))
         for s in spreadsheet_list2:
-            self.assertTrue(isinstance(s, gspread.models.Spreadsheet))
+            self.assertTrue(isinstance(s, gspread.Spreadsheet))
 
     def test_create(self):
         title = 'Test Spreadsheet'
         new_spreadsheet = self.gc.create(title)
-        self.assertTrue(isinstance(new_spreadsheet, gspread.models.Spreadsheet))
+        self.assertTrue(isinstance(new_spreadsheet, gspread.Spreadsheet))
 
     def test_copy(self):
         original_spreadsheet = self.gc.create("Original")
         spreadsheet_copy = self.gc.copy(original_spreadsheet.id)
-        self.assertTrue(isinstance(spreadsheet_copy, gspread.models.Spreadsheet))
+        self.assertTrue(isinstance(spreadsheet_copy, gspread.Spreadsheet))
 
         original_metadata = original_spreadsheet.fetch_sheet_metadata()
         copy_metadata = spreadsheet_copy.fetch_sheet_metadata()
@@ -416,18 +416,18 @@ class WorksheetTest(GspreadTest):
 
     def test_acell(self):
         cell = self.sheet.acell('A1')
-        self.assertTrue(isinstance(cell, gspread.models.Cell))
+        self.assertTrue(isinstance(cell, gspread.Cell))
 
     def test_cell(self):
         cell = self.sheet.cell(1, 1)
-        self.assertTrue(isinstance(cell, gspread.models.Cell))
+        self.assertTrue(isinstance(cell, gspread.Cell))
 
     def test_range(self):
         cell_range1 = self.sheet.range('A1:A5')
         cell_range2 = self.sheet.range(1, 1, 5, 1)
         for c1, c2 in zip(cell_range1, cell_range2):
-            self.assertTrue(isinstance(c1, gspread.models.Cell))
-            self.assertTrue(isinstance(c2, gspread.models.Cell))
+            self.assertTrue(isinstance(c1, gspread.Cell))
+            self.assertTrue(isinstance(c2, gspread.Cell))
             self.assertTrue(c1.col == c2.col)
             self.assertTrue(c1.row == c2.row)
             self.assertTrue(c1.value == c2.value)
@@ -537,8 +537,8 @@ class WorksheetTest(GspreadTest):
         test_values = ['cell row 1, col 2', 'cell row 2 col 1']
 
         cell_list = [
-            gspread.models.Cell(1, 2, test_values[0]),
-            gspread.models.Cell(2, 1, test_values[1])
+            gspread.Cell(1, 2, test_values[0]),
+            gspread.Cell(2, 1, test_values[1])
         ]
         self.sheet.update_cells(cell_list)
 
@@ -1193,9 +1193,9 @@ class CellTest(GspreadTest):
         cell = self.sheet.find('Dummy')
         self.assertEqual(cell.address, 'B1')
         self.assertEqual(cell.value, 'Dummy')
-        cell = gspread.models.Cell(1, 2, 'Foo Bar')
+        cell = gspread.Cell(1, 2, 'Foo Bar')
         self.assertEqual(cell.address, 'B1')
-        cell = gspread.models.Cell.from_address('A1', 'Foo Bar')
+        cell = gspread.Cell.from_address('A1', 'Foo Bar')
         self.assertEqual(cell.address, 'A1')
         self.assertEqual(cell.value, 'Foo Bar')
         self.assertEqual((cell.row, cell.col), (1, 1))
