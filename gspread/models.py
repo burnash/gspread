@@ -306,16 +306,13 @@ class Spreadsheet(object):
         sheet_data = self.fetch_sheet_metadata()
 
         try:
-            sheets_length = len(sheet_data['sheets'])
-            print(sheet_data['sheets'])
-            for i in range(0,sheets_length):
-                
-                if id == sheet_data['sheets'][i]['properties']['sheetId']:
-                    properties = sheet_data['sheets'][i]['properties']
-                    return Worksheet(self, properties)
-            raise WorksheetNotFound
-        except (KeyError):
-            return None
+            item = finditem(
+                lambda x: x['properties']['sheetId'] == id,
+                sheet_data['sheets'],
+            )
+            return Worksheet(self, item['properties'])
+        except (StopIteration, KeyError):
+            raise WorksheetNotFound(id)
 
     def worksheets(self):
         """Returns a list of all :class:`worksheets <gspread.models.Worksheet>`
