@@ -1596,7 +1596,7 @@ class Worksheet(object):
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         """
-        return self.insert_rows([values], index, value_input_option='RAW')
+        return self.insert_rows([values], index, value_input_option=value_input_option)
 
     def insert_rows(self, values, row=1, value_input_option='RAW'):
         """Adds multiple rows to the worksheet at the specified index and
