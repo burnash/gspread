@@ -41,11 +41,6 @@ from .urls import (
 )
 from gspread import utils
 
-try:
-    unicode
-except NameError:
-    basestring = unicode = str
-
 
 class ValueRange(list):
     @classmethod
@@ -1858,7 +1853,7 @@ class Worksheet(object):
 
         cells = self._list_cells(values, in_row, in_column)
 
-        if isinstance(query, basestring):
+        if isinstance(query, str):
             match = lambda x: x.value == query
         else:
             match = lambda x: query.search(x.value)

@@ -19,11 +19,6 @@ from google.oauth2.credentials import Credentials as UserCredentials
 
 from gspread import utils
 
-try:
-    unicode
-except NameError:
-    basestring = unicode = str
-
 
 CREDS_FILENAME = os.getenv('GS_CREDS_FILENAME')
 
@@ -678,26 +673,26 @@ class WorksheetTest(GspreadTest):
         self.sheet.set_basic_filter()
         filter_range = get_basic_filter_range()
 
-        self.assertEquals(filter_range['startRowIndex'], 0)
-        self.assertEquals(filter_range['startColumnIndex'], 0)
-        self.assertEquals(filter_range['endRowIndex'], 20)
-        self.assertEquals(filter_range['endColumnIndex'], 20)
+        self.assertEqual(filter_range['startRowIndex'], 0)
+        self.assertEqual(filter_range['startColumnIndex'], 0)
+        self.assertEqual(filter_range['endRowIndex'], 20)
+        self.assertEqual(filter_range['endColumnIndex'], 20)
 
         self.sheet.set_basic_filter('B1:C2')
         filter_range = get_basic_filter_range()
 
-        self.assertEquals(filter_range['startRowIndex'], 0)
-        self.assertEquals(filter_range['startColumnIndex'], 1)
-        self.assertEquals(filter_range['endRowIndex'], 2)
-        self.assertEquals(filter_range['endColumnIndex'], 3)
+        self.assertEqual(filter_range['startRowIndex'], 0)
+        self.assertEqual(filter_range['startColumnIndex'], 1)
+        self.assertEqual(filter_range['endRowIndex'], 2)
+        self.assertEqual(filter_range['endColumnIndex'], 3)
 
         self.sheet.set_basic_filter(1, 2, 2, 3)
         filter_range = get_basic_filter_range()
 
-        self.assertEquals(filter_range['startRowIndex'], 0)
-        self.assertEquals(filter_range['startColumnIndex'], 1)
-        self.assertEquals(filter_range['endRowIndex'], 2)
-        self.assertEquals(filter_range['endColumnIndex'], 3)
+        self.assertEqual(filter_range['startRowIndex'], 0)
+        self.assertEqual(filter_range['startColumnIndex'], 1)
+        self.assertEqual(filter_range['endRowIndex'], 2)
+        self.assertEqual(filter_range['endColumnIndex'], 3)
 
         self.sheet.clear_basic_filter()
         self.assertTrue('basicFilter' not in get_sheet())
