@@ -125,7 +125,7 @@ values_list = worksheet.col_values(1)
 ### Getting All Values From a Worksheet as a List of Lists
 
 ```python
-list_of_lists = worksheet.get_all_values()
+list_of_lists = worksheet.get_values()
 ```
 
 ### Finding a Cell
