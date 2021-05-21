@@ -39,6 +39,7 @@ from .urls import (
     SPREADSHEET_VALUES_BATCH_UPDATE_URL,
     SPREADSHEET_SHEETS_COPY_TO_URL,
 )
+from gspread import utils
 
 try:
     unicode
@@ -103,6 +104,32 @@ class Spreadsheet(object):
     def url(self):
         """Spreadsheet URL."""
         return SPREADSHEET_DRIVE_URL % self.id
+
+    @property
+    def creationTime(self):
+        """Spreadsheet Creation time."""
+        try:
+            return self._properties['createdTime']
+        except KeyError:
+            # Filter the list using the name to reduce the request size
+            # Filter the item using the unique ID to ensure we update the exacte same item
+            metadata = utils.finditem(lambda x: x["id"] == self.id,
+                                    self.client.list_spreadsheet_files(self.title))
+            self._properties.update(metadata)
+            return self._properties['createdTime']
+
+    @property
+    def lastUpdateTime(self):
+        """Spreadsheet Creation time."""
+        try:
+            return self._properties['modifiedTime']
+        except KeyError:
+            # Filter the list using the name to reduce the request size
+            # Filter the item using the unique ID to ensure we update the exacte same item
+            metadata = utils.finditem(lambda x: x["id"] == self.id,
+                                    self.client.list_spreadsheet_files(self.title))
+            self._properties.update(metadata)
+            return self._properties['modifiedTime']
 
     @property
     def updated(self):

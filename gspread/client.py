@@ -89,6 +89,7 @@ class Client(object):
             'pageSize': 1000,
             'supportsAllDrives': True,
             'includeItemsFromAllDrives': True,
+            'fields': 'kind,nextPageToken,files(id,name,createdTime,modifiedTime)',
         }
 
         while page_token is not None:
