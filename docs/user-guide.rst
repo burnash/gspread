@@ -324,7 +324,7 @@ Read contents of a sheet into a NumPy array:
    import numpy as np
    array = np.array(worksheet.get_all_values())
 
-The code above assumes that your data starts from the first row of the sheet. If you have a hearder row in the first row, you need replace ``worksheet.get_all_values()`` with ``worksheet.get_all_values()[1:]``.
+The code above assumes that your data starts from the first row of the sheet. If you have a header row in the first row, you need replace ``worksheet.get_all_values()`` with ``worksheet.get_all_values()[1:]``.
 
 Write a NumPy array to a sheet:
 

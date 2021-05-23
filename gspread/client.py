@@ -89,6 +89,7 @@ class Client(object):
             'pageSize': 1000,
             'supportsAllDrives': True,
             'includeItemsFromAllDrives': True,
+            'fields': 'kind,nextPageToken,files(id,name,createdTime,modifiedTime)',
         }
 
         while page_token is not None:
@@ -197,7 +198,7 @@ class Client(object):
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
-    def copy(self, file_id, title=None, copy_permissions=False):
+    def copy(self, file_id, title=None, copy_permissions=False, folder_id=None):
         """Copies a spreadsheet.
 
         :param str file_id: A key of a spreadsheet to copy.
@@ -205,6 +206,9 @@ class Client(object):
 
         :param bool copy_permissions: (optional) If True, copy permissions from
             the original spreadsheet to the new spreadsheet.
+
+        :param str folder_id: Id of the folder where we want to save
+            the spreadsheet.
 
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
@@ -233,6 +237,10 @@ class Client(object):
             'title': title,
             'mimeType': 'application/vnd.google-apps.spreadsheet',
         }
+
+        if folder_id is not None:
+            payload['parents'] = [{'id': folder_id}]
+        
         params = {'supportsAllDrives': True}
         r = self.request('post', url, json=payload, params=params)
         spreadsheet_id = r.json()['id']

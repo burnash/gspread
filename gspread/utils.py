@@ -121,6 +121,8 @@ def numericise(
     '32'
     >>> numericise("3.1")
     3.1
+    >>> numericise("2,000.1")
+    2000.1
     >>> numericise("", empty2zero=True)
     0
     >>> numericise("", empty2zero=False)
@@ -139,6 +141,9 @@ def numericise(
             if not allow_underscores_in_numeric_literals:
                 return value
             value = value.replace("_", "")
+
+        # replace coma separating thousands to match python format
+        value = value.replace(",", "")
         try:
             value = int(value)
         except ValueError:
@@ -426,15 +431,18 @@ def rightpad(row, max_len):
 
 def fill_gaps(L, rows=None, cols=None):
 
-    max_cols = max(len(row) for row in L) if cols is None else cols
-    max_rows = len(L) if rows is None else rows
+    try:
+        max_cols = max(len(row) for row in L) if cols is None else cols
+        max_rows = len(L) if rows is None else rows
 
-    pad_rows = max_rows - len(L)
+        pad_rows = max_rows - len(L)
 
-    if pad_rows:
-        L = L + ([[]] * pad_rows)
+        if pad_rows:
+            L = L + ([[]] * pad_rows)
 
-    return [rightpad(row, max_cols) for row in L]
+        return [rightpad(row, max_cols) for row in L]
+    except ValueError:
+        return []
 
 
 def cell_list_to_rect(cell_list):

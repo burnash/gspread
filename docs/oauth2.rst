@@ -35,9 +35,13 @@ Here's how to get one:
 
 3. Fill out the form
 
-4. Click "Create key"
+4. Click "Create" and "Done".
 
-5. Select "JSON" and click "Create"
+5. Press "Manage service accounts" above Service Accounts.
+
+6. Press on **⋮** near recently created service account and select "Manage keys" and then click on "ADD KEY > Create new key".
+
+7. Select JSON key type and press "Create".
 
 You will automatically download a JSON file with credentials. It may look like this:
 
@@ -99,6 +103,27 @@ that has been used for authentication prio to the gspread version 3.6:
 
     gc = gspread.authorize(credentials)
 
+There is also the option to pass credentials as a dictionary:
+
+::
+
+    import gspread
+    
+    credentials = {
+        "type": "service_account",
+        "project_id": "api-project-XXX",
+        "private_key_id": "2cd … ba4",
+        "private_key": "-----BEGIN PRIVATE KEY-----\nNrDyLw … jINQh/9\n-----END PRIVATE KEY-----\n",
+        "client_email": "473000000000-yoursisdifferent@developer.gserviceaccount.com",
+        "client_id": "473 … hd.apps.googleusercontent.com",
+        ...
+    }
+
+    gc = gspread.service_account_from_dict(credentials)
+
+    sh = gc.open("Example spreadsheet")
+
+    print(sh.sheet1.get('A1'))
 
 .. NOTE::
    Older versions of gspread have used `oauth2client <https://github.com/google/oauth2client>`_. Google has
@@ -142,6 +167,13 @@ Create a new Python file with this code:
 
 When you run this code, it launches a browser asking you for authentication. Follow the instruction on the web page. Once finished, gspread stores authorized credentials in the config directory next to `credentials.json`.
 You only need to do authorization in the browser once, following runs will reuse stored credentials.
+
+.. NOTE::
+    If you want to store the credentials file somewhere else, specify the path to `authorized_user.json` in :meth:`~gspread.oauth`:
+    ::
+        gc = gspread.oauth(authorized_user_filename='path/to/the/downloaded/file.json')
+
+    Make sure you store the credentials file in a safe place.
 
 .. attention:: Security
     Credentials file and authorized credentials contain sensitive data. **Do not share these files with others** and treat them like private keys.

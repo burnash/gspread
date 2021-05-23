@@ -1,6 +1,40 @@
 Release History
 ===============
 
+3.7.0 (2021-02-18)
+------------------
+
+* Add `Worksheet.insert_note()`, `Worksheet.update_note()`, `Worksheet.clear_note()` (#818 by @lavigne958)
+
+* Update documentation: oauth2.rst (#836 by @Prometheus3375)
+
+* Documentation fixes (#838 by @jayeshmanani)
+
+* Documentation fixes (#845 by @creednaylor)
+
+* Add `Worksheet.insert_cols()` (#802 by @AlexeyDmitriev)
+
+* Documentation fixes (#814 by @hkuffel)
+
+* Update README.md (#811 by @tasawar-hussain)
+
+* Add `value_render_option` parameter to `Worksheet.get_all_records()` (#776 by @damgad)
+
+* Remove `requests` from `install_requires` (#801)
+
+* Simplify implementation of `Worksheet.insert_rows()` (#799 by @AlexeyDmitriev)
+
+* Add `auth.service_account_from_dict()` (#785 b7 @mahenzon)
+
+* Fix `ValueRange.from_json()` (#791 by @erakli)
+
+* Update documentation: oauth2.rst (#794 by @elnjensen)
+
+* Update documentation: oauth2.rst (#789 by @Takur0)
+
+* Allow `auth` to be `None`. Fix #773 (#774 by @lepture)
+
+
 3.6.0 (2020-04-30)
 ------------------
 

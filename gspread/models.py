@@ -14,6 +14,7 @@ from .utils import (
     a1_to_rowcol,
     rowcol_to_a1,
     cast_to_a1_notation,
+    numericise,
     numericise_all,
     finditem,
     fill_gaps,
@@ -38,6 +39,7 @@ from .urls import (
     SPREADSHEET_VALUES_BATCH_UPDATE_URL,
     SPREADSHEET_SHEETS_COPY_TO_URL,
 )
+from gspread import utils
 
 try:
     unicode
@@ -102,6 +104,32 @@ class Spreadsheet(object):
     def url(self):
         """Spreadsheet URL."""
         return SPREADSHEET_DRIVE_URL % self.id
+
+    @property
+    def creationTime(self):
+        """Spreadsheet Creation time."""
+        try:
+            return self._properties['createdTime']
+        except KeyError:
+            # Filter the list using the name to reduce the request size
+            # Filter the item using the unique ID to ensure we update the exacte same item
+            metadata = utils.finditem(lambda x: x["id"] == self.id,
+                                    self.client.list_spreadsheet_files(self.title))
+            self._properties.update(metadata)
+            return self._properties['createdTime']
+
+    @property
+    def lastUpdateTime(self):
+        """Spreadsheet Creation time."""
+        try:
+            return self._properties['modifiedTime']
+        except KeyError:
+            # Filter the list using the name to reduce the request size
+            # Filter the item using the unique ID to ensure we update the exacte same item
+            metadata = utils.finditem(lambda x: x["id"] == self.id,
+                                    self.client.list_spreadsheet_files(self.title))
+            self._properties.update(metadata)
+            return self._properties['modifiedTime']
 
     @property
     def updated(self):
@@ -662,7 +690,8 @@ class Worksheet(object):
     def range(self, name):
         """Returns a list of :class:`Cell` objects from a specified range.
 
-        :param name: A string with range value in A1 notation, e.g. 'A1:A5'.
+        :param name: A string with range value in A1 notation (e.g. 'A1:A5')
+                     or the named range to fetch.
         :type name: str
 
         Alternatively, you may specify numeric boundaries. All values
@@ -682,12 +711,29 @@ class Worksheet(object):
             >>> # Same with numeric boundaries
             >>> worksheet.range(1, 1, 7, 2)
             [<Cell R1C1 "42">, ...]
+
+            >>> # Named ranges work as well
+            >>> worksheet.range('NamedRange')
+            [<Cell R1C1 "42">, ...]
         """
         range_label = absolute_range_name(self.title, name)
 
         data = self.spreadsheet.values_get(range_label)
 
-        start, end = name.split(':')
+        start = None
+        end = None
+
+        if ':' not in name:
+            range_name = data.get('range', None)
+            if range_name and '!' in range_name:
+                coordinates = range_name.split('!')[1]
+                if ':' in coordinates:
+                    start, end = coordinates.split(':')
+            if not start or not end:
+                raise ValueError('Cannot retrieve range coordinates')
+        else:
+            start, end = name.split(':')
+
         (row_offset, column_offset) = a1_to_rowcol(start)
         (last_row, last_column) = a1_to_rowcol(end)
 
@@ -705,30 +751,105 @@ class Worksheet(object):
             for j, value in enumerate(row)
         ]
 
-    def get_all_values(self, value_render_option='FORMATTED_VALUE'):
-        """Returns a list of lists containing all cells' values as strings.
+    @accepted_kwargs(
+        major_dimension=None,
+        value_render_option=None,
+        date_time_render_option=None,
+    )
+    def get_values(self, range_name=None, **kwargs):
+        """Returns a list of lists containing all values from specified range.
 
-        :param value_render_option: (optional) Determines how values should be
-                                    rendered in the the output. See
-                                    `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: str
+        By default values are returned as strings. See ``value_render_option``
+        to change the default format.
+
+        :param str range_name: (optional) Cell range in the A1 notation or
+            a named range. If not specified the method returns values from all
+            non empty cells.
+
+        :param str major_dimension: (optional) The major dimension of the
+            values. Either ``ROWS`` or ``COLUMNS``. Defaults to ``ROWS``
+
+        :param str value_render_option: (optional) Determines how values should
+            be rendered in the the output. See `ValueRenderOption`_ in
+            the Sheets API.
+
+            Possible values are:
+
+            ``FORMATTED_VALUE``
+                (default) Values will be calculated and formatted according
+                to the cell's formatting. Formatting is based on the
+                spreadsheet's locale, not the requesting user's locale.
+
+            ``UNFORMATTED_VALUE``
+                Values will be calculated, but not formatted in the reply.
+                For example, if A1 is 1.23 and A2 is =A1 and formatted as
+                currency, then A2 would return the number 1.23.
+
+            ``FORMULA``
+                Values will not be calculated. The reply will include
+                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
+                formatted as currency, then A2 would return "=A1".
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        :param str date_time_render_option: (optional) How dates, times, and
+            durations should be represented in the output. This is ignored if
+            ``value_render_option`` is ``FORMATTED_VALUE``. The default
+            ``date_time_render_option`` is ``SERIAL_NUMBER``.
 
         .. note::
 
             Empty trailing rows and columns will not be included.
+
+        Examples::
+
+            # Return all values from the sheet
+            worksheet.get_values()
+
+            # Return all values from columns "A" and "B"
+            worksheet.get_values('A:B')
+
+            # Return values from range "A2:C10"
+            worksheet.get_values('A2:C10')
+
+            # Return values from named range "my_range"
+            worksheet.get_values('my_range')
+
+            # Return unformatted values (e.g. numbers as numbers)
+            worksheet.get_values('A2:B4', value_render_option='UNFORMATTED_VALUE')
+
+            # Return cell values without calculating formulas
+            worksheet.get_values('A2:B4', value_render_option='FORMULA')
         """
-        range_name = absolute_range_name(self.title)
-
-        data = self.spreadsheet.values_get(
-            range_name, params={'valueRenderOption': value_render_option}
-        )
-
         try:
-            return fill_gaps(data['values'])
+            return fill_gaps(self.get(range_name, **kwargs))
         except KeyError:
             return []
+
+    @accepted_kwargs(
+        major_dimension=None,
+        value_render_option=None,
+        date_time_render_option=None,
+    )
+    def get_all_values(self, **kwargs):
+        """Returns a list of lists containing all cells' values as strings.
+
+        This is an alias to :meth:`~gspread.models.Worksheet.get_values`
+
+        .. note::
+
+            This is a legacy method.
+            Use :meth:`~gspread.models.Worksheet.get_values` instead.
+
+        Examples::
+
+            # Return all values from the sheet
+            worksheet.get_all_values()
+
+            # Is equivalent to
+            worksheet.get_values()
+        """
+        return self.get_values(**kwargs)
 
     def get_all_records(
         self,
@@ -745,7 +866,7 @@ class Worksheet(object):
         values.
 
         Cell values are numericised (strings that can be read as ints or floats
-        are converted), unless specificed in numericise_ignore
+        are converted), unless specified in numericise_ignore
 
         :param bool empty2zero: (optional) Determines whether empty cells are
             converted to zeros.
@@ -951,8 +1072,8 @@ class Worksheet(object):
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output. This is ignored if
-            value_render_option is ``FORMATTED_VALUE``. The default dateTime
-            render option is ``SERIAL_NUMBER``.
+            ``value_render_option`` is ``FORMATTED_VALUE``. The default
+            ``date_time_render_option`` is ``SERIAL_NUMBER``.
 
         Examples::
 
@@ -1428,7 +1549,7 @@ class Worksheet(object):
         self.resize(rows=self.row_count + rows)
 
     def add_cols(self, cols):
-        """Adds colums to worksheet.
+        """Adds columns to worksheet.
 
         :param cols: Number of new columns to add.
         :type cols: int
@@ -1520,7 +1641,7 @@ class Worksheet(object):
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         """
-        return self.insert_rows([values], index, value_input_option='RAW')
+        return self.insert_rows([values], index, value_input_option=value_input_option)
 
     def insert_rows(self, values, row=1, value_input_option='RAW'):
         """Adds multiple rows to the worksheet at the specified index and
@@ -1566,7 +1687,7 @@ class Worksheet(object):
         :param list values: List of col lists. a list of lists, with the lists
             each containing one col's values. Increases the number of rows
             if there are more values than columns.
-        :param int row: Start col to update(one-based). Defaults to 1 (one).
+        :param int col: Start col to update (one-based). Defaults to 1 (one).
         :param str value_input_option: (optional) Determines how input data
             should be interpreted. Possible values are ``RAW`` or
             ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
@@ -1634,6 +1755,8 @@ class Worksheet(object):
         :param int first_col: First column number
         :param int last_row: Last row number
         :param int last_col: Last column number
+
+        For both A1 and numeric notation:
 
         :param list editor_users_emails: (optional) The email addresses of
             users with edit access to the protected range.
@@ -1972,6 +2095,112 @@ class Worksheet(object):
 
         return self.spreadsheet.batch_update(body)
 
+    def get_note(self, cell):
+        """Get the content of the note located at `cell`, or the empty string if the
+        cell does not have a note.
+
+        :param str cell: A string with cell coordinates in A1 notation,
+            e.g. 'D7'.
+        """
+        absolute_cell = absolute_range_name(self.title, cell)
+        url = SPREADSHEET_URL % (self.spreadsheet.id)
+        params = {
+            'ranges': absolute_cell,
+            'fields': 'sheets/data/rowData/values/note'
+        }
+        response = self.client.request('get', url, params=params)
+        response.raise_for_status()
+        response_json = response.json()
+
+        try:
+            note = response_json['sheets'][0]['data'][0]['rowData'][0]['values'][0]['note']
+        except (IndexError, KeyError):
+            note = ''
+
+        return note
+
+    def update_note(self, cell, content):
+        """Update the content of the note located at `cell`.
+
+        :param str cell: A string with cell coordinates in A1 notation,
+            e.g. 'D7'.
+        :param str note: The text note to insert.
+
+        .. versionadded:: 3.7
+        """
+
+        if not isinstance(content, str):
+            raise TypeError("Only string allowed as content for a note.")
+
+        (startRow, startColumn) = a1_to_rowcol(cell)
+
+        body = {
+            "requests": [
+                {
+                    "updateCells": {
+                        "range": {
+                            "sheetId": self.id,
+                            "startRowIndex": startRow - 1,
+                            "endRowIndex": startRow,
+                            "startColumnIndex": startColumn - 1,
+                            "endColumnIndex": startColumn,
+                        },
+                        "rows": [
+                            {
+                                "values": [
+                                    {
+                                        "note": content
+                                    }
+                                ]
+                            }
+                        ],
+                        "fields": "note"
+                    }
+                }
+            ]
+        }
+        self.spreadsheet.batch_update(body)
+
+    @cast_to_a1_notation
+    def insert_note(self, cell, content):
+        """Insert a note. The note is attached to a certain cell.
+
+        :param str cell: A string with cell coordinates in A1 notation,
+            e.g. 'D7'.
+        :param str content: The text note to insert.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
+
+        .. versionadded:: 3.7
+        """
+        self.update_note(cell, content)
+
+    @cast_to_a1_notation
+    def clear_note(self, cell):
+        """Clear a note. The note is attached to a certain cell.
+
+        :param str cell: A string with cell coordinates in A1 notation,
+            e.g. 'D7'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
+
+        .. versionadded:: 3.7
+        """
+        # set the note to <empty string> will clear it
+        self.update_note(cell, "")
+
 
 class Cell(object):
     """An instance of this class represents a single cell
@@ -2009,9 +2238,12 @@ class Cell(object):
 
     @property
     def numeric_value(self):
-        try:
-            return float(self.value)
-        except ValueError:
+        numeric_value = numericise(self.value, default_blank=None)
+
+        # if could not convert, return None
+        if type(numeric_value) == int or type(numeric_value) == float:
+            return numeric_value
+        else:
             return None
 
     @property

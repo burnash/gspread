@@ -1132,6 +1132,22 @@ class WorksheetTest(GspreadTest):
         w = self.spreadsheet.worksheets()
         self.assertEqual(w[0].id, last_sheet.id)
 
+    def test_worksheet_notes(self):
+        w = self.spreadsheet.worksheets()[0]
+
+        # will trigger a Exception in case of any issue
+        self.assertEqual(w.get_note("A1"), "")
+        test_note_string = "This is a test note"
+        w.insert_note("A1", test_note_string)
+        self.assertEqual(w.get_note("A1"), test_note_string)
+        w.clear_note("A1")
+        self.assertEqual(w.get_note("A1"), "")
+
+        with self.assertRaises(TypeError) as _:
+            w.insert_note("A1", 42)
+            w.insert_note("A1", ["asddf", "asdfqwebn"])
+            w.insert_note("A1", w)
+
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
@@ -1157,6 +1173,15 @@ class CellTest(GspreadTest):
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, numeric_value)
         self.assertTrue(isinstance(cell.numeric_value, float))
+
+        # test value for popular format with long numbers
+        numeric_value = 2000000.01
+        self.sheet.update_acell('A1', '2,000,000.01')
+        cell = self.sheet.acell('A1')
+        self.assertEqual(cell.numeric_value, numeric_value)
+        self.assertTrue(isinstance(cell.numeric_value, float))
+
+        # test non numeric value
         self.sheet.update_acell('A1', 'Non-numeric value')
         cell = self.sheet.acell('A1')
         self.assertEqual(cell.numeric_value, None)
