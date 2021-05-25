@@ -1162,7 +1162,7 @@ class Worksheet(object):
     def update(self, range_name, values=None, **kwargs):
         """Sets values in a cell range of the sheet.
 
-        :param str range_name: (optional) The A1 notation of the values
+        :param str range_name: The A1 notation of the values
             to update.
         :param list values: The data to be written.
 
