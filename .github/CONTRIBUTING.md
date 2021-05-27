@@ -29,12 +29,12 @@ pip install -r test-requirements.txt
 3. Run tests:
 
 ```
-GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py
+GS_CREDS_FILENAME=<YOUR_CREDS.json> make test
 ```
 
 where `YOUR_CREDS.json` is a path to the file you downloaded in step 1.
 
-**Tip:** To run a specific test method append its name in the form of `:TestClassName.test_method_name` to `tests/test.py`.
+**Tip:** To run a specific test method you must use the full command and append the test method name in the form of `:TestClassName.test_method_name` to `tests/test.py`.
 
 Example:
 
@@ -46,7 +46,7 @@ GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py:WorksheetTest.te
 You can control Betamax's [Record Mode](https://betamax.readthedocs.io/en/latest/record_modes.html) using `GS_RECORD_MODE` environment variable:
 
 ```
-GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py
+GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> make test
 ```
 
 ## Render Documentation
