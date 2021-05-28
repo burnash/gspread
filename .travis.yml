@@ -2,10 +2,10 @@ language: python
 
 matrix:
   include:
-  - python: "2.7"
   - python: "3.6"
   - python: "3.7"
   - python: "3.8"
+  - python: "3.9"
   - python: "nightly"
 install: "pip install -r test-requirements.txt"
 script: nosetests -vv tests/test.py

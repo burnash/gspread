@@ -26,16 +26,7 @@ from google.oauth2.service_account import (
 )
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
-
-if sys.version_info.major == 2:
-    import urllib
-elif sys.version_info.major == 3:
-    import urllib.parse as urllib
-
-try:
-    unicode
-except NameError:
-    basestring = unicode = str
+from urllib.parse import quote as uquote
 
 
 MAGIC_NUMBER = 64
@@ -473,7 +464,7 @@ def cell_list_to_rect(cell_list):
 
 
 def quote(value, safe='', encoding='utf-8'):
-    return urllib.quote(value.encode(encoding), safe)
+    return uquote(value.encode(encoding), safe)
 
 
 def absolute_range_name(sheet_name, range_name=None):
@@ -528,7 +519,7 @@ def is_scalar(x):
     >>> is_scalar(set())
     True
     """
-    return isinstance(x, basestring) or not isinstance(x, Sequence)
+    return isinstance(x, str) or not isinstance(x, Sequence)
 
 
 def filter_dict_values(D):
