@@ -163,7 +163,7 @@ def oauth(
 
     if not creds:
         creds = flow(scopes=scopes)
-        store_credentials(creds)
+        store_credentials(creds, filename=authorized_user_filename)
 
     client = Client(auth=creds)
     return client
