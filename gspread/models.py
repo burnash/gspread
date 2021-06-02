@@ -296,13 +296,15 @@ class Spreadsheet(object):
         :param index: An index of a worksheet. Indexes start from zero.
         :type index: int
 
-        :returns: an instance of :class:`gspread.models.Worksheet`
-                  or `None` if the worksheet is not found.
+        :returns: an instance of :class:`gspread.models.Worksheet`.
 
-        Example. To get first worksheet of a spreadsheet:
+        :raises:
+            WorksheetNotFound: if can't find the worksheet
+
+        Example. To get third worksheet of a spreadsheet:
 
         >>> sht = client.open('My fancy spreadsheet')
-        >>> worksheet = sht.get_worksheet(0):rtype: dict
+        >>> worksheet = sht.get_worksheet(2)
         """
         sheet_data = self.fetch_sheet_metadata()
 
@@ -310,7 +312,7 @@ class Spreadsheet(object):
             properties = sheet_data['sheets'][index]['properties']
             return Worksheet(self, properties)
         except (KeyError, IndexError):
-            return None
+            raise WorksheetNotFound("index {} not found".format(index))
     
     def get_worksheet_by_id(self, id):
         """Returns a worksheet with specified `worksheet id`.
@@ -318,13 +320,14 @@ class Spreadsheet(object):
         :param id: The id of a worksheet. it can be seen in the url as the value of the parameter 'gid'.
         :type id: int
 
-        :returns: an instance of :class:`gspread.models.Worksheet`
-                  or `None` if the worksheet is not found.
+        :returns: an instance of :class:`gspread.models.Worksheet`.
+        :raises:
+            WorksheetNotFound: if can't find the worksheet
 
-        Example. To get first worksheet of a spreadsheet:
+        Example. To get the worksheet 123456 of a spreadsheet:
 
         >>> sht = client.open('My fancy spreadsheet')
-        >>> worksheet = sht.get_worksheet_by_id(0):rtype: dict
+        >>> worksheet = sht.get_worksheet_by_id(123456)
         """
         sheet_data = self.fetch_sheet_metadata()
 
@@ -335,7 +338,7 @@ class Spreadsheet(object):
             )
             return Worksheet(self, item['properties'])
         except (StopIteration, KeyError):
-            raise WorksheetNotFound(id)
+            raise WorksheetNotFound("id {} not found".format(id))
 
     def worksheets(self):
         """Returns a list of all :class:`worksheets <gspread.models.Worksheet>`
@@ -353,6 +356,9 @@ class Spreadsheet(object):
         :type title: str
 
         :returns: an instance of :class:`gspread.models.Worksheet`.
+
+        :raises:
+            WorksheetNotFound: if can't find the worksheet
 
         Example. Getting worksheet named 'Annual bonuses'
 
