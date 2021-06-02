@@ -292,6 +292,10 @@ class SpreadsheetTest(GspreadTest):
     def test_get_worksheet(self):
         sheet1 = self.spreadsheet.get_worksheet(0)
         self.assertTrue(isinstance(sheet1, gspread.Worksheet))
+    
+    def test_get_worksheet_by_id(self):
+        sheet1 = self.spreadsheet.get_worksheet_by_id(0)
+        self.assertTrue(isinstance(sheet1, gspread.Worksheet))
 
     def test_worksheet(self):
         sheet_title = 'Sheet1'
