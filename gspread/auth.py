@@ -57,13 +57,7 @@ DEFAULT_SERVICE_ACCOUNT_FILENAME = os.path.join(
 )
 
 
-def _create_installed_app_flow(scopes):
-    return InstalledAppFlow.from_client_secrets_file(
-        DEFAULT_CREDENTIALS_FILENAME, scopes
-    )
-
-
-def local_server_flow(scopes, port=0):
+def local_server_flow(scopes, port=0, filename=DEFAULT_CREDENTIALS_FILENAME):
     """Run an OAuth flow using a local server strategy.
 
     Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_local_server <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_local_server>`_.
@@ -73,12 +67,11 @@ def local_server_flow(scopes, port=0):
     Pass this function to ``flow`` parameter of :meth:`~gspread.oauth` to run
     a local server flow.
     """
-
-    flow = _create_installed_app_flow(scopes)
+    flow = InstalledAppFlow.from_client_secrets_file(filename, scopes)
     return flow.run_local_server(port=port)
 
 
-def console_flow(scopes):
+def console_flow(scopes, filename=DEFAULT_CREDENTIALS_FILENAME):
     """Run an OAuth flow using a console strategy.
 
     Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_console <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_console>`_.
@@ -86,7 +79,7 @@ def console_flow(scopes):
     Pass this function to ``flow`` parameter of :meth:`~gspread.oauth` to run
     a console strategy.
     """
-    flow = _create_installed_app_flow(scopes)
+    flow = InstalledAppFlow.from_client_secrets_file(filename, scopes)
     return flow.run_console()
 
 
@@ -107,6 +100,7 @@ def store_credentials(
 def oauth(
     scopes=DEFAULT_SCOPES,
     flow=local_server_flow,
+    credentials_filename=DEFAULT_CREDENTIALS_FILENAME,
     authorized_user_filename=DEFAULT_AUTHORIZED_USER_FILENAME,
 ):
     """Authenticate with OAuth Client ID.
@@ -145,12 +139,19 @@ def oauth(
     If you're storing your user credentials in a place other than the
     default, you may provide a path to that file like so::
 
-        gc = gspread.oauth(authorized_user_filename='/alternative/path/authorized_user.json')
-
+        gc = gspread.oauth(
+            credentials_filename='/alternative/path/credentials.json',
+            authorized_user_filename='/alternative/path/authorized_user.json',
+        )
 
     :param list scopes: The scopes used to obtain authorization.
     :param function flow: OAuth flow to use for authentication.
         Defaults to :meth:`~gspread.auth.local_server_flow`
+    :param str credentials_filename: Filepath (including name) pointing to a
+        credentials `.json` file.
+        Defaults to DEFAULT_CREDENTIALS_FILENAME:
+            * `%APPDATA%\gspread\credentials.json` on Windows
+            * `~/.config/gspread/credentials.json` everywhere else
     :param str authorized_user_filename: Filepath (including name) pointing to
         an authorized user `.json` file.
         Defaults to DEFAULT_AUTHORIZED_USER_FILENAME:
@@ -162,7 +163,7 @@ def oauth(
     creds = load_credentials(filename=authorized_user_filename)
 
     if not creds:
-        creds = flow(scopes=scopes)
+        creds = flow(filename=credentials_filename, scopes=scopes)
         store_credentials(creds, filename=authorized_user_filename)
 
     client = Client(auth=creds)
