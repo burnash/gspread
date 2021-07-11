@@ -169,9 +169,12 @@ When you run this code, it launches a browser asking you for authentication. Fol
 You only need to do authorization in the browser once, following runs will reuse stored credentials.
 
 .. NOTE::
-    If you want to store the credentials file somewhere else, specify the path to `authorized_user.json` in :meth:`~gspread.oauth`:
+    If you want to store the credentials file somewhere else, specify the path to `credentials.json` and `authorized_user.json` in :meth:`~gspread.oauth`:
     ::
-        gc = gspread.oauth(authorized_user_filename='path/to/the/downloaded/file.json')
+        gc = gspread.oauth(
+            credentials_filename='path/to/the/credentials.json',
+            authorized_user_filename='path/to/the/authorized_user.json'
+        )
 
     Make sure you store the credentials file in a safe place.
 
