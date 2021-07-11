@@ -15,16 +15,15 @@ __author__ = 'Anton Burnashev'
 
 from .auth import oauth, service_account, service_account_from_dict
 from .client import Client
-from .models import Spreadsheet, Worksheet, Cell
-
 from .exceptions import (
-    GSpreadException,
-    SpreadsheetNotFound,
-    NoValidUrlKeyFound,
-    IncorrectCellLabel,
-    WorksheetNotFound,
     CellNotFound,
+    GSpreadException,
+    IncorrectCellLabel,
+    NoValidUrlKeyFound,
+    SpreadsheetNotFound,
+    WorksheetNotFound,
 )
+from .models import Cell, Spreadsheet, Worksheet
 
 
 def authorize(credentials, client_class=Client):

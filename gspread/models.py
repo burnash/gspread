@@ -8,39 +8,38 @@ This module contains common spreadsheets' models.
 
 """
 
-from .exceptions import WorksheetNotFound, CellNotFound
+from gspread import utils
 
+from .exceptions import CellNotFound, WorksheetNotFound
+from .urls import (
+    SPREADSHEET_BATCH_UPDATE_URL,
+    SPREADSHEET_DRIVE_URL,
+    SPREADSHEET_SHEETS_COPY_TO_URL,
+    SPREADSHEET_URL,
+    SPREADSHEET_VALUES_APPEND_URL,
+    SPREADSHEET_VALUES_BATCH_CLEAR_URL,
+    SPREADSHEET_VALUES_BATCH_UPDATE_URL,
+    SPREADSHEET_VALUES_BATCH_URL,
+    SPREADSHEET_VALUES_CLEAR_URL,
+    SPREADSHEET_VALUES_URL,
+    WORKSHEET_DRIVE_URL,
+)
 from .utils import (
+    a1_range_to_grid_range,
     a1_to_rowcol,
-    rowcol_to_a1,
+    absolute_range_name,
+    accepted_kwargs,
     cast_to_a1_notation,
+    cell_list_to_rect,
+    fill_gaps,
+    filter_dict_values,
+    finditem,
+    is_scalar,
     numericise,
     numericise_all,
-    finditem,
-    fill_gaps,
-    cell_list_to_rect,
     quote,
-    is_scalar,
-    filter_dict_values,
-    absolute_range_name,
-    a1_range_to_grid_range,
-    accepted_kwargs,
+    rowcol_to_a1,
 )
-
-from .urls import (
-    SPREADSHEET_URL,
-    SPREADSHEET_VALUES_URL,
-    SPREADSHEET_VALUES_BATCH_URL,
-    SPREADSHEET_VALUES_BATCH_CLEAR_URL,
-    SPREADSHEET_BATCH_UPDATE_URL,
-    SPREADSHEET_VALUES_APPEND_URL,
-    SPREADSHEET_VALUES_CLEAR_URL,
-    SPREADSHEET_DRIVE_URL,
-    WORKSHEET_DRIVE_URL,
-    SPREADSHEET_VALUES_BATCH_UPDATE_URL,
-    SPREADSHEET_SHEETS_COPY_TO_URL,
-)
-from gspread import utils
 
 
 class ValueRange(list):
