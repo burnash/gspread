@@ -191,10 +191,14 @@ class Client(object):
             'mimeType': 'application/vnd.google-apps.spreadsheet',
         }
 
+        params = {
+            "supportsAllDrives": True,
+        }
+
         if folder_id is not None:
             payload['parents'] = [folder_id]
 
-        r = self.request('post', DRIVE_FILES_API_V3_URL, json=payload)
+        r = self.request('post', DRIVE_FILES_API_V3_URL, json=payload, params=params)
         spreadsheet_id = r.json()['id']
         return self.open_by_key(spreadsheet_id)
 
