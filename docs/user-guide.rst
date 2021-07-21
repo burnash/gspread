@@ -216,6 +216,21 @@ Find all cells matching a regexp:
    criteria_re = re.compile(r'(Small|Room-tiering) rug')
    cell_list = worksheet.findall(criteria_re)
 
+Clear A Worksheet
+~~~~~~~~~~~~~~~~~
+
+Clear one or multiple celle ranges at once:
+
+.. code:: python
+
+   worksheet.batch_clear(["A1:B1", "C2:E2", "my_named_range"])
+
+Clear the entire workshseet:
+
+.. code:: python
+
+   worksheet.clear()
+
 Cell Object
 ~~~~~~~~~~~
 
