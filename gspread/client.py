@@ -251,7 +251,7 @@ class Client(object):
 
         new_spreadsheet = self.open_by_key(spreadsheet_id)
 
-        if copy_permissions:
+        if copy_permissions is True:
             original = self.open_by_key(file_id)
 
             permissions = original.list_permissions()
