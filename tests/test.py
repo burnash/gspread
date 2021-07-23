@@ -1147,6 +1147,29 @@ class WorksheetTest(GspreadTest):
             w.insert_note("A1", ["asddf", "asdfqwebn"])
             w.insert_note("A1", w)
 
+    def test_batch_clear(self):
+        w = self.spreadsheet.sheet1
+
+        # make sure cells are empty
+        self.assertListEqual(w.get_values("A1:B1"), [])
+        self.assertListEqual(w.get_values("C2:E2"), [])
+
+        # fill the cells
+        w.update("A1:B1", [["12345", "ThisIsText"]])
+        w.update("C2:E2", [["5678", "Second", "Text"]])
+
+        # confirm the cells are not empty
+        self.assertNotEqual(w.get_values("A1:B1"), [])
+        self.assertNotEqual(w.get_values("C2:E2"), [])
+
+        # empty both cell range at once
+        w.batch_clear(["A1:B1", "C2:E2"])
+
+        # confirm cells are empty
+        # make sure cells are empty
+        self.assertListEqual(w.get_values("A1:B1"), [])
+        self.assertListEqual(w.get_values("C2:E2"), [])
+
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""

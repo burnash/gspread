@@ -31,6 +31,7 @@ from .urls import (
     SPREADSHEET_URL,
     SPREADSHEET_VALUES_URL,
     SPREADSHEET_VALUES_BATCH_URL,
+    SPREADSHEET_VALUES_BATCH_CLEAR_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
     SPREADSHEET_VALUES_APPEND_URL,
     SPREADSHEET_VALUES_CLEAR_URL,
@@ -199,6 +200,11 @@ class Spreadsheet(object):
         """
         url = SPREADSHEET_VALUES_CLEAR_URL % (self.id, quote(range))
         r = self.client.request('post', url)
+        return r.json()
+
+    def values_batch_clear(self, params=None, body=None):
+        url = SPREADSHEET_VALUES_BATCH_CLEAR_URL % self.id
+        r = self.client.request('post', url, params=params, json=body)
         return r.json()
 
     def values_get(self, range, params=None):
@@ -1891,6 +1897,30 @@ class Worksheet(object):
     def clear(self):
         """Clears all cells in the worksheet."""
         return self.spreadsheet.values_clear(absolute_range_name(self.title))
+
+    def batch_clear(self, ranges):
+        """Clears multiple ranges of cells with 1 API call.
+
+        https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchClear
+
+        Examples::
+
+            worksheet.batch_clear(['A1:B1','my_range'])
+
+            # Note: named ranges are defined in the scope of
+            # a spreadsheet, so even if `my_range` does not belong to
+            # this sheet it is still updated
+
+        .. versionadded:: 3.8.0
+
+        """
+        ranges = [absolute_range_name(self.title, rng) for rng in ranges]
+
+        body = {'ranges': ranges}
+
+        response = self.spreadsheet.values_batch_clear(body=body)
+
+        return response
 
     def _finder(self, func, query, in_row=None, in_column=None):
         data = self.spreadsheet.values_get(absolute_range_name(self.title))
