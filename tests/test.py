@@ -720,6 +720,9 @@ class WorksheetTest(GspreadTest):
         cell = self.sheet.find(o_O_re)
         self.assertEqual(cell.value, value)
 
+        not_found = self.sheet.find("does not exists")
+        self.assertIs(not_found, None, "find should return 'None' when value is not found")
+
     def test_findall(self):
         list_len = 10
         range_label = 'A1:A%s' % list_len
