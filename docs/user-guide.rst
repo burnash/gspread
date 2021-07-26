@@ -199,6 +199,7 @@ Find a cell matching a regular expression
    amount_re = re.compile(r'(Big|Enormous) dough')
    cell = worksheet.find(amount_re)
 
+`find` returns `None` if value is not Found
 
 Finding All Matched Cells
 ~~~~~~~~~~~~~~~~~~~~~~~~~
