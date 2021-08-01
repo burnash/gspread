@@ -1,6 +1,57 @@
 Release History
 ===============
 
+4.0.0 (2021-08-01)
+------------------
+
+* Changed `Worksheet.find()` method returns `None` if nothing is found (#899 by @GastonBC)
+
+* Add `Worksheet.batch_clear()` to clear multiple ranges. (#897 by @lavigne958)
+
+* Fix `copy_permission` argument comparison in `Client.copy()` method (#898 by @lavigne958)
+
+* Alow creation of spreadhsheets in a shared drive (#895 by @lavigne958)
+
+* Allow `gspread.oauth()` to accept a custom credential file (#891 by @slmtpz)
+
+* Update `tox.ini`, remove python2 from env list (#887 by @cclaus)
+
+* Add `SpreadSheet.get_worksheet_by_id()` method (#857 by @a-crovetto)
+
+* Fix `store_credentials()` when `authorized_user_filename` is passed (#884 by @neuenmuller)
+
+* Remove python2 (#879 by @lavigne958)
+
+* Use `Makefile` to run tests (#883 by @lavigne958)
+
+* Update documentation `Authentication:For End Users` using OAuth Client ID (#835 by @ManuNaEira)
+
+* Allow fetching named ranges from `Worksheet.range()` (#809 by @agatti)
+
+* Update README to only mention python3.3+ (#877 by @lavigne958)
+
+* Fetch `creation` and `lastUpdate` time from `SpreadSheet` on open (#872 by @lavigne958)
+
+* Fix bug with `Worksheet.insert_row()` with `value_input_option` argument (#873 by @elijabesu)
+
+* Fix typos in doc and comments (#868 by @cclauss)
+
+* Auto cast numeric values from sheet cells to python int or float (#866 by @lavigne958)
+
+* Add `Worksheet.geT_values()` method (#775 by @burnash)
+
+* Allow `gspread.oauth()` to accept a custom filename (#847 by @bastienboutonnet)
+
+* Document dictionary credentials auth (#860 by @dmytrostriletskyi)
+
+* Add `Worksheet.get_note()` (#855 by @water-ghosts )
+
+* Add steps for creating new keys (#856 by @hanzala-sohrab)
+
+* Add `folder_id` argument to `Client.copy()` (#851 by @punnerud)
+
+* Fix typos in docstrings (#848 by @dgilman)
+
 3.7.0 (2021-02-18)
 ------------------
 
