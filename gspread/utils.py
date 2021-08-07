@@ -134,12 +134,14 @@ def numericise(
             value = value.replace("_", "")
 
         # replace coma separating thousands to match python format
-        value = value.replace(",", "")
+        cleaned_value = value.replace(",", "")
         try:
-            value = int(value)
+            int_value = int(cleaned_value)
+            return int_value
         except ValueError:
             try:
-                value = float(value)
+                float_value = float(cleaned_value)
+                return float_value
             except ValueError:
                 if value == "":
                     if empty2zero:
