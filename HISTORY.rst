@@ -1,6 +1,11 @@
 Release History
 ===============
 
+4.0.1 (2021-08-07)
+------------------
+
+* Do not overwrite original value when trying to convert to a number (#902 by @lavigne958)
+
 4.0.0 (2021-08-01)
 ------------------
 
@@ -10,7 +15,7 @@ Release History
 
 * Fix `copy_permission` argument comparison in `Client.copy()` method (#898 by @lavigne958)
 
-* Alow creation of spreadhsheets in a shared drive (#895 by @lavigne958)
+* Allow creation of spreadhsheets in a shared drive (#895 by @lavigne958)
 
 * Allow `gspread.oauth()` to accept a custom credential file (#891 by @slmtpz)
 
@@ -441,18 +446,18 @@ Release History
 * Support for deleting worksheets from a spreadsheet.
 
 0.0.15 (2013-02-01)
-------------------
+-------------------
 
 * Couple of bugfixes.
 
 0.0.14 (2013-01-31)
-------------------
+-------------------
 
 * Bugfix in Python 3.
 
 
 0.0.12 (2011-12-25)
-------------------
+-------------------
 
 * Python 3 support.
 
