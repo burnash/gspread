@@ -109,7 +109,7 @@ def numericise(
     >>> numericise("3_2", allow_underscores_in_numeric_literals=False)
     '3_2'
     >>> numericise("3_2", allow_underscores_in_numeric_literals=True)
-    '32'
+    32
     >>> numericise("3.1")
     3.1
     >>> numericise("2,000.1")
@@ -133,7 +133,7 @@ def numericise(
                 return value
             value = value.replace("_", "")
 
-        # replace coma separating thousands to match python format
+        # replace comma separating thousands to match python format
         cleaned_value = value.replace(",", "")
         try:
             int_value = int(cleaned_value)
