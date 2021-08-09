@@ -38,7 +38,7 @@ Release History
 
 * Auto cast numeric values from sheet cells to python int or float (#866 by @lavigne958)
 
-* Add `Worksheet.geT_values()` method (#775 by @burnash)
+* Add `Worksheet.get_values()` method (#775 by @burnash)
 
 * Allow `gspread.oauth()` to accept a custom filename (#847 by @bastienboutonnet)
 
