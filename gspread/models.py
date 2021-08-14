@@ -1750,7 +1750,9 @@ class Worksheet(object):
         return self.spreadsheet.values_append(range_label, params, body)
 
     def delete_row(self, index):
-        """Deletes the row from the worksheet at the specified index.
+        """.. deprecated:: 5.0
+        
+        Deletes the row from the worksheet at the specified index.
 
         :param int index: Index of a row for deletion.
         """
