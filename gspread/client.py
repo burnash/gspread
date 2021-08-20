@@ -12,7 +12,7 @@ Google API.
 from google.auth.transport.requests import AuthorizedSession
 
 from .exceptions import APIError, SpreadsheetNotFound
-from .models import Spreadsheet
+from .spreadsheet import Spreadsheet
 from .utils import convert_credentials, extract_id_from_url, finditem
 
 from .urls import (

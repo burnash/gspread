@@ -15,7 +15,9 @@ __author__ = 'Anton Burnashev'
 
 from .auth import oauth, service_account, service_account_from_dict
 from .client import Client
-from .models import Spreadsheet, Worksheet, Cell
+from .spreadsheet import Spreadsheet
+from .worksheet import Worksheet
+from .cell import Cell
 
 from .exceptions import (
     GSpreadException,
