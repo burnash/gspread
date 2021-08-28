@@ -9,10 +9,9 @@ Simple authentication with OAuth.
 """
 
 import os
+
 from google.oauth2.credentials import Credentials
-from google.oauth2.service_account import (
-    Credentials as ServiceAccountCredentials,
-)
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 from .client import Client

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from .test import GspreadTest
-
 import gspread
 import gspread.utils as utils
 from gspread.exceptions import APIError
+
+from .test import GspreadTest
 
 
 class ClientTest(GspreadTest):

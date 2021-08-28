@@ -11,7 +11,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import os
+import sys
 from datetime import date
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -20,8 +21,7 @@ from datetime import date
 sys.path.insert(0, os.path.abspath('..'))
 
 import gspread
-from  gspread import __version__
-
+from gspread import __version__
 
 # -- General configuration -----------------------------------------------------
 

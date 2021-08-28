@@ -13,13 +13,12 @@ from google.auth.transport.requests import AuthorizedSession
 
 from .exceptions import APIError, SpreadsheetNotFound
 from .spreadsheet import Spreadsheet
-from .utils import convert_credentials, extract_id_from_url, finditem
-
 from .urls import (
     DRIVE_FILES_API_V2_URL,
     DRIVE_FILES_API_V3_URL,
     DRIVE_FILES_UPLOAD_API_V2_URL,
 )
+from .utils import convert_credentials, extract_id_from_url, finditem
 
 
 class Client(object):

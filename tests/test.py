@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import os
 import itertools
-
-from gspread.exceptions import APIError
+import os
 
 from betamax import Betamax
 from betamax.fixtures.unittest import BetamaxTestCase
 from betamax_json_body_serializer import JSONBodySerializer
+from google.oauth2.credentials import Credentials as UserCredentials
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
 import gspread
-from google.oauth2.service_account import Credentials as ServiceAccountCredentials
-from google.oauth2.credentials import Credentials as UserCredentials
-
+from gspread.exceptions import APIError
 
 CREDS_FILENAME = os.getenv('GS_CREDS_FILENAME')
 
