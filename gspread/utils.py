@@ -30,29 +30,29 @@ from urllib.parse import quote as uquote
 
 
 MAGIC_NUMBER = 64
-CELL_ADDR_RE = re.compile(r'([A-Za-z]+)([1-9]\d*)')
-A1_ADDR_ROW_COL_RE = re.compile(r'([A-Za-z]+)?([1-9]\d*)?$')
+CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")
+A1_ADDR_ROW_COL_RE = re.compile(r"([A-Za-z]+)?([1-9]\d*)?$")
 
-URL_KEY_V1_RE = re.compile(r'key=([^&#]+)')
-URL_KEY_V2_RE = re.compile(r'/spreadsheets/d/([a-zA-Z0-9-_]+)')
+URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
+URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
 
 
 def convert_credentials(credentials):
     module = credentials.__module__
     cls = credentials.__class__.__name__
-    if 'oauth2client' in module and cls == 'ServiceAccountCredentials':
+    if "oauth2client" in module and cls == "ServiceAccountCredentials":
         return _convert_service_account(credentials)
-    elif 'oauth2client' in module and cls in (
-        'OAuth2Credentials',
-        'AccessTokenCredentials',
-        'GoogleCredentials',
+    elif "oauth2client" in module and cls in (
+        "OAuth2Credentials",
+        "AccessTokenCredentials",
+        "GoogleCredentials",
     ):
         return _convert_oauth(credentials)
     elif isinstance(credentials, Credentials):
         return credentials
 
     raise TypeError(
-        'Credentials need to be from either oauth2client or from google-auth.'
+        "Credentials need to be from either oauth2client or from google-auth."
     )
 
 
@@ -70,21 +70,17 @@ def _convert_oauth(credentials):
 
 def _convert_service_account(credentials):
     data = credentials.serialization_data
-    data['token_uri'] = credentials.token_uri
+    data["token_uri"] = credentials.token_uri
     scopes = credentials._scopes.split() or [
-        'https://www.googleapis.com/auth/drive',
-        'https://spreadsheets.google.com/feeds',
+        "https://www.googleapis.com/auth/drive",
+        "https://spreadsheets.google.com/feeds",
     ]
 
-    return ServiceAccountCredentials.from_service_account_info(
-        data, scopes=scopes
-    )
+    return ServiceAccountCredentials.from_service_account_info(data, scopes=scopes)
 
 
 def finditem(func, seq):
-    """Finds and returns first item in iterable for which func(item) is True.
-
-    """
+    """Finds and returns first item in iterable for which func(item) is True."""
     return next((item for item in seq if func(item)))
 
 
@@ -210,10 +206,10 @@ def rowcol_to_a1(row, col):
     col = int(col)
 
     if row < 1 or col < 1:
-        raise IncorrectCellLabel('(%s, %s)' % (row, col))
+        raise IncorrectCellLabel("(%s, %s)" % (row, col))
 
     div = col
-    column_label = ''
+    column_label = ""
 
     while div:
         (div, mod) = divmod(div, 26)
@@ -222,7 +218,7 @@ def rowcol_to_a1(row, col):
             div -= 1
         column_label = chr(mod + MAGIC_NUMBER) + column_label
 
-    label = '%s%s' % (column_label, row)
+    label = "%s%s" % (column_label, row)
 
     return label
 
@@ -350,7 +346,7 @@ def a1_range_to_grid_range(name, sheet_id=None):
     >>> a1_range_to_grid_range('A1', sheet_id=0)
     {'sheetId': 0, 'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1}
     """
-    start_label, _, end_label = name.partition(':')
+    start_label, _, end_label = name.partition(":")
 
     start_indices = _a1_to_rowcol_unbounded(start_label)
 
@@ -364,11 +360,11 @@ def a1_range_to_grid_range(name, sheet_id=None):
 
     return filter_dict_values(
         {
-            'sheetId': sheet_id,
-            'startRowIndex': start_row_index,
-            'endRowIndex': end_row_index,
-            'startColumnIndex': start_column_index,
-            'endColumnIndex': end_column_index,
+            "sheetId": sheet_id,
+            "startRowIndex": start_row_index,
+            "endRowIndex": end_row_index,
+            "startColumnIndex": start_column_index,
+            "endColumnIndex": end_column_index,
         }
     )
 
@@ -387,7 +383,7 @@ def cast_to_a1_notation(method):
                 # Convert to A1 notation
                 range_start = rowcol_to_a1(*args[:2])
                 range_end = rowcol_to_a1(*args[-2:])
-                range_name = ':'.join((range_start, range_end))
+                range_name = ":".join((range_start, range_end))
 
                 args = (range_name,) + args[4:]
         except ValueError:
@@ -419,7 +415,7 @@ def wid_to_gid(wid):
 
 def rightpad(row, max_len):
     pad_len = max_len - len(row)
-    return row + ([''] * pad_len) if pad_len != 0 else row
+    return row + ([""] * pad_len) if pad_len != 0 else row
 
 
 def fill_gaps(L, rows=None, cols=None):
@@ -465,7 +461,7 @@ def cell_list_to_rect(cell_list):
     return [[rows[i].get(j) for j in rect_cols] for i in rect_rows]
 
 
-def quote(value, safe='', encoding='utf-8'):
+def quote(value, safe="", encoding="utf-8"):
     return uquote(value.encode(encoding), safe)
 
 
@@ -493,7 +489,7 @@ def absolute_range_name(sheet_name, range_name=None):
     sheet_name = "'{}'".format(sheet_name.replace("'", "''"))
 
     if range_name:
-        return '{}!{}'.format(sheet_name, range_name)
+        return "{}!{}".format(sheet_name, range_name)
     else:
         return sheet_name
 
@@ -584,7 +580,7 @@ def accepted_kwargs(**default_kwargs):
         def wrapper(*args, **kwargs):
             unexpected_kwargs = set(kwargs) - set(default_kwargs)
             if unexpected_kwargs:
-                err = '%s got unexpected keyword arguments: %s'
+                err = "%s got unexpected keyword arguments: %s"
                 raise TypeError(err % (f.__name__, list(unexpected_kwargs)))
 
             for k, v in default_kwargs.items():
@@ -597,7 +593,7 @@ def accepted_kwargs(**default_kwargs):
     return decorate
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
 
     doctest.testmod()

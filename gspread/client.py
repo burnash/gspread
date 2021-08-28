@@ -47,9 +47,7 @@ class Client(object):
 
         self.auth.refresh(Request(self.session))
 
-        self.session.headers.update(
-            {'Authorization': 'Bearer %s' % self.auth.token}
-        )
+        self.session.headers.update({"Authorization": "Bearer %s" % self.auth.token})
 
     def request(
         self,
@@ -77,7 +75,7 @@ class Client(object):
 
     def list_spreadsheet_files(self, title=None):
         files = []
-        page_token = ''
+        page_token = ""
         url = DRIVE_FILES_API_V3_URL
 
         q = 'mimeType="application/vnd.google-apps.spreadsheet"'
@@ -85,20 +83,20 @@ class Client(object):
             q += ' and name = "{}"'.format(title)
 
         params = {
-            'q': q,
-            'pageSize': 1000,
-            'supportsAllDrives': True,
-            'includeItemsFromAllDrives': True,
-            'fields': 'kind,nextPageToken,files(id,name,createdTime,modifiedTime)',
+            "q": q,
+            "pageSize": 1000,
+            "supportsAllDrives": True,
+            "includeItemsFromAllDrives": True,
+            "fields": "kind,nextPageToken,files(id,name,createdTime,modifiedTime)",
         }
 
         while page_token is not None:
             if page_token:
-                params['pageToken'] = page_token
+                params["pageToken"] = page_token
 
-            res = self.request('get', url, params=params).json()
-            files.extend(res['files'])
-            page_token = res.get('nextPageToken', None)
+            res = self.request("get", url, params=params).json()
+            files.extend(res["files"])
+            page_token = res.get("nextPageToken", None)
 
         return files
 
@@ -118,12 +116,12 @@ class Client(object):
         """
         try:
             properties = finditem(
-                lambda x: x['name'] == title,
+                lambda x: x["name"] == title,
                 self.list_spreadsheet_files(title),
             )
 
             # Drive uses different terminology
-            properties['title'] = properties['name']
+            properties["title"] = properties["name"]
 
             return Spreadsheet(self, properties)
         except StopIteration:
@@ -137,7 +135,7 @@ class Client(object):
 
         >>> gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
         """
-        return Spreadsheet(self, {'id': key})
+        return Spreadsheet(self, {"id": key})
 
     def open_by_url(self, url):
         """Opens a spreadsheet specified by `url`.
@@ -165,14 +163,11 @@ class Client(object):
 
         if title:
             spreadsheet_files = [
-                spread
-                for spread in spreadsheet_files
-                if title == spread["name"]
+                spread for spread in spreadsheet_files if title == spread["name"]
             ]
 
         return [
-            Spreadsheet(self, dict(title=x['name'], **x))
-            for x in spreadsheet_files
+            Spreadsheet(self, dict(title=x["name"], **x)) for x in spreadsheet_files
         ]
 
     def create(self, title, folder_id=None):
@@ -187,8 +182,8 @@ class Client(object):
 
         """
         payload = {
-            'name': title,
-            'mimeType': 'application/vnd.google-apps.spreadsheet',
+            "name": title,
+            "mimeType": "application/vnd.google-apps.spreadsheet",
         }
 
         params = {
@@ -196,10 +191,10 @@ class Client(object):
         }
 
         if folder_id is not None:
-            payload['parents'] = [folder_id]
+            payload["parents"] = [folder_id]
 
-        r = self.request('post', DRIVE_FILES_API_V3_URL, json=payload, params=params)
-        spreadsheet_id = r.json()['id']
+        r = self.request("post", DRIVE_FILES_API_V3_URL, json=payload, params=params)
+        spreadsheet_id = r.json()["id"]
         return self.open_by_key(spreadsheet_id)
 
     def copy(self, file_id, title=None, copy_permissions=False, folder_id=None):
@@ -220,8 +215,8 @@ class Client(object):
 
         .. note::
 
-           If you're using custom credentials without the Drive scope, you need to add 
-           ``https://www.googleapis.com/auth/drive`` to your OAuth scope in order to use 
+           If you're using custom credentials without the Drive scope, you need to add
+           ``https://www.googleapis.com/auth/drive`` to your OAuth scope in order to use
            this method.
 
            Example::
@@ -235,19 +230,19 @@ class Client(object):
            when you try to copy a spreadsheet.
 
         """
-        url = '{0}/{1}/copy'.format(DRIVE_FILES_API_V2_URL, file_id)
+        url = "{0}/{1}/copy".format(DRIVE_FILES_API_V2_URL, file_id)
 
         payload = {
-            'title': title,
-            'mimeType': 'application/vnd.google-apps.spreadsheet',
+            "title": title,
+            "mimeType": "application/vnd.google-apps.spreadsheet",
         }
 
         if folder_id is not None:
-            payload['parents'] = [{'id': folder_id}]
-        
-        params = {'supportsAllDrives': True}
-        r = self.request('post', url, json=payload, params=params)
-        spreadsheet_id = r.json()['id']
+            payload["parents"] = [{"id": folder_id}]
+
+        params = {"supportsAllDrives": True}
+        r = self.request("post", url, json=payload, params=params)
+        spreadsheet_id = r.json()["id"]
 
         new_spreadsheet = self.open_by_key(spreadsheet_id)
 
@@ -256,13 +251,13 @@ class Client(object):
 
             permissions = original.list_permissions()
             for p in permissions:
-                if p.get('deleted'):
+                if p.get("deleted"):
                     continue
                 try:
                     new_spreadsheet.share(
-                        value=p['emailAddress'],
-                        perm_type=p['type'],
-                        role=p['role'],
+                        value=p["emailAddress"],
+                        perm_type=p["type"],
+                        role=p["role"],
                         notify=False,
                     )
                 except Exception:
@@ -275,10 +270,10 @@ class Client(object):
 
         :param str file_id: a spreadsheet ID (a.k.a file ID).
         """
-        url = '{0}/{1}'.format(DRIVE_FILES_API_V3_URL, file_id)
+        url = "{0}/{1}".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params = {'supportsAllDrives': True}
-        self.request('delete', url, params=params)
+        params = {"supportsAllDrives": True}
+        self.request("delete", url, params=params)
 
     def import_csv(self, file_id, data):
         """Imports data into the first page of the spreadsheet.
@@ -300,17 +295,17 @@ class Client(object):
            replaces the contents of the first worksheet.
 
         """
-        headers = {'Content-Type': 'text/csv'}
-        url = '{0}/{1}'.format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
+        headers = {"Content-Type": "text/csv"}
+        url = "{0}/{1}".format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
 
         self.request(
-            'put',
+            "put",
             url,
             data=data,
             params={
-                'uploadType': 'media',
-                'convert': True,
-                'supportsAllDrives': True,
+                "uploadType": "media",
+                "convert": True,
+                "supportsAllDrives": True,
             },
             headers=headers,
         )
@@ -320,12 +315,12 @@ class Client(object):
 
         :param str file_id: a spreadsheet ID (aka file ID).
         """
-        url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
+        url = "{0}/{1}/permissions".format(DRIVE_FILES_API_V2_URL, file_id)
 
-        params = {'supportsAllDrives': True}
-        r = self.request('get', url, params=params)
+        params = {"supportsAllDrives": True}
+        r = self.request("get", url, params=params)
 
-        return r.json()['items']
+        return r.json()["items"]
 
     def insert_permission(
         self,
@@ -376,22 +371,22 @@ class Client(object):
 
         """
 
-        url = '{0}/{1}/permissions'.format(DRIVE_FILES_API_V2_URL, file_id)
+        url = "{0}/{1}/permissions".format(DRIVE_FILES_API_V2_URL, file_id)
 
         payload = {
-            'value': value,
-            'type': perm_type,
-            'role': role,
-            'withLink': with_link,
+            "value": value,
+            "type": perm_type,
+            "role": role,
+            "withLink": with_link,
         }
 
         params = {
-            'sendNotificationEmails': notify,
-            'emailMessage': email_message,
-            'supportsAllDrives': 'true',
+            "sendNotificationEmails": notify,
+            "emailMessage": email_message,
+            "supportsAllDrives": "true",
         }
 
-        self.request('post', url, json=payload, params=params)
+        self.request("post", url, json=payload, params=params)
 
     def remove_permission(self, file_id, permission_id):
         """Deletes a permission from a file.
@@ -399,9 +394,9 @@ class Client(object):
         :param str file_id: a spreadsheet ID (aka file ID.)
         :param str permission_id: an ID for the permission.
         """
-        url = '{0}/{1}/permissions/{2}'.format(
+        url = "{0}/{1}/permissions/{2}".format(
             DRIVE_FILES_API_V2_URL, file_id, permission_id
         )
 
-        params = {'supportsAllDrives': True}
-        self.request('delete', url, params=params)
+        params = {"supportsAllDrives": True}
+        self.request("delete", url, params=params)
