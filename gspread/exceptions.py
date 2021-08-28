@@ -45,6 +45,6 @@ class APIError(GSpreadException):
     def _text_from_detail(self, response):
         try:
             errors = response.json()
-            return errors['error']
+            return errors["error"]
         except (AttributeError, KeyError, ValueError):
             return None
