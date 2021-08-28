@@ -8,11 +8,7 @@ This module contains common cells' models.
 
 """
 
-from .utils import (
-    a1_to_rowcol,
-    numericise,
-    rowcol_to_a1,
-)
+from .utils import a1_to_rowcol, numericise, rowcol_to_a1
 
 
 class Cell(object):

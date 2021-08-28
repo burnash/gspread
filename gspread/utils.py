@@ -8,26 +8,24 @@ This module contains utility functions.
 
 """
 
-import sys
 import re
-from functools import wraps
+import sys
 from collections import defaultdict
+from functools import wraps
 
 try:
     from collections.abc import Sequence
 except ImportError:
     from collections import Sequence
+
 from itertools import chain
+from urllib.parse import quote as uquote
 
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
-from google.oauth2.service_account import (
-    Credentials as ServiceAccountCredentials,
-)
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
 from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
-from urllib.parse import quote as uquote
-
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")

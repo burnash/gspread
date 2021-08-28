@@ -2,9 +2,9 @@
 
 import re
 
-from .test import GspreadTest
-
 import gspread
+
+from .test import GspreadTest
 
 
 class SpreadsheetTest(GspreadTest):

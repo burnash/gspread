@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from .test import GspreadTest
-
 import gspread
 import gspread.utils as utils
+
+from .test import GspreadTest
 
 
 class CellTest(GspreadTest):

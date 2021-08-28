@@ -4,10 +4,10 @@ import itertools
 import random
 import re
 
-from .test import GspreadTest, I18N_STR
-
 import gspread
 import gspread.utils as utils
+
+from .test import I18N_STR, GspreadTest
 
 
 class WorksheetTest(GspreadTest):
