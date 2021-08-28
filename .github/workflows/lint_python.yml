@@ -8,7 +8,7 @@ jobs:
       - uses: actions/setup-python@v2
       - run: pip install bandit black codespell flake8 isort mypy pytest pyupgrade safety tox
       - run: bandit --recursive --skip B105,B110,B311,B605,B607 .
-      - run: black --check . || true
+      - run: black --check .
       - run: codespell  # --ignore-words-list="" --skip=""
       - run: flake8 --ignore=E12,E20,E226,E231,E265,E271,E40,E731,F401,W29,W605
                     --max-complexity=10 --max-line-length=255 --show-source --statistics .

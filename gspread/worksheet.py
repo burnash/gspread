@@ -29,22 +29,22 @@ from .utils import (
 class ValueRange(list):
     @classmethod
     def from_json(cls, json):
-        values = json.get('values', [])
+        values = json.get("values", [])
         new_obj = cls(values)
         new_obj._json = {
-            'range': json['range'],
-            'majorDimension': json['majorDimension'],
+            "range": json["range"],
+            "majorDimension": json["majorDimension"],
         }
 
         return new_obj
 
     @property
     def range(self):
-        return self._json['range']
+        return self._json["range"]
 
     @property
     def major_dimension(self):
-        return self._json['majorDimension']
+        return self._json["majorDimension"]
 
     def first(self, default=None):
         """Returns the value of a first cell in a range.
@@ -1187,7 +1187,7 @@ class Worksheet(object):
 
     def delete_row(self, index):
         """.. deprecated:: 5.0
-        
+
         Deletes the row from the worksheet at the specified index.
 
         :param int index: Index of a row for deletion.

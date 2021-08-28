@@ -26,7 +26,7 @@ class ClientTest(GspreadTest):
             self.assertTrue(isinstance(s, gspread.Spreadsheet))
 
     def test_create(self):
-        title = 'Test Spreadsheet'
+        title = "Test Spreadsheet"
         new_spreadsheet = self.gc.create(title)
         self.assertTrue(isinstance(new_spreadsheet, gspread.Spreadsheet))
 
@@ -37,10 +37,10 @@ class ClientTest(GspreadTest):
 
         original_metadata = original_spreadsheet.fetch_sheet_metadata()
         copy_metadata = spreadsheet_copy.fetch_sheet_metadata()
-        self.assertEqual(original_metadata['sheets'], copy_metadata['sheets'])
+        self.assertEqual(original_metadata["sheets"], copy_metadata["sheets"])
 
     def test_import_csv(self):
-        title = 'TestImportSpreadsheet'
+        title = "TestImportSpreadsheet"
         new_spreadsheet = self.gc.create(title)
 
         sg = self._sequence_generator()
@@ -50,7 +50,7 @@ class ClientTest(GspreadTest):
 
         rows = [[next(sg) for j in range(csv_cols)] for i in range(csv_rows)]
 
-        simple_csv_data = '\n'.join([','.join(row) for row in rows])
+        simple_csv_data = "\n".join([",".join(row) for row in rows])
 
         self.gc.import_csv(new_spreadsheet.id, simple_csv_data)
 
@@ -60,9 +60,11 @@ class ClientTest(GspreadTest):
         self.gc.del_spreadsheet(new_spreadsheet.id)
 
     def test_access_non_existing_spreadsheet(self):
-        wks = self.gc.open_by_key('test')
+        wks = self.gc.open_by_key("test")
         with self.assertRaises(APIError) as error:
             wks.worksheets()
-        self.assertEqual(error.exception.args[0]['code'], 404)
-        self.assertEqual(error.exception.args[0]['message'], 'Requested entity was not found.')
-        self.assertEqual(error.exception.args[0]['status'], 'NOT_FOUND')
+        self.assertEqual(error.exception.args[0]["code"], 404)
+        self.assertEqual(
+            error.exception.args[0]["message"], "Requested entity was not found."
+        )
+        self.assertEqual(error.exception.args[0]["status"], "NOT_FOUND")
