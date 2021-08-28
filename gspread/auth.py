@@ -28,7 +28,7 @@ READONLY_SCOPES = [
 
 
 def get_config_dir(config_dir_name="gspread", os_is_windows=os.name == "nt"):
-    """Construct a config dir path.
+    r"""Construct a config dir path.
 
     By default:
         * `%APPDATA%\gspread` on Windows
@@ -96,7 +96,7 @@ def oauth(
     credentials_filename=DEFAULT_CREDENTIALS_FILENAME,
     authorized_user_filename=DEFAULT_AUTHORIZED_USER_FILENAME,
 ):
-    """Authenticate with OAuth Client ID.
+    r"""Authenticate with OAuth Client ID.
 
     By default this function will use the local server strategy and open
     the authorization URL in the user’s browser::

@@ -1371,9 +1371,14 @@ class Worksheet(object):
         cells = self._list_cells(values, in_row, in_column)
 
         if isinstance(query, str):
-            match = lambda x: x.value == query
+
+            def match(x):
+                return x.value == query
+
         else:
-            match = lambda x: query.search(x.value)
+
+            def match(x):
+                return query.search(x.value)
 
         return func(match, cells)
 
