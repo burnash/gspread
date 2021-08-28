@@ -14,7 +14,7 @@ jobs:
                     --max-complexity=10 --max-line-length=255 --show-source --statistics .
       - run: isort --check-only --profile black . || true
       - run: pip install -r test-requirements.txt
-      - run: make test || true
+      - run: tox -e py || make test || true
       - run: mypy --ignore-missing-imports . || true
       - run: pytest . || true
       - run: pytest --doctest-modules . || true
