@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import gspread
-import gspread.utils as utils
-from gspread.exceptions import APIError
 
 from .test import GspreadTest
 
@@ -61,7 +59,7 @@ class ClientTest(GspreadTest):
 
     def test_access_non_existing_spreadsheet(self):
         wks = self.gc.open_by_key("test")
-        with self.assertRaises(APIError) as error:
+        with self.assertRaises(gspread.exceptions.APIError) as error:
             wks.worksheets()
         self.assertEqual(error.exception.args[0]["code"], 404)
         self.assertEqual(

@@ -9,7 +9,6 @@ This module contains utility functions.
 """
 
 import re
-import sys
 from collections import defaultdict
 from functools import wraps
 
