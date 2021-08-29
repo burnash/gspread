@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import gspread
 
 from .test import GspreadTest

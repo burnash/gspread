@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 gspread.utils
 ~~~~~~~~~~~~~
@@ -78,7 +76,7 @@ def _convert_service_account(credentials):
 
 def finditem(func, seq):
     """Finds and returns first item in iterable for which func(item) is True."""
-    return next((item for item in seq if func(item)))
+    return next(item for item in seq if func(item))
 
 
 def numericise(
@@ -203,7 +201,7 @@ def rowcol_to_a1(row, col):
     col = int(col)
 
     if row < 1 or col < 1:
-        raise IncorrectCellLabel("(%s, %s)" % (row, col))
+        raise IncorrectCellLabel("({}, {})".format(row, col))
 
     div = col
     column_label = ""
@@ -215,7 +213,7 @@ def rowcol_to_a1(row, col):
             div -= 1
         column_label = chr(mod + MAGIC_NUMBER) + column_label
 
-    label = "%s%s" % (column_label, row)
+    label = "{}{}".format(column_label, row)
 
     return label
 
@@ -347,9 +345,9 @@ def a1_range_to_grid_range(name, sheet_id=None):
 
     start_indices = _a1_to_rowcol_unbounded(start_label)
 
-    start_row_index, start_column_index = [
+    start_row_index, start_column_index = (
         x - 1 if x is not None else x for x in start_indices
-    ]
+    )
 
     end_row_index, end_column_index = (
         _a1_to_rowcol_unbounded(end_label) if end_label else start_indices

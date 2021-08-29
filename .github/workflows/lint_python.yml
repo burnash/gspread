@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.7, 3.8, 3.9]
+        python: ['3.7', '3.8', '3.9', '3.10-dev']
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -13,15 +13,14 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: pip install bandit black codespell flake8 isort mypy pytest pyupgrade safety tox
       - run: bandit --recursive --skip B105,B110,B311,B605,B607 .
+        if: ${{ matrix.python >= '3.8' }}
       - run: black --check .
       - run: codespell  # --ignore-words-list="" --skip=""
       - run: flake8 --ignore=E203 --max-complexity=10 --max-line-length=255
                     --show-source --statistics .
       - run: isort --check-only --profile black .
       - run: pip install -r test-requirements.txt
-      - run: tox -e py || true
-      - run: mypy --ignore-missing-imports . || true
-      - run: pytest . || true
-      - run: pytest --doctest-modules . || true
-      - run: shopt -s globstar && pyupgrade --py36-plus **/*.py || true
+      - run: tox -e py || pytest . || pytest --doctest-modules . || true
+      - run: mypy --exclude src/betamax-json-body-serializer/setup.py --ignore-missing-imports . || true  # Need Python >= 3.6
+      - run: shopt -s globstar && pyupgrade --py3-only **/*.py  # --py36-plus
       - run: safety check

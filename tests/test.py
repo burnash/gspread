@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import itertools
 import os
 
@@ -20,7 +18,7 @@ SCOPE = [
 ]
 DUMMY_ACCESS_TOKEN = "<ACCESS_TOKEN>"
 
-I18N_STR = u"Iñtërnâtiônàlizætiøn"  # .encode('utf8')
+I18N_STR = "Iñtërnâtiônàlizætiøn"  # .encode('utf8')
 
 Betamax.register_serializer(JSONBodySerializer)
 
@@ -53,7 +51,7 @@ def read_credentials(filename):
 def prefixed_counter(prefix, start=1):
     c = itertools.count(start)
     for value in c:
-        yield u"%s %s" % (prefix, value)
+        yield "{} {}".format(prefix, value)
 
 
 def get_method_name(self_id):
@@ -111,7 +109,7 @@ class BetamaxGspreadTest(BetamaxTestCase):
             pass
 
     def setUp(self):
-        super(BetamaxGspreadTest, self).setUp()
+        super().setUp()
         self.session.headers.update({"accept-encoding": "identity"})
         self.gc = SleepyClient(self.auth_credentials, session=self.session)
 

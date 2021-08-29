@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import re
 
 import gspread
@@ -12,7 +10,7 @@ class SpreadsheetTest(GspreadTest):
     """Test for gspread.Spreadsheet."""
 
     def setUp(self):
-        super(SpreadsheetTest, self).setUp()
+        super().setUp()
         self.spreadsheet = self.gc.open(self.get_temporary_spreadsheet_title())
 
     def test_properties(self):
@@ -45,13 +43,13 @@ class SpreadsheetTest(GspreadTest):
     def test_values_get(self):
         sg = self._sequence_generator()
 
-        worksheet1_name = u"%s %s" % (u"🌵", next(sg))
+        worksheet1_name = "{} {}".format("🌵", next(sg))
 
         worksheet = self.spreadsheet.add_worksheet(worksheet1_name, 10, 10)
 
-        range_label = "%s!%s" % (worksheet1_name, "A1")
+        range_label = "{}!{}".format(worksheet1_name, "A1")
 
-        values = [[u"🍇", u"🍉", u"🍋"], [u"🍐", u"🍎", u"🍓"]]
+        values = [["🍇", "🍉", "🍋"], ["🍐", "🍎", "🍓"]]
 
         self.spreadsheet.values_update(
             range_label, params={"valueInputOption": "RAW"}, body={"values": values}
@@ -90,18 +88,20 @@ class SpreadsheetTest(GspreadTest):
     def test_values_batch_get(self):
         sg = self._sequence_generator()
 
-        worksheet1_name = u"%s %s" % (u"🌵", next(sg))
+        worksheet1_name = "{} {}".format("🌵", next(sg))
 
         worksheet = self.spreadsheet.add_worksheet(worksheet1_name, 10, 10)
 
-        range_label = "%s!%s" % (worksheet1_name, "A1")
+        range_label = "{}!{}".format(worksheet1_name, "A1")
 
-        values = [[u"🍇", u"🍉", u"🍋"], [u"🍐", u"🍎", u"🍓"]]
+        values = [["🍇", "🍉", "🍋"], ["🍐", "🍎", "🍓"]]
 
         self.spreadsheet.values_update(
             range_label, params={"valueInputOption": "RAW"}, body={"values": values}
         )
-        ranges = ["%s!%s:%s" % (worksheet1_name, col, col) for col in ["A", "B", "C"]]
+        ranges = [
+            "{}!{}:{}".format(worksheet1_name, col, col) for col in ["A", "B", "C"]
+        ]
 
         read_data = self.spreadsheet.values_batch_get(ranges)
 
