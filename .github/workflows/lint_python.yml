@@ -20,6 +20,7 @@ jobs:
                     --show-source --statistics .
       - run: isort --check-only --profile black .
       - run: pip install -r test-requirements.txt
+      - run: pytest tests/utils_test.py
       - run: tox -e py || pytest . || pytest --doctest-modules . || true
       - run: mypy --exclude src/betamax-json-body-serializer/setup.py --ignore-missing-imports . || true  # Need Python >= 3.6
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py  # --py36-plus
