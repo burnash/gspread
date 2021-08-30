@@ -1,5 +1,5 @@
 six
-nose  # nose2
+nose
 google-auth
 google-auth-oauthlib>=0.4.1
 betamax==0.8.1
