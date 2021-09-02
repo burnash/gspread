@@ -743,9 +743,6 @@ class Worksheet:
             is a target range to update in A1 notation or a named range,
             and `values` is a list of lists containing new values.
 
-        :param str major_dimension: (optional) The major dimension of the
-            values. Either ``ROWS`` or ``COLUMNS``.
-
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
