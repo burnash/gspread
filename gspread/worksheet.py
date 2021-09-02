@@ -419,7 +419,7 @@ class Worksheet:
         """
         try:
             data = self.get("A{}:{}".format(row, row), **kwargs)
-            return data[0]
+            return data[0] if data else []
         except KeyError:
             return []
 
