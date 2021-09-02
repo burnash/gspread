@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 gspread.models
 ~~~~~~~~~~~~~~
@@ -57,7 +55,7 @@ class ValueRange(list):
             return default
 
 
-class Worksheet(object):
+class Worksheet:
     """The class that represents a single sheet in a spreadsheet
     (aka "worksheet").
     """
@@ -68,7 +66,7 @@ class Worksheet(object):
         self._properties = properties
 
     def __repr__(self):
-        return "<%s %s id:%s>" % (
+        return "<{} {} id:{}>".format(
             self.__class__.__name__,
             repr(self.title),
             self.id,

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 gspread.models
 ~~~~~~~~~~~~~~
@@ -11,7 +9,7 @@ This module contains common cells' models.
 from .utils import a1_to_rowcol, numericise, rowcol_to_a1
 
 
-class Cell(object):
+class Cell:
     """An instance of this class represents a single cell
     in a :class:`worksheet <gspread.models.Worksheet>`.
     """
@@ -28,7 +26,7 @@ class Cell(object):
         return cls(*a1_to_rowcol(label), value=value)
 
     def __repr__(self):
-        return "<%s R%sC%s %s>" % (
+        return "<{} R{}C{} {}>".format(
             self.__class__.__name__,
             self.row,
             self.col,

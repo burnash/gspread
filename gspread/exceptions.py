@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 gspread.exceptions
 ~~~~~~~~~~~~~~~~~~
@@ -36,7 +34,7 @@ class IncorrectCellLabel(GSpreadException):
 class APIError(GSpreadException):
     def __init__(self, response):
 
-        super(APIError, self).__init__(self._extract_text(response))
+        super().__init__(self._extract_text(response))
         self.response = response
 
     def _extract_text(self, response):

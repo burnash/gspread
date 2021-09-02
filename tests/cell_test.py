@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import gspread
 import gspread.utils as utils
 
@@ -10,7 +8,7 @@ class CellTest(GspreadTest):
     """Test for gspread.Cell."""
 
     def setUp(self):
-        super(CellTest, self).setUp()
+        super().setUp()
         self.spreadsheet = self.gc.open(self.get_temporary_spreadsheet_title())
         self.sheet = self.spreadsheet.sheet1
 

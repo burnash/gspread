@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 gspread.spreadsheet
 ~~~~~~~~~~~~~~
@@ -25,7 +23,7 @@ from .utils import finditem, quote
 from .worksheet import Worksheet
 
 
-class Spreadsheet(object):
+class Spreadsheet:
     """The class that represents a spreadsheet."""
 
     def __init__(self, client, properties):
@@ -103,11 +101,10 @@ class Spreadsheet(object):
         return self.get_worksheet(0)
 
     def __iter__(self):
-        for sheet in self.worksheets():
-            yield (sheet)
+        yield from self.worksheets()
 
     def __repr__(self):
-        return "<%s %s id:%s>" % (
+        return "<{} {} id:{}>".format(
             self.__class__.__name__,
             repr(self.title),
             self.id,

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import itertools
 import random
 import re
@@ -15,7 +13,7 @@ class WorksheetTest(GspreadTest):
     """Test for gspread.Worksheet."""
 
     def setUp(self):
-        super(WorksheetTest, self).setUp()
+        super().setUp()
         self.spreadsheet = self.gc.open(self.get_temporary_spreadsheet_title())
 
         # NOTE(msuozzo): Here, a new worksheet is created for each test.
@@ -26,7 +24,7 @@ class WorksheetTest(GspreadTest):
 
     def tearDown(self):
         self.spreadsheet.del_worksheet(self.sheet)
-        super(WorksheetTest, self).tearDown()
+        super().tearDown()
 
     def test_acell(self):
         cell = self.sheet.acell("A1")
@@ -69,14 +67,14 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cell(1, 2, 42.01)
         self.assertEqual(self.sheet.cell(1, 2).value, "42.01")
 
-        self.sheet.update_cell(1, 2, u"Артур")
-        self.assertEqual(self.sheet.cell(1, 2).value, u"Артур")
+        self.sheet.update_cell(1, 2, "Артур")
+        self.assertEqual(self.sheet.cell(1, 2).value, "Артур")
 
     def test_update_cell_multiline(self):
         sg = self._sequence_generator()
         value = next(sg)
 
-        value = "%s\n%s" % (value, value)
+        value = "{}\n{}".format(value, value)
         self.sheet.update_cell(1, 2, value)
         self.assertEqual(self.sheet.cell(1, 2).value, value)
 
@@ -93,7 +91,7 @@ class WorksheetTest(GspreadTest):
         value_list = [next(sg) for i in range(list_len)]
 
         # Test multiline
-        value_list[0] = "%s\n%s" % (value_list[0], value_list[0])
+        value_list[0] = "{}\n{}".format(value_list[0], value_list[0])
 
         range_label = "A1:A%s" % list_len
         cell_list = self.sheet.range(range_label)
@@ -327,7 +325,7 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(cell.value, value)
 
         value2 = next(sg)
-        value = "%so_O%s" % (value, value2)
+        value = "{}o_O{}".format(value, value2)
         self.sheet.update_cell(2, 11, value)
 
         o_O_re = re.compile("[a-z]_[A-Z]%s" % value2)
@@ -365,7 +363,7 @@ class WorksheetTest(GspreadTest):
         value = next(sg)
         for c in cell_list:
             char = chr(random.randrange(ord("a"), ord("z")))
-            c.value = "%s%s_%s%s" % (c.value, char, char.upper(), value)
+            c.value = "{}{}_{}{}".format(c.value, char, char.upper(), value)
 
         self.sheet.update_cells(cell_list)
 

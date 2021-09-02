@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 gspread.client
 ~~~~~~~~~~~~~~
@@ -21,7 +19,7 @@ from .urls import (
 from .utils import convert_credentials, extract_id_from_url, finditem
 
 
-class Client(object):
+class Client:
     """An instance of this class communicates with Google API.
 
     :param auth: An OAuth2 credential object. Credential objects
@@ -229,7 +227,7 @@ class Client(object):
            when you try to copy a spreadsheet.
 
         """
-        url = "{0}/{1}/copy".format(DRIVE_FILES_API_V2_URL, file_id)
+        url = "{}/{}/copy".format(DRIVE_FILES_API_V2_URL, file_id)
 
         payload = {
             "title": title,
@@ -269,7 +267,7 @@ class Client(object):
 
         :param str file_id: a spreadsheet ID (a.k.a file ID).
         """
-        url = "{0}/{1}".format(DRIVE_FILES_API_V3_URL, file_id)
+        url = "{}/{}".format(DRIVE_FILES_API_V3_URL, file_id)
 
         params = {"supportsAllDrives": True}
         self.request("delete", url, params=params)
@@ -295,7 +293,7 @@ class Client(object):
 
         """
         headers = {"Content-Type": "text/csv"}
-        url = "{0}/{1}".format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
+        url = "{}/{}".format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
 
         self.request(
             "put",
@@ -314,7 +312,7 @@ class Client(object):
 
         :param str file_id: a spreadsheet ID (aka file ID).
         """
-        url = "{0}/{1}/permissions".format(DRIVE_FILES_API_V2_URL, file_id)
+        url = "{}/{}/permissions".format(DRIVE_FILES_API_V2_URL, file_id)
 
         params = {"supportsAllDrives": True}
         r = self.request("get", url, params=params)
@@ -370,7 +368,7 @@ class Client(object):
 
         """
 
-        url = "{0}/{1}/permissions".format(DRIVE_FILES_API_V2_URL, file_id)
+        url = "{}/{}/permissions".format(DRIVE_FILES_API_V2_URL, file_id)
 
         payload = {
             "value": value,
@@ -393,7 +391,7 @@ class Client(object):
         :param str file_id: a spreadsheet ID (aka file ID.)
         :param str permission_id: an ID for the permission.
         """
-        url = "{0}/{1}/permissions/{2}".format(
+        url = "{}/{}/permissions/{}".format(
             DRIVE_FILES_API_V2_URL, file_id, permission_id
         )
 
