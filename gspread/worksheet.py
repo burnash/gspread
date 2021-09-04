@@ -88,6 +88,11 @@ class Worksheet:
         return WORKSHEET_DRIVE_URL % (self.spreadsheet.id, self.id)
 
     @property
+    def index(self):
+        """Worksheet index."""
+        return self._properties["index"]
+
+    @property
     def updated(self):
         """.. deprecated:: 2.0
 
