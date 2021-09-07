@@ -84,6 +84,7 @@ def load_credentials(filename=DEFAULT_AUTHORIZED_USER_FILENAME):
 
 
 def store_credentials(creds, filename=DEFAULT_AUTHORIZED_USER_FILENAME, strip="token"):
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "w") as f:
         f.write(creds.to_json(strip))
 
