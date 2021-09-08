@@ -1,45 +1,63 @@
 import re
 
+import pytest
+
 import gspread
 
-from .test import GspreadTest
+from .conftest import GspreadTest
 
 
 class SpreadsheetTest(GspreadTest):
 
     """Test for gspread.Spreadsheet."""
 
-    def setUp(self):
-        super().setUp()
-        self.spreadsheet = self.gc.open(self.get_temporary_spreadsheet_title())
+    @pytest.fixture(scope="class", autouse=True)
+    def init(self, client, vcr):
+        # fixtures are not recorded by default, must do manually
+        with vcr.use_cassette(self.get_temporary_spreadsheet_title()):
+            # must use class attributes, each test function runs in a different instance
+            SpreadsheetTest.spreadsheet = client.create(
+                self.get_temporary_spreadsheet_title()
+            )
 
+            yield
+
+            client.del_spreadsheet(SpreadsheetTest.spreadsheet.id)
+
+    @pytest.mark.vcr()
     def test_properties(self):
         self.assertTrue(re.match(r"^[a-zA-Z0-9-_]+$", self.spreadsheet.id))
         self.assertTrue(len(self.spreadsheet.title) > 0)
 
+    @pytest.mark.vcr()
     def test_sheet1(self):
         sheet1 = self.spreadsheet.sheet1
         self.assertTrue(isinstance(sheet1, gspread.Worksheet))
 
+    @pytest.mark.vcr()
     def test_get_worksheet(self):
         sheet1 = self.spreadsheet.get_worksheet(0)
         self.assertTrue(isinstance(sheet1, gspread.Worksheet))
 
+    @pytest.mark.vcr()
     def test_get_worksheet_by_id(self):
         sheet1 = self.spreadsheet.get_worksheet_by_id(0)
         self.assertTrue(isinstance(sheet1, gspread.Worksheet))
 
+    @pytest.mark.vcr()
     def test_worksheet(self):
         sheet_title = "Sheet1"
         sheet = self.spreadsheet.worksheet(sheet_title)
         self.assertTrue(isinstance(sheet, gspread.Worksheet))
 
+    @pytest.mark.vcr()
     def test_worksheet_iteration(self):
         self.assertEqual(
             [x.id for x in self.spreadsheet.worksheets()],
             [sheet.id for sheet in self.spreadsheet],
         )
 
+    @pytest.mark.vcr()
     def test_values_get(self):
         sg = self._sequence_generator()
 
@@ -60,6 +78,7 @@ class SpreadsheetTest(GspreadTest):
         self.assertEqual(values, read_data["values"])
         self.spreadsheet.del_worksheet(worksheet)
 
+    @pytest.mark.vcr()
     def test_add_del_worksheet(self):
         sg = self._sequence_generator()
         worksheet1_name = next(sg)
@@ -85,6 +104,7 @@ class SpreadsheetTest(GspreadTest):
         self.assertEqual(len(worksheet_list), 1)
         self.assertEqual(worksheet_list[0].title, existing_sheet_title)
 
+    @pytest.mark.vcr()
     def test_values_batch_get(self):
         sg = self._sequence_generator()
 
