@@ -1,16 +1,25 @@
+import pytest
+
 import gspread
 
-from .test import GspreadTest
+from .conftest import GspreadTest
 
 
 class ClientTest(GspreadTest):
 
     """Test for gspread.client."""
 
+    @pytest.fixture(scope="class", autouse=True)
+    def init(self, client):
+        # must use class attributes, each test function runs in a different instance
+        ClientTest.gc = client
+
+    @pytest.mark.vcr()
     def test_no_found_exeption(self):
         noexistent_title = "Please don't use this phrase as a name of a sheet."
         self.assertRaises(gspread.SpreadsheetNotFound, self.gc.open, noexistent_title)
 
+    @pytest.mark.vcr()
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
         spreadsheet_list2 = self.gc.openall(spreadsheet_list[0].title)
@@ -21,11 +30,13 @@ class ClientTest(GspreadTest):
         for s in spreadsheet_list2:
             self.assertTrue(isinstance(s, gspread.Spreadsheet))
 
+    @pytest.mark.vcr()
     def test_create(self):
         title = "Test Spreadsheet"
         new_spreadsheet = self.gc.create(title)
         self.assertTrue(isinstance(new_spreadsheet, gspread.Spreadsheet))
 
+    @pytest.mark.vcr()
     def test_copy(self):
         original_spreadsheet = self.gc.create("Original")
         spreadsheet_copy = self.gc.copy(original_spreadsheet.id)
@@ -35,6 +46,7 @@ class ClientTest(GspreadTest):
         copy_metadata = spreadsheet_copy.fetch_sheet_metadata()
         self.assertEqual(original_metadata["sheets"], copy_metadata["sheets"])
 
+    @pytest.mark.vcr()
     def test_import_csv(self):
         title = "TestImportSpreadsheet"
         new_spreadsheet = self.gc.create(title)
@@ -55,6 +67,7 @@ class ClientTest(GspreadTest):
 
         self.gc.del_spreadsheet(new_spreadsheet.id)
 
+    @pytest.mark.vcr()
     def test_access_non_existing_spreadsheet(self):
         wks = self.gc.open_by_key("test")
         with self.assertRaises(gspread.exceptions.APIError) as error:

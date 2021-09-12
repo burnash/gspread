@@ -1,233 +1,161 @@
 {
-  "http_interactions": [
-    {
-      "recorded_at": "2020-04-03T19:34:39",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "User-Agent": [
-            "python-requests/2.20.0"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "method": "GET",
-        "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n \"kind\": \"drive#fileList\",\n \"incompleteSearch\": false,\n \"files\": [\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1cfpUNMXxohpqzPGwRlYfQzDfW0yC5DPxiAuPcEyPhUc\",\n   \"name\": \"Test Spreadsheet\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1CbC49NRkr9__EnNNzMq-WkAAxSiGW3aescZc5mHW1HQ\",\n   \"name\": \"Copy of Original\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1yLumP2Hh71wxoxJu_w81I0onWZAyqDSRJNg_NgsAUWs\",\n   \"name\": \"Original\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1aHitWlruzGvySd9wpuqbMs5imRxUeVSROQBdBG2CSbk\",\n   \"name\": \"Test ClientTest\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1nwadmNfz141TVp4BoMPABZreUh9OZOfXDAcK4JmACtA\",\n   \"name\": \"test-notation\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1rjAR01GQqW4fqoiIzUrycjfKvOKuWIC5YY_7WWT8Lv4\",\n   \"name\": \"test\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1EuhIX0HF6wCbL0i3Ve4_lipw21nUiQ1O3zVpcYJsa_8\",\n   \"name\": \"Copy of test-sheet2\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1r9_MeKWEYHWChvqJUbTkzkwqk25XWe-a9SEYPxmKshc\",\n   \"name\": \"test-sheet2\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  },\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1qwVtOrQJc-_qZTklWmWQpgvRBXEU8-L-2mSDzfSvzb0\",\n   \"name\": \"test-csv-import\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  }\n ]\n}\n"
-        },
-        "headers": {
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
-          ],
-          "Cache-Control": [
-            "private, max-age=0, must-revalidate, no-transform"
-          ],
-          "Content-Length": [
-            "1657"
-          ],
-          "Content-Security-Policy": [
-            "frame-ancestors 'self'"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Fri, 03 Apr 2020 19:34:39 GMT"
-          ],
-          "Expires": [
-            "Fri, 03 Apr 2020 19:34:39 GMT"
-          ],
-          "Server": [
-            "GSE"
-          ],
-          "Vary": [
-            "Origin",
-            "X-Origin"
-          ],
-          "X-Content-Type-Options": [
-            "nosniff"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "1; mode=block"
-          ]
-        },
-        "json_body": {
-          "files": [
-            {
-              "id": "1cfpUNMXxohpqzPGwRlYfQzDfW0yC5DPxiAuPcEyPhUc",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "Test Spreadsheet"
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
             },
-            {
-              "id": "1CbC49NRkr9__EnNNzMq-WkAAxSiGW3aescZc5mHW1HQ",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "Copy of Original"
-            },
-            {
-              "id": "1yLumP2Hh71wxoxJu_w81I0onWZAyqDSRJNg_NgsAUWs",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "Original"
-            },
-            {
-              "id": "1aHitWlruzGvySd9wpuqbMs5imRxUeVSROQBdBG2CSbk",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "Test ClientTest"
-            },
-            {
-              "id": "1nwadmNfz141TVp4BoMPABZreUh9OZOfXDAcK4JmACtA",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "test-notation"
-            },
-            {
-              "id": "1rjAR01GQqW4fqoiIzUrycjfKvOKuWIC5YY_7WWT8Lv4",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "test"
-            },
-            {
-              "id": "1EuhIX0HF6wCbL0i3Ve4_lipw21nUiQ1O3zVpcYJsa_8",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "Copy of test-sheet2"
-            },
-            {
-              "id": "1r9_MeKWEYHWChvqJUbTkzkwqk25XWe-a9SEYPxmKshc",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "test-sheet2"
-            },
-            {
-              "id": "1qwVtOrQJc-_qZTklWmWQpgvRBXEU8-L-2mSDzfSvzb0",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "test-csv-import"
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Server": [
+                        "GSE"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Content-Security-Policy": [
+                        "frame-ancestors 'self'"
+                    ],
+                    "X-XSS-Protection": [
+                        "1; mode=block"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Wed, 08 Sep 2021 19:03:33 GMT"
+                    ],
+                    "content-length": [
+                        "604"
+                    ]
+                },
+                "body": {
+                    "string": "{\n \"kind\": \"drive#fileList\",\n \"files\": [\n  {\n   \"id\": \"1hf6aqa7ec15pVqp_3IpGcBT1am-TMzS90rxTDuDlD_w\",\n   \"name\": \"Test Spreadsheet\",\n   \"createdTime\": \"2021-09-08T19:03:25.977Z\",\n   \"modifiedTime\": \"2021-09-08T19:03:27.113Z\"\n  },\n  {\n   \"id\": \"1vui1BFyPqcNmruz8TsvLmyop4xRFrfvJenNgpneBgcA\",\n   \"name\": \"Copy of Original\",\n   \"createdTime\": \"2021-09-08T19:03:22.947Z\",\n   \"modifiedTime\": \"2021-09-08T19:03:24.567Z\"\n  },\n  {\n   \"id\": \"1bU0nL_qjcX6bdgae3VkMia2aLGAPi83OeEdZXHA7oOE\",\n   \"name\": \"Original\",\n   \"createdTime\": \"2021-09-08T19:03:21.211Z\",\n   \"modifiedTime\": \"2021-09-08T19:03:22.104Z\"\n  }\n ]\n}\n"
+                }
             }
-          ],
-          "incompleteSearch": false,
-          "kind": "drive#fileList"
         },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
-      }
-    },
-    {
-      "recorded_at": "2020-04-03T19:34:39",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": ""
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Authorization": [
-            "Bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "User-Agent": [
-            "python-requests/2.20.0"
-          ],
-          "accept-encoding": [
-            "identity"
-          ]
-        },
-        "method": "GET",
-        "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+Spreadsheet%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": "{\n \"kind\": \"drive#fileList\",\n \"incompleteSearch\": false,\n \"files\": [\n  {\n   \"kind\": \"drive#file\",\n   \"id\": \"1cfpUNMXxohpqzPGwRlYfQzDfW0yC5DPxiAuPcEyPhUc\",\n   \"name\": \"Test Spreadsheet\",\n   \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n  }\n ]\n}\n"
-        },
-        "headers": {
-          "Alt-Svc": [
-            "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000"
-          ],
-          "Cache-Control": [
-            "private, max-age=0, must-revalidate, no-transform"
-          ],
-          "Content-Length": [
-            "252"
-          ],
-          "Content-Security-Policy": [
-            "frame-ancestors 'self'"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Fri, 03 Apr 2020 19:34:39 GMT"
-          ],
-          "Expires": [
-            "Fri, 03 Apr 2020 19:34:39 GMT"
-          ],
-          "Server": [
-            "GSE"
-          ],
-          "Vary": [
-            "Origin",
-            "X-Origin"
-          ],
-          "X-Content-Type-Options": [
-            "nosniff"
-          ],
-          "X-Frame-Options": [
-            "SAMEORIGIN"
-          ],
-          "X-XSS-Protection": [
-            "1; mode=block"
-          ]
-        },
-        "json_body": {
-          "files": [
-            {
-              "id": "1cfpUNMXxohpqzPGwRlYfQzDfW0yC5DPxiAuPcEyPhUc",
-              "kind": "drive#file",
-              "mimeType": "application/vnd.google-apps.spreadsheet",
-              "name": "Test Spreadsheet"
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+Spreadsheet%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Server": [
+                        "GSE"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Content-Security-Policy": [
+                        "frame-ancestors 'self'"
+                    ],
+                    "X-XSS-Protection": [
+                        "1; mode=block"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Wed, 08 Sep 2021 19:03:34 GMT"
+                    ],
+                    "content-length": [
+                        "234"
+                    ]
+                },
+                "body": {
+                    "string": "{\n \"kind\": \"drive#fileList\",\n \"files\": [\n  {\n   \"id\": \"1hf6aqa7ec15pVqp_3IpGcBT1am-TMzS90rxTDuDlD_w\",\n   \"name\": \"Test Spreadsheet\",\n   \"createdTime\": \"2021-09-08T19:03:25.977Z\",\n   \"modifiedTime\": \"2021-09-08T19:03:27.113Z\"\n  }\n ]\n}\n"
+                }
             }
-          ],
-          "incompleteSearch": false,
-          "kind": "drive#fileList"
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+Spreadsheet%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True"
-      }
-    }
-  ],
-  "recorded_with": "betamax/0.8.1"
+        }
+    ]
 }

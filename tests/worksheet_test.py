@@ -2,38 +2,51 @@ import itertools
 import random
 import re
 
+import pytest
+
 import gspread
 import gspread.utils as utils
 
-from .test import I18N_STR, GspreadTest
+from .conftest import I18N_STR, GspreadTest
 
 
 class WorksheetTest(GspreadTest):
 
     """Test for gspread.Worksheet."""
 
-    def setUp(self):
-        super().setUp()
-        self.spreadsheet = self.gc.open(self.get_temporary_spreadsheet_title())
+    @pytest.fixture(scope="class", autouse=True)
+    def init(self, client, vcr):
+        cassette_title = self.__class__.__name__ + ".init"
+        # fixtures are not recorded by default, must do manually
+        with vcr.use_cassette(cassette_title):
+            # must use class attributes, each test function runs in a different instance
+            WorksheetTest.spreadsheet = client.create(
+                self.get_temporary_spreadsheet_title()
+            )
+            WorksheetTest.sheet = WorksheetTest.spreadsheet.sheet1
 
-        # NOTE(msuozzo): Here, a new worksheet is created for each test.
-        # This was determined to be faster than reusing a single sheet and
-        # having to clear its contents after each test.
-        # Basically: Time(add_wks + del_wks) < Time(range + update_cells)
-        self.sheet = self.spreadsheet.add_worksheet("wksht_test", 20, 20)
+            yield
 
-    def tearDown(self):
-        self.spreadsheet.del_worksheet(self.sheet)
-        super().tearDown()
+            client.del_spreadsheet(WorksheetTest.spreadsheet.id)
 
+    @pytest.fixture(autouse=True)
+    def reset_sheet(self, vcr):
+        # must use the test name to have a cassette per test
+        cassette_title = self.__class__.__name__ + ".reset." + self.id()
+        with vcr.use_cassette(cassette_title):
+            WorksheetTest.sheet.clear()
+
+    @pytest.mark.vcr()
     def test_acell(self):
         cell = self.sheet.acell("A1")
         self.assertTrue(isinstance(cell, gspread.cell.Cell))
 
+    @pytest.mark.vcr()
     def test_cell(self):
         cell = self.sheet.cell(1, 1)
         self.assertTrue(isinstance(cell, gspread.cell.Cell))
 
+    @pytest.mark.vcr()
     def test_range(self):
         cell_range1 = self.sheet.range("A1:A5")
         cell_range2 = self.sheet.range(1, 1, 5, 1)
@@ -44,6 +57,7 @@ class WorksheetTest(GspreadTest):
             self.assertTrue(c1.row == c2.row)
             self.assertTrue(c1.value == c2.value)
 
+    @pytest.mark.vcr()
     def test_update_acell(self):
         sg = self._sequence_generator()
         value = next(sg)
@@ -51,6 +65,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_acell("A2", value)
         self.assertEqual(self.sheet.acell("A2").value, value)
 
+    @pytest.mark.vcr()
     def test_update_cell(self):
         sg = self._sequence_generator()
         value = next(sg)
@@ -70,6 +85,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cell(1, 2, "Артур")
         self.assertEqual(self.sheet.cell(1, 2).value, "Артур")
 
+    @pytest.mark.vcr()
     def test_update_cell_multiline(self):
         sg = self._sequence_generator()
         value = next(sg)
@@ -78,12 +94,14 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cell(1, 2, value)
         self.assertEqual(self.sheet.cell(1, 2).value, value)
 
+    @pytest.mark.vcr()
     def test_update_cell_unicode(self):
         self.sheet.update_cell(1, 1, I18N_STR)
 
         cell = self.sheet.cell(1, 1)
         self.assertEqual(cell.value, I18N_STR)
 
+    @pytest.mark.vcr()
     def test_update_cells(self):
         sg = self._sequence_generator()
 
@@ -106,6 +124,7 @@ class WorksheetTest(GspreadTest):
         for c, v in zip(cell_list, value_list):
             self.assertEqual(c.value, v)
 
+    @pytest.mark.vcr()
     def test_update_cells_unicode(self):
         cell = self.sheet.cell(1, 1)
         cell.value = I18N_STR
@@ -114,6 +133,7 @@ class WorksheetTest(GspreadTest):
         cell = self.sheet.cell(1, 1)
         self.assertEqual(cell.value, I18N_STR)
 
+    @pytest.mark.vcr()
     def test_update_cells_noncontiguous(self):
         sg = self._sequence_generator()
 
@@ -145,6 +165,7 @@ class WorksheetTest(GspreadTest):
         test_values[-1] = bottom_right_value
         self.assertEqual(test_values, read_values)
 
+    @pytest.mark.vcr()
     def test_update_cell_objects(self):
         test_values = ["cell row 1, col 2", "cell row 2 col 1"]
 
@@ -160,6 +181,7 @@ class WorksheetTest(GspreadTest):
 
         self.assertEqual(test_values, read_values)
 
+    @pytest.mark.vcr()
     def test_resize(self):
         add_num = 10
         new_rows = self.sheet.row_count + add_num
@@ -193,6 +215,7 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(grid_props["rowCount"], new_rows)
         self.assertEqual(grid_props["columnCount"], new_cols)
 
+    @pytest.mark.vcr()
     def test_sort(self):
         rows = [
             ["Apple", "2012", "4"],
@@ -246,6 +269,7 @@ class WorksheetTest(GspreadTest):
         rows = [rows[0]] + sorted(rows[1:], key=lambda x: int(x[2]), reverse=True)
         self.assertEqual(self.sheet.get_all_values(), rows)
 
+    @pytest.mark.vcr()
     def test_freeze(self):
         freeze_cols = 1
         freeze_rows = 2
@@ -275,6 +299,7 @@ class WorksheetTest(GspreadTest):
         self.assertTrue("frozenRowCount" not in grid_props)
         self.assertTrue("frozenColumnCount" not in grid_props)
 
+    @pytest.mark.vcr()
     def test_basic_filters(self):
         def get_sheet():
             sheets = self.sheet.spreadsheet.fetch_sheet_metadata()["sheets"]
@@ -314,6 +339,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.clear_basic_filter()
         self.assertTrue("basicFilter" not in get_sheet())
 
+    @pytest.mark.vcr()
     def test_find(self):
         sg = self._sequence_generator()
         value = next(sg)
@@ -338,6 +364,7 @@ class WorksheetTest(GspreadTest):
             not_found, None, "find should return 'None' when value is not found"
         )
 
+    @pytest.mark.vcr()
     def test_findall(self):
         list_len = 10
         range_label = "A1:A%s" % list_len
@@ -373,6 +400,7 @@ class WorksheetTest(GspreadTest):
 
         self.assertEqual(list_len, len(result_list))
 
+    @pytest.mark.vcr()
     def test_get_all_values(self):
         self.sheet.resize(4, 4)
         # put in new values, made from three lists
@@ -396,6 +424,7 @@ class WorksheetTest(GspreadTest):
         # values should match with original lists
         self.assertEqual(read_data, rows)
 
+    @pytest.mark.vcr()
     def test_get_all_values_title_is_a1_notation(self):
         self.sheet.resize(4, 4)
         # renames sheet to contain single and double quotes
@@ -421,6 +450,7 @@ class WorksheetTest(GspreadTest):
         # values should match with original lists
         self.assertEqual(read_data, rows)
 
+    @pytest.mark.vcr()
     def test_get_all_records(self):
         self.sheet.resize(4, 4)
         # put in new values, made from three lists
@@ -459,6 +489,7 @@ class WorksheetTest(GspreadTest):
         d1 = dict(zip(rows[0], ("foo", "foo", "foo", "foo")))
         self.assertEqual(read_records[1], d1)
 
+    @pytest.mark.vcr()
     def test_get_all_records_different_header(self):
         self.sheet.resize(6, 4)
         # put in new values, made from three lists
@@ -499,6 +530,7 @@ class WorksheetTest(GspreadTest):
         d1 = dict(zip(rows[2], ("foo", "foo", "foo", "foo")))
         self.assertEqual(read_records[1], d1)
 
+    @pytest.mark.vcr()
     def test_get_all_records_value_render_options(self):
         self.sheet.resize(2, 4)
         # put in new values, made from three lists
@@ -534,6 +566,7 @@ class WorksheetTest(GspreadTest):
         d0 = dict(zip(expected_keys, expected_values))
         self.assertEqual(read_records[0], d0)
 
+    @pytest.mark.vcr()
     def test_get_all_records_numericise_unformatted(self):
         self.sheet.resize(2, 4)
         # put in new values, made from three lists
@@ -555,6 +588,7 @@ class WorksheetTest(GspreadTest):
         d0 = dict(zip(rows[0], expected_values))
         self.assertEqual(read_records[0], d0)
 
+    @pytest.mark.vcr()
     def test_append_row(self):
         sg = self._sequence_generator()
         value_list = [next(sg) for i in range(10)]
@@ -562,6 +596,7 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(1)
         self.assertEqual(value_list, read_values)
 
+    @pytest.mark.vcr()
     def test_append_row_with_empty_value(self):
         sg = self._sequence_generator()
         value_list = [next(sg) for i in range(3)]
@@ -574,6 +609,7 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(2)
         self.assertEqual(shifted_value_list, read_values)
 
+    @pytest.mark.vcr()
     def test_append_row_with_empty_value_and_table_range(self):
         sg = self._sequence_generator()
         value_list = [next(sg) for i in range(3)]
@@ -586,6 +622,7 @@ class WorksheetTest(GspreadTest):
         read_values = self.sheet.row_values(2)
         self.assertEqual(value_list, read_values)
 
+    @pytest.mark.vcr()
     def test_insert_row(self):
         sg = self._sequence_generator()
 
@@ -611,6 +648,7 @@ class WorksheetTest(GspreadTest):
         b3 = self.sheet.acell("B3", value_render_option="FORMULA")
         self.assertEqual(b3.value, formula)
 
+    @pytest.mark.vcr()
     def test_delete_row(self):
         sg = self._sequence_generator()
 
@@ -624,6 +662,7 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(self.sheet.row_values(1), prev_row)
         self.assertEqual(self.sheet.row_values(2), next_row)
 
+    @pytest.mark.vcr()
     def test_clear(self):
         rows = [
             ["", "", "", ""],
@@ -642,6 +681,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.clear()
         self.assertEqual(self.sheet.get_all_values(), [])
 
+    @pytest.mark.vcr()
     def test_update_and_get(self):
         values = [
             ["A1", "B1", "", "D1"],
@@ -658,6 +698,7 @@ class WorksheetTest(GspreadTest):
             read_data, [["A1", "B1", "", "D1"], ["", "b2"], [], ["A4", "B4", "", "D4"]]
         )
 
+    @pytest.mark.vcr()
     def test_batch_get(self):
         values = [
             ["A1", "B1", "", "D1"],
@@ -671,10 +712,11 @@ class WorksheetTest(GspreadTest):
         value_ranges = self.sheet.batch_get(["A1:B1", "B4:D4"])
 
         self.assertEqual(value_ranges, [[["A1", "B1"]], [["B4", "", "D4"]]])
-        self.assertEqual(value_ranges[0].range, "wksht_test!A1:B1")
-        self.assertEqual(value_ranges[1].range, "wksht_test!B4:D4")
+        self.assertEqual(value_ranges[0].range, "Sheet1!A1:B1")
+        self.assertEqual(value_ranges[1].range, "Sheet1!B4:D4")
         self.assertEqual(value_ranges[0].first(), "A1")
 
+    @pytest.mark.vcr()
     def test_batch_update(self):
         self.sheet.batch_update(
             [
@@ -693,6 +735,7 @@ class WorksheetTest(GspreadTest):
 
         self.assertEqual(data, [["A1", "B1", "", "D1"], [], [], ["A4", "B4", "", "D4"]])
 
+    @pytest.mark.vcr()
     def test_format(self):
         cell_format = {
             "backgroundColor": {"green": 1, "blue": 1},
@@ -712,7 +755,7 @@ class WorksheetTest(GspreadTest):
         data = self.spreadsheet._spreadsheets_get(
             {
                 "includeGridData": False,
-                "ranges": ["wksht_test!A2"],
+                "ranges": ["Sheet1!A2"],
                 "fields": "sheets.data.rowData.values.userEnteredFormat",
             }
         )
@@ -726,6 +769,7 @@ class WorksheetTest(GspreadTest):
 
         self.assertEqual(uef, cell_format)
 
+    @pytest.mark.vcr()
     def test_reorder_worksheets(self):
         w = self.spreadsheet.worksheets()
         w.reverse()
@@ -734,6 +778,7 @@ class WorksheetTest(GspreadTest):
             [i.id for i in w], [i.id for i in self.spreadsheet.worksheets()]
         )
 
+    @pytest.mark.vcr()
     def test_worksheet_update_index(self):
         w = self.spreadsheet.worksheets()
         last_sheet = w[-1]
@@ -741,6 +786,7 @@ class WorksheetTest(GspreadTest):
         w = self.spreadsheet.worksheets()
         self.assertEqual(w[0].id, last_sheet.id)
 
+    @pytest.mark.vcr()
     def test_worksheet_notes(self):
         w = self.spreadsheet.worksheets()[0]
 
@@ -757,6 +803,7 @@ class WorksheetTest(GspreadTest):
             w.insert_note("A1", ["asddf", "asdfqwebn"])
             w.insert_note("A1", w)
 
+    @pytest.mark.vcr()
     def test_batch_clear(self):
         w = self.spreadsheet.sheet1
 

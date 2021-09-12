@@ -1,17 +1,27 @@
+import pytest
+
 import gspread
 import gspread.utils as utils
 
-from .test import GspreadTest
+from .conftest import GspreadTest
 
 
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
 
-    def setUp(self):
-        super().setUp()
-        self.spreadsheet = self.gc.open(self.get_temporary_spreadsheet_title())
-        self.sheet = self.spreadsheet.sheet1
+    @pytest.fixture(scope="class", autouse=True)
+    def init(self, client, vcr):
+        # fixtures are not recorded by default, must do manually
+        with vcr.use_cassette(self.get_temporary_spreadsheet_title()):
+            # must use class attributes, each test function runs in a different instance
+            CellTest.spreadsheet = client.create(self.get_temporary_spreadsheet_title())
+            CellTest.sheet = CellTest.spreadsheet.sheet1
 
+            yield
+
+            client.del_spreadsheet(CellTest.spreadsheet.id)
+
+    @pytest.mark.vcr()
     def test_properties(self):
         sg = self._sequence_generator()
         update_value = next(sg)
@@ -21,6 +31,7 @@ class CellTest(GspreadTest):
         self.assertEqual(cell.row, 1)
         self.assertEqual(cell.col, 1)
 
+    @pytest.mark.vcr()
     def test_numeric_value(self):
         numeric_value = 1.0 / 1024
         # Use a formula here to avoid issues with differing decimal marks:
@@ -41,6 +52,7 @@ class CellTest(GspreadTest):
         cell = self.sheet.acell("A1")
         self.assertEqual(cell.numeric_value, None)
 
+    @pytest.mark.vcr()
     def test_a1_value(self):
         cell = self.sheet.cell(4, 4)
         self.assertEqual(cell.address, "D4")
@@ -55,6 +67,7 @@ class CellTest(GspreadTest):
         self.assertEqual(cell.value, "Foo Bar")
         self.assertEqual((cell.row, cell.col), (1, 1))
 
+    @pytest.mark.vcr()
     def test_merge_cells(self):
         self.sheet.update("A1:B2", [[42, 43], [43, 44]])
 

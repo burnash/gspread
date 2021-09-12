@@ -20,33 +20,32 @@
 ## Testing
 
 1. [Obtain OAuth2 credentials from Google Developers Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
-2. Install test requirements:
+
+2. Run tests offline:
+
+Run the test suite using your current python version, in offline mode.
+This will use the curently recorded HTTP requests + responses. It does not make any HTTP call, does not require an active internet connection.
 
 ```
-pip install -r test-requirements.txt
+tox -e py
 ```
 
-3. Run tests:
-
-```
-GS_CREDS_FILENAME=<YOUR_CREDS.json> make test
-```
-
-where `YOUR_CREDS.json` is a path to the file you downloaded in step 1.
-
-**Tip:** To run a specific test method you must use the full command and append the test method name in the form of `:TestClassName.test_method_name` to `tests/test.py`.
+**Tip:** To run a specific test method use the option `-k` to specifcy a test name and `-v` and `-s` to get test output on console.
 
 Example:
 
 ```
-GS_CREDS_FILENAME=<YOUR_CREDS.json> nosetests -vv tests/test.py:WorksheetTest.test_find
+pytest -v -s -k "test_find" tests/
 ```
 
-**Note:** gspread uses [Betamax](https://github.com/betamaxpy/betamax) to record and replay HTTP interactions with Sheets API.
-You can control Betamax's [Record Mode](https://betamax.readthedocs.io/en/latest/record_modes.html) using `GS_RECORD_MODE` environment variable:
+**Note:** gspread uses [vcrpy](https://github.com/kevin1024/vcrpy) to record and replay HTTP interactions with Sheets API.
+
+You must in that case provide a service account credentials in order to make the real HTTP requests, using `GS_CREDS_FILENAME` environment variable.
+
+You can control vcrpy's [Record Mode](https://vcrpy.readthedocs.io/en/latest/usage.html#record-modes) using `GS_RECORD_MODE` environment variable:
 
 ```
-GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> make test
+GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 ```
 
 ## Render Documentation
