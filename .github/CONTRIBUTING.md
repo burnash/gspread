@@ -26,6 +26,9 @@
 Run the test suite using your current python version, in offline mode.
 This will use the curently recorded HTTP requests + responses. It does not make any HTTP call, does not require an active internet connection.
 
+**Note:** the CI runs that command, if it fail you won't be able to merge
+your changes in GSpread.
+
 ```
 tox -e py
 ```
@@ -46,6 +49,24 @@ You can control vcrpy's [Record Mode](https://vcrpy.readthedocs.io/en/latest/usa
 
 ```
 GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
+```
+
+3. Format your code:
+
+Use the following command to format your code. Doing so will ensure
+all code respects the same format.
+
+```
+tox -e format
+```
+
+Then run the linter to validate change, if any.
+
+**Note:** the CI runs that command, if it fail you won't be able to merge
+your changes in GSpread.
+
+```
+tox -e lint
 ```
 
 ## Render Documentation

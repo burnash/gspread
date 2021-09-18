@@ -11,14 +11,10 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - run: pip install bandit black codespell flake8 isort mypy pytest pyupgrade safety tox
+      - run: pip install bandit mypy pyupgrade safety tox
       - run: bandit --recursive --skip B105,B110,B311,B605,B607 --exclude ./.tox .
         if: ${{ matrix.python >= '3.8' }}
-      - run: black --check .
-      - run: codespell  # --ignore-words-list="" --skip=""
-      - run: flake8 --ignore=E203 --max-complexity=10 --max-line-length=255
-                    --show-source --statistics .
-      - run: isort --check-only --profile black .
+      - run: tox -e lint
       - run: tox -e py
       - run: mypy --ignore-missing-imports . || true  # Need Python >= 3.6
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py  # --py36-plus
