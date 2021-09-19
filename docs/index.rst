@@ -20,7 +20,7 @@ Installation
    pip install gspread
 
 
-Requirements: Python 2.7+ or Python 3+.
+Requirements: Python 3+.
 
 
 Quick Example

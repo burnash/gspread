@@ -15,7 +15,7 @@ Features:
 pip install gspread
 ```
 
-Requirements: Python 3.4+.
+Requirements: Python 3.6+.
 
 
 ## Basic Usage
