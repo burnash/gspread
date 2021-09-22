@@ -85,7 +85,7 @@ Ta-da!
     Make sure you store the credentials file in a safe place.
 
 For the curious, under the hood :meth:`~gspread.service_account` loads your credentials and authorizes gspread. Similarly to the code
-that has been used for authentication prio to the gspread version 3.6:
+that has been used for authentication prior to the gspread version 3.6:
 
 ::
 
@@ -184,5 +184,5 @@ You only need to do authorization in the browser once, following runs will reuse
     If you are concerned about giving the application access to your spreadsheets and Drive, use Service Accounts.
 
 .. NOTE::
-    The user interface of Google Developers Console may be different when you're reading this. If you find that this document is out of sync with the actual UI please fix this. Improvements to the documentation are always welcome.
+    The user interface of Google Developers Console may be different when you're reading this. If you find that this document is out of sync with the actual UI, please update it. Improvements to the documentation are always welcome.
     Click **Edit on GitHub** in the top right corner of the page, make it better and submit a PR.
