@@ -19,3 +19,5 @@ jobs:
       - run: mypy --ignore-missing-imports . || true  # Need Python >= 3.6
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py  # --py36-plus
       - run: safety check
+      - run: tox -e build
+      - run: tox -e doc
