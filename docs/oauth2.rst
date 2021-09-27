@@ -11,7 +11,7 @@ To access spreadsheets via Google Sheets API you need to authenticate and author
 Enable API Access for a Project
 -------------------------------
 
-1. Head to `Google Developers Console <https://console.developers.google.com/project>`_ and create a new project (or select the one you already have).
+1. Head to `Google Developers Console <https://console.developers.google.com/>`_ and create a new project (or select the one you already have).
 
 2. In the box labeled "Search for APIs and Services", search for "Google Drive API" and enable it.
 
