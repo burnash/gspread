@@ -1021,13 +1021,13 @@ class Worksheet:
             "requests": [
                 {
                     "autoResizeDimensions": {
-                "dimensions": {
-                    "sheetId": self.id,
-                    "dimension": "COLUMNS",
-                    "startIndex": int(start_column_index),  # Please set the start column index.
-                    "endIndex": int(end_column_index)  # Please set the end column index.
-                }
-            }
+                        "dimensions": {
+                            "sheetId": self.id,
+                            "dimension": "COLUMNS",
+                            "startIndex": int(start_column_index),  # Please set the start column index.
+                            "endIndex": int(end_column_index)  # Please set the end column index.
+                        }
+                    }
                 }
             ]
         }
