@@ -1008,6 +1008,33 @@ class Worksheet:
 
         return self.spreadsheet.batch_update(body)
 
+
+    def columns_auto_resize(self, start_column_index, end_column_index):
+        """Updates the size of columns in the  worksheet. 
+
+        ex: worksheet.columns_auto_resize(0, 10)
+              
+       
+        .. versionadded:: 3.4
+        """
+        body = {
+            "requests": [
+                {
+                    "autoResizeDimensions": {
+                "dimensions": {
+                    "sheetId": self.id,
+                    "dimension": "COLUMNS",
+                    "startIndex": int(start_column_index),  # Please set the start column index.
+                    "endIndex": int(end_column_index)  # Please set the end column index.
+                }
+            }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+
     def add_rows(self, rows):
         """Adds rows to worksheet.
 
