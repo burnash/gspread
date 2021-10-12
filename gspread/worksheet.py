@@ -1007,17 +1007,12 @@ class Worksheet:
 
         return self.spreadsheet.batch_update(body)
 
-        
+
     def columns_auto_resize(self, start_column_index, end_column_index):
         """Updates the size of columns in the  worksheet. 
 
-        ex: columns_auto_resize(worksheet, 0, 10)
-
-        See the `Sheets API documentation
-        <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#sheetproperties>`_
-        for information on how updating the index property affects the order of worksheets
-        in a spreadsheet.
-        
+        ex: worksheet.columns_auto_resize(0, 10)
+              
        
         .. versionadded:: 3.4
         """
