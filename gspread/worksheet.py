@@ -1007,6 +1007,38 @@ class Worksheet:
 
         return self.spreadsheet.batch_update(body)
 
+        
+    def columns_auto_resize(self, start_column_index, end_column_index):
+        """Updates the size of columns in the  worksheet. 
+
+        ex: columns_auto_resize(worksheet, 0, 10)
+
+        See the `Sheets API documentation
+        <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets#sheetproperties>`_
+        for information on how updating the index property affects the order of worksheets
+        in a spreadsheet.
+        
+       
+        .. versionadded:: 3.4
+        """
+        body = {
+            "requests": [
+                {
+                    "autoResizeDimensions": {
+                "dimensions": {
+                    "sheetId": self.id,
+                    "dimension": "COLUMNS",
+                    "startIndex": int(start_column_index),  # Please set the start column index.
+                    "endIndex": int(end_column_index)  # Please set the end column index.
+                }
+            }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+
     def add_rows(self, rows):
         """Adds rows to worksheet.
 
