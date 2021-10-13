@@ -214,17 +214,18 @@ class Worksheet:
 
         data = self.spreadsheet.values_get(range_label)
 
-        range_name = data.get("range", "")
-        if "!" in range_name:
-            range_name = range_name.split("!")[1]
-        grid_range = a1_range_to_grid_range(range_name)
+        if ":" not in name:
+            name = data.get("range", "")
+            if "!" in name:
+                name = name.split("!")[1]
 
-        print(f"{name}->{grid_range}")
+        grid_range = a1_range_to_grid_range(name)
+
 
         values = data.get("values", [])
 
-        row_offset = grid_range.get("startRowIndex", None)
-        column_offset = grid_range.get("startColumnIndex", None)
+        row_offset = grid_range.get("startRowIndex", 0)
+        column_offset = grid_range.get("startColumnIndex", 0)
         last_row = grid_range.get("endRowIndex", None)
         last_column = grid_range.get("endColumnIndex", None)
         
