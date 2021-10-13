@@ -61,36 +61,12 @@ class WorksheetTest(GspreadTest):
             self.assertTrue(c1.value == c2.value)
 
     @pytest.mark.vcr()
-    def test_range_implicit_start(self):
-        # Temporary credentials - remove in favor of usual testing ones later
-        temp_client = gspread.service_account()
-        temp_spreadsheet = temp_client.open_by_key('1kaPXYKpuPopXFCStwtp3pnRZpzNpAO_FE0tzoSQz7uQ')
-        temp_worksheet = temp_spreadsheet.get_worksheet(0)
-        cell_range1 = temp_worksheet.range("1:E1")
-        cell_range2 = temp_worksheet.range(1, temp_worksheet.col_count, 1, 5)
-        self.assertTrue(len(cell_range1) == len(cell_range2))
-        for c1, c2 in zip(cell_range1, cell_range2):
-            self.assertTrue(isinstance(c1, gspread.cell.Cell))
-            self.assertTrue(isinstance(c2, gspread.cell.Cell))
-            self.assertTrue(c1.col == c2.col)
-            self.assertTrue(c1.row == c2.row)
-            self.assertTrue(c1.value == c2.value)
-
-    @pytest.mark.vcr()
-    def test_range_implicit_end(self):
-        # Temporary credentials - remove in favor of usual testing ones later
-        temp_client = gspread.service_account()
-        temp_spreadsheet = temp_client.open_by_key('1kaPXYKpuPopXFCStwtp3pnRZpzNpAO_FE0tzoSQz7uQ')
-        temp_worksheet = temp_spreadsheet.get_worksheet(0)
-        cell_range1 = temp_worksheet.range("A1:C")
-        cell_range2 = temp_worksheet.range(1, 1, temp_worksheet.row_count, 3)
-        self.assertTrue(len(cell_range1) == len(cell_range2))
-        for c1, c2 in zip(cell_range1, cell_range2):
-            self.assertTrue(isinstance(c1, gspread.cell.Cell))
-            self.assertTrue(isinstance(c2, gspread.cell.Cell))
-            self.assertTrue(c1.col == c2.col)
-            self.assertTrue(c1.row == c2.row)
-            self.assertTrue(c1.value == c2.value)
+    def test_range_unbounded(self):
+        cell_range1 = self.sheet.range("A1:C")
+        cell_range2 = self.sheet.range(1, 1, self.sheet.row_count, 3)
+        tuples1 = [(c.row, c.col, c.value) for c in cell_range1]
+        tuples2 = [(c.row, c.col, c.value) for c in cell_range2]
+        self.assertSequenceEqual(tuples1, tuples2)
 
     @pytest.mark.vcr()
     def test_update_acell(self):
