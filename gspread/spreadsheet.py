@@ -546,3 +546,15 @@ class Spreadsheet:
             self.client.remove_permission(self.id, permission_id)
 
         return filtered_id_list
+
+    def named_range(self, named_range):
+        """return a list of :class:`Cell` objects from
+        the specified named range.
+
+        :param name: A string with a named range value to fecth.
+        :type name: str
+        """
+
+        # the function `range` does all necessary actions to get a named range.
+        # This is only here to provide better user experience.
+        return self.sheet1.range(named_range)
