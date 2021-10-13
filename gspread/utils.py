@@ -349,7 +349,7 @@ def a1_range_to_grid_range(name, sheet_id=None):
 
     start_row_index, start_column_index = _a1_to_rowcol_unbounded(start_label)
 
-    end_row_index, end_column_index = _a1_to_rowcol_unbounded(end_label)
+    end_row_index, end_column_index = _a1_to_rowcol_unbounded(end_label or start_label)
 
     if start_row_index > end_row_index:
         start_row_index, end_row_index = end_row_index, start_row_index
@@ -367,7 +367,7 @@ def a1_range_to_grid_range(name, sheet_id=None):
                 "startColumnIndex": start_column_index - 1,
                 "endColumnIndex": end_column_index,
         }.items()
-        if v != inf
+        if v is not None and v != inf
     }
     
 
