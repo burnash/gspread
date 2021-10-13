@@ -77,3 +77,13 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(utils.numericise("", default_blank="foo"), "foo")
         self.assertEqual(utils.numericise(""), "")
         self.assertEqual(utils.numericise(None), None)
+
+    def test_a1_to_grid_range(self):
+        self.assertEqual(utils.a1_range_to_grid_range('A1:A1'), {'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1})
+        self.assertEqual(utils.a1_range_to_grid_range('A3:B4'), {'startRowIndex': 2, 'endRowIndex': 4, 'startColumnIndex': 0, 'endColumnIndex': 2})
+        self.assertEqual(utils.a1_range_to_grid_range('A:B'), {'startColumnIndex': 0, 'endColumnIndex': 2})
+        self.assertEqual(utils.a1_range_to_grid_range('A5:B'), {'startRowIndex': 4, 'startColumnIndex': 0, 'endColumnIndex': 2})
+        self.assertEqual(utils.a1_range_to_grid_range('A1'), {'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1})
+        self.assertEqual(utils.a1_range_to_grid_range('A'), {'startColumnIndex': 0, 'endColumnIndex': 1})
+        self.assertEqual(utils.a1_range_to_grid_range('1'), {'startRowIndex': 0, 'endRowIndex': 1})
+        self.assertEqual(utils.a1_range_to_grid_range('A1', sheet_id=0), {'sheetId': 0, 'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1})
