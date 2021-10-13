@@ -219,6 +219,8 @@ class Worksheet:
             range_name = range_name.split("!")[1]
         grid_range = a1_range_to_grid_range(range_name)
 
+        print(f"{name}->{grid_range}")
+
         values = data.get("values", [])
 
         row_offset = grid_range.get("startRowIndex", None)
