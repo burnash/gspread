@@ -69,6 +69,14 @@ class WorksheetTest(GspreadTest):
         self.assertSequenceEqual(tuples1, tuples2)
 
     @pytest.mark.vcr()
+    def test_range_reversed(self):
+        cell_range1 = self.sheet.range("A1:D4")
+        cell_range2 = self.sheet.range("D4:A1")
+        tuples1 = [(c.row, c.col, c.value) for c in cell_range1]
+        tuples2 = [(c.row, c.col, c.value) for c in cell_range2]
+        self.assertSequenceEqual(tuples1, tuples2)
+
+    @pytest.mark.vcr()
     def test_update_acell(self):
         sg = self._sequence_generator()
         value = next(sg)
