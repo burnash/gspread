@@ -1,0 +1,145 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1f6e0m42XXAsEMJnr5-lzOf6srAjvBmOuuQlmU0npwR4/values/%27D3%27%21A1%3AD4",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "Date": [
+                        "Tue, 12 Oct 2021 23:13:30 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "content-length": [
+                        "250"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"D3!A1:D4\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"d4\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1f6e0m42XXAsEMJnr5-lzOf6srAjvBmOuuQlmU0npwR4/values/%27D3%27%21D4%3AA1",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "Date": [
+                        "Tue, 12 Oct 2021 23:13:30 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "content-length": [
+                        "250"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"D3!A1:D4\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"d4\"\n    ]\n  ]\n}\n"
+                }
+            }
+        }
+    ]
+}
