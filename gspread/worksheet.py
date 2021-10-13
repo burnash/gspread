@@ -221,17 +221,16 @@ class Worksheet:
 
         grid_range = a1_range_to_grid_range(name)
 
-
         values = data.get("values", [])
 
         row_offset = grid_range.get("startRowIndex", 0)
         column_offset = grid_range.get("startColumnIndex", 0)
         last_row = grid_range.get("endRowIndex", None)
         last_column = grid_range.get("endColumnIndex", None)
-        
+
         if last_row is not None:
             last_row -= row_offset
-        
+
         if last_column is not None:
             last_column -= column_offset
 

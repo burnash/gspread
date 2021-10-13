@@ -79,22 +79,89 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(utils.numericise(None), None)
 
     def test_a1_to_grid_range_simple(self):
-        self.assertEqual(utils.a1_range_to_grid_range('A1:A10'), {'startRowIndex': 0, 'endRowIndex': 10, 'startColumnIndex': 0, 'endColumnIndex': 1})
-        self.assertEqual(utils.a1_range_to_grid_range('A3:B4'), {'startRowIndex': 2, 'endRowIndex': 4, 'startColumnIndex': 0, 'endColumnIndex': 2})
-        self.assertEqual(utils.a1_range_to_grid_range('A1:A10', sheet_id=0), {'sheetId': 0, 'startRowIndex': 0, 'endRowIndex': 10, 'startColumnIndex': 0, 'endColumnIndex': 1})
+        self.assertEqual(
+            utils.a1_range_to_grid_range("A1:A10"),
+            {
+                "startRowIndex": 0,
+                "endRowIndex": 10,
+                "startColumnIndex": 0,
+                "endColumnIndex": 1,
+            },
+        )
+        self.assertEqual(
+            utils.a1_range_to_grid_range("A3:B4"),
+            {
+                "startRowIndex": 2,
+                "endRowIndex": 4,
+                "startColumnIndex": 0,
+                "endColumnIndex": 2,
+            },
+        )
+        self.assertEqual(
+            utils.a1_range_to_grid_range("A1:A10", sheet_id=0),
+            {
+                "sheetId": 0,
+                "startRowIndex": 0,
+                "endRowIndex": 10,
+                "startColumnIndex": 0,
+                "endColumnIndex": 1,
+            },
+        )
 
     def test_a1_to_grid_range_unbounded(self):
-        self.assertEqual(utils.a1_range_to_grid_range('A5:B'), {'startRowIndex': 4, 'startColumnIndex': 0, 'endColumnIndex': 2})
-        self.assertEqual(utils.a1_range_to_grid_range('A:B'), {'startColumnIndex': 0, 'endColumnIndex': 2})
-        self.assertEqual(utils.a1_range_to_grid_range('A5:B', sheet_id=0), {'sheetId': 0, 'startRowIndex': 4, 'startColumnIndex': 0, 'endColumnIndex': 2})
+        self.assertEqual(
+            utils.a1_range_to_grid_range("A5:B"),
+            {"startRowIndex": 4, "startColumnIndex": 0, "endColumnIndex": 2},
+        )
+        self.assertEqual(
+            utils.a1_range_to_grid_range("A:B"),
+            {"startColumnIndex": 0, "endColumnIndex": 2},
+        )
+        self.assertEqual(
+            utils.a1_range_to_grid_range("A5:B", sheet_id=0),
+            {
+                "sheetId": 0,
+                "startRowIndex": 4,
+                "startColumnIndex": 0,
+                "endColumnIndex": 2,
+            },
+        )
 
     def test_a1_to_grid_range_improper_range(self):
-        self.assertEqual(utils.a1_range_to_grid_range('A1'), {'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1})
-        self.assertEqual(utils.a1_range_to_grid_range('A'), {'startColumnIndex': 0, 'endColumnIndex': 1})
-        self.assertEqual(utils.a1_range_to_grid_range('1'), {'startRowIndex': 0, 'endRowIndex': 1})
-        self.assertEqual(utils.a1_range_to_grid_range('A1', sheet_id=0), {'sheetId': 0, 'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1})
+        self.assertEqual(
+            utils.a1_range_to_grid_range("A1"),
+            {
+                "startRowIndex": 0,
+                "endRowIndex": 1,
+                "startColumnIndex": 0,
+                "endColumnIndex": 1,
+            },
+        )
+        self.assertEqual(
+            utils.a1_range_to_grid_range("A"),
+            {"startColumnIndex": 0, "endColumnIndex": 1},
+        )
+        self.assertEqual(
+            utils.a1_range_to_grid_range("1"), {"startRowIndex": 0, "endRowIndex": 1}
+        )
+        self.assertEqual(
+            utils.a1_range_to_grid_range("A1", sheet_id=0),
+            {
+                "sheetId": 0,
+                "startRowIndex": 0,
+                "endRowIndex": 1,
+                "startColumnIndex": 0,
+                "endColumnIndex": 1,
+            },
+        )
 
     def test_a1_to_grid_range_other_directions(self):
-        self.assertEqual(utils.a1_range_to_grid_range('C2:D4'), utils.a1_range_to_grid_range('D4:C2'))
-        self.assertEqual(utils.a1_range_to_grid_range('C2:D4'), utils.a1_range_to_grid_range('C4:D2'))
-        self.assertEqual(utils.a1_range_to_grid_range('C2:D4'), utils.a1_range_to_grid_range('D2:C4'))
+        self.assertEqual(
+            utils.a1_range_to_grid_range("C2:D4"), utils.a1_range_to_grid_range("D4:C2")
+        )
+        self.assertEqual(
+            utils.a1_range_to_grid_range("C2:D4"), utils.a1_range_to_grid_range("C4:D2")
+        )
+        self.assertEqual(
+            utils.a1_range_to_grid_range("C2:D4"), utils.a1_range_to_grid_range("D2:C4")
+        )

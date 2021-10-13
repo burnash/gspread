@@ -353,23 +353,21 @@ def a1_range_to_grid_range(name, sheet_id=None):
 
     if start_row_index > end_row_index:
         start_row_index, end_row_index = end_row_index, start_row_index
-    
+
     if start_column_index > end_column_index:
         start_column_index, end_column_index = end_column_index, start_column_index
 
     return {
         k: v
-        for k, v
-        in {
-                "sheetId": sheet_id,
-                "startRowIndex": start_row_index - 1,
-                "endRowIndex": end_row_index,
-                "startColumnIndex": start_column_index - 1,
-                "endColumnIndex": end_column_index,
+        for k, v in {
+            "sheetId": sheet_id,
+            "startRowIndex": start_row_index - 1,
+            "endRowIndex": end_row_index,
+            "startColumnIndex": start_column_index - 1,
+            "endColumnIndex": end_column_index,
         }.items()
         if v is not None and v != inf
     }
-    
 
 
 def cast_to_a1_notation(method):
