@@ -9,6 +9,7 @@ This module contains utility functions.
 import re
 from collections import defaultdict
 from functools import wraps
+from math import inf
 
 try:
     from collections.abc import Sequence
@@ -263,19 +264,19 @@ def _a1_to_rowcol_unbounded(label):
     (1, 1)
 
     >>> _a1_to_rowcol_unbounded('A')
-    (None, 1)
+    (inf, 1)
 
     >>> _a1_to_rowcol_unbounded('1')
-    (1, None)
+    (1, inf)
 
     >>> _a1_to_rowcol_unbounded('ABC123')
     (123, 731)
 
     >>> _a1_to_rowcol_unbounded('ABC')
-    (None, 731)
+    (inf, 731)
 
     >>> _a1_to_rowcol_unbounded('123')
-    (123, None)
+    (123, inf)
 
     >>> _a1_to_rowcol_unbounded('1A')
     Traceback (most recent call last):
@@ -283,21 +284,24 @@ def _a1_to_rowcol_unbounded(label):
     gspread.exceptions.IncorrectCellLabel: 1A
 
     >>> _a1_to_rowcol_unbounded('')
-    (None, None)
+    (inf, inf)
 
     """
     m = A1_ADDR_ROW_COL_RE.match(label)
     if m:
         column_label, row = m.groups()
 
-        col = None
         if column_label:
             col = 0
             for i, c in enumerate(reversed(column_label)):
                 col += (ord(c) - MAGIC_NUMBER) * (26 ** i)
+        else:
+            col = inf
 
         if row:
             row = int(row)
+        else:
+            row = inf
     else:
         raise IncorrectCellLabel(label)
 
@@ -343,25 +347,29 @@ def a1_range_to_grid_range(name, sheet_id=None):
     """
     start_label, _, end_label = name.partition(":")
 
-    start_indices = _a1_to_rowcol_unbounded(start_label)
+    start_row_index, start_column_index = _a1_to_rowcol_unbounded(start_label)
 
-    start_row_index, start_column_index = (
-        x - 1 if x is not None else x for x in start_indices
-    )
+    end_row_index, end_column_index = _a1_to_rowcol_unbounded(end_label or start_label)
 
-    end_row_index, end_column_index = (
-        _a1_to_rowcol_unbounded(end_label) if end_label else start_indices
-    )
+    if start_row_index > end_row_index:
+        start_row_index, end_row_index = end_row_index, start_row_index
 
-    return filter_dict_values(
-        {
-            "sheetId": sheet_id,
-            "startRowIndex": start_row_index,
-            "endRowIndex": end_row_index,
-            "startColumnIndex": start_column_index,
-            "endColumnIndex": end_column_index,
-        }
-    )
+    if start_column_index > end_column_index:
+        start_column_index, end_column_index = end_column_index, start_column_index
+
+    grid_range = {
+        "startRowIndex": start_row_index - 1,
+        "endRowIndex": end_row_index,
+        "startColumnIndex": start_column_index - 1,
+        "endColumnIndex": end_column_index,
+    }
+
+    grid_range = {key: value for (key, value) in grid_range.items() if value != inf}
+
+    if sheet_id is not None:
+        grid_range["sheetId"] = sheet_id
+
+    return grid_range
 
 
 def cast_to_a1_notation(method):

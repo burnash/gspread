@@ -214,33 +214,34 @@ class Worksheet:
 
         data = self.spreadsheet.values_get(range_label)
 
-        start = None
-        end = None
-
         if ":" not in name:
-            range_name = data.get("range", None)
-            if range_name and "!" in range_name:
-                coordinates = range_name.split("!")[1]
-                if ":" in coordinates:
-                    start, end = coordinates.split(":")
-            if not start or not end:
-                raise ValueError("Cannot retrieve range coordinates")
-        else:
-            start, end = name.split(":")
+            name = data.get("range", "")
+            if "!" in name:
+                name = name.split("!")[1]
 
-        (row_offset, column_offset) = a1_to_rowcol(start)
-        (last_row, last_column) = a1_to_rowcol(end)
+        grid_range = a1_range_to_grid_range(name)
 
         values = data.get("values", [])
 
+        row_offset = grid_range.get("startRowIndex", 0)
+        column_offset = grid_range.get("startColumnIndex", 0)
+        last_row = grid_range.get("endRowIndex", None)
+        last_column = grid_range.get("endColumnIndex", None)
+
+        if last_row is not None:
+            last_row -= row_offset
+
+        if last_column is not None:
+            last_column -= column_offset
+
         rect_values = fill_gaps(
             values,
-            rows=last_row - row_offset + 1,
-            cols=last_column - column_offset + 1,
+            rows=last_row,
+            cols=last_column,
         )
 
         return [
-            Cell(row=i + row_offset, col=j + column_offset, value=value)
+            Cell(row=i + row_offset + 1, col=j + column_offset + 1, value=value)
             for i, row in enumerate(rect_values)
             for j, value in enumerate(row)
         ]

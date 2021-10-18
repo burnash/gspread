@@ -77,3 +77,95 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(utils.numericise("", default_blank="foo"), "foo")
         self.assertEqual(utils.numericise(""), "")
         self.assertEqual(utils.numericise(None), None)
+
+    def test_a1_to_grid_range_simple(self):
+        expected_single_dimension = {
+            "startRowIndex": 0,
+            "endRowIndex": 10,
+            "startColumnIndex": 0,
+            "endColumnIndex": 1,
+        }
+        actual_single_dimension = utils.a1_range_to_grid_range("A1:A10")
+
+        expected_two_dimensional = {
+            "startRowIndex": 2,
+            "endRowIndex": 4,
+            "startColumnIndex": 0,
+            "endColumnIndex": 2,
+        }
+        actual_two_dimensional = utils.a1_range_to_grid_range("A3:B4")
+
+        expected_with_sheet_id = {
+            "sheetId": 0,
+            "startRowIndex": 0,
+            "endRowIndex": 10,
+            "startColumnIndex": 0,
+            "endColumnIndex": 1,
+        }
+        actual_with_sheet_id = utils.a1_range_to_grid_range("A1:A10", sheet_id=0)
+
+        self.assertEqual(actual_single_dimension, expected_single_dimension)
+        self.assertEqual(actual_two_dimensional, expected_two_dimensional)
+        self.assertEqual(actual_with_sheet_id, expected_with_sheet_id)
+
+    def test_a1_to_grid_range_unbounded(self):
+        expected_unbounded = {
+            "startRowIndex": 4,
+            "startColumnIndex": 0,
+            "endColumnIndex": 2,
+        }
+        actual_unbounded = utils.a1_range_to_grid_range("A5:B")
+
+        expected_full_columns = {"startColumnIndex": 0, "endColumnIndex": 2}
+        actual_full_columns = utils.a1_range_to_grid_range("A:B")
+
+        expected_with_sheet_id = {
+            "sheetId": 0,
+            "startRowIndex": 4,
+            "startColumnIndex": 0,
+            "endColumnIndex": 2,
+        }
+        actual_with_sheet_id = utils.a1_range_to_grid_range("A5:B", sheet_id=0)
+
+        self.assertEqual(actual_unbounded, expected_unbounded)
+        self.assertEqual(actual_full_columns, expected_full_columns)
+        self.assertEqual(actual_with_sheet_id, expected_with_sheet_id)
+
+    def test_a1_to_grid_range_improper_range(self):
+        expected_single_cell = {
+            "startRowIndex": 0,
+            "endRowIndex": 1,
+            "startColumnIndex": 0,
+            "endColumnIndex": 1,
+        }
+        actual_single_cell = utils.a1_range_to_grid_range("A1")
+
+        expected_single_column = {"startColumnIndex": 0, "endColumnIndex": 1}
+        actual_single_column = utils.a1_range_to_grid_range("A")
+
+        expected_single_row = {"startRowIndex": 0, "endRowIndex": 1}
+        actual_single_row = utils.a1_range_to_grid_range("1")
+
+        expected_with_sheet = {
+            "sheetId": 0,
+            "startRowIndex": 0,
+            "endRowIndex": 1,
+            "startColumnIndex": 0,
+            "endColumnIndex": 1,
+        }
+        actual_with_sheet = utils.a1_range_to_grid_range("A1", sheet_id=0)
+
+        self.assertEqual(actual_single_cell, expected_single_cell)
+        self.assertEqual(actual_single_column, expected_single_column)
+        self.assertEqual(actual_single_row, expected_single_row)
+        self.assertEqual(actual_with_sheet, expected_with_sheet)
+
+    def test_a1_to_grid_range_other_directions(self):
+        from_top_left = utils.a1_range_to_grid_range("C2:D4")
+        from_bottom_right = utils.a1_range_to_grid_range("D4:C2")
+        from_top_right = utils.a1_range_to_grid_range("D2:C4")
+        from_bottom_left = utils.a1_range_to_grid_range("C4:D2")
+
+        self.assertEqual(from_top_left, from_bottom_right)
+        self.assertEqual(from_top_left, from_bottom_left)
+        self.assertEqual(from_top_left, from_top_right)
