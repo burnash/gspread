@@ -546,3 +546,8 @@ class Spreadsheet:
             self.client.remove_permission(self.id, permission_id)
 
         return filtered_id_list
+
+    def list_named_ranges(self):
+        """Lists the spreadsheet's named ranges."""
+        return self.fetch_sheet_metadata(params={'fields': 'namedRanges'}).get('namedRanges', [])
+

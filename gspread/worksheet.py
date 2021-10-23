@@ -1691,3 +1691,56 @@ class Worksheet:
         """
         # set the note to <empty string> will clear it
         self.update_note(cell, "")
+
+    @cast_to_a1_notation
+    def define_named_range(self, name, range_name):
+        """
+        :param str name: A string with range value in A1 notation,
+            e.g. 'A1:A5'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
+
+        :param range_name: The name to assign to the range of cells
+
+        :returns: the response body from the request
+        :rtype: dict
+        """
+        body = {
+            "requests": [
+                {
+                    "addNamedRange": {
+                        "namedRange": {
+                            "name": range_name,
+                            "range": a1_range_to_grid_range(name, self.id),
+                        }
+                    }
+                }
+            ]
+        }
+        return self.spreadsheet.batch_update(body)
+
+    def delete_named_range(self, named_range_id):
+        """
+        :param str named_range_id: The ID of the named range to delete.
+            Can be obtained with Spreadsheet.list_named_ranges()
+
+        :returns: the response body from the request
+        :rtype: dict
+        """
+        body = {
+            "requests": [
+                {
+                    "deleteNamedRange": {
+                        "namedRangeId": named_range_id,
+                    }
+                }
+            ]
+        }
+        self.spreadsheet.batch_update(body)
+
