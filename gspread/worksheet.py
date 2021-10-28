@@ -1743,4 +1743,3 @@ class Worksheet:
             ]
         }
         self.spreadsheet.batch_update(body)
-

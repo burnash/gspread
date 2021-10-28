@@ -549,5 +549,6 @@ class Spreadsheet:
 
     def list_named_ranges(self):
         """Lists the spreadsheet's named ranges."""
-        return self.fetch_sheet_metadata(params={'fields': 'namedRanges'}).get('namedRanges', [])
-
+        return self.fetch_sheet_metadata(params={"fields": "namedRanges"}).get(
+            "namedRanges", []
+        )
