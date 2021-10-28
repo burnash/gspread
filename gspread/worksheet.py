@@ -1207,14 +1207,21 @@ class Worksheet:
     def add_protected_range(
         self,
         name,
-        editor_users_emails=None,
-        editor_groups_emails=None,
+        editor_users_emails,
+        editor_groups_emails=[],
         description=None,
         warning_only=False,
         requesting_user_can_edit=False,
     ):
-        """ "Add protected range to the sheet. Only the editors can edit
+        """Add protected range to the sheet. Only the editors can edit
         the protected range.
+
+        Google API will automatically add the owner of this SpreadSheet.
+        The list ``editor_users_emails`` must at least contain the e-mail
+        address used to open that SpreadSheet.
+
+        ``editor_users_emails`` must only contain e-mail addresses
+        who already have a write access to the spreadsheet.
 
         :param str name: A string with range value in A1 notation,
             e.g. 'A1:A5'.
@@ -1229,8 +1236,9 @@ class Worksheet:
 
         For both A1 and numeric notation:
 
-        :param list editor_users_emails: (optional) The email addresses of
+        :param list editor_users_emails: The email addresses of
             users with edit access to the protected range.
+            This must include your e-mail address at least.
         :param list editor_groups_emails: (optional) The email addresses of
             groups with edit access to the protected range.
         :param str description: (optional) Description for the protected
@@ -1241,16 +1249,6 @@ class Worksheet:
             who requested this protected range can edit the protected cells.
             Defaults to ``False``.
         """
-        email_address = [
-            permission.get("emailAddress")
-            for permission in self.client.list_permissions(self.spreadsheet.id)
-            if permission.get("emailAddress")
-        ]
-
-        editors_emails = editor_users_emails or []
-        email_address.extend(email for email in editors_emails)
-
-        editor_groups_emails = editor_groups_emails or []
 
         grid_range = a1_range_to_grid_range(name, self.id)
 
@@ -1264,7 +1262,7 @@ class Worksheet:
                             "warningOnly": warning_only,
                             "requestingUserCanEdit": requesting_user_can_edit,
                             "editors": {
-                                "users": email_address,
+                                "users": editor_users_emails,
                                 "groups": editor_groups_emails,
                             },
                         }
