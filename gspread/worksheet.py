@@ -25,6 +25,10 @@ from .utils import (
 )
 
 Dimension = namedtuple('_Dimension', ['rows', 'cols'])('ROWS', 'COLUMNS')
+ValueRenderOption = namedtuple(
+    '_ValueRenderOption',
+    ['formatted', 'unformatted', 'formula']
+)('FORMATTED_VALUE', 'UNFORMATTED_VALUE', 'FORMULA')
 
 
 class ValueRange(list):
@@ -130,7 +134,7 @@ class Worksheet:
         """Number of frozen columns."""
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
-    def acell(self, label, value_render_option="FORMATTED_VALUE"):
+    def acell(self, label, value_render_option=ValueRenderOption.formatted):
         """Returns an instance of a :class:`gspread.models.Cell`.
 
         :param label: Cell label in A1 notation
@@ -139,7 +143,9 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: str
+        :type value_render_option:  ( `ValueRenderOption.formatted` | 
+                                    `ValueRenderOption.unformatted` |
+                                    `ValueRenderOption.formula` )
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -152,7 +158,7 @@ class Worksheet:
             *(a1_to_rowcol(label)), value_render_option=value_render_option
         )
 
-    def cell(self, row, col, value_render_option="FORMATTED_VALUE"):
+    def cell(self, row, col, value_render_option=ValueRenderOption.formatted):
         """Returns an instance of a :class:`gspread.models.Cell` located at
         `row` and `col` column.
 
@@ -163,7 +169,9 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: str
+        :type value_render_option:  ( `ValueRenderOption.formatted` | 
+                                    `ValueRenderOption.unformatted` |
+                                    `ValueRenderOption.formula` )
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -273,17 +281,17 @@ class Worksheet:
 
             Possible values are:
 
-            ``FORMATTED_VALUE``
+            ``ValueRenderOption.formatted``
                 (default) Values will be calculated and formatted according
                 to the cell's formatting. Formatting is based on the
                 spreadsheet's locale, not the requesting user's locale.
 
-            ``UNFORMATTED_VALUE``
+            ``ValueRenderOption.unformatted``
                 Values will be calculated, but not formatted in the reply.
                 For example, if A1 is 1.23 and A2 is =A1 and formatted as
                 currency, then A2 would return the number 1.23.
 
-            ``FORMULA``
+            ``ValueRenderOption.formula``
                 Values will not be calculated. The reply will include
                 the formulas. For example, if A1 is 1.23 and A2 is =A1 and
                 formatted as currency, then A2 would return "=A1".
@@ -292,8 +300,8 @@ class Worksheet:
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output. This is ignored if
-            ``value_render_option`` is ``FORMATTED_VALUE``. The default
-            ``date_time_render_option`` is ``SERIAL_NUMBER``.
+            ``value_render_option`` is ``ValueRenderOption.formatted``.
+            The default ``date_time_render_option`` is ``SERIAL_NUMBER``.
 
         .. note::
 
@@ -314,10 +322,10 @@ class Worksheet:
             worksheet.get_values('my_range')
 
             # Return unformatted values (e.g. numbers as numbers)
-            worksheet.get_values('A2:B4', value_render_option='UNFORMATTED_VALUE')
+            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.unformatted)
 
             # Return cell values without calculating formulas
-            worksheet.get_values('A2:B4', value_render_option='FORMULA')
+            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.formula)
         """
         try:
             return fill_gaps(self.get(range_name, **kwargs))
@@ -432,7 +440,7 @@ class Worksheet:
         except KeyError:
             return []
 
-    def col_values(self, col, value_render_option="FORMATTED_VALUE"):
+    def col_values(self, col, value_render_option=ValueRenderOption.formatted):
         """Returns a list of all values in column `col`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -562,11 +570,11 @@ class Worksheet:
 
         :param str value_render_option: (optional) How values should be
             represented in the output. The default render option is
-            ``FORMATTED_VALUE``.
+            ``ValueRenderOption.formatted``.
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output. This is ignored if
-            ``value_render_option`` is ``FORMATTED_VALUE``. The default
+            ``value_render_option`` is ``ValueRenderOption.formatted``. The default
             ``date_time_render_option`` is ``SERIAL_NUMBER``.
 
         Examples::
@@ -615,11 +623,11 @@ class Worksheet:
 
         :param str value_render_option: (optional) How values should be
             represented in the output. The default render option
-            is ``FORMATTED_VALUE``.
+            is ``ValueRenderOption.formatted``.
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output. This is ignored if
-            value_render_option is ``FORMATTED_VALUE``. The default dateTime
+            value_render_option is ``ValueRenderOption.formatted``. The default dateTime
             render option is ``SERIAL_NUMBER``.
 
         .. versionadded:: 3.3
