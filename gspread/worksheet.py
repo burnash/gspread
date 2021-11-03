@@ -6,6 +6,7 @@ This module contains common worksheets' models.
 
 """
 
+from collections import namedtuple
 from .cell import Cell
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
@@ -22,6 +23,8 @@ from .utils import (
     numericise_all,
     rowcol_to_a1,
 )
+
+Dimension = namedtuple('_Dimension', ['rows', 'cols'])('ROWS', 'COLUMNS')
 
 
 class ValueRange(list):
@@ -262,7 +265,7 @@ class Worksheet:
             non empty cells.
 
         :param str major_dimension: (optional) The major dimension of the
-            values. Either ``ROWS`` or ``COLUMNS``. Defaults to ``ROWS``
+            values. `Dimension.rows`("ROWS") or `Dimension.cols`("COLUMNS"). Defaults to Dimension.rows 
 
         :param str value_render_option: (optional) Determines how values should
             be rendered in the the output. See `ValueRenderOption`_ in
@@ -554,8 +557,8 @@ class Worksheet:
         :param str range_name: (optional) Cell range in the A1 notation or
             a named range.
 
-        :param str major_dimension: (optional) The major dimension that results
-            should use. Either ``ROWS`` or ``COLUMNS``.
+        :param str major_dimension: (optional) The major dimension that results should use.
+            Either `Dimension.rows`("ROWS") or `Dimension.cols`("COLUMNS").
 
         :param str value_render_option: (optional) How values should be
             represented in the output. The default render option is
@@ -607,8 +610,8 @@ class Worksheet:
         :param list ranges: List of cell ranges in the A1 notation or named
             ranges.
 
-        :param str major_dimension: (optional) The major dimension that results
-            should use. Either ``ROWS`` or ``COLUMNS``.
+        :param str major_dimension: (optional) The major dimension that results should use.
+            Either `Dimension.rows`("ROWS") or `Dimension.cols`("COLUMNS").
 
         :param str value_render_option: (optional) How values should be
             represented in the output. The default render option
@@ -660,8 +663,8 @@ class Worksheet:
             strings. Defaults to ``True``. This is a shortcut for
             the ``value_input_option`` parameter.
 
-        :param str major_dimension: (optional) The major dimension of the
-            values. Either ``ROWS`` or ``COLUMNS``.
+        :param str major_dimension: (optional) The major dimension of the values.
+            Either `Dimension.rows`("ROWS") or `Dimension.cols`("COLUMNS").
 
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
