@@ -6,10 +6,11 @@ This module contains common worksheets' models.
 
 """
 
-from collections import namedtuple
 from .cell import Cell
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
+    Dimension,
+    ValueRenderOption,
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
@@ -23,12 +24,6 @@ from .utils import (
     numericise_all,
     rowcol_to_a1,
 )
-
-Dimension = namedtuple('_Dimension', ['rows', 'cols'])('ROWS', 'COLUMNS')
-ValueRenderOption = namedtuple(
-    '_ValueRenderOption',
-    ['formatted', 'unformatted', 'formula']
-)('FORMATTED_VALUE', 'UNFORMATTED_VALUE', 'FORMULA')
 
 
 class ValueRange(list):
@@ -143,7 +138,7 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option:  ( `ValueRenderOption.formatted` | 
+        :type value_render_option:  ( `ValueRenderOption.formatted` |
                                     `ValueRenderOption.unformatted` |
                                     `ValueRenderOption.formula` )
 
@@ -169,7 +164,7 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option:  ( `ValueRenderOption.formatted` | 
+        :type value_render_option:  ( `ValueRenderOption.formatted` |
                                     `ValueRenderOption.unformatted` |
                                     `ValueRenderOption.formula` )
 
@@ -273,7 +268,7 @@ class Worksheet:
             non empty cells.
 
         :param str major_dimension: (optional) The major dimension of the
-            values. `Dimension.rows`("ROWS") or `Dimension.cols`("COLUMNS"). Defaults to Dimension.rows 
+            values. `Dimension.rows`("ROWS") or `Dimension.cols`("COLUMNS"). Defaults to Dimension.rows
 
         :param str value_render_option: (optional) Determines how values should
             be rendered in the the output. See `ValueRenderOption`_ in
@@ -462,7 +457,7 @@ class Worksheet:
             range_name,
             params={
                 "valueRenderOption": value_render_option,
-                "majorDimension":  Dimension.cols,
+                "majorDimension": Dimension.cols,
             },
         )
 

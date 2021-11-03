@@ -7,7 +7,7 @@ This module contains utility functions.
 """
 
 import re
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from functools import wraps
 from math import inf
 
@@ -31,6 +31,11 @@ A1_ADDR_ROW_COL_RE = re.compile(r"([A-Za-z]+)?([1-9]\d*)?$")
 
 URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
+
+Dimension = namedtuple("_Dimension", ["rows", "cols"])("ROWS", "COLUMNS")
+ValueRenderOption = namedtuple(
+    "_ValueRenderOption", ["formatted", "unformatted", "formula"]
+)("FORMATTED_VALUE", "UNFORMATTED_VALUE", "FORMULA")
 
 
 def convert_credentials(credentials):
