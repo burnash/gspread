@@ -462,7 +462,7 @@ class Worksheet:
             range_name,
             params={
                 "valueRenderOption": value_render_option,
-                "majorDimension": "COLUMNS",
+                "majorDimension":  Dimension.cols,
             },
         )
 
@@ -1033,7 +1033,7 @@ class Worksheet:
                     "autoResizeDimensions": {
                         "dimensions": {
                             "sheetId": self.id,
-                            "dimension": "COLUMNS",
+                            "dimension": Dimension.cols,
                             "startIndex": int(start_column_index),
                             "endIndex": int(end_column_index),
                         }
@@ -1166,7 +1166,7 @@ class Worksheet:
                     "insertDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": "ROWS",
+                            "dimension": Dimension.rows,
                             "startIndex": row - 1,
                             "endIndex": len(values) + row - 1,
                         }
@@ -1181,7 +1181,7 @@ class Worksheet:
 
         params = {"valueInputOption": value_input_option}
 
-        body = {"majorDimension": "ROWS", "values": values}
+        body = {"majorDimension": Dimension.rows, "values": values}
 
         return self.spreadsheet.values_append(range_label, params, body)
 
@@ -1203,7 +1203,7 @@ class Worksheet:
                     "insertDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": "COLUMNS",
+                            "dimension": Dimension.cols,
                             "startIndex": col - 1,
                             "endIndex": len(values) + col - 1,
                         }
@@ -1218,7 +1218,7 @@ class Worksheet:
 
         params = {"valueInputOption": value_input_option}
 
-        body = {"majorDimension": "COLUMNS", "values": values}
+        body = {"majorDimension": Dimension.cols, "values": values}
 
         return self.spreadsheet.values_append(range_label, params, body)
 
@@ -1355,7 +1355,7 @@ class Worksheet:
             worksheet.delete_rows(2)
 
         """
-        return self.delete_dimension("ROWS", start_index, end_index)
+        return self.delete_dimension(Dimension.rows, start_index, end_index)
 
     def delete_columns(self, start_index, end_index=None):
         """Deletes multiple columns from the worksheet at the specified index.
@@ -1365,7 +1365,7 @@ class Worksheet:
             When end_index is not specified this method only deletes a single
             column at ``start_index``.
         """
-        return self.delete_dimension("COLUMNS", start_index, end_index)
+        return self.delete_dimension(Dimension.cols, start_index, end_index)
 
     def clear(self):
         """Clears all cells in the worksheet."""
