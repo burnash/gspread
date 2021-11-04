@@ -11,6 +11,7 @@ from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
     Dimension,
     ValueRenderOption,
+    ValueInputOption,
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
@@ -247,7 +248,8 @@ class Worksheet:
         )
 
         return [
-            Cell(row=i + row_offset + 1, col=j + column_offset + 1, value=value)
+            Cell(row=i + row_offset + 1, col=j +
+                 column_offset + 1, value=value)
             for i, row in enumerate(rect_values)
             for j, value in enumerate(row)
         ]
@@ -397,7 +399,7 @@ class Worksheet:
         keys = data[idx]
 
         if numericise_ignore == ["all"]:
-            values = data[idx + 1 :]
+            values = data[idx + 1:]
         else:
             values = [
                 numericise_all(
@@ -407,7 +409,7 @@ class Worksheet:
                     allow_underscores_in_numeric_literals,
                     numericise_ignore,
                 )
-                for row in data[idx + 1 :]
+                for row in data[idx + 1:]
             ]
 
         return [dict(zip(keys, row)) for row in values]
@@ -493,24 +495,24 @@ class Worksheet:
 
         data = self.spreadsheet.values_update(
             range_name,
-            params={"valueInputOption": "USER_ENTERED"},
+            params={"valueInputOption": ValueInputOption.user_entered},
             body={"values": [[value]]},
         )
 
         return data
 
-    def update_cells(self, cell_list, value_input_option="RAW"):
+    def update_cells(self, cell_list, value_input_option=ValueInputOption.raw):
         """Updates many cells at once.
 
         :param list cell_list: List of :class:`Cell` objects to update.
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
-            ``RAW``
+            ``ValueInputOption.raw``
                 The values the user has entered will not be parsed and will be
                 stored as-is.
 
-            ``USER_ENTERED``
+            ``ValueInputOption.user_entered``
                 The values will be parsed as if the user typed them into the
                 UI. Numbers will stay as numbers, but strings may be converted
                 to numbers, dates, etc. following the same rules that are
@@ -537,9 +539,11 @@ class Worksheet:
         start = rowcol_to_a1(
             min(c.row for c in cell_list), min(c.col for c in cell_list)
         )
-        end = rowcol_to_a1(max(c.row for c in cell_list), max(c.col for c in cell_list))
+        end = rowcol_to_a1(max(c.row for c in cell_list),
+                           max(c.col for c in cell_list))
 
-        range_name = absolute_range_name(self.title, "{}:{}".format(start, end))
+        range_name = absolute_range_name(
+            self.title, "{}:{}".format(start, end))
 
         data = self.spreadsheet.values_update(
             range_name,
@@ -642,7 +646,8 @@ class Worksheet:
             }
         )
 
-        response = self.spreadsheet.values_batch_get(ranges=ranges, params=params)
+        response = self.spreadsheet.values_batch_get(
+            ranges=ranges, params=params)
 
         return [ValueRange.from_json(x) for x in response["valueRanges"]]
 
@@ -672,11 +677,11 @@ class Worksheet:
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
-            ``RAW``
+            ``ValueInputOption.raw``
                 The values the user has entered will not be parsed and will be
                 stored as-is.
 
-            ``USER_ENTERED``
+            ``ValueInputOption.user_entered``
                 The values will be parsed as if the user typed them into the
                 UI. Numbers will stay as numbers, but strings may be converted
                 to numbers, dates, etc. following the same rules that are
@@ -717,7 +722,9 @@ class Worksheet:
             values = [[values]]
 
         if not kwargs["value_input_option"]:
-            kwargs["value_input_option"] = "RAW" if kwargs["raw"] else "USER_ENTERED"
+            kwargs["value_input_option"] = (
+                ValueInputOption.raw if kwargs["raw"] else ValueInputOption.user_entered
+            )
 
         params = filter_dict_values(
             {
@@ -758,11 +765,11 @@ class Worksheet:
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
-            ``RAW``
+            ``ValueInputOption.raw``
                 The values the user has entered will not be parsed and will be
                 stored as-is.
 
-            ``USER_ENTERED``
+            ``ValueInputOption.user_entered``
                 The values will be parsed as if the user typed them into the
                 UI. Numbers will stay as numbers, but strings may be converted
                 to numbers, dates, etc. following the same rules that are
@@ -786,7 +793,9 @@ class Worksheet:
         .. versionadded:: 3.3
         """
         if not kwargs["value_input_option"]:
-            kwargs["value_input_option"] = "RAW" if kwargs["raw"] else "USER_ENTERED"
+            kwargs["value_input_option"] = (
+                ValueInputOption.raw if kwargs["raw"] else ValueInputOption.user_entered
+            )
 
         data = [
             dict(vr, range=absolute_range_name(self.title, vr["range"])) for vr in data
@@ -879,7 +888,8 @@ class Worksheet:
         if not grid_properties:
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
-        fields = ",".join("gridProperties/%s" % p for p in grid_properties.keys())
+        fields = ",".join("gridProperties/%s" %
+                          p for p in grid_properties.keys())
 
         body = {
             "requests": [
@@ -926,7 +936,8 @@ class Worksheet:
             start_row, start_col = a1_to_rowcol(start_a1)
             end_row, end_col = a1_to_rowcol(end_a1)
         else:
-            start_row = self._properties["gridProperties"].get("frozenRowCount", 0) + 1
+            start_row = self._properties["gridProperties"].get(
+                "frozenRowCount", 0) + 1
             start_col = 1
             end_row = self.row_count
             end_col = self.col_count
@@ -1060,7 +1071,7 @@ class Worksheet:
     def append_row(
         self,
         values,
-        value_input_option="RAW",
+        value_input_option=ValueInputOption.raw,
         insert_data_option=None,
         table_range=None,
     ):
@@ -1093,7 +1104,7 @@ class Worksheet:
     def append_rows(
         self,
         values,
-        value_input_option="RAW",
+        value_input_option=ValueInputOption.raw,
         insert_data_option=None,
         table_range=None,
     ):
@@ -1104,8 +1115,9 @@ class Worksheet:
         :param list values: List of rows each row is List of values for
             the new row.
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. Possible values are ``RAW`` or
-            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``ValueInputOption.raw``
+            or ``ValueInputOption.user_entered``.
+            See `ValueInputOption`_ in the Sheets API.
         :param str insert_data_option: (optional) Determines how the input data
             should be inserted. See `InsertDataOption`_ in the Sheets API
             reference.
@@ -1127,7 +1139,7 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_row(self, values, index=1, value_input_option="RAW"):
+    def insert_row(self, values, index=1, value_input_option=ValueInputOption.raw):
         """Adds a row to the worksheet at the specified index and populates it
         with values.
 
@@ -1136,14 +1148,15 @@ class Worksheet:
         :param list values: List of values for the new row.
         :param int index: (optional) Offset for the newly inserted row.
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. Possible values are ``RAW`` or
-            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``ValueInputOption.raw``
+            or ``ValueInputOption.user_entered``.
+            See `ValueInputOption`_ in the Sheets API.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         """
         return self.insert_rows([values], index, value_input_option=value_input_option)
 
-    def insert_rows(self, values, row=1, value_input_option="RAW"):
+    def insert_rows(self, values, row=1, value_input_option=ValueInputOption.raw):
         """Adds multiple rows to the worksheet at the specified index and
         populates them with values.
 
@@ -1152,8 +1165,9 @@ class Worksheet:
             more values than columns.
         :param int row: Start row to update (one-based). Defaults to 1 (one).
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. Possible values are ``RAW`` or
-            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``ValueInputOption.raw``
+            or ``ValueInputOption.user_entered``.
+            See `ValueInputOption`_ in the Sheets API.
         """
         body = {
             "requests": [
@@ -1180,7 +1194,7 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_cols(self, values, col=1, value_input_option="RAW"):
+    def insert_cols(self, values, col=1, value_input_option=ValueInputOption.raw):
         """Adds multiple new cols to the worksheet at specified index and
         populates them with values.
 
@@ -1189,8 +1203,9 @@ class Worksheet:
             if there are more values than columns.
         :param int col: Start col to update (one-based). Defaults to 1 (one).
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. Possible values are ``RAW`` or
-            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``ValueInputOption.raw``
+            or ``ValueInputOption.user_entered``.
+            See `ValueInputOption`_ in the Sheets API.
         """
         body = {
             "requests": [
@@ -1307,7 +1322,7 @@ class Worksheet:
     def delete_dimension(self, dimension, start_index, end_index=None):
         """Deletes multi rows from the worksheet at the specified index.
 
-        :param str dimension: A dimension to delete. ``ROWS`` or ``COLUMNS``.
+        :param str dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
         :param int start_index: Index of a first row for deletion.
         :param int end_index: Index of a last row for deletion. When
             ``end_index`` is not specified this method only deletes a single
@@ -1417,7 +1432,8 @@ class Worksheet:
         ``in_row``` or ``in_column`` values (both one-based).
         """
         if in_row and in_column:
-            raise TypeError("Either 'in_row' or 'in_column' should be specified.")
+            raise TypeError(
+                "Either 'in_row' or 'in_column' should be specified.")
 
         if in_column:
             return [
@@ -1479,7 +1495,8 @@ class Worksheet:
         if not grid_properties:
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
-        fields = ",".join("gridProperties/%s" % p for p in grid_properties.keys())
+        fields = ",".join("gridProperties/%s" %
+                          p for p in grid_properties.keys())
 
         body = {
             "requests": [
@@ -1521,7 +1538,8 @@ class Worksheet:
             else {"sheetId": self.id}
         )
 
-        body = {"requests": [{"setBasicFilter": {"filter": {"range": grid_range}}}]}
+        body = {"requests": [
+            {"setBasicFilter": {"filter": {"range": grid_range}}}]}
 
         return self.spreadsheet.batch_update(body)
 
@@ -1633,7 +1651,8 @@ class Worksheet:
         """
         absolute_cell = absolute_range_name(self.title, cell)
         url = SPREADSHEET_URL % (self.spreadsheet.id)
-        params = {"ranges": absolute_cell, "fields": "sheets/data/rowData/values/note"}
+        params = {"ranges": absolute_cell,
+                  "fields": "sheets/data/rowData/values/note"}
         response = self.client.request("get", url, params=params)
         response.raise_for_status()
         response_json = response.json()
