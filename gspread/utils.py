@@ -36,6 +36,9 @@ Dimension = namedtuple("_Dimension", ["rows", "cols"])("ROWS", "COLUMNS")
 ValueRenderOption = namedtuple(
     "_ValueRenderOption", ["formatted", "unformatted", "formula"]
 )("FORMATTED_VALUE", "UNFORMATTED_VALUE", "FORMULA")
+ValueInputOption = namedtuple(
+    "_ValueInputOption", ["raw", "user_entered"]
+)("RAW", "USER_ENTERED")
 
 
 def convert_credentials(credentials):
@@ -354,7 +357,8 @@ def a1_range_to_grid_range(name, sheet_id=None):
 
     start_row_index, start_column_index = _a1_to_rowcol_unbounded(start_label)
 
-    end_row_index, end_column_index = _a1_to_rowcol_unbounded(end_label or start_label)
+    end_row_index, end_column_index = _a1_to_rowcol_unbounded(
+        end_label or start_label)
 
     if start_row_index > end_row_index:
         start_row_index, end_row_index = end_row_index, start_row_index
@@ -369,7 +373,12 @@ def a1_range_to_grid_range(name, sheet_id=None):
         "endColumnIndex": end_column_index,
     }
 
-    grid_range = {key: value for (key, value) in grid_range.items() if value != inf}
+    grid_range = {
+        key: value
+        for (key, value)
+        in grid_range.items()
+        if value != inf
+    }
 
     if sheet_id is not None:
         grid_range["sheetId"] = sheet_id
