@@ -248,8 +248,7 @@ class Worksheet:
         )
 
         return [
-            Cell(row=i + row_offset + 1, col=j +
-                 column_offset + 1, value=value)
+            Cell(row=i + row_offset + 1, col=j + column_offset + 1, value=value)
             for i, row in enumerate(rect_values)
             for j, value in enumerate(row)
         ]
@@ -399,7 +398,7 @@ class Worksheet:
         keys = data[idx]
 
         if numericise_ignore == ["all"]:
-            values = data[idx + 1:]
+            values = data[idx + 1 :]
         else:
             values = [
                 numericise_all(
@@ -409,7 +408,7 @@ class Worksheet:
                     allow_underscores_in_numeric_literals,
                     numericise_ignore,
                 )
-                for row in data[idx + 1:]
+                for row in data[idx + 1 :]
             ]
 
         return [dict(zip(keys, row)) for row in values]
@@ -539,11 +538,9 @@ class Worksheet:
         start = rowcol_to_a1(
             min(c.row for c in cell_list), min(c.col for c in cell_list)
         )
-        end = rowcol_to_a1(max(c.row for c in cell_list),
-                           max(c.col for c in cell_list))
+        end = rowcol_to_a1(max(c.row for c in cell_list), max(c.col for c in cell_list))
 
-        range_name = absolute_range_name(
-            self.title, "{}:{}".format(start, end))
+        range_name = absolute_range_name(self.title, "{}:{}".format(start, end))
 
         data = self.spreadsheet.values_update(
             range_name,
@@ -646,8 +643,7 @@ class Worksheet:
             }
         )
 
-        response = self.spreadsheet.values_batch_get(
-            ranges=ranges, params=params)
+        response = self.spreadsheet.values_batch_get(ranges=ranges, params=params)
 
         return [ValueRange.from_json(x) for x in response["valueRanges"]]
 
@@ -888,8 +884,7 @@ class Worksheet:
         if not grid_properties:
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
-        fields = ",".join("gridProperties/%s" %
-                          p for p in grid_properties.keys())
+        fields = ",".join("gridProperties/%s" % p for p in grid_properties.keys())
 
         body = {
             "requests": [
@@ -936,8 +931,7 @@ class Worksheet:
             start_row, start_col = a1_to_rowcol(start_a1)
             end_row, end_col = a1_to_rowcol(end_a1)
         else:
-            start_row = self._properties["gridProperties"].get(
-                "frozenRowCount", 0) + 1
+            start_row = self._properties["gridProperties"].get("frozenRowCount", 0) + 1
             start_col = 1
             end_row = self.row_count
             end_col = self.col_count
@@ -1432,8 +1426,7 @@ class Worksheet:
         ``in_row``` or ``in_column`` values (both one-based).
         """
         if in_row and in_column:
-            raise TypeError(
-                "Either 'in_row' or 'in_column' should be specified.")
+            raise TypeError("Either 'in_row' or 'in_column' should be specified.")
 
         if in_column:
             return [
@@ -1495,8 +1488,7 @@ class Worksheet:
         if not grid_properties:
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
-        fields = ",".join("gridProperties/%s" %
-                          p for p in grid_properties.keys())
+        fields = ",".join("gridProperties/%s" % p for p in grid_properties.keys())
 
         body = {
             "requests": [
@@ -1538,8 +1530,7 @@ class Worksheet:
             else {"sheetId": self.id}
         )
 
-        body = {"requests": [
-            {"setBasicFilter": {"filter": {"range": grid_range}}}]}
+        body = {"requests": [{"setBasicFilter": {"filter": {"range": grid_range}}}]}
 
         return self.spreadsheet.batch_update(body)
 
@@ -1651,8 +1642,7 @@ class Worksheet:
         """
         absolute_cell = absolute_range_name(self.title, cell)
         url = SPREADSHEET_URL % (self.spreadsheet.id)
-        params = {"ranges": absolute_cell,
-                  "fields": "sheets/data/rowData/values/note"}
+        params = {"ranges": absolute_cell, "fields": "sheets/data/rowData/values/note"}
         response = self.client.request("get", url, params=params)
         response.raise_for_status()
         response_json = response.json()
