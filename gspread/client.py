@@ -70,7 +70,7 @@ class Client:
         else:
             raise APIError(response)
 
-    def list_spreadsheet_files(self, title=None):
+    def list_spreadsheet_files(self, title=None, folder_id=None):
         files = []
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
@@ -78,6 +78,8 @@ class Client:
         q = 'mimeType="application/vnd.google-apps.spreadsheet"'
         if title:
             q += ' and name = "{}"'.format(title)
+        if folder_id:
+            q += ' and parents in "{}"'.format(folder_id)
 
         params = {
             "q": q,
@@ -97,10 +99,12 @@ class Client:
 
         return files
 
-    def open(self, title):
+    def open(self, title, folder_id=None):
         """Opens a spreadsheet.
 
         :param str title: A title of a spreadsheet.
+        :param str folder_id: (optional) If specified can be used to filter
+            spreadsheets by parent folder ID.
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
         If there's more than one spreadsheet with same title the first one
@@ -114,7 +118,7 @@ class Client:
         try:
             properties = finditem(
                 lambda x: x["name"] == title,
-                self.list_spreadsheet_files(title),
+                self.list_spreadsheet_files(title, folder_id),
             )
 
             # Drive uses different terminology
