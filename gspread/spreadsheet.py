@@ -558,3 +558,9 @@ class Spreadsheet:
         # the function `range` does all necessary actions to get a named range.
         # This is only here to provide better user experience.
         return self.sheet1.range(named_range)
+
+    def list_named_ranges(self):
+        """Lists the spreadsheet's named ranges."""
+        return self.fetch_sheet_metadata(params={"fields": "namedRanges"}).get(
+            "namedRanges", []
+        )
