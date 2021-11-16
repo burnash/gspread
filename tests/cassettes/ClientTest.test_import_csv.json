@@ -359,6 +359,365 @@
                     "string": ""
                 }
             }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "body": "{\"name\": \"TestImportSpreadsheet\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "88"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:42:51 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "1; mode=block"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Security-Policy": [
+                        "frame-ancestors 'self'"
+                    ],
+                    "Server": [
+                        "GSE"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "171"
+                    ]
+                },
+                "body": {
+                    "string": "{\n \"kind\": \"drive#file\",\n \"id\": \"1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ\",\n \"name\": \"TestImportSpreadsheet\",\n \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "PUT",
+                "uri": "https://www.googleapis.com/upload/drive/v2/files/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ?uploadType=media&convert=True&supportsAllDrives=True",
+                "body": "test_import_csv 1,test_import_csv 2,test_import_csv 3,test_import_csv 4\ntest_import_csv 5,test_import_csv 6,test_import_csv 7,test_import_csv 8\ntest_import_csv 9,test_import_csv 10,test_import_csv 11,test_import_csv 12\ntest_import_csv 13,test_import_csv 14,test_import_csv 15,test_import_csv 16",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "text/csv"
+                    ],
+                    "Content-Length": [
+                        "294"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "X-GUploader-UploadID": [
+                        "ADPycdtYnU5WXElSzAkNwOVBiubk0sH8BSr-mxWyc3A0U8jzrIXGAa9w1R0bJbsbsXKzr680jyuhSr-W4CQC0pROqYQKFqHlIg"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:42:52 GMT"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "Server": [
+                        "UploadServer"
+                    ],
+                    "Content-Length": [
+                        "4101"
+                    ],
+                    "ETag": [
+                        "\"MTYzNzA4MDk3MTUzMA\""
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ]
+                },
+                "body": {
+                    "string": "{\n \"kind\": \"drive#file\",\n \"id\": \"1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ\",\n \"etag\": \"\\\"MTYzNzA4MDk3MTUzMA\\\"\",\n \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ\",\n \"alternateLink\": \"https://docs.google.com/spreadsheets/d/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ/edit?usp=drivesdk\",\n \"embedLink\": \"https://docs.google.com/spreadsheets/d/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ/htmlembed?ouid=106433552536302510265\",\n \"iconLink\": \"https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet\",\n \"thumbnailLink\": \"https://docs.google.com/feeds/vt?gd=true&id=1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ&v=1&s=AMedNnoAAAAAYZP7rEedN7IaAEBe6ZsnZyXi9zNJoCGk&sz=s220\",\n \"title\": \"TestImportSpreadsheet\",\n \"mimeType\": \"application/vnd.google-apps.spreadsheet\",\n \"labels\": {\n  \"starred\": false,\n  \"hidden\": false,\n  \"trashed\": false,\n  \"restricted\": false,\n  \"viewed\": true\n },\n \"copyRequiresWriterPermission\": false,\n \"createdDate\": \"2021-11-16T16:42:50.061Z\",\n \"modifiedDate\": \"2021-11-16T16:42:51.530Z\",\n \"modifiedByMeDate\": \"2021-11-16T16:42:51.530Z\",\n \"lastViewedByMeDate\": \"2021-11-16T16:42:51.530Z\",\n \"markedViewedByMeDate\": \"1970-01-01T00:00:00.000Z\",\n \"version\": \"5\",\n \"parents\": [\n  {\n   \"kind\": \"drive#parentReference\",\n   \"id\": \"0AHECMLfvwM-NUk9PVA\",\n   \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ/parents/0AHECMLfvwM-NUk9PVA\",\n   \"parentLink\": \"https://www.googleapis.com/drive/v2/files/0AHECMLfvwM-NUk9PVA\",\n   \"isRoot\": true\n  }\n ],\n \"exportLinks\": {\n  \"application/x-vnd.oasis.opendocument.spreadsheet\": \"https://docs.google.com/spreadsheets/export?id=1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ&exportFormat=ods\",\n  \"text/tab-separated-values\": \"https://docs.google.com/spreadsheets/export?id=1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ&exportFormat=tsv\",\n  \"application/pdf\": \"https://docs.google.com/spreadsheets/export?id=1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ&exportFormat=pdf\",\n  \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\": \"https://docs.google.com/spreadsheets/export?id=1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ&exportFormat=xlsx\",\n  \"text/csv\": \"https://docs.google.com/spreadsheets/export?id=1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ&exportFormat=csv\",\n  \"application/zip\": \"https://docs.google.com/spreadsheets/export?id=1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ&exportFormat=zip\",\n  \"application/vnd.oasis.opendocument.spreadsheet\": \"https://docs.google.com/spreadsheets/export?id=1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ&exportFormat=ods\"\n },\n \"userPermission\": {\n  \"kind\": \"drive#permission\",\n  \"etag\": \"\\\"JEfcPAU79k-8ddIIDElaeFXlz98\\\"\",\n  \"id\": \"me\",\n  \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ/permissions/me\",\n  \"role\": \"owner\",\n  \"type\": \"user\",\n  \"pendingOwner\": false\n },\n \"fileSize\": \"1024\",\n \"quotaBytesUsed\": \"1024\",\n \"ownerNames\": [\n  \"gspread-dev@tablegeneration.iam.gserviceaccount.com\"\n ],\n \"owners\": [\n  {\n   \"kind\": \"drive#user\",\n   \"displayName\": \"gspread-dev@tablegeneration.iam.gserviceaccount.com\",\n   \"picture\": {\n    \"url\": \"https://lh3.googleusercontent.com/a/default-user=s64\"\n   },\n   \"isAuthenticatedUser\": true,\n   \"permissionId\": \"10034173345813794429\",\n   \"emailAddress\": \"gspread-dev@tablegeneration.iam.gserviceaccount.com\"\n  }\n ],\n \"lastModifyingUserName\": \"gspread-dev@tablegeneration.iam.gserviceaccount.com\",\n \"lastModifyingUser\": {\n  \"kind\": \"drive#user\",\n  \"displayName\": \"gspread-dev@tablegeneration.iam.gserviceaccount.com\",\n  \"picture\": {\n   \"url\": \"https://lh3.googleusercontent.com/a/default-user=s64\"\n  },\n  \"isAuthenticatedUser\": true,\n  \"permissionId\": \"10034173345813794429\",\n  \"emailAddress\": \"gspread-dev@tablegeneration.iam.gserviceaccount.com\"\n },\n \"capabilities\": {\n  \"canCopy\": true,\n  \"canEdit\": true\n },\n \"editable\": true,\n \"copyable\": true,\n \"writersCanShare\": true,\n \"shared\": false,\n \"explicitlyTrashed\": false,\n \"appDataContents\": false,\n \"spaces\": [\n  \"drive\"\n ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:42:52 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "1359"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ\",\n  \"properties\": {\n    \"title\": \"TestImportSpreadsheet\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"America/Los_Angeles\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 1700681299,\n        \"title\": \"TestImportSpreadsheet\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ/edit\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ/values/%27TestImportSpreadsheet%27",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:42:53 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "581"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"TestImportSpreadsheet!A1:Z1000\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_import_csv 1\",\n      \"test_import_csv 2\",\n      \"test_import_csv 3\",\n      \"test_import_csv 4\"\n    ],\n    [\n      \"test_import_csv 5\",\n      \"test_import_csv 6\",\n      \"test_import_csv 7\",\n      \"test_import_csv 8\"\n    ],\n    [\n      \"test_import_csv 9\",\n      \"test_import_csv 10\",\n      \"test_import_csv 11\",\n      \"test_import_csv 12\"\n    ],\n    [\n      \"test_import_csv 13\",\n      \"test_import_csv 14\",\n      \"test_import_csv 15\",\n      \"test_import_csv 16\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "DELETE",
+                "uri": "https://www.googleapis.com/drive/v3/files/1HSginRnQHKTiYvL0rSK3VKOEj0oDjWTVrIZNTYUKHtQ?supportsAllDrives=True",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 204,
+                    "message": "No Content"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:42:53 GMT"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "Server": [
+                        "GSE"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ]
+                },
+                "body": {
+                    "string": ""
+                }
+            }
         }
     ]
 }

@@ -736,6 +736,742 @@
                     "string": "{\n  \"range\": \"Sheet1!A2:T2\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_delete_row 21\",\n      \"test_delete_row 22\",\n      \"test_delete_row 23\",\n      \"test_delete_row 24\",\n      \"test_delete_row 25\",\n      \"test_delete_row 26\",\n      \"test_delete_row 27\",\n      \"test_delete_row 28\",\n      \"test_delete_row 29\",\n      \"test_delete_row 30\"\n    ]\n  ]\n}\n"
                 }
             }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27:append?valueInputOption=RAW",
+                "body": "{\"values\": [[\"test_delete_row 1\", \"test_delete_row 2\", \"test_delete_row 3\", \"test_delete_row 4\", \"test_delete_row 5\", \"test_delete_row 6\", \"test_delete_row 7\", \"test_delete_row 8\", \"test_delete_row 9\", \"test_delete_row 10\"]]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "225"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:19 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "266"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n  \"updates\": {\n    \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n    \"updatedRange\": \"Sheet1!A1:J1\",\n    \"updatedRows\": 1,\n    \"updatedColumns\": 10,\n    \"updatedCells\": 10\n  }\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27:append?valueInputOption=RAW",
+                "body": "{\"values\": [[\"test_delete_row 11\", \"test_delete_row 12\", \"test_delete_row 13\", \"test_delete_row 14\", \"test_delete_row 15\", \"test_delete_row 16\", \"test_delete_row 17\", \"test_delete_row 18\", \"test_delete_row 19\", \"test_delete_row 20\"]]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "234"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:19 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "298"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n  \"tableRange\": \"Sheet1!A1:J1\",\n  \"updates\": {\n    \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n    \"updatedRange\": \"Sheet1!A2:J2\",\n    \"updatedRows\": 1,\n    \"updatedColumns\": 10,\n    \"updatedCells\": 10\n  }\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27:append?valueInputOption=RAW",
+                "body": "{\"values\": [[\"test_delete_row 21\", \"test_delete_row 22\", \"test_delete_row 23\", \"test_delete_row 24\", \"test_delete_row 25\", \"test_delete_row 26\", \"test_delete_row 27\", \"test_delete_row 28\", \"test_delete_row 29\", \"test_delete_row 30\"]]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "234"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:20 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "298"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n  \"tableRange\": \"Sheet1!A1:J2\",\n  \"updates\": {\n    \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n    \"updatedRange\": \"Sheet1!A3:J3\",\n    \"updatedRows\": 1,\n    \"updatedColumns\": 10,\n    \"updatedCells\": 10\n  }\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27:append?valueInputOption=RAW",
+                "body": "{\"values\": [[\"test_delete_row 31\", \"test_delete_row 32\", \"test_delete_row 33\", \"test_delete_row 34\", \"test_delete_row 35\", \"test_delete_row 36\", \"test_delete_row 37\", \"test_delete_row 38\", \"test_delete_row 39\", \"test_delete_row 40\"]]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "234"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:20 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "298"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n  \"tableRange\": \"Sheet1!A1:J3\",\n  \"updates\": {\n    \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n    \"updatedRange\": \"Sheet1!A4:J4\",\n    \"updatedRows\": 1,\n    \"updatedColumns\": 10,\n    \"updatedCells\": 10\n  }\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27:append?valueInputOption=RAW",
+                "body": "{\"values\": [[\"test_delete_row 41\", \"test_delete_row 42\", \"test_delete_row 43\", \"test_delete_row 44\", \"test_delete_row 45\", \"test_delete_row 46\", \"test_delete_row 47\", \"test_delete_row 48\", \"test_delete_row 49\", \"test_delete_row 50\"]]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "234"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:20 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "298"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n  \"tableRange\": \"Sheet1!A1:J4\",\n  \"updates\": {\n    \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n    \"updatedRange\": \"Sheet1!A5:J5\",\n    \"updatedRows\": 1,\n    \"updatedColumns\": 10,\n    \"updatedCells\": 10\n  }\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27%21A1%3A1",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:20 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "359"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A1:T1\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_delete_row 1\",\n      \"test_delete_row 2\",\n      \"test_delete_row 3\",\n      \"test_delete_row 4\",\n      \"test_delete_row 5\",\n      \"test_delete_row 6\",\n      \"test_delete_row 7\",\n      \"test_delete_row 8\",\n      \"test_delete_row 9\",\n      \"test_delete_row 10\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27%21A3%3A3",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:20 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "368"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A3:T3\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_delete_row 21\",\n      \"test_delete_row 22\",\n      \"test_delete_row 23\",\n      \"test_delete_row 24\",\n      \"test_delete_row 25\",\n      \"test_delete_row 26\",\n      \"test_delete_row 27\",\n      \"test_delete_row 28\",\n      \"test_delete_row 29\",\n      \"test_delete_row 30\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc:batchUpdate",
+                "body": "{\"requests\": [{\"deleteDimension\": {\"range\": {\"sheetId\": 0, \"dimension\": \"ROWS\", \"startIndex\": 1, \"endIndex\": 2}}}]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "115"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:21 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "97"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n  \"replies\": [\n    {}\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27%21A1%3A1",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:21 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "359"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A1:T1\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_delete_row 1\",\n      \"test_delete_row 2\",\n      \"test_delete_row 3\",\n      \"test_delete_row 4\",\n      \"test_delete_row 5\",\n      \"test_delete_row 6\",\n      \"test_delete_row 7\",\n      \"test_delete_row 8\",\n      \"test_delete_row 9\",\n      \"test_delete_row 10\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27%21A2%3A2",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:21 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "368"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A2:T2\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_delete_row 21\",\n      \"test_delete_row 22\",\n      \"test_delete_row 23\",\n      \"test_delete_row 24\",\n      \"test_delete_row 25\",\n      \"test_delete_row 26\",\n      \"test_delete_row 27\",\n      \"test_delete_row 28\",\n      \"test_delete_row 29\",\n      \"test_delete_row 30\"\n    ]\n  ]\n}\n"
+                }
+            }
         }
     ]
 }

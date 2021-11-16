@@ -144,6 +144,150 @@
                     "string": ""
                 }
             }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "body": "{\"name\": \"Test SpreadsheetTest\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "87"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:42:56 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "1; mode=block"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Security-Policy": [
+                        "frame-ancestors 'self'"
+                    ],
+                    "Server": [
+                        "GSE"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "170"
+                    ]
+                },
+                "body": {
+                    "string": "{\n \"kind\": \"drive#file\",\n \"id\": \"1giymQl-1CESS55kq2Wb4TVOZP6r0Uxsp5ayoDypLtcQ\",\n \"name\": \"Test SpreadsheetTest\",\n \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "DELETE",
+                "uri": "https://www.googleapis.com/drive/v3/files/1giymQl-1CESS55kq2Wb4TVOZP6r0Uxsp5ayoDypLtcQ?supportsAllDrives=True",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 204,
+                    "message": "No Content"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:03 GMT"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "Server": [
+                        "GSE"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ]
+                },
+                "body": {
+                    "string": ""
+                }
+            }
         }
     ]
 }

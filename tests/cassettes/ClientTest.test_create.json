@@ -84,6 +84,90 @@
                     "string": "{\n \"kind\": \"drive#file\",\n \"id\": \"1hf6aqa7ec15pVqp_3IpGcBT1am-TMzS90rxTDuDlD_w\",\n \"name\": \"Test Spreadsheet\",\n \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
                 }
             }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "body": "{\"name\": \"Test Spreadsheet\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "83"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:42:49 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "1; mode=block"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Security-Policy": [
+                        "frame-ancestors 'self'"
+                    ],
+                    "Server": [
+                        "GSE"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "166"
+                    ]
+                },
+                "body": {
+                    "string": "{\n \"kind\": \"drive#file\",\n \"id\": \"1a0N9iBkVafblSThiNXs2ZZWWsOAq_DROep3m9LmRtj0\",\n \"name\": \"Test Spreadsheet\",\n \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
+                }
+            }
         }
     ]
 }
