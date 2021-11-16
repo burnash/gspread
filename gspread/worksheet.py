@@ -225,8 +225,8 @@ class Worksheet:
 
         row_offset = grid_range.get("startRowIndex", 0)
         column_offset = grid_range.get("startColumnIndex", 0)
-        last_row = grid_range.get("endRowIndex", None)
-        last_column = grid_range.get("endColumnIndex", None)
+        last_row = grid_range.get("endRowIndex", self.row_count)
+        last_column = grid_range.get("endColumnIndex", self.col_count)
 
         if last_row is not None:
             last_row -= row_offset
