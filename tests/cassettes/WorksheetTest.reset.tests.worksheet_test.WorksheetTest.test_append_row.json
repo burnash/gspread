@@ -73,6 +73,79 @@
                     "string": "{\n  \"spreadsheetId\": \"1f6e0m42XXAsEMJnr5-lzOf6srAjvBmOuuQlmU0npwR4\",\n  \"clearedRange\": \"Sheet1!A1:Z1000\"\n}\n"
                 }
             }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27Sheet1%27:clear",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Date": [
+                        "Tue, 16 Nov 2021 16:43:07 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "content-length": [
+                        "107"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n  \"clearedRange\": \"Sheet1!A1:Z1000\"\n}\n"
+                }
+            }
         }
     ]
 }
