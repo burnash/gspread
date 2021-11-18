@@ -30,6 +30,9 @@ class Spreadsheet:
         self.client = client
         self._properties = properties
 
+        metadata = self.fetch_sheet_metadata()
+        self._properties.update(metadata["properties"])
+
     @property
     def id(self):
         """Spreadsheet ID."""
@@ -38,12 +41,7 @@ class Spreadsheet:
     @property
     def title(self):
         """Spreadsheet title."""
-        try:
-            return self._properties["title"]
-        except KeyError:
-            metadata = self.fetch_sheet_metadata()
-            self._properties.update(metadata["properties"])
-            return self._properties["title"]
+        return self._properties["title"]
 
     @property
     def url(self):
