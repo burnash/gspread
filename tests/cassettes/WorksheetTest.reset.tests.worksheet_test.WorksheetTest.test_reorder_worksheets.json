@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1f6e0m42XXAsEMJnr5-lzOf6srAjvBmOuuQlmU0npwR4/values/%27D3%27:clear",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1e8E78jsNROSkBdvhOeodKxTaTkBJeF1fg6XKM8yHy6A/values/%27D3%27:clear",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -29,21 +29,21 @@
             },
             "response": {
                 "status": {
-                    "code": 200,
-                    "message": "OK"
+                    "code": 429,
+                    "message": "Too Many Requests"
                 },
                 "headers": {
+                    "Date": [
+                        "Thu, 18 Nov 2021 23:19:39 GMT"
+                    ],
                     "X-Frame-Options": [
                         "SAMEORIGIN"
                     ],
-                    "Server": [
-                        "ESF"
-                    ],
                     "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
-                    "Cache-Control": [
-                        "private"
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "X-XSS-Protection": [
                         "0"
@@ -53,31 +53,177 @@
                         "X-Origin",
                         "Referer"
                     ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
                     "Transfer-Encoding": [
                         "chunked"
                     ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
-                    "Date": [
-                        "Wed, 08 Sep 2021 19:04:33 GMT"
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Server": [
+                        "ESF"
                     ],
                     "content-length": [
-                        "102"
+                        "694"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1f6e0m42XXAsEMJnr5-lzOf6srAjvBmOuuQlmU0npwR4\",\n  \"clearedRange\": \"'D3'!A1:H8\"\n}\n"
+                    "string": "{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:1071851248496'.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_limit\": \"WriteRequestsPerMinutePerUser\",\n          \"consumer\": \"projects/1071851248496\",\n          \"quota_metric\": \"sheets.googleapis.com/write_requests\",\n          \"service\": \"sheets.googleapis.com\"\n        }\n      }\n    ]\n  }\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc/values/%27D3%27:clear",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1e8E78jsNROSkBdvhOeodKxTaTkBJeF1fg6XKM8yHy6A/values/%27D3%27:clear",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 429,
+                    "message": "Too Many Requests"
+                },
+                "headers": {
+                    "Date": [
+                        "Thu, 18 Nov 2021 23:19:40 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "content-length": [
+                        "694"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:1071851248496'.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_metric\": \"sheets.googleapis.com/write_requests\",\n          \"service\": \"sheets.googleapis.com\",\n          \"quota_limit\": \"WriteRequestsPerMinutePerUser\",\n          \"consumer\": \"projects/1071851248496\"\n        }\n      }\n    ]\n  }\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1e8E78jsNROSkBdvhOeodKxTaTkBJeF1fg6XKM8yHy6A/values/%27D3%27:clear",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.26.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 429,
+                    "message": "Too Many Requests"
+                },
+                "headers": {
+                    "Date": [
+                        "Thu, 18 Nov 2021 23:19:41 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "content-length": [
+                        "694"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Write requests' and limit 'Write requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:1071851248496'.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_metric\": \"sheets.googleapis.com/write_requests\",\n          \"service\": \"sheets.googleapis.com\",\n          \"quota_limit\": \"WriteRequestsPerMinutePerUser\",\n          \"consumer\": \"projects/1071851248496\"\n        }\n      }\n    ]\n  }\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1e8E78jsNROSkBdvhOeodKxTaTkBJeF1fg6XKM8yHy6A/values/%27D3%27:clear",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -106,17 +252,20 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "Cache-Control": [
-                        "private"
+                    "Date": [
+                        "Thu, 18 Nov 2021 23:19:42 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
-                    "Date": [
-                        "Tue, 16 Nov 2021 16:43:57 GMT"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
+                    "X-XSS-Protection": [
+                        "0"
                     ],
                     "Vary": [
                         "Origin",
@@ -126,24 +275,21 @@
                     "Transfer-Encoding": [
                         "chunked"
                     ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
                     "X-Content-Type-Options": [
                         "nosniff"
                     ],
+                    "Cache-Control": [
+                        "private"
+                    ],
                     "Server": [
                         "ESF"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
                     "content-length": [
                         "102"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1ClBNqe36iD1zpOLa0J62qXB1qeMqdZRG_1KLQKrILUc\",\n  \"clearedRange\": \"'D3'!A1:H8\"\n}\n"
+                    "string": "{\n  \"spreadsheetId\": \"1e8E78jsNROSkBdvhOeodKxTaTkBJeF1fg6XKM8yHy6A\",\n  \"clearedRange\": \"'D3'!A1:H8\"\n}\n"
                 }
             }
         }
