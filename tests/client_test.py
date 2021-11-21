@@ -69,9 +69,8 @@ class ClientTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_access_non_existing_spreadsheet(self):
-        wks = self.gc.open_by_key("test")
         with self.assertRaises(gspread.exceptions.APIError) as error:
-            wks.worksheets()
+            self.gc.open_by_key("test")
         self.assertEqual(error.exception.args[0]["code"], 404)
         self.assertEqual(
             error.exception.args[0]["message"], "Requested entity was not found."
