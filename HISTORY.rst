@@ -1,6 +1,81 @@
 Release History
 ===============
 
+5.0.0 (2021-11-26)
+------------------
+* Fix a typo in HISTORY.rst (#904 by @TurnrDev)
+
+* Fix typo and fix return value written in docstrings (#903 by @rariyama)
+
+* Add deprecation warning for delete_row method in documentation (#909 by @javad94)
+
+* split files `models.py` and `test.py` (#912 by @lavigne958)
+
+* parent 39d1ecb59ca3149a8f46094c720efab883a0dc11 author Christian Clauss <cclauss@me.com> 1621149013 +0200 commit
+ter Christian Clauss <cclauss@me.com> 1630103641 +0200 (#869 by @cclaus)
+
+* Enable code linter in CI (#915 by @lavigne958)
+
+* isort your imports (again), so you don't have to (#914 by @cclaus)
+
+* lint_python.yml: Try 'tox -e py' to test current Python (#916 by @cclaus)
+
+* Add more flake8 tests (#917 by @cclaus)
+
+* Update test suite (#918 by @cclaus)
+
+* Avoid IndexError when row_values() returns an empty row (#920 by @cclaus)
+
+* Bugfix - remove wrong argument in `batch_update` docstring (#912 by @lavigne958)
+
+* Improvement - Add `Worksheet.index` property (#922 by @lavigne958)
+
+* Add ability to create directory if it does not exist before saving the credentials to disk. (#925 by @benhoman)
+
+* Update test framework and VCR and cassettes (#926 by @lavigne958)
+
+* Delete .travis.yml (#928 by @cclaus)
+
+* Update tox.ini with all linting commands under lint env (by @lavigne958)
+
+* Build package and docs in CI (#930 by @lavigne958)
+
+* Update oauth2.rst (#933 by @amlestin)
+
+* Update the link to the Google Developers Console (#934 by @Croebh)
+
+* allow tests to run on windows, add and improve tests in WorksheetTests, add test on unbounded range,
+  use canonical range as specified in the API, add test cassettes, prevent InvalidGridRange,
+  improve code formating (#937 by @Fendse)
+
+* fix fully qualified class names in API documentation (#944 by @geoffbeier)
+
+* fix editor_users_emails - get only from list not all users added to spreadsheet (#939 by @Lukasz)
+
+* add shadow method to get a named range from a speadsheet instance (#941 by @lavigne958)
+
+* auto_resize_columns (#948 by @FelipeSantos75)
+
+* add functions for defining, deleting and listing named ranges (#945 by @p-doyle)
+
+* Implement `open` sheet within Drive folder (#951 by @datavaluepeople)
+
+* Fix get range for unbounded ranges (#954 by @lavigne958)
+
+* remove potential I/O when reading spreadsheet title (956 by @lavigne958)
+
+* Add include_values_in_response to append_row & append_rows (#957 by @martimarkov)
+
+* replace raw string "ROWS" & "COLUMNS" to Dimension named tuple,
+  replace raw string "FORMATTED_VALUE", "UNFORMATTED_VALUE", "FORMULA" to ValueRenderOption named tuple,
+  replace raw string "RAW", "USER_ENTERED" to ValueInputOption named tuple (#958 by @ccppoo)
+
+4.0.1 (2021-08-07)
+------------------
+
+* Do not overwrite original value when trying to convert to a number (#902 by @lavigne958)
+
+
 4.0.0 (2021-08-01)
 ------------------
 
