@@ -9,6 +9,9 @@ This module contains common worksheets' models.
 from .cell import Cell
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
+    Dimension,
+    ValueInputOption,
+    ValueRenderOption,
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
@@ -127,7 +130,7 @@ class Worksheet:
         """Number of frozen columns."""
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
-    def acell(self, label, value_render_option="FORMATTED_VALUE"):
+    def acell(self, label, value_render_option=ValueRenderOption.formatted):
         """Returns an instance of a :class:`gspread.models.Cell`.
 
         :param label: Cell label in A1 notation
@@ -136,7 +139,9 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: str
+        :type value_render_option:  ( `ValueRenderOption.formatted` |
+                                    `ValueRenderOption.unformatted` |
+                                    `ValueRenderOption.formula` )
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -149,7 +154,7 @@ class Worksheet:
             *(a1_to_rowcol(label)), value_render_option=value_render_option
         )
 
-    def cell(self, row, col, value_render_option="FORMATTED_VALUE"):
+    def cell(self, row, col, value_render_option=ValueRenderOption.formatted):
         """Returns an instance of a :class:`gspread.models.Cell` located at
         `row` and `col` column.
 
@@ -160,7 +165,9 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: str
+        :type value_render_option:  ( `ValueRenderOption.formatted` |
+                                    `ValueRenderOption.unformatted` |
+                                    `ValueRenderOption.formula` )
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -262,7 +269,7 @@ class Worksheet:
             non empty cells.
 
         :param str major_dimension: (optional) The major dimension of the
-            values. Either ``ROWS`` or ``COLUMNS``. Defaults to ``ROWS``
+            values. `Dimension.rows`("ROWS") or `Dimension.cols`("COLUMNS"). Defaults to Dimension.rows
 
         :param str value_render_option: (optional) Determines how values should
             be rendered in the the output. See `ValueRenderOption`_ in
@@ -270,17 +277,17 @@ class Worksheet:
 
             Possible values are:
 
-            ``FORMATTED_VALUE``
+            ``ValueRenderOption.formatted``
                 (default) Values will be calculated and formatted according
                 to the cell's formatting. Formatting is based on the
                 spreadsheet's locale, not the requesting user's locale.
 
-            ``UNFORMATTED_VALUE``
+            ``ValueRenderOption.unformatted``
                 Values will be calculated, but not formatted in the reply.
                 For example, if A1 is 1.23 and A2 is =A1 and formatted as
                 currency, then A2 would return the number 1.23.
 
-            ``FORMULA``
+            ``ValueRenderOption.formula``
                 Values will not be calculated. The reply will include
                 the formulas. For example, if A1 is 1.23 and A2 is =A1 and
                 formatted as currency, then A2 would return "=A1".
@@ -289,8 +296,8 @@ class Worksheet:
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output. This is ignored if
-            ``value_render_option`` is ``FORMATTED_VALUE``. The default
-            ``date_time_render_option`` is ``SERIAL_NUMBER``.
+            ``value_render_option`` is ``ValueRenderOption.formatted``.
+            The default ``date_time_render_option`` is ``SERIAL_NUMBER``.
 
         .. note::
 
@@ -311,10 +318,10 @@ class Worksheet:
             worksheet.get_values('my_range')
 
             # Return unformatted values (e.g. numbers as numbers)
-            worksheet.get_values('A2:B4', value_render_option='UNFORMATTED_VALUE')
+            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.unformatted)
 
             # Return cell values without calculating formulas
-            worksheet.get_values('A2:B4', value_render_option='FORMULA')
+            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.formula)
         """
         try:
             return fill_gaps(self.get(range_name, **kwargs))
@@ -429,7 +436,7 @@ class Worksheet:
         except KeyError:
             return []
 
-    def col_values(self, col, value_render_option="FORMATTED_VALUE"):
+    def col_values(self, col, value_render_option=ValueRenderOption.formatted):
         """Returns a list of all values in column `col`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -451,7 +458,7 @@ class Worksheet:
             range_name,
             params={
                 "valueRenderOption": value_render_option,
-                "majorDimension": "COLUMNS",
+                "majorDimension": Dimension.cols,
             },
         )
 
@@ -487,24 +494,24 @@ class Worksheet:
 
         data = self.spreadsheet.values_update(
             range_name,
-            params={"valueInputOption": "USER_ENTERED"},
+            params={"valueInputOption": ValueInputOption.user_entered},
             body={"values": [[value]]},
         )
 
         return data
 
-    def update_cells(self, cell_list, value_input_option="RAW"):
+    def update_cells(self, cell_list, value_input_option=ValueInputOption.raw):
         """Updates many cells at once.
 
         :param list cell_list: List of :class:`Cell` objects to update.
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
-            ``RAW``
+            ``ValueInputOption.raw``
                 The values the user has entered will not be parsed and will be
                 stored as-is.
 
-            ``USER_ENTERED``
+            ``ValueInputOption.user_entered``
                 The values will be parsed as if the user typed them into the
                 UI. Numbers will stay as numbers, but strings may be converted
                 to numbers, dates, etc. following the same rules that are
@@ -559,11 +566,11 @@ class Worksheet:
 
         :param str value_render_option: (optional) How values should be
             represented in the output. The default render option is
-            ``FORMATTED_VALUE``.
+            ``ValueRenderOption.formatted``.
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output. This is ignored if
-            ``value_render_option`` is ``FORMATTED_VALUE``. The default
+            ``value_render_option`` is ``ValueRenderOption.formatted``. The default
             ``date_time_render_option`` is ``SERIAL_NUMBER``.
 
         Examples::
@@ -612,11 +619,11 @@ class Worksheet:
 
         :param str value_render_option: (optional) How values should be
             represented in the output. The default render option
-            is ``FORMATTED_VALUE``.
+            is ``ValueRenderOption.formatted``.
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output. This is ignored if
-            value_render_option is ``FORMATTED_VALUE``. The default dateTime
+            value_render_option is ``ValueRenderOption.formatted``. The default dateTime
             render option is ``SERIAL_NUMBER``.
 
         .. versionadded:: 3.3
@@ -666,11 +673,11 @@ class Worksheet:
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
-            ``RAW``
+            ``ValueInputOption.raw``
                 The values the user has entered will not be parsed and will be
                 stored as-is.
 
-            ``USER_ENTERED``
+            ``ValueInputOption.user_entered``
                 The values will be parsed as if the user typed them into the
                 UI. Numbers will stay as numbers, but strings may be converted
                 to numbers, dates, etc. following the same rules that are
@@ -711,7 +718,9 @@ class Worksheet:
             values = [[values]]
 
         if not kwargs["value_input_option"]:
-            kwargs["value_input_option"] = "RAW" if kwargs["raw"] else "USER_ENTERED"
+            kwargs["value_input_option"] = (
+                ValueInputOption.raw if kwargs["raw"] else ValueInputOption.user_entered
+            )
 
         params = filter_dict_values(
             {
@@ -752,11 +761,11 @@ class Worksheet:
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
-            ``RAW``
+            ``ValueInputOption.raw``
                 The values the user has entered will not be parsed and will be
                 stored as-is.
 
-            ``USER_ENTERED``
+            ``ValueInputOption.user_entered``
                 The values will be parsed as if the user typed them into the
                 UI. Numbers will stay as numbers, but strings may be converted
                 to numbers, dates, etc. following the same rules that are
@@ -780,7 +789,9 @@ class Worksheet:
         .. versionadded:: 3.3
         """
         if not kwargs["value_input_option"]:
-            kwargs["value_input_option"] = "RAW" if kwargs["raw"] else "USER_ENTERED"
+            kwargs["value_input_option"] = (
+                ValueInputOption.raw if kwargs["raw"] else ValueInputOption.user_entered
+            )
 
         data = [
             dict(vr, range=absolute_range_name(self.title, vr["range"])) for vr in data
@@ -1022,7 +1033,7 @@ class Worksheet:
                     "autoResizeDimensions": {
                         "dimensions": {
                             "sheetId": self.id,
-                            "dimension": "COLUMNS",
+                            "dimension": Dimension.cols,
                             "startIndex": int(start_column_index),
                             "endIndex": int(end_column_index),
                         }
@@ -1054,7 +1065,7 @@ class Worksheet:
     def append_row(
         self,
         values,
-        value_input_option="RAW",
+        value_input_option=ValueInputOption.raw,
         insert_data_option=None,
         table_range=None,
         include_values_in_response=False,
@@ -1092,7 +1103,7 @@ class Worksheet:
     def append_rows(
         self,
         values,
-        value_input_option="RAW",
+        value_input_option=ValueInputOption.raw,
         insert_data_option=None,
         table_range=None,
         include_values_in_response=False,
@@ -1104,8 +1115,9 @@ class Worksheet:
         :param list values: List of rows each row is List of values for
             the new row.
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. Possible values are ``RAW`` or
-            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``ValueInputOption.raw``
+            or ``ValueInputOption.user_entered``.
+            See `ValueInputOption`_ in the Sheets API.
         :param str insert_data_option: (optional) Determines how the input data
             should be inserted. See `InsertDataOption`_ in the Sheets API
             reference.
@@ -1131,7 +1143,7 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_row(self, values, index=1, value_input_option="RAW"):
+    def insert_row(self, values, index=1, value_input_option=ValueInputOption.raw):
         """Adds a row to the worksheet at the specified index and populates it
         with values.
 
@@ -1140,14 +1152,15 @@ class Worksheet:
         :param list values: List of values for the new row.
         :param int index: (optional) Offset for the newly inserted row.
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. Possible values are ``RAW`` or
-            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``ValueInputOption.raw``
+            or ``ValueInputOption.user_entered``.
+            See `ValueInputOption`_ in the Sheets API.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         """
         return self.insert_rows([values], index, value_input_option=value_input_option)
 
-    def insert_rows(self, values, row=1, value_input_option="RAW"):
+    def insert_rows(self, values, row=1, value_input_option=ValueInputOption.raw):
         """Adds multiple rows to the worksheet at the specified index and
         populates them with values.
 
@@ -1156,8 +1169,9 @@ class Worksheet:
             more values than columns.
         :param int row: Start row to update (one-based). Defaults to 1 (one).
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. Possible values are ``RAW`` or
-            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``ValueInputOption.raw``
+            or ``ValueInputOption.user_entered``.
+            See `ValueInputOption`_ in the Sheets API.
         """
         body = {
             "requests": [
@@ -1165,7 +1179,7 @@ class Worksheet:
                     "insertDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": "ROWS",
+                            "dimension": Dimension.rows,
                             "startIndex": row - 1,
                             "endIndex": len(values) + row - 1,
                         }
@@ -1180,11 +1194,11 @@ class Worksheet:
 
         params = {"valueInputOption": value_input_option}
 
-        body = {"majorDimension": "ROWS", "values": values}
+        body = {"majorDimension": Dimension.rows, "values": values}
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_cols(self, values, col=1, value_input_option="RAW"):
+    def insert_cols(self, values, col=1, value_input_option=ValueInputOption.raw):
         """Adds multiple new cols to the worksheet at specified index and
         populates them with values.
 
@@ -1193,8 +1207,9 @@ class Worksheet:
             if there are more values than columns.
         :param int col: Start col to update (one-based). Defaults to 1 (one).
         :param str value_input_option: (optional) Determines how input data
-            should be interpreted. Possible values are ``RAW`` or
-            ``USER_ENTERED``. See `ValueInputOption`_ in the Sheets API.
+            should be interpreted. Possible values are ``ValueInputOption.raw``
+            or ``ValueInputOption.user_entered``.
+            See `ValueInputOption`_ in the Sheets API.
         """
         body = {
             "requests": [
@@ -1202,7 +1217,7 @@ class Worksheet:
                     "insertDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": "COLUMNS",
+                            "dimension": Dimension.cols,
                             "startIndex": col - 1,
                             "endIndex": len(values) + col - 1,
                         }
@@ -1217,7 +1232,7 @@ class Worksheet:
 
         params = {"valueInputOption": value_input_option}
 
-        body = {"majorDimension": "COLUMNS", "values": values}
+        body = {"majorDimension": Dimension.cols, "values": values}
 
         return self.spreadsheet.values_append(range_label, params, body)
 
@@ -1311,7 +1326,7 @@ class Worksheet:
     def delete_dimension(self, dimension, start_index, end_index=None):
         """Deletes multi rows from the worksheet at the specified index.
 
-        :param str dimension: A dimension to delete. ``ROWS`` or ``COLUMNS``.
+        :param str dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
         :param int start_index: Index of a first row for deletion.
         :param int end_index: Index of a last row for deletion. When
             ``end_index`` is not specified this method only deletes a single
@@ -1354,7 +1369,7 @@ class Worksheet:
             worksheet.delete_rows(2)
 
         """
-        return self.delete_dimension("ROWS", start_index, end_index)
+        return self.delete_dimension(Dimension.rows, start_index, end_index)
 
     def delete_columns(self, start_index, end_index=None):
         """Deletes multiple columns from the worksheet at the specified index.
@@ -1364,7 +1379,7 @@ class Worksheet:
             When end_index is not specified this method only deletes a single
             column at ``start_index``.
         """
-        return self.delete_dimension("COLUMNS", start_index, end_index)
+        return self.delete_dimension(Dimension.cols, start_index, end_index)
 
     def clear(self):
         """Clears all cells in the worksheet."""

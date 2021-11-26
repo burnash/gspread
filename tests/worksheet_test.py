@@ -560,7 +560,9 @@ class WorksheetTest(GspreadTest):
         cell_list = self.sheet.range("A1:D2")
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
-        self.sheet.update_cells(cell_list, value_input_option="USER_ENTERED")
+        self.sheet.update_cells(
+            cell_list, value_input_option=utils.ValueInputOption.user_entered
+        )
 
         # default, formatted read
         read_records = self.sheet.get_all_records()
@@ -571,7 +573,7 @@ class WorksheetTest(GspreadTest):
 
         # unformatted read
         read_records = self.sheet.get_all_records(
-            value_render_option="UNFORMATTED_VALUE"
+            value_render_option=utils.ValueRenderOption.unformatted
         )
         expected_keys = [2, 43831, "string", 53]
         expected_values = [3 / 2, 0.12, 36162, ""]
@@ -579,7 +581,9 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_records[0], d0)
 
         # formula read
-        read_records = self.sheet.get_all_records(value_render_option="FORMULA")
+        read_records = self.sheet.get_all_records(
+            value_render_option=utils.ValueRenderOption.formula
+        )
         expected_keys = ["=4/2", 43831, "string", 53]
         expected_values = ["=3/2", 0.12, 36162, ""]
         d0 = dict(zip(expected_keys, expected_values))
@@ -596,12 +600,14 @@ class WorksheetTest(GspreadTest):
         cell_list = self.sheet.range("A1:D2")
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
-        self.sheet.update_cells(cell_list, value_input_option="USER_ENTERED")
+        self.sheet.update_cells(
+            cell_list, value_input_option=utils.ValueInputOption.user_entered
+        )
 
         read_records = self.sheet.get_all_records(
             default_blank="empty",
             allow_underscores_in_numeric_literals=True,
-            value_render_option="UNFORMATTED_VALUE",
+            value_render_option=utils.ValueRenderOption.unformatted,
         )
         expected_values = [3 / 2, 0.12, "empty", 321]
         d0 = dict(zip(rows[0], expected_values))
@@ -664,7 +670,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_acell("B2", formula)
         values = [next(sg) for i in range(num_cols + 4)]
         self.sheet.insert_row(values, 1)
-        b3 = self.sheet.acell("B3", value_render_option="FORMULA")
+        b3 = self.sheet.acell("B3", value_render_option=utils.ValueRenderOption.formula)
         self.assertEqual(b3.value, formula)
 
     @pytest.mark.vcr()
