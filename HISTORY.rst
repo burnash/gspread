@@ -46,7 +46,7 @@ ter Christian Clauss <cclauss@me.com> 1630103641 +0200 (#869 by @cclaus)
 
 * allow tests to run on windows, add and improve tests in WorksheetTests, add test on unbounded range,
   use canonical range as specified in the API, add test cassettes, prevent InvalidGridRange,
-  improve code formating (#937 by @Fendse)
+  improve code formatting (#937 by @Fendse)
 
 * fix fully qualified class names in API documentation (#944 by @geoffbeier)
 
