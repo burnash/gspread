@@ -33,12 +33,12 @@ your changes in GSpread.
 tox -e py
 ```
 
-**Tip:** To run a specific test method use the option `-k` to specifcy a test name and `-v` and `-s` to get test output on console.
+**Tip:** To run a specific test method use the option `-k` to specifcy a test name and `-v` and `-s` to get test's output on console.
 
 Example:
 
 ```
-pytest -v -s -k "test_find" tests/
+tox -e py -- -k test_find -v -s
 ```
 
 **Note:** gspread uses [vcrpy](https://github.com/kevin1024/vcrpy) to record and replay HTTP interactions with Sheets API.
@@ -49,6 +49,28 @@ You can control vcrpy's [Record Mode](https://vcrpy.readthedocs.io/en/latest/usa
 
 ```
 GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
+```
+
+You need to update the recorded HTTP requests in the following cases:
+
+- new test is added
+- a existing test is updated and does a new HTTP call
+- gspread is updated and does a new HTTP call
+
+In any of the above cases, please update the HTTP recording using the command above, set the `GS_RECORD_MODE` to `new_episodes`.
+This will tell `vcrpy` to record only new episodes and replay existing episodes.
+
+**Note:** this will mostly result in a lot of udpated files under `tests/cassettes/` don't forget to add them in your PR.
+Add these new files a dedicated commit, in order to make the review process easier please.
+
+```
+GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
+```
+
+Then run the tests in offline mode to make sure you have recorded everything.
+
+```
+tox -e py
 ```
 
 3. Format your code:
@@ -73,16 +95,10 @@ tox -e lint
 
 The documentation uses [reStructuredText](http://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html#rst-index) markup and is rendered by [Sphinx](http://www.sphinx-doc.org/).
 
-To build the documentation locally, install Sphinx:
+To build the documentation locally, use the following command:
 
 ```
-pip install Sphinx
+tox -e doc
 ```
 
-Then from the project directory, run:
-
-```
-sphinx-build -b html docs html
-```
-
-Once finished, the rendered documentation will be in `html` folder. `index.html` is an entry point.
+Once finished, the rendered documentation will be in `docs/build/html` folder. `index.html` is an entry point.
