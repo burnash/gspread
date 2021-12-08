@@ -6,6 +6,7 @@ Simple authentication with OAuth.
 
 """
 
+import json
 import os
 
 from google.oauth2.credentials import Credentials
@@ -50,7 +51,7 @@ DEFAULT_SERVICE_ACCOUNT_FILENAME = os.path.join(
 )
 
 
-def local_server_flow(scopes, port=0, filename=DEFAULT_CREDENTIALS_FILENAME):
+def local_server_flow(client_config, scopes, port=0):
     """Run an OAuth flow using a local server strategy.
 
     Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_local_server <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_local_server>`_.
@@ -60,11 +61,11 @@ def local_server_flow(scopes, port=0, filename=DEFAULT_CREDENTIALS_FILENAME):
     Pass this function to ``flow`` parameter of :meth:`~gspread.oauth` to run
     a local server flow.
     """
-    flow = InstalledAppFlow.from_client_secrets_file(filename, scopes)
+    flow = InstalledAppFlow.from_client_config(client_config, scopes)
     return flow.run_local_server(port=port)
 
 
-def console_flow(scopes, filename=DEFAULT_CREDENTIALS_FILENAME):
+def console_flow(client_config, scopes):
     """Run an OAuth flow using a console strategy.
 
     Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_console <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_console>`_.
@@ -72,7 +73,7 @@ def console_flow(scopes, filename=DEFAULT_CREDENTIALS_FILENAME):
     Pass this function to ``flow`` parameter of :meth:`~gspread.oauth` to run
     a console strategy.
     """
-    flow = InstalledAppFlow.from_client_secrets_file(filename, scopes)
+    flow = InstalledAppFlow.from_client_config(client_config, scopes)
     return flow.run_console()
 
 
@@ -155,11 +156,87 @@ def oauth(
     creds = load_credentials(filename=authorized_user_filename)
 
     if not creds:
-        creds = flow(filename=credentials_filename, scopes=scopes)
+        with open(credentials_filename) as json_file:
+            client_config = json.load(json_file)
+        creds = flow(client_config=client_config, scopes=scopes)
         store_credentials(creds, filename=authorized_user_filename)
 
     client = Client(auth=creds)
     return client
+
+
+def oauth_from_dict(
+    credentials=None,
+    authorized_user_info=None,
+    scopes=DEFAULT_SCOPES,
+    flow=local_server_flow,
+):
+    r"""Authenticate with OAuth Client ID.
+
+    By default this function will use the local server strategy and open
+    the authorization URL in the user's browser::
+
+        gc = gspread.oauth()
+
+    Another option is to run a console strategy. This way, the user is
+    instructed to open the authorization URL in their browser. Once the
+    authorization is complete, the user must then copy & paste the
+    authorization code into the application::
+
+        gc = gspread.oauth(flow=gspread.auth.console_flow)
+
+
+    ``scopes`` parameter defaults to read/write scope available in
+    ``gspread.auth.DEFAULT_SCOPES``. It's read/write for Sheets
+    and Drive API::
+
+        DEFAULT_SCOPES =[
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/drive'
+        ]
+
+    You can also use ``gspread.auth.READONLY_SCOPES`` for read only access.
+    Obviously any method of ``gspread`` that updates a spreadsheet
+    **will not work** in this case::
+
+        gc = gspread.oauth(scopes=gspread.auth.READONLY_SCOPES)
+
+        sh = gc.open("A spreadsheet")
+        sh.sheet1.update('A1', '42')   # <-- this will not work
+
+    This function requires you to pass the credentials directly as
+    a python dict. After the first authentication the function returns
+    the authenticated user info, this can be passed again to authenticate
+    the user without the need to run the flow again.
+
+        gc = gspread.oauth(
+            credentials=my_creds,
+            authorized_user_info=my_auth_user,
+        )
+
+    :param dict credentials: The credentials from google cloud platform
+    :param dict authorized_user_info: The authenticated user
+        if already authenticated.
+    :param list scopes: The scopes used to obtain authorization.
+    :param function flow: OAuth flow to use for authentication.
+        Defaults to :meth:`~gspread.auth.local_server_flow`
+
+    :rtype: :class:`gspread.Client`
+    """
+
+    creds = None
+    if authorized_user_info is not None:
+        creds = Credentials.from_authorized_user_info(authorized_user_info, scopes)
+
+    if not creds:
+        creds = flow(client_config=credentials, scopes=scopes)
+
+    client = Client(auth=creds)
+
+    # must return the creds to the user
+    # must strip the token an use the dedicated method from Credentials
+    # to return a dict "safe to store".
+    return (client, creds.to_json("token"))
 
 
 def service_account(filename=DEFAULT_SERVICE_ACCOUNT_FILENAME, scopes=DEFAULT_SCOPES):

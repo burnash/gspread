@@ -13,7 +13,7 @@ __version__ = "5.0.0"
 __author__ = "Anton Burnashev"
 
 
-from .auth import oauth, service_account, service_account_from_dict
+from .auth import oauth, oauth_from_dict, service_account, service_account_from_dict
 from .cell import Cell
 from .client import Client
 from .exceptions import (
