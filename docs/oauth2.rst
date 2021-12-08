@@ -178,8 +178,44 @@ You only need to do authorization in the browser once, following runs will reuse
 
     Make sure you store the credentials file in a safe place.
 
-.. attention:: Security
-    Credentials file and authorized credentials contain sensitive data. **Do not share these files with others** and treat them like private keys.
+There is also the option to pass your credentials directly as a python dict. This way you don't have to store them as files or you can store them in your favorite password
+manager.
+
+::
+
+    import gspread
+
+    my_creds = {
+        ...
+    }
+    gc, authorized_user = gspread.oauth(my_creds)
+
+    sh = gc.open("Example spreadsheet")
+
+    print(sh.sheet1.get('A1'))
+
+Once authenticated you must store the returned json string containing your authenticated user information. Provide that details as a python dict
+as second argument in your next `oauth` request to be directly authenticated and skip the flow.
+
+.. NOTE::
+    The second time if your authorized user has not expired, you can omit the credentials.
+    Be aware, if the authorized user has expired your credentials are required to authenticate again.
+
+::
+
+    import gspread
+
+    my_creds = {
+        ...
+    }
+    gc, authorized_user = gspread.oauth(my_creds, authorized_user)
+
+    sh = gc.open("Example spreadsheet")
+
+    print(sh.sheet1.get('A1'))
+
+.. warning::
+    Security credentials file and authorized credentials contain sensitive data. **Do not share these files with others** and treat them like private keys.
 
     If you are concerned about giving the application access to your spreadsheets and Drive, use Service Accounts.
 
