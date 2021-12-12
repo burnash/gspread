@@ -188,7 +188,7 @@ class Worksheet:
         return Cell(row, col, value)
 
     @cast_to_a1_notation
-    def range(self, name):
+    def range(self, name=""):
         """Returns a list of :class:`Cell` objects from a specified range.
 
         :param name: A string with range value in A1 notation (e.g. 'A1:A5')
@@ -216,6 +216,11 @@ class Worksheet:
             >>> # Named ranges work as well
             >>> worksheet.range('NamedRange')
             [<Cell R1C1 "42">, ...]
+
+            >>> # All values in a single API call
+            >>> worksheet.range()
+            [<Cell R1C1 'Hi mom'>, ...]
+
         """
         range_label = absolute_range_name(self.title, name)
 
@@ -412,6 +417,11 @@ class Worksheet:
             ]
 
         return [dict(zip(keys, row)) for row in values]
+
+    def get_all_cells(self):
+        """Returns a list of all `Cell` of the current sheet."""
+
+        return self.range()
 
     @accepted_kwargs(
         major_dimension=None,
