@@ -1,4 +1,7 @@
 # Google Spreadsheets Python API v4
+![latest workflow](https://github.com/burnash/gspread/actions/workflows/main.yaml/badge.svg?branch=master)
+ [![GitHub version](https://badge.fury.io/gh/burnash%2Fgspread.svg)](https://badge.fury.io/gh/burnash%2Fgspread) ![doc](https://readthedocs.org/projects/gspread/badge/?version=latest)
+
 
 Simple interface for working with Google Sheets.
 
