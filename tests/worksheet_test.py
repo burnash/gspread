@@ -77,6 +77,26 @@ class WorksheetTest(GspreadTest):
         self.assertSequenceEqual(tuples1, tuples2)
 
     @pytest.mark.vcr()
+    def test_range_get_all_values(self):
+        self.sheet.resize(4, 4)
+        rows = [
+            ["", "Hi", "Mom", ""],
+            ["My", "Name", "is", "bon"],
+            ["", "", "", ""],
+            ["1", "2", "3", "4"],
+        ]
+
+        self.sheet.update("A1:D4", rows)
+
+        cell_range1 = self.sheet.range()
+        cell_range2 = self.sheet.range("A1:D4")
+
+        tuples1 = [(c.row, c.col, c.value) for c in cell_range1]
+        tuples2 = [(c.row, c.col, c.value) for c in cell_range2]
+
+        self.assertSequenceEqual(tuples1, tuples2)
+
+    @pytest.mark.vcr()
     def test_update_acell(self):
         sg = self._sequence_generator()
         value = next(sg)
