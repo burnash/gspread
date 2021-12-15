@@ -301,7 +301,7 @@ def _a1_to_rowcol_unbounded(label):
 
         if column_label:
             col = 0
-            for i, c in enumerate(reversed(column_label)):
+            for i, c in enumerate(reversed(column_label.upper())):
                 col += (ord(c) - MAGIC_NUMBER) * (26 ** i)
         else:
             col = inf
