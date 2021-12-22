@@ -1,6 +1,20 @@
 Release History
 ===============
 
+5.1.0 (2021-12-22)
+------------------
+* Codespell skip docs build folder (#962 by @lavigne958)
+
+* Update contributing guidelines (#964 by @lavigne958)
+
+* Add oauth from dict (#967 by @lavigne958)
+
+* Update README.md to include badges (#970 by @lavigne958)
+
+* Add new method to get all values as a list of Cells (#968 by @lavigne958)
+
+* automatic conversion of a cell letter to uppercase (#972 by @Burovytskyi)
+
 5.0.0 (2021-11-26)
 ------------------
 * Fix a typo in HISTORY.rst (#904 by @TurnrDev)
