@@ -1,6 +1,9 @@
 Release History
 ===============
 
+5.1.1 (2021-12-22)
+* Fix documentation about oauth (#975 by @lavigne958)
+
 5.1.0 (2021-12-22)
 ------------------
 * Codespell skip docs build folder (#962 by @lavigne958)
