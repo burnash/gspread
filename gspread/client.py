@@ -55,6 +55,7 @@ class Client:
         json=None,
         files=None,
         headers=None,
+        timeout=None
     ):
         response = getattr(self.session, method)(
             endpoint,
@@ -63,6 +64,7 @@ class Client:
             data=data,
             files=files,
             headers=headers,
+            timeout=timeout
         )
 
         if response.ok:

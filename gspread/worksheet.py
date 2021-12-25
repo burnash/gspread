@@ -188,11 +188,12 @@ class Worksheet:
         return Cell(row, col, value)
 
     @cast_to_a1_notation
-    def range(self, name=""):
+    def range(self, name="", timeout=None):
         """Returns a list of :class:`Cell` objects from a specified range.
 
         :param name: A string with range value in A1 notation (e.g. 'A1:A5')
                      or the named range to fetch.
+        :param int timeout: (optional) Request timeout in seconds.
         :type name: str
 
         Alternatively, you may specify numeric boundaries. All values
@@ -224,7 +225,7 @@ class Worksheet:
         """
         range_label = absolute_range_name(self.title, name)
 
-        data = self.spreadsheet.values_get(range_label)
+        data = self.spreadsheet.values_get(range_label, timeout=timeout)
 
         if ":" not in name:
             name = data.get("range", "")
@@ -262,6 +263,7 @@ class Worksheet:
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
+        timeout=None,
     )
     def get_values(self, range_name=None, **kwargs):
         """Returns a list of lists containing all values from specified range.
@@ -308,6 +310,8 @@ class Worksheet:
 
             Empty trailing rows and columns will not be included.
 
+        :param int timeout: (optional) Request timeout in seconds.
+
         Examples::
 
             # Return all values from the sheet
@@ -337,6 +341,7 @@ class Worksheet:
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
+        timeout=None,
     )
     def get_all_values(self, **kwargs):
         """Returns a list of lists containing all cells' values as strings.
@@ -403,7 +408,7 @@ class Worksheet:
         keys = data[idx]
 
         if numericise_ignore == ["all"]:
-            values = data[idx + 1 :]
+            values = data[idx + 1:]
         else:
             values = [
                 numericise_all(
@@ -413,7 +418,7 @@ class Worksheet:
                     allow_underscores_in_numeric_literals,
                     numericise_ignore,
                 )
-                for row in data[idx + 1 :]
+                for row in data[idx + 1:]
             ]
 
         return [dict(zip(keys, row)) for row in values]
@@ -446,7 +451,7 @@ class Worksheet:
         except KeyError:
             return []
 
-    def col_values(self, col, value_render_option=ValueRenderOption.formatted):
+    def col_values(self, col, value_render_option=ValueRenderOption.formatted, timeout=None):
         """Returns a list of all values in column `col`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -455,6 +460,7 @@ class Worksheet:
         :param str value_render_option: (optional) Determines how values should
             be rendered in the the output. See `ValueRenderOption`_ in
             the Sheets API.
+        :param int timeout: (optional) Request timeout in seconds.
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
         """
@@ -470,6 +476,7 @@ class Worksheet:
                 "valueRenderOption": value_render_option,
                 "majorDimension": Dimension.cols,
             },
+            timeout=timeout
         )
 
         try:
@@ -564,6 +571,7 @@ class Worksheet:
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
+        timeout=None
     )
     def get(self, range_name=None, **kwargs):
         """Reads values of a single range or a cell of a sheet.
@@ -582,6 +590,8 @@ class Worksheet:
             durations should be represented in the output. This is ignored if
             ``value_render_option`` is ``ValueRenderOption.formatted``. The default
             ``date_time_render_option`` is ``SERIAL_NUMBER``.
+
+        :param int timeout: (optional) Request timeout in seconds.
 
         Examples::
 
@@ -609,7 +619,7 @@ class Worksheet:
             }
         )
 
-        response = self.spreadsheet.values_get(range_name, params=params)
+        response = self.spreadsheet.values_get(range_name, params=params, timeout=kwargs.get('timeout'))
 
         return ValueRange.from_json(response)
 

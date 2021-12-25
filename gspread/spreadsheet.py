@@ -157,18 +157,19 @@ class Spreadsheet:
         r = self.client.request("post", url, params=params, json=body)
         return r.json()
 
-    def values_get(self, range, params=None):
+    def values_get(self, range, params=None, timeout=None):
         """Lower-level method that directly calls `spreadsheets.values.get <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
         :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#query-parameters>`_.
+        :param int timeout: (optional) Request timeout in seconds.
         :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
         :rtype: dict
 
         .. versionadded:: 3.0
         """
         url = SPREADSHEET_VALUES_URL % (self.id, quote(range))
-        r = self.client.request("get", url, params=params)
+        r = self.client.request("get", url, params=params, timeout=timeout)
         return r.json()
 
     def values_batch_get(self, ranges, params=None):
