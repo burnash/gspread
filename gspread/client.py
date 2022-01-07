@@ -13,6 +13,7 @@ from .exceptions import APIError, SpreadsheetNotFound
 from .spreadsheet import Spreadsheet
 from .urls import (
     DRIVE_FILES_API_V2_URL,
+    DRIVE_FILES_API_V3_COMMENTS_URL,
     DRIVE_FILES_API_V3_URL,
     DRIVE_FILES_UPLOAD_API_V2_URL,
 )
@@ -198,7 +199,14 @@ class Client:
         spreadsheet_id = r.json()["id"]
         return self.open_by_key(spreadsheet_id)
 
-    def copy(self, file_id, title=None, copy_permissions=False, folder_id=None):
+    def copy(
+        self,
+        file_id,
+        title=None,
+        copy_permissions=False,
+        folder_id=None,
+        copy_comments=True,
+    ):
         """Copies a spreadsheet.
 
         :param str file_id: A key of a spreadsheet to copy.
@@ -209,6 +217,9 @@ class Client:
 
         :param str folder_id: Id of the folder where we want to save
             the spreadsheet.
+
+        :param bool copy_comments: (optional) If True, copy the comments from
+            the original spreadsheet to the new spreadsheet.
 
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
@@ -263,6 +274,30 @@ class Client:
                     )
                 except Exception:
                     pass
+
+        if copy_comments is True:
+            source_url = DRIVE_FILES_API_V3_COMMENTS_URL % (file_id)
+            page_token = ""
+            comments = []
+            params = {
+                "fields": "comments/content,comments/anchor,nextPageToken",
+                "includeDeleted": False,
+                "pageSize": 100,  # API limit to maximum 100
+            }
+
+            while page_token is not None:
+                params["pageToken"] = page_token
+                res = self.request("get", source_url, params=params).json()
+
+                comments.extend(res["comments"])
+                page_token = res.get("nextPageToken", None)
+
+            destination_url = DRIVE_FILES_API_V3_COMMENTS_URL % (new_spreadsheet.id)
+            # requesting some fields in the response is mandatory from the API.
+            # choose 'id' randomly out of all the fields, but no need to use it for now.
+            params = {"fields": "id"}
+            for comment in comments:
+                self.request("post", destination_url, json=comment, params=params)
 
         return new_spreadsheet
 
