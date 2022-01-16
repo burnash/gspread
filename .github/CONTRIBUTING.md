@@ -45,8 +45,9 @@ tox -e py -- -k test_find -v -s
 
 You must in that case provide a service account credentials in order to make the real HTTP requests, using `GS_CREDS_FILENAME` environment variable.
 
-You can control vcrpy's [Record Mode](https://vcrpy.readthedocs.io/en/latest/usage.html#record-modes) using `GS_RECORD_MODE` environment variable:
+You can control vcrpy's [Record Mode](https://vcrpy.readthedocs.io/en/latest/usage.html#record-modes) using `GS_RECORD_MODE` environment variable.
 
+The following command will run the entire test suite and record every HTTP request.
 ```
 GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 ```
@@ -54,23 +55,39 @@ GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 You need to update the recorded HTTP requests in the following cases:
 
 - new test is added
-- a existing test is updated and does a new HTTP call
-- gspread is updated and does a new HTTP call
+- a existing test is updated and does a new HTTP request
+- gspread is updated and does a new HTTP request
 
-In any of the above cases, please update the HTTP recording using the command above, set the `GS_RECORD_MODE` to `new_episodes`.
+In any of the above cases:
+
+- remove the file holding the init/teardown of the test suite.
+
+  ex: for the file `tests/cell_test.py` delete `tests/cassettes/CellTest.json`
+- please update the HTTP recording using the command above
+- set the `GS_RECORD_MODE` to `new_episodes`.
+
 This will tell `vcrpy` to record only new episodes and replay existing episodes.
 
 **Note:** this will mostly result in a lot of udpated files under `tests/cassettes/` don't forget to add them in your PR.
+
 Add these new files a dedicated commit, in order to make the review process easier please.
 
+The following command will replay existing requests and record new requests:
 ```
-GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
+GS_RECORD_MODE=new_episodes GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 ```
 
 Then run the tests in offline mode to make sure you have recorded everything.
 
 ```
 tox -e py
+```
+
+**Note::** In some cases if the test suite can't record new episodes or it can't
+replay them offline, you can run a complete update of the cassettes using the following command:
+
+```
+GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 ```
 
 3. Format your code:
