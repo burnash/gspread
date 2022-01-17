@@ -8,7 +8,7 @@
                 "body": null,
                 "headers": {
                     "User-Agent": [
-                        "python-requests/2.26.0"
+                        "python-requests/2.27.1"
                     ],
                     "Accept-Encoding": [
                         "gzip, deflate"
@@ -30,45 +30,45 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "Date": [
-                        "Thu, 18 Nov 2021 23:17:37 GMT"
+                    "Server": [
+                        "GSE"
                     ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Pragma": [
-                        "no-cache"
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
-                    "Expires": [
-                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    "Date": [
+                        "Sat, 15 Jan 2022 17:12:30 GMT"
+                    ],
+                    "Pragma": [
+                        "no-cache"
                     ],
                     "Content-Security-Policy": [
                         "frame-ancestors 'self'"
                     ],
                     "X-XSS-Protection": [
                         "1; mode=block"
-                    ],
-                    "Vary": [
-                        "Origin",
-                        "X-Origin"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Cache-Control": [
-                        "no-cache, no-store, max-age=0, must-revalidate"
-                    ],
-                    "Server": [
-                        "GSE"
                     ],
                     "content-length": [
                         "44"

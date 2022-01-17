@@ -12,7 +12,7 @@ class CellTest(GspreadTest):
     @pytest.fixture(scope="class", autouse=True)
     def init(self, client, vcr):
         # fixtures are not recorded by default, must do manually
-        with vcr.use_cassette(self.get_temporary_spreadsheet_title()):
+        with vcr.use_cassette(self.get_cassette_name()):
             # must use class attributes, each test function runs in a different instance
             CellTest.spreadsheet = client.create(self.get_temporary_spreadsheet_title())
             CellTest.sheet = CellTest.spreadsheet.sheet1

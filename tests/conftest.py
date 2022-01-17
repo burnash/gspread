@@ -81,6 +81,10 @@ class GspreadTest(unittest.TestCase):
     def get_temporary_spreadsheet_title(cls):
         return "Test %s" % cls.__name__
 
+    @classmethod
+    def get_cassette_name(cls):
+        return cls.__name__
+
     def _sequence_generator(self):
         return prefixed_counter(get_method_name(self.id()))
 
