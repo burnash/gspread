@@ -33,9 +33,9 @@ class WorksheetTest(GspreadTest):
             client.del_spreadsheet(WorksheetTest.spreadsheet.id)
 
     @pytest.fixture(autouse=True)
-    def reset_sheet(self, vcr):
-        with vcr.use_cassette(WorksheetTest.get_cassette_name()):
-            WorksheetTest.sheet.clear()
+    @pytest.mark.vcr()
+    def reset_sheet(self):
+        WorksheetTest.sheet.clear()
 
     @pytest.mark.vcr()
     def test_acell(self):
