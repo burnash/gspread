@@ -7,6 +7,7 @@ This module contains common worksheets' models.
 """
 
 from .cell import Cell
+from .exceptions import GSpreadException
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
     Dimension,
@@ -401,6 +402,15 @@ class Worksheet:
             return []
 
         keys = data[idx]
+
+        # Check keys are uniques
+        # do not use 'headers' in return values
+        # it is not ordered
+        headers = set()
+        for key in keys:
+            if key in headers:
+                raise GSpreadException("headers must be uniques")
+            headers.add(key)
 
         if numericise_ignore == ["all"]:
             values = data[idx + 1 :]
