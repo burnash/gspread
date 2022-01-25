@@ -404,13 +404,8 @@ class Worksheet:
         keys = data[idx]
 
         # Check keys are uniques
-        # do not use 'headers' in return values
-        # it is not ordered
-        headers = set()
-        for key in keys:
-            if key in headers:
-                raise GSpreadException("headers must be uniques")
-            headers.add(key)
+        if len(keys) != len(set(keys)):
+            raise GSpreadException("headers must be uniques")
 
         if numericise_ignore == ["all"]:
             values = data[idx + 1 :]
