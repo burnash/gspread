@@ -54,7 +54,7 @@
                         "chunked"
                     ],
                     "Date": [
-                        "Sun, 23 Jan 2022 12:43:58 GMT"
+                        "Sun, 23 Jan 2022 12:44:05 GMT"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
@@ -66,18 +66,94 @@
                         "nosniff"
                     ],
                     "content-length": [
-                        "105"
+                        "104"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M\",\n  \"clearedRange\": \"Sheet1!A1:T19\"\n}\n"
+                    "string": "{\n  \"spreadsheetId\": \"1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M\",\n  \"clearedRange\": \"Sheet1!A1:D6\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M:batchUpdate",
+                "body": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 0, \"gridProperties\": {\"rowCount\": 4, \"columnCount\": 4}}, \"fields\": \"gridProperties/rowCount,gridProperties/columnCount\"}}]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.27.1"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "190"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Sun, 23 Jan 2022 12:44:05 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "97"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M\",\n  \"replies\": [\n    {}\n  ]\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M/values/%27Sheet1%27%21A1%3AA10",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M/values/%27Sheet1%27%21A1%3AD4",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -124,7 +200,7 @@
                         "chunked"
                     ],
                     "Date": [
-                        "Sun, 23 Jan 2022 12:43:59 GMT"
+                        "Sun, 23 Jan 2022 12:44:05 GMT"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
@@ -136,19 +212,19 @@
                         "nosniff"
                     ],
                     "content-length": [
-                        "59"
+                        "58"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:A10\",\n  \"majorDimension\": \"ROWS\"\n}\n"
+                    "string": "{\n  \"range\": \"Sheet1!A1:D4\",\n  \"majorDimension\": \"ROWS\"\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M/values/%27Sheet1%27%21A1%3AA10?valueInputOption=RAW",
-                "body": "{\"values\": [[\"test_findall 1\"], [\"test_findall 1\"], [\"test_findall 1\"], [\"test_findall 1\"], [\"test_findall 1\"], [\"test_findall 1\"], [\"test_findall 1\"], [\"test_findall 1\"], [\"test_findall 1\"], [\"test_findall 1\"]]}",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M/values/%27Sheet1%27%21A1%3AD4?valueInputOption=RAW",
+                "body": "{\"values\": [[\"A1\", \"A1\", \"\", \"D1\"], [1, \"b2\", 1.45, \"\"], [\"\", \"\", \"\", \"\"], [\"A4\", 0.4, \"\", 4]]}",
                 "headers": {
                     "User-Agent": [
                         "python-requests/2.27.1"
@@ -163,7 +239,7 @@
                         "keep-alive"
                     ],
                     "Content-Length": [
-                        "212"
+                        "95"
                     ],
                     "Content-Type": [
                         "application/json"
@@ -200,7 +276,7 @@
                         "chunked"
                     ],
                     "Date": [
-                        "Sun, 23 Jan 2022 12:43:59 GMT"
+                        "Sun, 23 Jan 2022 12:44:05 GMT"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
@@ -212,11 +288,11 @@
                         "nosniff"
                     ],
                     "content-length": [
-                        "171"
+                        "169"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M\",\n  \"updatedRange\": \"Sheet1!A1:A10\",\n  \"updatedRows\": 10,\n  \"updatedColumns\": 1,\n  \"updatedCells\": 10\n}\n"
+                    "string": "{\n  \"spreadsheetId\": \"1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M\",\n  \"updatedRange\": \"Sheet1!A1:D4\",\n  \"updatedRows\": 4,\n  \"updatedColumns\": 4,\n  \"updatedCells\": 16\n}\n"
                 }
             }
         },
@@ -270,7 +346,7 @@
                         "chunked"
                     ],
                     "Date": [
-                        "Sun, 23 Jan 2022 12:43:59 GMT"
+                        "Sun, 23 Jan 2022 12:44:05 GMT"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
@@ -282,227 +358,11 @@
                         "nosniff"
                     ],
                     "content-length": [
-                        "437"
+                        "249"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:T19\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ]\n  ]\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M/values/%27Sheet1%27%21A1%3AA10",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.27.1"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Server": [
-                        "ESF"
-                    ],
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "Date": [
-                        "Sun, 23 Jan 2022 12:43:59 GMT"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "437"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:A10\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ],\n    [\n      \"test_findall 1\"\n    ]\n  ]\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M/values/%27Sheet1%27%21A1%3AA10?valueInputOption=RAW",
-                "body": "{\"values\": [[\"test_findall 1p_Ptest_findall 2\"], [\"test_findall 1j_Jtest_findall 2\"], [\"test_findall 1h_Htest_findall 2\"], [\"test_findall 1l_Ltest_findall 2\"], [\"test_findall 1e_Etest_findall 2\"], [\"test_findall 1s_Stest_findall 2\"], [\"test_findall 1v_Vtest_findall 2\"], [\"test_findall 1c_Ctest_findall 2\"], [\"test_findall 1e_Etest_findall 2\"], [\"test_findall 1u_Utest_findall 2\"]]}",
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.27.1"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "Content-Length": [
-                        "382"
-                    ],
-                    "Content-Type": [
-                        "application/json"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Server": [
-                        "ESF"
-                    ],
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "Date": [
-                        "Sun, 23 Jan 2022 12:43:59 GMT"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "171"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M\",\n  \"updatedRange\": \"Sheet1!A1:A10\",\n  \"updatedRows\": 10,\n  \"updatedColumns\": 1,\n  \"updatedCells\": 10\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1uMQ2jAqhp0pwP0J26C5f_y8EMZiuaz7FdjdBGDIWy5M/values/%27Sheet1%27",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.27.1"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Server": [
-                        "ESF"
-                    ],
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "Date": [
-                        "Sun, 23 Jan 2022 12:44:00 GMT"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "607"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:T19\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_findall 1p_Ptest_findall 2\"\n    ],\n    [\n      \"test_findall 1j_Jtest_findall 2\"\n    ],\n    [\n      \"test_findall 1h_Htest_findall 2\"\n    ],\n    [\n      \"test_findall 1l_Ltest_findall 2\"\n    ],\n    [\n      \"test_findall 1e_Etest_findall 2\"\n    ],\n    [\n      \"test_findall 1s_Stest_findall 2\"\n    ],\n    [\n      \"test_findall 1v_Vtest_findall 2\"\n    ],\n    [\n      \"test_findall 1c_Ctest_findall 2\"\n    ],\n    [\n      \"test_findall 1e_Etest_findall 2\"\n    ],\n    [\n      \"test_findall 1u_Utest_findall 2\"\n    ]\n  ]\n}\n"
+                    "string": "{\n  \"range\": \"Sheet1!A1:D4\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"A1\",\n      \"A1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
                 }
             }
         }

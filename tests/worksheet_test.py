@@ -6,6 +6,7 @@ import pytest
 
 import gspread
 import gspread.utils as utils
+from gspread.exceptions import GSpreadException
 
 from .conftest import I18N_STR, GspreadTest
 
@@ -33,9 +34,9 @@ class WorksheetTest(GspreadTest):
             client.del_spreadsheet(WorksheetTest.spreadsheet.id)
 
     @pytest.fixture(autouse=True)
-    def reset_sheet(self, vcr):
-        with vcr.use_cassette(WorksheetTest.get_cassette_name()):
-            WorksheetTest.sheet.clear()
+    @pytest.mark.vcr()
+    def reset_sheet(self):
+        WorksheetTest.sheet.clear()
 
     @pytest.mark.vcr()
     def test_acell(self):
@@ -609,6 +610,24 @@ class WorksheetTest(GspreadTest):
         expected_values = ["=3/2", 0.12, 36162, ""]
         d0 = dict(zip(expected_keys, expected_values))
         self.assertEqual(read_records[0], d0)
+
+    @pytest.mark.vcr()
+    def test_get_all_records_duplicate_keys(self):
+        self.sheet.resize(4, 4)
+        # put in new values, made from three lists
+        rows = [
+            ["A1", "A1", "", "D1"],
+            [1, "b2", 1.45, ""],
+            ["", "", "", ""],
+            ["A4", 0.4, "", 4],
+        ]
+        cell_list = self.sheet.range("A1:D4")
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        with pytest.raises(GSpreadException):
+            self.sheet.get_all_records()
 
     @pytest.mark.vcr()
     def test_get_all_records_numericise_unformatted(self):
