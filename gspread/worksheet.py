@@ -622,9 +622,9 @@ class Worksheet:
             >> [ ['', '1b', '', ''], ['2a', '2b', '2c', ''] ]
 
             # Return value of 'A1:D2' range with `default` option
-            worksheet.get('my_range', defualt=None)
+            worksheet.get('my_range', default=None)
             >> [ [None, '1b'], ['2a', '2b', '2c'] ]
-            worksheet.get('my_range', in_shape = True, defualt=None)
+            worksheet.get('my_range', in_shape = True, default=None)
             >> [ [None, '1b', None, None], ['2a', '2b', '2c', None] ]
 
         .. versionadded:: 3.3
