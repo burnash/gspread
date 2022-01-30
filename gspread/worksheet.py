@@ -6,6 +6,8 @@ This module contains common worksheets' models.
 
 """
 
+from itertools import zip_longest
+
 from .cell import Cell
 from .exceptions import GSpreadException
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
@@ -16,6 +18,7 @@ from .utils import (
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
+    absolute_range_to_grid_range,
     accepted_kwargs,
     cast_to_a1_notation,
     cell_list_to_rect,
@@ -569,6 +572,8 @@ class Worksheet:
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
+        default = '',
+        in_shape = False
     )
     def get(self, range_name=None, **kwargs):
         """Reads values of a single range or a cell of a sheet.
@@ -587,6 +592,14 @@ class Worksheet:
             durations should be represented in the output. This is ignored if
             ``value_render_option`` is ``ValueRenderOption.formatted``. The default
             ``date_time_render_option`` is ``SERIAL_NUMBER``.
+            
+        :param bool in_shape: (optional) How Values in list(2D array) are returned.
+            Default option is same as before, it will return different length of list
+            depending on items are actually in given range.
+            If param ``range_name`` is ``None``, it will throw Exception
+            
+        :param Any default: (optional) How empty element will be filled with.
+            Default is empty string.
 
         Examples::
 
@@ -601,9 +614,24 @@ class Worksheet:
 
             # Return values of 'my_range' named range
             worksheet.get('my_range')
+            
+            # Return value of 'A1:D2' range with `in_shape` option
+            worksheet.get('my_range')
+            >> [ ['', '1b'], ['2a', '2b', '2c'] ]
+            worksheet.get('my_range', in_shape = True)
+            >> [ ['', '1b', '', ''], ['2a', '2b', '2c', ''] ]
+            
+            # Return value of 'A1:D2' range with `default` option
+            worksheet.get('my_range', defualt=None)
+            >> [ [None, '1b'], ['2a', '2b', '2c'] ]
+            worksheet.get('my_range', in_shape = True, defualt=None)
+            >> [ [None, '1b', None, None], ['2a', '2b', '2c', None] ]
 
         .. versionadded:: 3.3
         """
+        if range_name is None and kwargs["in_shape"] is False:
+            raise Exception("`in_shape` keyword option should be used with `range` option, not a whole sheet")
+        
         range_name = absolute_range_name(self.title, range_name)
 
         params = filter_dict_values(
@@ -616,7 +644,9 @@ class Worksheet:
 
         response = self.spreadsheet.values_get(range_name, params=params)
 
-        return ValueRange.from_json(response)
+        inflated_response = self._inflate(response, kwargs["in_shape"], kwargs["default"])
+
+        return ValueRange.from_json(inflated_response)
 
     @accepted_kwargs(
         major_dimension=None,
@@ -661,6 +691,44 @@ class Worksheet:
         response = self.spreadsheet.values_batch_get(ranges=ranges, params=params)
 
         return [ValueRange.from_json(x) for x in response["valueRanges"]]
+
+    def _inflate(self, response, in_shape=False, default=''):
+        """
+        Used for filling empty cells before response from Google Spreadsheets is
+        wrapped by `ValueRange`. This is not intended to be directly used by users.
+        
+        :param dict ranges: response data from `Spreadsheet::values_get`
+        
+        :param bool in_shape: (optional) whether to enlarge response value to make lists as same lengths 
+        
+        :param Any default: (optional) default value to fill in empty cell, default
+        """
+        
+        if not in_shape and default == '':
+            return response
+        
+        grid_range = absolute_range_to_grid_range(response['range'])
+        
+        row_length = grid_range['endRowIndex'] - grid_range['startRowIndex']
+        col_length = grid_range['endColumnIndex'] - grid_range['startColumnIndex']
+        
+        template = []
+        
+        if in_shape:
+            
+            if response['majorDimension'] == Dimension.cols:
+                row_length, col_length = col_length, row_length
+        
+            for row, _ in zip_longest(response['values'], range(row_length)):
+                template.append([value for value, _ in zip_longest(row, range(col_length), fillvalue=default)])
+        
+        if not in_shape:
+            for array in response['values']:
+                template.append([ value if value != '' else default for value in array ])
+            
+        response['values'] = template
+        
+        return response
 
     @accepted_kwargs(
         raw=True,
