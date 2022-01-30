@@ -505,6 +505,12 @@ def absolute_range_name(sheet_name, range_name=None):
         return sheet_name
 
 
+def absolute_range_to_grid_range(range_name):
+    _, a1_range = range_name.split('!')
+    
+    return a1_range_to_grid_range(a1_range)
+
+
 def is_scalar(x):
     """Return True if the value is scalar.
 
@@ -602,6 +608,8 @@ def accepted_kwargs(**default_kwargs):
         return wrapper
 
     return decorate
+
+
 
 
 if __name__ == "__main__":
