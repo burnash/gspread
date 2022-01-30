@@ -249,7 +249,7 @@ def a1_to_rowcol(label):
 
         col = 0
         for i, c in enumerate(reversed(column_label)):
-            col += (ord(c) - MAGIC_NUMBER) * (26 ** i)
+            col += (ord(c) - MAGIC_NUMBER) * (26**i)
     else:
         raise IncorrectCellLabel(label)
 
@@ -302,7 +302,7 @@ def _a1_to_rowcol_unbounded(label):
         if column_label:
             col = 0
             for i, c in enumerate(reversed(column_label.upper())):
-                col += (ord(c) - MAGIC_NUMBER) * (26 ** i)
+                col += (ord(c) - MAGIC_NUMBER) * (26**i)
         else:
             col = inf
 
@@ -506,8 +506,8 @@ def absolute_range_name(sheet_name, range_name=None):
 
 
 def absolute_range_to_grid_range(range_name):
-    _, a1_range = range_name.split('!')
-    
+    _, a1_range = range_name.split("!")
+
     return a1_range_to_grid_range(a1_range)
 
 
@@ -608,8 +608,6 @@ def accepted_kwargs(**default_kwargs):
         return wrapper
 
     return decorate
-
-
 
 
 if __name__ == "__main__":
