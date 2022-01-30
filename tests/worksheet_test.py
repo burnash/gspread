@@ -891,3 +891,53 @@ class WorksheetTest(GspreadTest):
         # make sure cells are empty
         self.assertListEqual(w.get_values("A1:B1"), [])
         self.assertListEqual(w.get_values("C2:E2"), [])
+
+    @pytest.mark.vcr()
+    def test_get_values_in_shape_with_default_value(self):
+        values = [
+            ["A1", "B1", "", "D1"],
+            ["", "b2", "", ""],
+            ["", "", "", ""],
+            ["A4", "B4", "", ""],
+        ]
+
+        self.sheet.update("A1", values)
+
+        read_data = self.sheet.get(
+            "A1:D4", major_dimension=utils.Dimension.rows, in_shape=True
+        )
+
+        self.assertEqual(read_data, values)
+
+        read_data = self.sheet.get(
+            "A1:D4", major_dimension=utils.Dimension.cols, in_shape=True
+        )
+
+        self.assertEqual(
+            read_data,
+            [
+                ["A1", "", "", "A4"],
+                ["B1", "b2", "", "B4"],
+                ["", "", "", ""],
+                ["D1", "", "", ""],
+            ],
+        )
+
+        read_data = self.sheet.get("A1:D4", default="#")
+
+        self.assertEqual(
+            read_data,
+            [["A1", "B1", "#", "D1"], ["#", "b2"], [], ["A4", "B4", "#", "D4"]],
+        )
+
+        read_data = self.sheet.get("A1:D4", in_shape=True, default="#")
+
+        self.assertEqual(
+            read_data,
+            [
+                ["A1", "B1", "#", "D1"],
+                ["#", "b2", "#", "#"],
+                ["#", "#", "#", "#"],
+                ["A4", "B4", "#", "D4"],
+            ],
+        )
