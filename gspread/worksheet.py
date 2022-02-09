@@ -1424,7 +1424,7 @@ class Worksheet:
 
         return response
 
-    def _finder(self, func, query, in_row=None, in_column=None):
+    def _finder(self, func, query, case_sensitive, in_row=None, in_column=None):
         data = self.spreadsheet.values_get(absolute_range_name(self.title))
 
         try:
@@ -1437,7 +1437,10 @@ class Worksheet:
         if isinstance(query, str):
 
             def match(x):
-                return x.value == query
+                if case_sensitive:
+                    return x.value == query
+                else:
+                    return x.value.casefold() == query.casefold()
 
         else:
 
@@ -1470,7 +1473,7 @@ class Worksheet:
                 for j, value in enumerate(row)
             ]
 
-    def find(self, query, in_row=None, in_column=None):
+    def find(self, query, in_row=None, in_column=None, case_sensitive=True):
         """Finds the first cell matching the query.
 
         :param query: A literal string to match or compiled regular expression.
@@ -1478,14 +1481,17 @@ class Worksheet:
         :param int in_row: (optional) One-based row number to scope the search.
         :param int in_column: (optional) One-based column number to scope
             the search.
+        :param bool case_sensitive: (optional) comparison is case sensitive if
+            set to True, case insensitive otherwise. Default is True.
+            Does not apply to regular expressions.
         :returns: the first matching cell or None otherwise
         """
         try:
-            return self._finder(finditem, query, in_row, in_column)
+            return self._finder(finditem, query, case_sensitive, in_row, in_column)
         except StopIteration:
             return None
 
-    def findall(self, query, in_row=None, in_column=None):
+    def findall(self, query, in_row=None, in_column=None, case_sensitive=True):
         """Finds all cells matching the query.
 
         :param query: A literal string to match or compiled regular expression.
@@ -1493,8 +1499,12 @@ class Worksheet:
         :param int in_row: (optional) One-based row number to scope the search.
         :param int in_column: (optional) One-based column number to scope
             the search.
+        :param bool case_sensitive: (optional) comparison is case sensitive if
+            set to True, case insensitive otherwise. Default is True.
+            Does not apply to regular expressions.
+        :returns: the list of all matching cells or empty list otherwise
         """
-        return list(self._finder(filter, query, in_row, in_column))
+        return list(self._finder(filter, query, case_sensitive, in_row, in_column))
 
     def freeze(self, rows=None, cols=None):
         """Freeze rows and/or columns on the worksheet.
