@@ -40,12 +40,17 @@ class Client:
         else:
             self.session = session
 
+        self.timeout = None
+
     def login(self):
         from google.auth.transport.requests import Request
 
         self.auth.refresh(Request(self.session))
 
         self.session.headers.update({"Authorization": "Bearer %s" % self.auth.token})
+
+    def set_timeout(self, timeout):
+        self.timeout = timeout
 
     def request(
         self,
@@ -64,6 +69,7 @@ class Client:
             data=data,
             files=files,
             headers=headers,
+            timeout=self.timeout,
         )
 
         if response.ok:
