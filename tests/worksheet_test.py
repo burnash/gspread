@@ -405,6 +405,14 @@ class WorksheetTest(GspreadTest):
             not_found, None, "find should return 'None' when value is not found"
         )
 
+        lower_value = "camelcase"
+        upper_value = "CamelCase"
+        self.sheet.update_cell(2, 10, lower_value)
+        self.sheet.update_cell(2, 11, upper_value)
+
+        cell = self.sheet.find(upper_value, case_sensitive=False)
+        self.assertEqual(cell.value, lower_value)
+
     @pytest.mark.vcr()
     def test_findall(self):
         list_len = 10
