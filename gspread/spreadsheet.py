@@ -94,6 +94,16 @@ class Spreadsheet:
         )
 
     @property
+    def timezone(self):
+        """Spreadsheet timeZone"""
+        return self._properties["timeZone"]
+
+    @property
+    def locale(self):
+        """Spreadsheet locale"""
+        return self._properties["locale"]
+
+    @property
     def sheet1(self):
         """Shortcut property for getting the first worksheet."""
         return self.get_worksheet(0)
@@ -562,3 +572,46 @@ class Spreadsheet:
         return self.fetch_sheet_metadata(params={"fields": "namedRanges"}).get(
             "namedRanges", []
         )
+
+    def update_timezone(self, timezone):
+        """Updates the current spreadsheet timezone.
+        Can be any timezone in CLDR format such as "America/New_York"
+        or a custom time zone such as GMT-07:00.
+        """
+
+        body = {
+            "requests": [
+                {
+                    "updateSpreadsheetProperties": {
+                        "properties": {"timeZone": timezone},
+                        "fields": "timeZone",
+                    },
+                },
+            ]
+        }
+
+        return self.batch_update(body)
+
+    def update_locale(self, locale):
+        """Update the locale of the spreaddsheet.
+        Can be any of the ISO 639-1 language codes, such as: de, fr, en, ...
+        Or an ISO 639-2 if no ISO 639-1 exists.
+        Or a combination of the ISO language code and country code,
+        such as en_US, de_CH, fr_FR, ...
+
+        .. note::
+            Note: when updating this field, not all locales/languages are supported.
+        """
+
+        body = {
+            "requests": [
+                {
+                    "updateSpreadsheetProperties": {
+                        "properties": {"locale": locale},
+                        "fields": "locale",
+                    },
+                },
+            ]
+        }
+
+        return self.batch_update(body)

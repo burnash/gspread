@@ -129,3 +129,22 @@ class SpreadsheetTest(GspreadTest):
             for rowix, ele in enumerate(rng["values"]):
                 self.assertEqual(values[rowix][colix], ele[0])
         self.spreadsheet.del_worksheet(worksheet)
+
+    @pytest.mark.vcr()
+    def test_timezone_and_locale(self):
+        prev_timezone = self.spreadsheet.timezone
+        prev_locale = self.spreadsheet.locale
+        new_timezone = "Europe/Paris"
+        new_locale = "fr_FR"
+
+        self.spreadsheet.update_timezone(new_timezone)
+        self.spreadsheet.update_locale(new_locale)
+
+        # must fect metadata
+        properties = self.spreadsheet.fetch_sheet_metadata()["properties"]
+
+        self.assertNotEqual(prev_timezone, properties["timeZone"])
+        self.assertNotEqual(prev_locale, properties["locale"])
+
+        self.assertEqual(new_timezone, properties["timeZone"])
+        self.assertEqual(new_locale, properties["locale"])
