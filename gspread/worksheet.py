@@ -1188,6 +1188,14 @@ class Worksheet:
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
         """
+
+        # can't insert row on sheet with colon ':'
+        # in its name, see issue: https://issuetracker.google.com/issues/36761154
+        if ":" in self.title:
+            raise GSpreadException(
+                "can't insert row in worksheet with colon ':' in its name. See issue: https://issuetracker.google.com/issues/36761154"
+            )
+
         body = {
             "requests": [
                 {
