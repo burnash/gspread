@@ -56,7 +56,7 @@ def local_server_flow(client_config, scopes, port=0):
 
     Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_local_server <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_local_server>`_.
     This will start a local web server and open the authorization URL in
-    the user’s browser.
+    the user's browser.
 
     Pass this function to ``flow`` parameter of :meth:`~gspread.oauth` to run
     a local server flow.
@@ -99,7 +99,7 @@ def oauth(
     r"""Authenticate with OAuth Client ID.
 
     By default this function will use the local server strategy and open
-    the authorization URL in the user’s browser::
+    the authorization URL in the user's browser::
 
         gc = gspread.oauth()
 
