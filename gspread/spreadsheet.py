@@ -615,3 +615,18 @@ class Spreadsheet:
         }
 
         return self.batch_update(body)
+
+    def list_protected_ranges(self, sheetid):
+        """Lists the spreadsheet's protected named ranges"""
+        sheets = self.fetch_sheet_metadata(
+            params={"fields": "sheets.properties,sheets.protectedRanges"}
+        )["sheets"]
+
+        try:
+            sheet = finditem(
+                lambda sheet: sheet["properties"]["sheetId"] == sheetid, sheets
+            )
+
+            return sheet["protectedRanges"]
+        except (StopIteration, KeyError):
+            return []
