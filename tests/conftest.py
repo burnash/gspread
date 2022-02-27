@@ -8,7 +8,7 @@ from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
 import gspread
-from gspread.exceptions import APIError
+from gspread.client import BackoffClient
 
 CREDS_FILENAME = os.getenv("GS_CREDS_FILENAME")
 RECORD_MODE = os.getenv("GS_RECORD_MODE", "none")
@@ -36,6 +36,14 @@ def get_method_name(self_id):
     return self_id.split(".")[-1]
 
 
+def ignore_retry_requests(response):
+    SKIP_RECORD = [403, 408, 429]
+    if response["status"]["code"] in SKIP_RECORD:
+        return None  # do not record
+
+    return response
+
+
 @pytest.fixture(scope="module")
 def vcr_config():
     return {
@@ -44,32 +52,14 @@ def vcr_config():
         "record_mode": RECORD_MODE,
         "serializer": "json",
         "path_transformer": vcr.VCR.ensure_suffix(".json"),
+        "before_record_response": ignore_retry_requests,
         "ignore_hosts": [
             "oauth2.googleapis.com",  # skip oauth requests, in replay mode we don't use them
         ],
         "filter_headers": [
-            ("authorization", DUMMY_ACCESS_TOKEN)
-        ],  # hide token from the recording
+            ("authorization", DUMMY_ACCESS_TOKEN)  # hide token from the recording
+        ],
     }
-
-
-class SleepyClient(gspread.Client):
-    HTTP_TOO_MANY_REQUESTS = 429
-    DEFAULT_SLEEP_SECONDS = 1
-
-    def request(self, *args, **kwargs):
-        try:
-            return super().request(*args, **kwargs)
-        except APIError as err:
-            data = err.response.json()
-
-            if data["error"]["code"] == self.HTTP_TOO_MANY_REQUESTS:
-                import time
-
-                time.sleep(self.DEFAULT_SLEEP_SECONDS)
-                return self.request(*args, **kwargs)
-            else:
-                raise err
 
 
 class DummyCredentials(UserCredentials):
@@ -78,8 +68,8 @@ class DummyCredentials(UserCredentials):
 
 class GspreadTest(unittest.TestCase):
     @classmethod
-    def get_temporary_spreadsheet_title(cls):
-        return "Test %s" % cls.__name__
+    def get_temporary_spreadsheet_title(cls, suffix=""):
+        return "Test {} {}".format(cls.__name__, suffix)
 
     @classmethod
     def get_cassette_name(cls):
@@ -96,7 +86,7 @@ def client():
     else:
         auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
 
-    gc = SleepyClient(auth_credentials)
+    gc = BackoffClient(auth_credentials)
     if not isinstance(gc, gspread.client.Client) is True:
         raise AssertionError
 

@@ -11,18 +11,14 @@ class SpreadsheetTest(GspreadTest):
 
     """Test for gspread.Spreadsheet."""
 
-    @pytest.fixture(scope="class", autouse=True)
-    def init(self, client, vcr):
-        # fixtures are not recorded by default, must do manually
-        with vcr.use_cassette(self.get_cassette_name()):
-            # must use class attributes, each test function runs in a different instance
-            SpreadsheetTest.spreadsheet = client.create(
-                self.get_temporary_spreadsheet_title()
-            )
+    @pytest.fixture(scope="function", autouse=True)
+    def init(self, client, request):
+        name = self.get_temporary_spreadsheet_title(request.node.name)
+        SpreadsheetTest.spreadsheet = client.create(name)
 
-            yield
+        yield
 
-            client.del_spreadsheet(SpreadsheetTest.spreadsheet.id)
+        client.del_spreadsheet(SpreadsheetTest.spreadsheet.id)
 
     @pytest.mark.vcr()
     def test_properties(self):
