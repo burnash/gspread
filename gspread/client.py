@@ -447,6 +447,27 @@ class Client:
 
 
 class BackoffClient(Client):
+    """BackoffClient is a gspread client with exponential
+    backoff retries.
+
+    In case a request fails due to some API rate limits,
+    it will wait for some time, then retry the request.
+
+    This can help by trying the request after some time and
+    prevent the application from failing (by raising an APIError exception).
+
+    .. Warning::
+        This Client is not production ready yet.
+        Use it at your own risk !
+
+    .. note::
+        Currently known issues are:
+
+        * will retry exponentially even when the error should
+          raise instantly. Due to the Drive API that raises
+          403 (Forbidden) errors for forbidden access and
+          for api rate limit exceeded."""
+
     _HTTP_ERROR_CODES = [
         HTTPStatus.FORBIDDEN,  # Drive API return a 403 Forbidden on usage rate limit exceeded
         HTTPStatus.REQUEST_TIMEOUT,  # in case of a timeout
