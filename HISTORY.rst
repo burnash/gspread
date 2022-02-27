@@ -1,7 +1,24 @@
 Release History
 ===============
 
+5.2.0 (2022-02-27)
+------------------
+* Copy comments when during spreadsheet copy by @lavigne958 in https://github.com/burnash/gspread/pull/979
+* Update user-guide.rst by @maky-hnou in https://github.com/burnash/gspread/pull/980
+* merge setup test cassettes by @lavigne958 in https://github.com/burnash/gspread/pull/982
+* Feature/add header validation get all records by @lavigne958 in https://github.com/burnash/gspread/pull/984
+* Add timeout to client by @lavigne958 in https://github.com/burnash/gspread/pull/987
+* Feature/update timezone and locale by @lavigne958 in https://github.com/burnash/gspread/pull/989
+* Feature/make case comparison in find by @lavigne958 in https://github.com/burnash/gspread/pull/990
+* Updated API rate limits by @hvinayan in https://github.com/burnash/gspread/pull/993
+* Feature/prevent insert row to sheet with colon by @lavigne958 in https://github.com/burnash/gspread/pull/992
+
+## New Contributors
+* @maky-hnou made their first contribution in https://github.com/burnash/gspread/pull/980
+* @hvinayan made their first contribution in https://github.com/burnash/gspread/pull/993
+
 5.1.1 (2021-12-22)
+------------------
 * Fix documentation about oauth (#975 by @lavigne958)
 
 5.1.0 (2021-12-22)
