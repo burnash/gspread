@@ -7,6 +7,8 @@ Google API.
 
 """
 
+from http import HTTPStatus
+
 from google.auth.transport.requests import AuthorizedSession
 
 from .exceptions import APIError, SpreadsheetNotFound
@@ -442,3 +444,45 @@ class Client:
 
         params = {"supportsAllDrives": True}
         self.request("delete", url, params=params)
+
+
+class BackoffClient(Client):
+    _HTTP_ERROR_CODES = [
+        HTTPStatus.FORBIDDEN,  # Drive API return a 403 Forbidden on usage rate limit exceeded
+        HTTPStatus.REQUEST_TIMEOUT,  # in case of a timeout
+        HTTPStatus.TOO_MANY_REQUESTS,  # sheet API usage rate limit exceeded
+    ]
+    _NR_BACKOFF = 0
+    _MAX_BACKOFF = 128  # arbitrary maximum backoff
+    _MAX_BACKOFF_REACHED = False  # Stop after reaching _MAX_BACKOFF
+
+    def request(self, *args, **kwargs):
+        try:
+            return super().request(*args, **kwargs)
+        except APIError as err:
+            data = err.response.json()
+            code = data["error"]["code"]
+
+            # check if error should retyr
+            if code in self._HTTP_ERROR_CODES and self._MAX_BACKOFF_REACHED is False:
+                self._NR_BACKOFF += 1
+                wait = min(2 ** self._NR_BACKOFF, self._MAX_BACKOFF)
+
+                if wait >= self._MAX_BACKOFF:
+                    self._MAX_BACKOFF_REACHED = True
+
+                import time
+
+                time.sleep(wait)
+
+                # make the request again
+                response = self.request(*args, **kwargs)
+
+                # reset counters for next time
+                self._NR_BACKOFF = 0
+                self._MAX_BACKOFF_REACHED = False
+
+                return response
+
+            # failed too many times, raise APIEerror
+            raise err
