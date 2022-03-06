@@ -15,23 +15,15 @@ class WorksheetTest(GspreadTest):
 
     """Test for gspread.Worksheet."""
 
-    @pytest.fixture(scope="class", autouse=True)
-    def init(self, client, vcr):
-        # fixtures are not recorded by default, must do manually
-        with vcr.use_cassette(WorksheetTest.get_cassette_name()):
-            # must use class attributes, each test function runs in a different instance
-            WorksheetTest.spreadsheet = client.create(
-                self.get_temporary_spreadsheet_title()
-            )
-            WorksheetTest.sheet = WorksheetTest.spreadsheet.sheet1
+    @pytest.fixture(scope="function", autouse=True)
+    def init(self, client, request):
+        name = self.get_temporary_spreadsheet_title(request.node.name)
+        WorksheetTest.spreadsheet = client.create(name)
+        WorksheetTest.sheet = WorksheetTest.spreadsheet.sheet1
 
-        # We must yield the next step after closing the cassette file
-        # so the call to `reset_sheet` can find the file and fill it.
         yield
 
-        # Then we need to open the same file to record the deletion
-        with vcr.use_cassette(WorksheetTest.get_cassette_name()):
-            client.del_spreadsheet(WorksheetTest.spreadsheet.id)
+        client.del_spreadsheet(WorksheetTest.spreadsheet.id)
 
     @pytest.fixture(autouse=True)
     @pytest.mark.vcr()

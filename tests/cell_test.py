@@ -9,17 +9,16 @@ from .conftest import GspreadTest
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
 
-    @pytest.fixture(scope="class", autouse=True)
-    def init(self, client, vcr):
-        # fixtures are not recorded by default, must do manually
-        with vcr.use_cassette(self.get_cassette_name()):
-            # must use class attributes, each test function runs in a different instance
-            CellTest.spreadsheet = client.create(self.get_temporary_spreadsheet_title())
-            CellTest.sheet = CellTest.spreadsheet.sheet1
+    @pytest.fixture(scope="function", autouse=True)
+    def init(self, client, request):
+        # User current test name in spreadsheet name
+        name = self.get_temporary_spreadsheet_title(request.node.name)
+        CellTest.spreadsheet = client.create(name)
+        CellTest.sheet = CellTest.spreadsheet.sheet1
 
-            yield
+        yield
 
-            client.del_spreadsheet(CellTest.spreadsheet.id)
+        client.del_spreadsheet(CellTest.spreadsheet.id)
 
     @pytest.mark.vcr()
     def test_properties(self):
