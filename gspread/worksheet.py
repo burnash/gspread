@@ -131,6 +131,15 @@ class Worksheet:
         """Number of frozen columns."""
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
+    def _get_sheet_property(self, property, default_value):
+        """return a property of this worksheet or default value if not found"""
+        meta = self.spreadsheet.fetch_sheet_metadata()
+        sheet = finditem(
+            lambda x: x["properties"]["sheetId"] == self.id, meta["sheets"]
+        )
+
+        return sheet.get(property, default_value)
+
     def acell(self, label, value_render_option=ValueRenderOption.formatted):
         """Returns an instance of a :class:`gspread.models.Cell`.
 
@@ -1824,3 +1833,129 @@ class Worksheet:
             ]
         }
         self.spreadsheet.batch_update(body)
+
+    def _add_dimension_group(self, start, end, dimension):
+        """
+        update this sheet by grouping 'dimension'
+
+        :param int start: The start (inclusive) of the group
+        :param int end: The end (exclusive) of the grou
+        :param str dimension: The dimension to group, can be one of
+            ``ROWS`` or ``COLUMNS``.
+        """
+        body = {
+            "requests": [
+                {
+                    "addDimensionGroup": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": dimension,
+                            "startIndex": start,
+                            "endIndex": end,
+                        },
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def group_columns(self, start, end):
+        """
+        Group columns in order to hide them in the UI.
+
+        .. note::
+
+            API behavior with nested groups and non matching ``[start:end[``
+            range can be found here
+
+            https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddDimensionGroupRequest
+
+        :param int start: The start (inclusive) of the group
+        :param int end: The end (exclusive) of the group
+        """
+        return self._add_dimension_group(start, end, Dimension.cols)
+
+    def group_rows(self, start, end):
+        """
+        Group rows in order to hide them in the UI.
+
+        .. note::
+
+            API behavior with nested groups and non matching ``[start:end[``
+            range can be found here
+
+            https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddDimensionGroupRequest
+
+        :param int start: The start (inclusive) of the group
+        :param int end: The end (exclusive) of the group
+        """
+        return self._add_dimension_group(start, end, Dimension.rows)
+
+    def _delete_dimension_group(self, start, end, dimension):
+        """delete a dimension group in this sheet"""
+        body = {
+            "requests": [
+                {
+                    "deleteDimensionGroup": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": dimension,
+                            "startIndex": start,
+                            "endIndex": end,
+                        }
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def delete_grouped_columns(self, start, end):
+        """
+        Delete a grouped columns
+
+        .. note::
+
+            API behavior with nested groups and non matching ``[start:end[``
+            range can be found here
+
+            https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#DeleteDimensionGroupRequest
+
+        :param int start: The start (inclusive) of the group
+        :param int end: The end (exclusive) of the group
+        """
+        return self._delete_dimension_group(start, end, Dimension.cols)
+
+    def delete_grouped_rows(self, start, end):
+        """
+        Delete a grouped rows
+
+        .. note::
+            API behavior with nested groups and non matching ``[start:end[``
+            range can be found here
+
+            https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#DeleteDimensionGroupRequest
+
+        :param int start: The start (inclusive) of the group
+        :param int end: The end (exclusive) of the group
+        """
+        return self._delete_dimension_group(start, end, Dimension.rows)
+
+    def list_grouped_columns(self):
+        """
+        List all the grouped columns in this worksheet
+
+        :returns: list of the groupped columns
+        :rtype: list
+        """
+        return self._get_sheet_property("columnGroups", [])
+
+    def list_grouped_rows(self):
+        """
+        List all the grouped rows in this worksheet
+
+        :returns: list of the grouped rows
+        :rtype: list
+        """
+        return self._get_sheet_property("rowGroups", [])

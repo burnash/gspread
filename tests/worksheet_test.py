@@ -891,3 +891,37 @@ class WorksheetTest(GspreadTest):
         # make sure cells are empty
         self.assertListEqual(w.get_values("A1:B1"), [])
         self.assertListEqual(w.get_values("C2:E2"), [])
+
+    @pytest.mark.vcr()
+    def test_group_columns(self):
+        w = self.sheet
+        w.group_columns(0, 2)
+
+        col_groups = self.sheet.list_grouped_columns()
+
+        range = col_groups[0]["range"]
+        self.assertEqual(range["dimension"], utils.Dimension.cols)
+        self.assertEqual(range["startIndex"], 0)
+        self.assertEqual(range["endIndex"], 2)
+
+        self.sheet.delete_grouped_columns(0, 2)
+
+        col_groups = self.sheet.list_grouped_columns()
+        self.assertEqual(col_groups, [])
+
+    @pytest.mark.vcr()
+    def test_group_rows(self):
+        w = self.sheet
+        w.group_rows(0, 2)
+
+        row_groups = self.sheet.list_grouped_rows()
+
+        range = row_groups[0]["range"]
+        self.assertEqual(range["dimension"], utils.Dimension.rows)
+        self.assertEqual(range["startIndex"], 0)
+        self.assertEqual(range["endIndex"], 2)
+
+        self.sheet.delete_grouped_rows(0, 2)
+
+        row_groups = self.sheet.list_grouped_rows()
+        self.assertEqual(row_groups, [])
