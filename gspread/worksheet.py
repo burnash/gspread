@@ -1860,7 +1860,7 @@ class Worksheet:
 
         return self.spreadsheet.batch_update(body)
 
-    def group_columns(self, start, end):
+    def add_dimension_group_columns(self, start, end):
         """
         Group columns in order to hide them in the UI.
 
@@ -1876,7 +1876,7 @@ class Worksheet:
         """
         return self._add_dimension_group(start, end, Dimension.cols)
 
-    def group_rows(self, start, end):
+    def add_dimension_group_rows(self, start, end):
         """
         Group rows in order to hide them in the UI.
 
@@ -1911,7 +1911,7 @@ class Worksheet:
 
         return self.spreadsheet.batch_update(body)
 
-    def delete_grouped_columns(self, start, end):
+    def delete_dimension_group_columns(self, start, end):
         """
         Delete a grouped columns
 
@@ -1927,7 +1927,7 @@ class Worksheet:
         """
         return self._delete_dimension_group(start, end, Dimension.cols)
 
-    def delete_grouped_rows(self, start, end):
+    def delete_dimension_group_rows(self, start, end):
         """
         Delete a grouped rows
 
@@ -1942,7 +1942,7 @@ class Worksheet:
         """
         return self._delete_dimension_group(start, end, Dimension.rows)
 
-    def list_grouped_columns(self):
+    def list_dimension_group_columns(self):
         """
         List all the grouped columns in this worksheet
 
@@ -1951,7 +1951,7 @@ class Worksheet:
         """
         return self._get_sheet_property("columnGroups", [])
 
-    def list_grouped_rows(self):
+    def list_dimension_group_rows(self):
         """
         List all the grouped rows in this worksheet
 
