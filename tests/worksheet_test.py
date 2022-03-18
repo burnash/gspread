@@ -925,3 +925,15 @@ class WorksheetTest(GspreadTest):
 
         row_groups = self.sheet.list_dimension_group_rows()
         self.assertEqual(row_groups, [])
+
+    @pytest.mark.vcr()
+    def test_hide_columns_rows(self):
+        w = self.sheet
+
+        # This is hard to verify
+        # simply make the HTTP request to make sure it does not fail
+        w.hide_columns(0, 2)
+        w.unhide_columns(0, 2)
+
+        w.hide_rows(0, 2)
+        w.unhide_rows(0, 2)

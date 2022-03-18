@@ -1959,3 +1959,111 @@ class Worksheet:
         :rtype: list
         """
         return self._get_sheet_property("rowGroups", [])
+
+    def _hide_dimension(self, start, end, dimension):
+        """
+        update this sheet by hiding the given 'dimension'
+
+        Index start from 0.
+
+        :param int start: The (inclusive) start of the dimension to hide
+        :param int end: The (exclusive) end of the dimension to hide
+        :param str dimension: The dimension to hide, can be one of
+            ``ROWS`` or ``COLUMNS``.
+        """
+        body = {
+            "requests": [
+                {
+                    "updateDimensionProperties": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": dimension,
+                            "startIndex": start,
+                            "endIndex": end,
+                        },
+                        "properties": {
+                            "hiddenByUser": True,
+                        },
+                        "fields": "hiddenByUser",
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def hide_columns(self, start, end):
+        """
+        Explicitly hide the given column index range.
+
+        Index start from 0.
+
+        :param int start: The (inclusive) starting column to hide
+        :param int end: The (exclusive) end column to hide
+        """
+        return self._hide_dimension(start, end, Dimension.cols)
+
+    def hide_rows(self, start, end):
+        """
+        Explicitly hide the given row index range.
+
+        Index start from 0.
+
+        :param int start: The (inclusive) starting row to hide
+        :param int end: The (exclusive) end row to hide
+        """
+        return self._hide_dimension(start, end, Dimension.rows)
+
+    def _unhide_dimension(self, start, end, dimension):
+        """
+        update this sheet by unhideing the given 'dimension'
+
+        Index start from 0.
+
+        :param int start: The (inclusive) start of the dimension to unhide
+        :param int end: The (inclusive) end of the dimension to unhide
+        :param str dimension: The dimension to hide, can be one of
+            ``ROWS`` or ``COLUMNS``.
+        """
+        body = {
+            "requests": [
+                {
+                    "updateDimensionProperties": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": dimension,
+                            "startIndex": start,
+                            "endIndex": end,
+                        },
+                        "properties": {
+                            "hiddenByUser": False,
+                        },
+                        "fields": "hiddenByUser",
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def unhide_columns(self, start, end):
+        """
+        Explicitly unhide the given column index range.
+
+        Index start from 0.
+
+        :param int start: The (inclusive) starting column to hide
+        :param int end: The (exclusive) end column to hide
+        """
+        return self._unhide_dimension(start, end, Dimension.cols)
+
+    def unhide_rows(self, start, end):
+        """
+        Explicitly unhide the given row index range.
+
+        Index start from 0.
+
+        :param int start: The (inclusive) starting row to hide
+        :param int end: The (exclusive) end row to hide
+        """
+        return self._unhide_dimension(start, end, Dimension.rows)
