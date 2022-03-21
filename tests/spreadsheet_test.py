@@ -144,3 +144,20 @@ class SpreadsheetTest(GspreadTest):
 
         self.assertEqual(new_timezone, properties["timeZone"])
         self.assertEqual(new_locale, properties["locale"])
+
+    @pytest.mark.vcr()
+    def test_update_title(self):
+        prev_title = self.spreadsheet.title
+        new_title = "🎊 Updated Title #123 🎉"
+
+        self.spreadsheet.update_title(new_title)
+
+        # Check whether title is updated immediately
+        self.assertNotEqual(prev_title, self.spreadsheet.title)
+        self.assertEqual(new_title, self.spreadsheet.title)
+
+        # Check whether changes persist upon re-fetching
+        properties = self.spreadsheet.fetch_sheet_metadata()["properties"]
+
+        self.assertNotEqual(prev_title, properties["title"])
+        self.assertEqual(new_title, properties["title"])

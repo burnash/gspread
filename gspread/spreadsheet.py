@@ -573,6 +573,26 @@ class Spreadsheet:
             "namedRanges", []
         )
 
+    def update_title(self, title):
+        """Renames the spreadsheet.
+
+        :param str title: A new title.
+        """
+        body = {
+            "requests": [
+                {
+                    "updateSpreadsheetProperties": {
+                        "properties": {"title": title},
+                        "fields": "title",
+                    }
+                }
+            ]
+        }
+
+        response = self.batch_update(body)
+        self._properties["title"] = title
+        return response
+
     def update_timezone(self, timezone):
         """Updates the current spreadsheet timezone.
         Can be any timezone in CLDR format such as "America/New_York"
