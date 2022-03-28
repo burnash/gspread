@@ -1,6 +1,17 @@
 Release History
 ===============
 
+5.3.0 (2022-03-28)
+------------------
+* Feature/rework test cassettes recording by @lavigne958 in https://github.com/burnash/gspread/pull/1004
+* add method list protected ranges by @lavigne958 in https://github.com/burnash/gspread/pull/1008
+* Add new methods to add/list/delete dimensionGroups by @lavigne958 in https://github.com/burnash/gspread/pull/1010
+* Add method to hide rows/columns by @lavigne958 in https://github.com/burnash/gspread/pull/1012
+* Add ability to rename Spreadsheets (via a new Spreadsheet.update_title) by @jansim in https://github.com/burnash/gspread/pull/1013
+
+## New Contributors
+* @jansim made their first contribution in https://github.com/burnash/gspread/pull/1013
+
 5.2.0 (2022-02-27)
 ------------------
 * Copy comments when during spreadsheet copy by @lavigne958 in https://github.com/burnash/gspread/pull/979
