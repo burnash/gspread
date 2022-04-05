@@ -50,6 +50,7 @@ def convert_credentials(credentials):
         "OAuth2Credentials",
         "AccessTokenCredentials",
         "GoogleCredentials",
+        "AppAssertionCredentials",
     ):
         return _convert_oauth(credentials)
     elif isinstance(credentials, Credentials):
