@@ -487,7 +487,7 @@ class BackoffClient(Client):
             # check if error should retyr
             if code in self._HTTP_ERROR_CODES and self._MAX_BACKOFF_REACHED is False:
                 self._NR_BACKOFF += 1
-                wait = min(2 ** self._NR_BACKOFF, self._MAX_BACKOFF)
+                wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
 
                 if wait >= self._MAX_BACKOFF:
                     self._MAX_BACKOFF_REACHED = True
