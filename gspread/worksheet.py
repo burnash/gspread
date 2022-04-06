@@ -376,6 +376,7 @@ class Worksheet:
         allow_underscores_in_numeric_literals=False,
         numericise_ignore=None,
         value_render_option=None,
+        expected_headers=None,
     ):
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
@@ -399,6 +400,7 @@ class Worksheet:
         :param str value_render_option: (optional) Determines how values should
             be rendered in the the output. See `ValueRenderOption`_ in
             the Sheets API.
+        :param list expected_headers: (optional) List of expected headers, they must be unique.
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
         """
@@ -412,9 +414,27 @@ class Worksheet:
 
         keys = data[idx]
 
-        # Check keys are uniques
-        if len(keys) != len(set(keys)):
-            raise GSpreadException("headers must be uniques")
+        # if no given expected headers, expect all of them
+        if expected_headers is None:
+            expected_headers = keys
+
+        # keys must:
+        # - be uniques
+        # - be part of the complete header list
+        # - not contain extra headers
+        expected = set(expected_headers)
+        headers = set(keys)
+
+        # make sure they are uniques
+        if len(expected) != len(expected_headers):
+            raise GSpreadException("the given 'expected_headers' are not uniques")
+
+        if not expected & headers == expected:
+            raise GSpreadException(
+                "the given 'expected_headers' contains unknown headers: {}".format(
+                    expected & headers
+                )
+            )
 
         if numericise_ignore == ["all"]:
             values = data[idx + 1 :]
