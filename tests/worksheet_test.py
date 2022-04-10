@@ -444,7 +444,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_all_values(self):
         self.sheet.resize(4, 4)
-        # put in new values, made from three lists
+        # put in new values
         rows = [
             ["A1", "B1", "", "D1"],
             ["", "b2", "", ""],
@@ -470,7 +470,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.resize(4, 4)
         # renames sheet to contain single and double quotes
         self.sheet.update_title("D3")
-        # put in new values, made from three lists
+        # put in new values
         rows = [
             ["A1", "B1", "", "D1"],
             ["", "b2", "", ""],
@@ -494,7 +494,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_all_records(self):
         self.sheet.resize(4, 4)
-        # put in new values, made from three lists
+        # put in new values
         rows = [
             ["A1", "B1", "", "D1"],
             [1, "b2", 1.45, ""],
@@ -533,7 +533,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_all_records_different_header(self):
         self.sheet.resize(6, 4)
-        # put in new values, made from three lists
+        # put in new values
         rows = [
             ["", "", "", ""],
             ["", "", "", ""],
@@ -574,7 +574,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_all_records_value_render_options(self):
         self.sheet.resize(2, 4)
-        # put in new values, made from three lists
+        # put in new values
         rows = [
             ["=4/2", "2020-01-01", "string", 53],
             ["=3/2", 0.12, "1999-01-02", ""],
@@ -614,7 +614,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_all_records_duplicate_keys(self):
         self.sheet.resize(4, 4)
-        # put in new values, made from three lists
+        # put in new values
         rows = [
             ["A1", "A1", "", "D1"],
             [1, "b2", 1.45, ""],
@@ -629,13 +629,13 @@ class WorksheetTest(GspreadTest):
         with pytest.raises(GSpreadException):
             self.sheet.get_all_records()
 
-    @pytest.mark.vcr()
+    @pytest.mark.vcr(allow_playback_repeats=True)
     def test_get_all_records_expected_headers(self):
         self.sheet.resize(4, 4)
 
-        # put in new values, made from three lists
+        # put in new values
         rows = [
-            ["A1", "B2", "C3", "C3"],
+            ["A1", "B2", "C3", "D4"],
             [1, "b2", 1.45, ""],
             ["", "", "", ""],
             ["A4", 0.4, "", 4],
@@ -645,7 +645,18 @@ class WorksheetTest(GspreadTest):
             cell.value = value
         self.sheet.update_cells(cell_list)
 
-        expected_headers = ["A1", "B2"]
+        # check non uniques expected headers
+        expected_headers = ["A1", "A1"]
+        with pytest.raises(GSpreadException):
+            self.sheet.get_all_records(expected_headers=expected_headers)
+
+        # check extra headers
+        expected_headers = ["A1", "E5"]
+        with pytest.raises(GSpreadException):
+            self.sheet.get_all_records(expected_headers=expected_headers)
+
+        # check nominal case.
+        expected_headers = ["A1", "C3"]
         read_records = self.sheet.get_all_records(
             expected_headers=expected_headers,
         )

@@ -400,9 +400,17 @@ class Worksheet:
         :param str value_render_option: (optional) Determines how values should
             be rendered in the the output. See `ValueRenderOption`_ in
             the Sheets API.
+
+            .. note::
+
+                ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
         :param list expected_headers: (optional) List of expected headers, they must be unique.
 
-        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+            .. note::
+
+                returned dictionaries will contain all headers even if not included in this list
+
         """
         idx = head - 1
 
