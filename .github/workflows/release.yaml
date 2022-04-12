@@ -18,6 +18,8 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: "3.8"
+    - name: Setup tox
+      run: pip install tox
     - name: Run linter
       run: tox -e lint
     - name: Run tests

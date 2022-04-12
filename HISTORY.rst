@@ -1,7 +1,7 @@
 Release History
 ===============
 
-5.3.1 (2022-04-12)
+5.3.2 (2022-04-12)
 ------------------
 * Bugfix/black python3.10 by @lavigne958 in https://github.com/burnash/gspread/pull/1020
 * Automate releases by @lavigne958 in https://github.com/burnash/gspread/pull/1025
