@@ -1,6 +1,12 @@
 Release History
 ===============
 
+5.3.1 (2022-04-12)
+------------------
+* Bugfix/black python3.10 by @lavigne958 in https://github.com/burnash/gspread/pull/1020
+* Automate releases by @lavigne958 in https://github.com/burnash/gspread/pull/1025
+* Bugfix/get all record duplicated columns by @lavigne958 in https://github.com/burnash/gspread/pull/1021
+
 5.3.0 (2022-03-28)
 ------------------
 * Feature/rework test cassettes recording by @lavigne958 in https://github.com/burnash/gspread/pull/1004
