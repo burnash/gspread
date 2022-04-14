@@ -6,7 +6,7 @@ import pytest
 
 import gspread
 import gspread.utils as utils
-from gspread.exceptions import GSpreadException
+from gspread.exceptions import APIError, GSpreadException
 
 from .conftest import I18N_STR, GspreadTest
 
@@ -976,3 +976,21 @@ class WorksheetTest(GspreadTest):
 
         w.hide_rows(0, 2)
         w.unhide_rows(0, 2)
+
+    @pytest.mark.vcr()
+    def test_hide_show_worksheet(self):
+        """We can't retrieve this property from the API
+        see issue: https://issuetracker.google.com/issues/229298342
+
+        We can only send the request and make sure it works.
+        This is a trivial method, using recorded cassettes it will never fail.
+        But next time we refresh the cassette it will make the real request."""
+
+        # you cannot hide all worksheet in a document
+        with pytest.raises(APIError):
+            self.sheet.hide()
+
+        new_sheet = self.spreadsheet.add_worksheet("you cannot see me", 2, 2)
+        new_sheet.hide()
+
+        new_sheet.show()
