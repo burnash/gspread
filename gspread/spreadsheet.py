@@ -494,10 +494,9 @@ class Spreadsheet:
                Allowed values are: ``owner``, ``writer``, ``reader``.
         :type role: str
         :param notify: (optional) Whether to send an email to the target user/domain.
-        :type notify: str
+        :type notify: bool
         :param email_message: (optional) The email to be sent if notify=True
         :type email_message: str
-
         :param with_link: (optional) Whether the link is required for this permission
         :type with_link: bool
 

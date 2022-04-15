@@ -386,7 +386,7 @@ class Client:
             Allowed values are: ``user``, ``group``, ``domain``, ``anyone``
         :param str role: (optional) The primary role for this user.
             Allowed values are: ``owner``, ``writer``, ``reader``
-        :param str notify: (optional) Whether to send an email to the target
+        :param bool notify: (optional) Whether to send an email to the target
             user/domain.
         :param str email_message: (optional) An email message to be sent
             if ``notify=True``.
