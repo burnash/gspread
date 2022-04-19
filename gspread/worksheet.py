@@ -440,7 +440,7 @@ class Worksheet:
         if not expected & headers == expected:
             raise GSpreadException(
                 "the given 'expected_headers' contains unknown headers: {}".format(
-                    expected & headers
+                    expected - headers
                 )
             )
 
