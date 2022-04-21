@@ -1071,13 +1071,15 @@ class Worksheet:
 
         return self.spreadsheet.batch_update(body)
 
-    def columns_auto_resize(self, start_column_index, end_column_index):
-        """Updates the size of columns in the  worksheet.
+    def _auto_resize(self, start_index, end_index, dimension):
+        """Updates the size of rows or columns in the  worksheet.
 
-        ex: worksheet.columns_auto_resize(0, 10)
+        :param start_index: The index (inclusive) to begin resizing
+        :param end_index: The index (exclusive) to finish resizing
+        :param dimension: Specifies whether to resize the row or column
 
 
-        .. versionadded:: 3.4
+        .. versionadded:: 5.3.3
         """
         body = {
             "requests": [
@@ -1085,9 +1087,9 @@ class Worksheet:
                     "autoResizeDimensions": {
                         "dimensions": {
                             "sheetId": self.id,
-                            "dimension": Dimension.cols,
-                            "startIndex": int(start_column_index),
-                            "endIndex": int(end_column_index),
+                            "dimension": dimension,
+                            "startIndex": int(start_index),
+                            "endIndex": int(end_index),
                         }
                     }
                 }
@@ -1095,6 +1097,29 @@ class Worksheet:
         }
 
         return self.spreadsheet.batch_update(body)
+
+    def columns_auto_resize(self, start_column_index, end_column_index):
+        """Updates the size of rows or columns in the  worksheet.
+
+        :param start_column_index: The index (inclusive) to begin resizing
+        :param end_column_index: The index (exclusive) to finish resizing
+
+
+        .. versionadded:: 3.4
+        .. versionmodified:: 5.3.3
+        """
+        return self._auto_resize(start_column_index, end_column_index, Dimension.cols)
+
+    def rows_auto_resize(self, start_row_index, end_row_index):
+        """Updates the size of rows or columns in the  worksheet.
+
+        :param start_row_index: The index (inclusive) to begin resizing
+        :param end_row_index: The index (exclusive) to finish resizing
+
+
+        .. versionadded:: 5.3.3
+        """
+        return self._auto_resize(self, start_row_index, end_row_index, Dimension.rows)
 
     def add_rows(self, rows):
         """Adds rows to worksheet.
