@@ -518,6 +518,13 @@ class Spreadsheet:
             with_link=with_link,
         )
 
+    def export_to_pdf(self):
+        """Export the spreadsheet as a pdf.
+
+        :returns bytes: A content of PDF
+        """
+        return self.client.export_to_pdf(self.id)
+
     def list_permissions(self):
         """Lists the spreadsheet's permissions."""
         return self.client.list_permissions(self.id)

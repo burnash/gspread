@@ -207,6 +207,32 @@ class Client:
         spreadsheet_id = r.json()["id"]
         return self.open_by_key(spreadsheet_id)
 
+    def export_to_pdf(self, file_id):
+        """Export a spreadsheet to a PDF.
+
+        :param str file_id: A key of a spreadsheet to export
+        :returns bytes: A content of PDF
+
+        Example::
+
+            # Export a spreadsheet to a PDF and Save it to a file
+
+            pdf = gc.export_to_pdf('0BmgG6nO_6dprnRRUWl1UFE')
+
+            with open('spreadsheet.pdf', 'wb') as f:
+                f.write(pdf)
+
+        """
+        url = "{}/{}/export".format(DRIVE_FILES_API_V3_URL, file_id)
+
+        params = {
+            "mimeType": "application/pdf"
+        }
+
+        r = self.request("get", url, params=params)
+        return r.content
+        
+
     def copy(
         self,
         file_id,
