@@ -220,7 +220,7 @@ class WorksheetTest(GspreadTest):
         new_rows = self.sheet.row_count + add_num
 
         def get_grid_props():
-            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()["sheets"]
+            sheets = self.spreadsheet.fetch_sheet_metadata()["sheets"]
             return utils.finditem(
                 lambda x: x["properties"]["sheetId"] == self.sheet.id, sheets
             )["properties"]["gridProperties"]
@@ -308,7 +308,7 @@ class WorksheetTest(GspreadTest):
         freeze_rows = 2
 
         def get_grid_props():
-            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()["sheets"]
+            sheets = self.spreadsheet.fetch_sheet_metadata()["sheets"]
             return utils.finditem(
                 lambda x: x["properties"]["sheetId"] == self.sheet.id, sheets
             )["properties"]["gridProperties"]
@@ -335,7 +335,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_basic_filters(self):
         def get_sheet():
-            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()["sheets"]
+            sheets = self.spreadsheet.fetch_sheet_metadata()["sheets"]
             return utils.finditem(
                 lambda x: x["properties"]["sheetId"] == self.sheet.id, sheets
             )
@@ -991,6 +991,21 @@ class WorksheetTest(GspreadTest):
             self.sheet.hide()
 
         new_sheet = self.spreadsheet.add_worksheet("you cannot see me", 2, 2)
+
+        # as describe in https://issuetracker.google.com/issues/229298342
+        # the response does not include some default values.
+        # if missing => value is False
+        res = self.spreadsheet.fetch_sheet_metadata()
+        before_hide = res["sheets"][1]["properties"].get("hidden", False)
+        self.assertFalse(before_hide)
+
         new_sheet.hide()
 
+        res = self.spreadsheet.fetch_sheet_metadata()
+        after_hide = res["sheets"][1]["properties"].get("hidden", False)
+        self.assertTrue(after_hide)
+
         new_sheet.show()
+        res = self.spreadsheet.fetch_sheet_metadata()
+        before_hide = res["sheets"][1]["properties"].get("hidden", False)
+        self.assertFalse(before_hide)
