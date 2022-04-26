@@ -213,7 +213,7 @@ class Client:
         spreadsheet_id = r.json()["id"]
         return self.open_by_key(spreadsheet_id)
 
-    def export(self, file_id, format):
+    def export(self, file_id, format=ExportFormat.PDF):
         """Export the spreadsheet in the format.
 
         :param str file_id: A key of a spreadsheet to export

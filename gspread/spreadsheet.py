@@ -19,7 +19,7 @@ from .urls import (
     SPREADSHEET_VALUES_CLEAR_URL,
     SPREADSHEET_VALUES_URL,
 )
-from .utils import finditem, quote
+from .utils import ExportFormat, finditem, quote
 from .worksheet import Worksheet
 
 
@@ -518,7 +518,7 @@ class Spreadsheet:
             with_link=with_link,
         )
 
-    def export(self, format):
+    def export(self, format=ExportFormat.PDF):
         """Export the spreadsheet in the format.
 
         :param str file_id: A key of a spreadsheet to export
