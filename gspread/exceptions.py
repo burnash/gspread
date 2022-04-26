@@ -7,6 +7,10 @@ Exceptions used in gspread.
 """
 
 
+class UnSupportedExportFormat(Exception):
+    """Raised when export format is not supported."""
+
+
 class GSpreadException(Exception):
     """A base class for gspread's exceptions."""
 
