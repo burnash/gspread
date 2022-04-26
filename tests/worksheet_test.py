@@ -6,7 +6,7 @@ import pytest
 
 import gspread
 import gspread.utils as utils
-from gspread.exceptions import GSpreadException
+from gspread.exceptions import APIError, GSpreadException
 
 from .conftest import I18N_STR, GspreadTest
 
@@ -220,7 +220,7 @@ class WorksheetTest(GspreadTest):
         new_rows = self.sheet.row_count + add_num
 
         def get_grid_props():
-            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()["sheets"]
+            sheets = self.spreadsheet.fetch_sheet_metadata()["sheets"]
             return utils.finditem(
                 lambda x: x["properties"]["sheetId"] == self.sheet.id, sheets
             )["properties"]["gridProperties"]
@@ -308,7 +308,7 @@ class WorksheetTest(GspreadTest):
         freeze_rows = 2
 
         def get_grid_props():
-            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()["sheets"]
+            sheets = self.spreadsheet.fetch_sheet_metadata()["sheets"]
             return utils.finditem(
                 lambda x: x["properties"]["sheetId"] == self.sheet.id, sheets
             )["properties"]["gridProperties"]
@@ -335,7 +335,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_basic_filters(self):
         def get_sheet():
-            sheets = self.sheet.spreadsheet.fetch_sheet_metadata()["sheets"]
+            sheets = self.spreadsheet.fetch_sheet_metadata()["sheets"]
             return utils.finditem(
                 lambda x: x["properties"]["sheetId"] == self.sheet.id, sheets
             )
@@ -976,3 +976,36 @@ class WorksheetTest(GspreadTest):
 
         w.hide_rows(0, 2)
         w.unhide_rows(0, 2)
+
+    @pytest.mark.vcr()
+    def test_hide_show_worksheet(self):
+        """We can't retrieve this property from the API
+        see issue: https://issuetracker.google.com/issues/229298342
+
+        We can only send the request and make sure it works.
+        This is a trivial method, using recorded cassettes it will never fail.
+        But next time we refresh the cassette it will make the real request."""
+
+        # you cannot hide all worksheet in a document
+        with pytest.raises(APIError):
+            self.sheet.hide()
+
+        new_sheet = self.spreadsheet.add_worksheet("you cannot see me", 2, 2)
+
+        # as describe in https://issuetracker.google.com/issues/229298342
+        # the response does not include some default values.
+        # if missing => value is False
+        res = self.spreadsheet.fetch_sheet_metadata()
+        before_hide = res["sheets"][1]["properties"].get("hidden", False)
+        self.assertFalse(before_hide)
+
+        new_sheet.hide()
+
+        res = self.spreadsheet.fetch_sheet_metadata()
+        after_hide = res["sheets"][1]["properties"].get("hidden", False)
+        self.assertTrue(after_hide)
+
+        new_sheet.show()
+        res = self.spreadsheet.fetch_sheet_metadata()
+        before_hide = res["sheets"][1]["properties"].get("hidden", False)
+        self.assertFalse(before_hide)

@@ -2120,3 +2120,30 @@ class Worksheet:
         :param int end: The (exclusive) end row to hide
         """
         return self._unhide_dimension(start, end, Dimension.rows)
+
+    def _set_hidden_flag(self, hidden):
+        """Send the appropriate request to hide/show the current worksheet"""
+
+        body = {
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": self.id,
+                            "hidden": hidden,
+                        },
+                        "fields": "hidden",
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def hide(self):
+        """Hides the current worksheet from the UI."""
+        return self._set_hidden_flag(True)
+
+    def show(self):
+        """Show the current worksheet in the UI."""
+        return self._set_hidden_flag(False)
