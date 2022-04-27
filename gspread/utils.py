@@ -39,6 +39,28 @@ ValueRenderOption = namedtuple(
 ValueInputOption = namedtuple("_ValueInputOption", ["raw", "user_entered"])(
     "RAW", "USER_ENTERED"
 )
+MimeType = namedtuple(
+    "_MimeType",
+    ["google_sheets", "pdf", "excel", "csv", "open_office_sheet", "tsv", "zip"],
+)(
+    "application/vnd.google-apps.spreadsheet",
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "text/csv",
+    "application/vnd.oasis.opendocument.spreadsheet",
+    "text/tab-separated-values",
+    "application/zip",
+)
+ExportFormat = namedtuple(
+    "_ExportFormat", ["PDF", "EXCEL", "CSV", "OPEN_OFFICE_SHEET", "TSV", "ZIPPED_HTML"]
+)(
+    MimeType.pdf,
+    MimeType.excel,
+    MimeType.csv,
+    MimeType.open_office_sheet,
+    MimeType.tsv,
+    MimeType.zip,
+)
 
 
 def convert_credentials(credentials):

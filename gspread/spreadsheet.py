@@ -19,7 +19,7 @@ from .urls import (
     SPREADSHEET_VALUES_CLEAR_URL,
     SPREADSHEET_VALUES_URL,
 )
-from .utils import finditem, quote
+from .utils import ExportFormat, finditem, quote
 from .worksheet import Worksheet
 
 
@@ -517,6 +517,27 @@ class Spreadsheet:
             email_message=email_message,
             with_link=with_link,
         )
+
+    def export(self, format=ExportFormat.PDF):
+        """Export the spreadsheet in the format.
+
+        :param str file_id: A key of a spreadsheet to export
+
+        :param str format: The format of the resulting file.
+            Possible values are
+                ``ExportFormat.PDF``,
+                ``ExportFormat.EXCEL``,
+                ``ExportFormat.CSV``,
+                ``ExportFormat.OPEN_OFFICE_SHEET``,
+                ``ExportFormat.TSV``,
+                and ``ExportFormat.ZIPPED_HTML``.
+            See `ExportFormat`_ in the Drive API.
+
+        :returns bytes: A content of the exported file.
+
+        .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
+        """
+        return self.client.export(self.id, format)
 
     def list_permissions(self):
         """Lists the spreadsheet's permissions."""

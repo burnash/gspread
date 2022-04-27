@@ -11,7 +11,7 @@ from http import HTTPStatus
 
 from google.auth.transport.requests import AuthorizedSession
 
-from .exceptions import APIError, SpreadsheetNotFound
+from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
 from .spreadsheet import Spreadsheet
 from .urls import (
     DRIVE_FILES_API_V2_URL,
@@ -19,7 +19,13 @@ from .urls import (
     DRIVE_FILES_API_V3_URL,
     DRIVE_FILES_UPLOAD_API_V2_URL,
 )
-from .utils import convert_credentials, extract_id_from_url, finditem
+from .utils import (
+    ExportFormat,
+    MimeType,
+    convert_credentials,
+    extract_id_from_url,
+    finditem,
+)
 
 
 class Client:
@@ -84,7 +90,7 @@ class Client:
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
 
-        q = 'mimeType="application/vnd.google-apps.spreadsheet"'
+        q = 'mimeType="{}"'.format(MimeType.google_sheets)
         if title:
             q += ' and name = "{}"'.format(title)
         if folder_id:
@@ -193,7 +199,7 @@ class Client:
         """
         payload = {
             "name": title,
-            "mimeType": "application/vnd.google-apps.spreadsheet",
+            "mimeType": MimeType.google_sheets,
         }
 
         params = {
@@ -206,6 +212,36 @@ class Client:
         r = self.request("post", DRIVE_FILES_API_V3_URL, json=payload, params=params)
         spreadsheet_id = r.json()["id"]
         return self.open_by_key(spreadsheet_id)
+
+    def export(self, file_id, format=ExportFormat.PDF):
+        """Export the spreadsheet in the format.
+
+        :param str file_id: A key of a spreadsheet to export
+
+        :param str format: The format of the resulting file.
+            Possible values are
+                ``ExportFormat.PDF``,
+                ``ExportFormat.EXCEL``,
+                ``ExportFormat.CSV``,
+                ``ExportFormat.OPEN_OFFICE_SHEET``,
+                ``ExportFormat.TSV``,
+                and ``ExportFormat.ZIPPED_HTML``.
+            See `ExportFormat`_ in the Drive API.
+
+        :returns bytes: A content of the exported file.
+
+        .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
+        """
+
+        if format not in ExportFormat:
+            raise UnSupportedExportFormat
+
+        url = "{}/{}/export".format(DRIVE_FILES_API_V3_URL, file_id)
+
+        params = {"mimeType": format}
+
+        r = self.request("get", url, params=params)
+        return r.content
 
     def copy(
         self,
@@ -254,7 +290,7 @@ class Client:
 
         payload = {
             "title": title,
-            "mimeType": "application/vnd.google-apps.spreadsheet",
+            "mimeType": MimeType.google_sheets,
         }
 
         if folder_id is not None:
