@@ -1009,3 +1009,28 @@ class WorksheetTest(GspreadTest):
         res = self.spreadsheet.fetch_sheet_metadata()
         before_hide = res["sheets"][1]["properties"].get("hidden", False)
         self.assertFalse(before_hide)
+
+    @pytest.mark.vcr()
+    def test_auto_resize_columns(self):
+        w = self.sheet
+
+        # we can only check the result of `auto_resize_columns`
+        # using only code and the API.
+        # To test `auto_resize_row` we must use a web browser and
+        # force the size of a row then auto resize it using gpsread.
+
+        # insert enough text to make it larger than the column
+        w.update_acell("A1", "A" * 1024)
+
+        # request only what we are looking for
+        params = {"fields": "sheets.data.columnMetadata"}
+        res = self.spreadsheet.fetch_sheet_metadata(params=params)
+        size_before = res["sheets"][0]["data"][0]["columnMetadata"][0]["pixelSize"]
+
+        # auto resize the first column
+        w.columns_auto_resize(0, 1)
+
+        res = self.spreadsheet.fetch_sheet_metadata(params=params)
+        size_after = res["sheets"][0]["data"][0]["columnMetadata"][0]["pixelSize"]
+
+        self.assertGreater(size_after, size_before)

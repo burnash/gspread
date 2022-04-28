@@ -1074,6 +1074,8 @@ class Worksheet:
     def _auto_resize(self, start_index, end_index, dimension):
         """Updates the size of rows or columns in the  worksheet.
 
+        Index start from 0
+
         :param start_index: The index (inclusive) to begin resizing
         :param end_index: The index (exclusive) to finish resizing
         :param dimension: Specifies whether to resize the row or column
@@ -1101,6 +1103,8 @@ class Worksheet:
     def columns_auto_resize(self, start_column_index, end_column_index):
         """Updates the size of rows or columns in the  worksheet.
 
+        Index start from 0
+
         :param start_column_index: The index (inclusive) to begin resizing
         :param end_column_index: The index (exclusive) to finish resizing
 
@@ -1112,6 +1116,8 @@ class Worksheet:
 
     def rows_auto_resize(self, start_row_index, end_row_index):
         """Updates the size of rows or columns in the  worksheet.
+
+        Index start from 0
 
         :param start_row_index: The index (inclusive) to begin resizing
         :param end_row_index: The index (exclusive) to finish resizing
