@@ -1744,6 +1744,40 @@ class Worksheet:
 
         return self.spreadsheet.batch_update(body)
 
+    @cast_to_a1_notation
+    def unmerge_cells(self, name):
+        """Unmerge cells.
+
+        Unmerge previously merged cells.
+
+        :param str name: Range name in A1 notation, e.g. 'A1:A5'.
+
+        Alternatively, you may specify numeric boundaries. All values
+        index from 1 (one):
+
+        :param int first_row: First row number
+        :param int first_col: First column number
+        :param int last_row: Last row number
+        :param int last_col: Last column number
+
+        :returns: the response body from the request
+        :rtype: dict
+        """
+
+        grid_range = a1_range_to_grid_range(name, self.id)
+
+        body = {
+            "requests": [
+                {
+                    "unmergeCells": {
+                        "range": grid_range,
+                    },
+                },
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
     def get_note(self, cell):
         """Get the content of the note located at `cell`, or the empty string if the
         cell does not have a note.
