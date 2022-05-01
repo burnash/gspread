@@ -1,7 +1,6 @@
 import pytest
 
 import gspread
-import gspread.utils as utils
 
 from .conftest import GspreadTest
 
@@ -72,21 +71,18 @@ class CellTest(GspreadTest):
 
         # test merge rows
         self.sheet.merge_cells(1, 1, 2, 2, merge_type="MERGE_ROWS")
-        meta = self.sheet.spreadsheet.fetch_sheet_metadata()
-        merges = utils.finditem(
-            lambda x: x["properties"]["sheetId"] == self.sheet.id, meta["sheets"]
-        )["merges"]
+        merges = self.sheet._get_sheet_property("merges", [])
         self.assertEqual(len(merges), 2)
 
         # test merge all
         self.sheet.merge_cells(1, 1, 2, 2)
 
-        meta = self.sheet.spreadsheet.fetch_sheet_metadata()
-        merges = utils.finditem(
-            lambda x: x["properties"]["sheetId"] == self.sheet.id, meta["sheets"]
-        )["merges"]
-
+        merges = self.sheet._get_sheet_property("merges", [])
         self.assertEqual(len(merges), 1)
+
+        self.sheet.unmerge_cells(1, 1, 2, 2)
+        merges = self.sheet._get_sheet_property("merges", [])
+        self.assertEqual(len(merges), 0)
 
     @pytest.mark.vcr()
     def test_define_named_range(self):
