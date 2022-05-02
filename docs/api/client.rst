@@ -1,8 +1,6 @@
 Client
 ======
 
-.. module:: gspread
-
 .. autoclass:: gspread.Client
    :members:
 
