@@ -1,6 +1,6 @@
 """
-gspread.models
-~~~~~~~~~~~~~~
+gspread.worksheet
+~~~~~~~~~~~~~~~~~
 
 This module contains common worksheets' models.
 
@@ -29,6 +29,40 @@ from .utils import (
 
 
 class ValueRange(list):
+    """The class holds the returned values.
+
+    This class inherit the :const:`list` object type.
+    It behaves exactly like a list.
+
+    The values are stored in a matrix.
+
+    The property :meth:`gspread.worksheet.ValueRange.major_dimension`
+    holds the major dimension of the first list level.
+
+    The inner lists will contain the actual values.
+
+    Examples::
+
+        >>> worksheet.get("A1:B2")
+        [
+            [
+                "A1 value",
+                "B1 values",
+            ],
+            [
+                "A2 value",
+                "B2 value",
+            ]
+        ]
+
+        >>> worksheet.get("A1:B2").major_dimension
+        ROW
+
+    .. note::
+
+       This class should never be instanciated manually.
+       It will be instanciated using the response from the sheet API.
+    """
     @classmethod
     def from_json(cls, json):
         values = json.get("values", [])
@@ -42,10 +76,18 @@ class ValueRange(list):
 
     @property
     def range(self):
+        """The range of the values"""
         return self._json["range"]
 
     @property
     def major_dimension(self):
+        """The major dimension of this range
+
+        Can be one of:
+
+        * ``ROW``: the first list level holds rows of values
+        * ``COLUMNS``: the first list level holds columns of values
+        """
         return self._json["majorDimension"]
 
     def first(self, default=None):
@@ -118,7 +160,13 @@ class Worksheet:
 
     @property
     def col_count(self):
-        """Number of columns."""
+        """Number of columns.
+
+        .. warning::
+
+           This value is fetched when opening the worksheet.
+           This is not dynamically updated when adding columns, yet.
+        """
         return self._properties["gridProperties"]["columnCount"]
 
     @property
@@ -141,7 +189,7 @@ class Worksheet:
         return sheet.get(property, default_value)
 
     def acell(self, label, value_render_option=ValueRenderOption.formatted):
-        """Returns an instance of a :class:`gspread.models.Cell`.
+        """Returns an instance of a :class:`gspread.cell.Cell`.
 
         :param label: Cell label in A1 notation
                       Letter case is ignored.
@@ -165,7 +213,7 @@ class Worksheet:
         )
 
     def cell(self, row, col, value_render_option=ValueRenderOption.formatted):
-        """Returns an instance of a :class:`gspread.models.Cell` located at
+        """Returns an instance of a :class:`gspread.cell.Cell` located at
         `row` and `col` column.
 
         :param row: Row number.
@@ -185,6 +233,8 @@ class Worksheet:
 
         >>> worksheet.cell(1, 1)
         <Cell R1C1 "I'm cell A1">
+
+        :rtype: :class:`gspread.cell.Cell`
         """
         try:
             data = self.get(
@@ -199,7 +249,7 @@ class Worksheet:
 
     @cast_to_a1_notation
     def range(self, name=""):
-        """Returns a list of :class:`Cell` objects from a specified range.
+        """Returns a list of :class:`gspread.cell.Cell` objects from a specified range.
 
         :param name: A string with range value in A1 notation (e.g. 'A1:A5')
                      or the named range to fetch.
@@ -212,6 +262,8 @@ class Worksheet:
         :param int first_col: First column number
         :param int last_row: Last row number
         :param int last_col: Last column number
+
+        :rtype: list
 
         Example::
 
@@ -284,7 +336,8 @@ class Worksheet:
             non empty cells.
 
         :param str major_dimension: (optional) The major dimension of the
-            values. `Dimension.rows`("ROWS") or `Dimension.cols`("COLUMNS"). Defaults to Dimension.rows
+            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
+            Defaults to Dimension.rows
 
         :param str value_render_option: (optional) Determines how values should
             be rendered in the the output. See `ValueRenderOption`_ in
@@ -351,12 +404,12 @@ class Worksheet:
     def get_all_values(self, **kwargs):
         """Returns a list of lists containing all cells' values as strings.
 
-        This is an alias to :meth:`~gspread.models.Worksheet.get_values`
+        This is an alias to :meth:`~gspread.worksheet.Worksheet.get_values`
 
         .. note::
 
             This is a legacy method.
-            Use :meth:`~gspread.models.Worksheet.get_values` instead.
+            Use :meth:`~gspread.worksheet.Worksheet.get_values` instead.
 
         Examples::
 
@@ -400,10 +453,6 @@ class Worksheet:
         :param str value_render_option: (optional) Determines how values should
             be rendered in the the output. See `ValueRenderOption`_ in
             the Sheets API.
-
-            .. note::
-
-                ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
         :param list expected_headers: (optional) List of expected headers, they must be unique.
 
@@ -555,7 +604,7 @@ class Worksheet:
     def update_cells(self, cell_list, value_input_option=ValueInputOption.raw):
         """Updates many cells at once.
 
-        :param list cell_list: List of :class:`Cell` objects to update.
+        :param list cell_list: List of :class:`gspread.cell.Cell` objects to update.
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
@@ -624,6 +673,8 @@ class Worksheet:
             durations should be represented in the output. This is ignored if
             ``value_render_option`` is ``ValueRenderOption.formatted``. The default
             ``date_time_render_option`` is ``SERIAL_NUMBER``.
+
+        :rtype: :class:`gspread.worksheet.ValueRange`
 
         Examples::
 
@@ -813,16 +864,18 @@ class Worksheet:
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
-            ``ValueInputOption.raw``
-                The values the user has entered will not be parsed and will be
-                stored as-is.
+            * ``ValueInputOption.raw``
 
-            ``ValueInputOption.user_entered``
-                The values will be parsed as if the user typed them into the
-                UI. Numbers will stay as numbers, but strings may be converted
-                to numbers, dates, etc. following the same rules that are
-                applied when entering text into a cell via
-                the Google Sheets UI.
+              The values the user has entered will not be parsed and will be
+              stored as-is.
+
+            * ``ValueInputOption.user_entered``
+
+              The values will be parsed as if the user typed them into the
+              UI. Numbers will stay as numbers, but strings may be converted
+              to numbers, dates, etc. following the same rules that are
+              applied when entering text into a cell via
+              the Google Sheets UI.
 
         Examples::
 
@@ -1110,7 +1163,7 @@ class Worksheet:
 
 
         .. versionadded:: 3.4
-        .. versionmodified:: 5.3.3
+        .. versionchanged:: 5.3.3
         """
         return self._auto_resize(start_column_index, end_column_index, Dimension.cols)
 
@@ -1418,8 +1471,7 @@ class Worksheet:
         """Delete protected range identified by the ID ``id``.
 
         To retrieve the ID of a protected range use the following method
-        to list them all:
-            :func:`~gspread.Spreadsheet.list_protected_ranges`
+        to list them all: :func:`~gspread.Spreadsheet.list_protected_ranges`
         """
 
         body = {
@@ -1499,7 +1551,9 @@ class Worksheet:
     def batch_clear(self, ranges):
         """Clears multiple ranges of cells with 1 API call.
 
-        https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchClear
+        `Batch Clear`_
+
+        .. _Batch Clear: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchClear
 
         Examples::
 
@@ -1581,6 +1635,7 @@ class Worksheet:
             set to True, case insensitive otherwise. Default is True.
             Does not apply to regular expressions.
         :returns: the first matching cell or None otherwise
+        :rtype: :class:`gspread.cell.Cell`
         """
         try:
             return self._finder(finditem, query, case_sensitive, in_row, in_column)
@@ -1589,6 +1644,8 @@ class Worksheet:
 
     def findall(self, query, in_row=None, in_column=None, case_sensitive=True):
         """Finds all cells matching the query.
+
+        Returns a list of :class:`gspread.cell.Cell`.
 
         :param query: A literal string to match or compiled regular expression.
         :type query: str, :py:class:`re.RegexObject`
@@ -1599,6 +1656,7 @@ class Worksheet:
             set to True, case insensitive otherwise. Default is True.
             Does not apply to regular expressions.
         :returns: the list of all matching cells or empty list otherwise
+        :rtype: list
         """
         return list(self._finder(filter, query, case_sensitive, in_row, in_column))
 
@@ -1710,7 +1768,7 @@ class Worksheet:
         :param str new_sheet_name: (optional) The name of the new sheet.
             If empty, a new name is chosen for you.
 
-        :returns: a newly created :class:`<gspread.models.Worksheet>`.
+        :returns: a newly created :class:`gspread.worksheet.Worksheet`.
 
         .. versionadded:: 3.1
         """
@@ -1980,9 +2038,9 @@ class Worksheet:
         .. note::
 
             API behavior with nested groups and non matching ``[start:end[``
-            range can be found here
+            range can be found here `Add Dimension Group Request`_
 
-            https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddDimensionGroupRequest
+            .. _Add Dimension Group Request: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddDimensionGroupRequest
 
         :param int start: The start (inclusive) of the group
         :param int end: The end (exclusive) of the group
@@ -1996,9 +2054,7 @@ class Worksheet:
         .. note::
 
             API behavior with nested groups and non matching ``[start:end[``
-            range can be found here
-
-            https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddDimensionGroupRequest
+            range can be found here `Add Dimension Group Request`_
 
         :param int start: The start (inclusive) of the group
         :param int end: The end (exclusive) of the group
@@ -2031,9 +2087,9 @@ class Worksheet:
         .. note::
 
             API behavior with nested groups and non matching ``[start:end[``
-            range can be found here
+            range can be found here `Delete Dimension Group Request`_
 
-            https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#DeleteDimensionGroupRequest
+            .. _Delete Dimension Group Request: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#DeleteDimensionGroupRequest
 
         :param int start: The start (inclusive) of the group
         :param int end: The end (exclusive) of the group
@@ -2046,9 +2102,7 @@ class Worksheet:
 
         .. note::
             API behavior with nested groups and non matching ``[start:end[``
-            range can be found here
-
-            https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#DeleteDimensionGroupRequest
+            range can be found here `Delete Dimension Group Request`_
 
         :param int start: The start (inclusive) of the group
         :param int end: The end (exclusive) of the group

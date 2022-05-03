@@ -10,7 +10,7 @@ The models represent common spreadsheet entities: :class:`a spreadsheet <gspread
    instances result from calling other objects' methods.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    spreadsheet
    worksheet
