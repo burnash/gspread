@@ -65,7 +65,7 @@ class Spreadsheet:
 
     @property
     def lastUpdateTime(self):
-        """Spreadsheet Creation time."""
+        """Spreadsheet last updated time."""
         try:
             return self._properties["modifiedTime"]
         except KeyError:
@@ -119,7 +119,7 @@ class Spreadsheet:
         )
 
     def batch_update(self, body):
-        """Lower-level method that directly calls `spreadsheets.batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate>`_.
+        """Lower-level method that directly calls `spreadsheets/<ID>:batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate>`_.
 
         :param dict body: `Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#request-body>`_.
         :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#response-body>`_.
@@ -134,13 +134,13 @@ class Spreadsheet:
         return r.json()
 
     def values_append(self, range, params, body):
-        """Lower-level method that directly calls `spreadsheets.values.append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
+        """Lower-level method that directly calls `spreadsheets/<ID>/values:append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_
                           of a range to search for a logical table of data. Values will be appended after the last row of the table.
         :param dict params: `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#query-parameters>`_.
-        :param dict body: `Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#request-body>`_.
-        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#response-body>`_.
+        :param dict body: `Request body`_.
+        :returns: `Response body`_.
         :rtype: dict
 
         .. versionadded:: 3.0
@@ -150,10 +150,10 @@ class Spreadsheet:
         return r.json()
 
     def values_clear(self, range):
-        """Lower-level method that directly calls `spreadsheets.values.clear <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/clear>`_.
+        """Lower-level method that directly calls `spreadsheets/<ID>/values:clear <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/clear>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to clear.
-        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/clear#response-body>`_.
+        :returns: `Response body`_.
         :rtype: dict
 
         .. versionadded:: 3.0
@@ -168,11 +168,11 @@ class Spreadsheet:
         return r.json()
 
     def values_get(self, range, params=None):
-        """Lower-level method that directly calls `spreadsheets.values.get <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get>`_.
+        """Lower-level method that directly calls `spreadsheets/<ID>/values/<range> <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
-        :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#query-parameters>`_.
-        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
+        :param dict params: (optional) `Query parameters`_.
+        :returns: `Response body`_.
         :rtype: dict
 
         .. versionadded:: 3.0
@@ -182,11 +182,11 @@ class Spreadsheet:
         return r.json()
 
     def values_batch_get(self, ranges, params=None):
-        """Lower-level method that directly calls `spreadsheets.values.batchGet <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet>`_.
+        """Lower-level method that directly calls `spreadsheets/<ID>/values:batchGet <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet>`_.
 
         :param ranges: List of ranges in the `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
-        :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#query-parameters>`_.
-        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
+        :param dict params: (optional) `Query parameters`_.
+        :returns: `Response body`_.
         :rtype: dict
         """
         if params is None:
@@ -199,12 +199,12 @@ class Spreadsheet:
         return r.json()
 
     def values_update(self, range, params=None, body=None):
-        """Lower-level method that directly calls `spreadsheets.values.update <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update>`_.
+        """Lower-level method that directly calls `spreadsheets/<ID>/values/<range>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to update.
-        :param dict params: (optional) `Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update#query-parameters>`_.
-        :param dict body: (optional) `Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update#request-body>`_.
-        :returns: `Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update#response-body>`_.
+        :param dict params: (optional) `Query parameters`_.
+        :param dict body: (optional) `Request body`_.
+        :returns: `Response body`_.
         :rtype: dict
 
         Example::
@@ -260,10 +260,10 @@ class Spreadsheet:
         :param index: An index of a worksheet. Indexes start from zero.
         :type index: int
 
-        :returns: an instance of :class:`gspread.models.Worksheet`.
+        :returns: an instance of :class:`gspread.worksheet.Worksheet`.
 
         :raises:
-            WorksheetNotFound: if can't find the worksheet
+            :class:`~gspread.exceptions.WorksheetNotFound`: if can't find the worksheet
 
         Example. To get third worksheet of a spreadsheet:
 
@@ -284,9 +284,9 @@ class Spreadsheet:
         :param id: The id of a worksheet. it can be seen in the url as the value of the parameter 'gid'.
         :type id: int
 
-        :returns: an instance of :class:`gspread.models.Worksheet`.
+        :returns: an instance of :class:`gspread.worksheet.Worksheet`.
         :raises:
-            WorksheetNotFound: if can't find the worksheet
+            :class:`~gspread.exceptions.WorksheetNotFound`: if can't find the worksheet
 
         Example. To get the worksheet 123456 of a spreadsheet:
 
@@ -305,7 +305,7 @@ class Spreadsheet:
             raise WorksheetNotFound("id {} not found".format(id))
 
     def worksheets(self):
-        """Returns a list of all :class:`worksheets <gspread.models.Worksheet>`
+        """Returns a list of all :class:`worksheets <gspread.worksheet.Worksheet>`
         in a spreadsheet.
         """
         sheet_data = self.fetch_sheet_metadata()
@@ -319,7 +319,7 @@ class Spreadsheet:
                       be returned.
         :type title: str
 
-        :returns: an instance of :class:`gspread.models.Worksheet`.
+        :returns: an instance of :class:`gspread.worksheet.Worksheet`.
 
         :raises:
             WorksheetNotFound: if can't find the worksheet
@@ -351,7 +351,7 @@ class Spreadsheet:
         :param index: Position of the sheet.
         :type index: int
 
-        :returns: a newly created :class:`worksheets <gspread.models.Worksheet>`.
+        :returns: a newly created :class:`worksheets <gspread.worksheet.Worksheet>`.
         """
         body = {
             "requests": [
@@ -402,7 +402,7 @@ class Spreadsheet:
         :param str new_sheet_name: (optional) The name of the new sheet.
                                    If empty, a new name is chosen for you.
 
-        :returns: a newly created :class:`<gspread.models.Worksheet>`.
+        :returns: a newly created :class:`gspread.worksheet.Worksheet`
 
         .. versionadded:: 3.1
         """
@@ -431,7 +431,7 @@ class Spreadsheet:
         """Deletes a worksheet from a spreadsheet.
 
         :param worksheet: The worksheet to be deleted.
-        :type worksheet: :class:`~gspread.Worksheet`
+        :type worksheet: :class:`~gspread.worksheet.Worksheet`
         """
         body = {"requests": [{"deleteSheet": {"sheetId": worksheet.id}}]}
 
@@ -445,7 +445,7 @@ class Spreadsheet:
 
         Note: If you omit some of the Spreadsheet's existing Worksheet objects from
         the provided sequence, those Worksheets will be appended to the end of the sequence
-        in the order that they appear in the list returned by ``Spreadsheet.worksheets()``.
+        in the order that they appear in the list returned by :meth:`gspread.spreadsheet.Spreadsheet.worksheets`.
 
         .. versionadded:: 3.4
         """
@@ -519,21 +519,24 @@ class Spreadsheet:
         )
 
     def export(self, format=ExportFormat.PDF):
-        """Export the spreadsheet in the format.
+        """Export the spreadsheet in the given format.
 
         :param str file_id: A key of a spreadsheet to export
 
         :param str format: The format of the resulting file.
-            Possible values are
+            Possible values are:
+
                 ``ExportFormat.PDF``,
                 ``ExportFormat.EXCEL``,
                 ``ExportFormat.CSV``,
                 ``ExportFormat.OPEN_OFFICE_SHEET``,
                 ``ExportFormat.TSV``,
                 and ``ExportFormat.ZIPPED_HTML``.
-            See `ExportFormat`_ in the Drive API.
 
-        :returns bytes: A content of the exported file.
+            See `ExportFormat`_ in the Drive API.
+            Default value is ``ExportFormat.PDF``.
+
+        :returns bytes: The content of the exported file.
 
         .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
         """
@@ -576,7 +579,7 @@ class Spreadsheet:
         return filtered_id_list
 
     def named_range(self, named_range):
-        """return a list of :class:`Cell` objects from
+        """return a list of :class:`gspread.cell.Cell` objects from
         the specified named range.
 
         :param name: A string with a named range value to fecth.
