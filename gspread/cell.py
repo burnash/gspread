@@ -23,7 +23,7 @@ class Cell:
 
     @classmethod
     def from_address(cls, label, value=""):
-        """Instanciate a new :class:`~gspread.cell.Cell`
+        """Instantiate a new :class:`~gspread.cell.Cell`
         from an A1 notation address and a value
 
         :param string label: the A1 label of the returned cell
@@ -61,7 +61,7 @@ class Cell:
         """Numeric value of this cell.
 
         Will try to numericise this cell value,
-        uppon success will return its numeric value
+        upon success will return its numeric value
         with the appropriate type.
 
         :type: int or float

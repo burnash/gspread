@@ -212,10 +212,10 @@ def oauth_from_dict(
     the user without the need to run the flow again.
 
     ..
-        code block bellow must be explicitly announced using code-block
+        code block below must be explicitly announced using code-block
 
     .. code-block:: python
-        
+
         gc = gspread.oauth_from_dict(
                 credentials=my_creds,
                 authorized_user_info=my_auth_user

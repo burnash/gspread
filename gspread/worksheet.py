@@ -60,9 +60,10 @@ class ValueRange(list):
 
     .. note::
 
-       This class should never be instanciated manually.
-       It will be instanciated using the response from the sheet API.
+       This class should never be instantiated manually.
+       It will be instantiated using the response from the sheet API.
     """
+
     @classmethod
     def from_json(cls, json):
         values = json.get("values", [])
