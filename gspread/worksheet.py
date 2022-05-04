@@ -1414,6 +1414,26 @@ class Worksheet:
 
         return self.spreadsheet.batch_update(body)
 
+    def delete_protected_range(self, id):
+        """Delete protected range identified by the ID ``id``.
+
+        To retrieve the ID of a protected range use the following method
+        to list them all:
+            :func:`~gspread.Spreadsheet.list_protected_ranges`
+        """
+
+        body = {
+            "requests": [
+                {
+                    "deleteProtectedRange": {
+                        "protectedRangeId": id,
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
     def delete_dimension(self, dimension, start_index, end_index=None):
         """Deletes multi rows from the worksheet at the specified index.
 
