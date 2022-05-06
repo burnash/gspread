@@ -1,6 +1,6 @@
 """
-gspread.models
-~~~~~~~~~~~~~~
+gspread.cell
+~~~~~~~~~~~~
 
 This module contains common cells' models.
 
@@ -11,7 +11,7 @@ from .utils import a1_to_rowcol, numericise, rowcol_to_a1
 
 class Cell:
     """An instance of this class represents a single cell
-    in a :class:`worksheet <gspread.models.Worksheet>`.
+    in a :class:`~gspread.worksheet.Worksheet`.
     """
 
     def __init__(self, row, col, value=""):
@@ -23,6 +23,13 @@ class Cell:
 
     @classmethod
     def from_address(cls, label, value=""):
+        """Instantiate a new :class:`~gspread.cell.Cell`
+        from an A1 notation address and a value
+
+        :param string label: the A1 label of the returned cell
+        :param string value: the value for the returned cell
+        :rtype: Cell
+        """
         return cls(*a1_to_rowcol(label), value=value)
 
     def __repr__(self):
@@ -35,16 +42,30 @@ class Cell:
 
     @property
     def row(self):
-        """Row number of the cell."""
+        """Row number of the cell.
+
+        :type: int
+        """
         return self._row
 
     @property
     def col(self):
-        """Column number of the cell."""
+        """Column number of the cell.
+
+        :type: int
+        """
         return self._col
 
     @property
     def numeric_value(self):
+        """Numeric value of this cell.
+
+        Will try to numericise this cell value,
+        upon success will return its numeric value
+        with the appropriate type.
+
+        :type: int or float
+        """
         numeric_value = numericise(self.value, default_blank=None)
 
         # if could not convert, return None
@@ -55,22 +76,8 @@ class Cell:
 
     @property
     def address(self):
-        """Cell address in A1 notation."""
-        return rowcol_to_a1(self.row, self.col)
+        """Cell address in A1 notation.
 
-    @property
-    def input_value(self):
-        """.. deprecated:: 2.0
-
-        This feature is not supported in Sheets API v4.
+        :type: str
         """
-        import warnings
-
-        warnings.warn(
-            "Cell.input_value is deprecated, "
-            "this feature is not supported in Sheets API v4. "
-            "Please use `value_render_option` when you "
-            "Retrieve `Cell` objects (e.g. in `Worksheet.range()` method).",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+        return rowcol_to_a1(self.row, self.col)

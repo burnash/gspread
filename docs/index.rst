@@ -77,7 +77,7 @@ API Documentation
 .. toctree::
    :maxdepth: 2
 
-   api
+   api/index
 
 
 How to Contribute

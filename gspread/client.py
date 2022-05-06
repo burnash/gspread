@@ -86,6 +86,16 @@ class Client:
             raise APIError(response)
 
     def list_spreadsheet_files(self, title=None, folder_id=None):
+        """List all the spreadsheet files
+
+        Will list all spreadsheet files owned by/shared with this user account.
+
+        :param str title: Filter only spreadsheet files with this title
+        :param str folder_id: Only look for spreadsheet files in this folder
+            The parameter ``folder_id`` can be obtained from the URL when looking at
+            a folder in a web browser as follow:
+            ``https://drive.google.com/drive/u/0/folders/<folder_id>``
+        """
         files = []
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
@@ -219,13 +229,15 @@ class Client:
         :param str file_id: A key of a spreadsheet to export
 
         :param str format: The format of the resulting file.
-            Possible values are
-                ``ExportFormat.PDF``,
-                ``ExportFormat.EXCEL``,
-                ``ExportFormat.CSV``,
-                ``ExportFormat.OPEN_OFFICE_SHEET``,
-                ``ExportFormat.TSV``,
-                and ``ExportFormat.ZIPPED_HTML``.
+            Possible values are:
+
+                * ``ExportFormat.PDF``
+                * ``ExportFormat.EXCEL``
+                * ``ExportFormat.CSV``
+                * ``ExportFormat.OPEN_OFFICE_SHEET``
+                * ``ExportFormat.TSV``
+                * ``ExportFormat.ZIPPED_HTML``
+
             See `ExportFormat`_ in the Drive API.
 
         :returns bytes: A content of the exported file.

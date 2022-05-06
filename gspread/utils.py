@@ -117,6 +117,7 @@ def numericise(
     allow_underscores_in_numeric_literals=False,
 ):
     """Returns a value that depends on the input:
+
         - Float if input is a string that can be converted to Float
         - Integer if input is a string that can be converted to integer
         - Zero if the input is a string that is empty and empty2zero flag is set
@@ -124,28 +125,39 @@ def numericise(
 
     Examples::
 
-    >>> numericise("faa")
-    'faa'
+        >>> numericise("faa")
+        'faa'
+
     >>> numericise("3")
     3
+
     >>> numericise("3_2", allow_underscores_in_numeric_literals=False)
     '3_2'
+
     >>> numericise("3_2", allow_underscores_in_numeric_literals=True)
     32
+
     >>> numericise("3.1")
     3.1
+
     >>> numericise("2,000.1")
     2000.1
+
     >>> numericise("", empty2zero=True)
     0
+
     >>> numericise("", empty2zero=False)
     ''
+
     >>> numericise("", default_blank=None)
     >>>
+
     >>> numericise("", default_blank="foo")
     'foo'
+
     >>> numericise("")
     ''
+
     >>> numericise(None)
     >>>
     """
@@ -351,8 +363,8 @@ def a1_range_to_grid_range(name, sheet_id=None):
 
     Examples::
 
-    >>> a1_range_to_grid_range('A1:A1')
-    {'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1}
+        >>> a1_range_to_grid_range('A1:A1')
+        {'startRowIndex': 0, 'endRowIndex': 1, 'startColumnIndex': 0, 'endColumnIndex': 1}
 
     >>> a1_range_to_grid_range('A3:B4')
     {'startRowIndex': 2, 'endRowIndex': 4, 'startColumnIndex': 0, 'endColumnIndex': 2}

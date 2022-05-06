@@ -80,6 +80,7 @@ Ta-da!
 .. NOTE::
     If you want to store the credentials file somewhere else, specify the path to `service_account.json` in :meth:`~gspread.service_account`:
     ::
+
         gc = gspread.service_account(filename='path/to/the/downloaded/file.json')
 
     Make sure you store the credentials file in a safe place.
@@ -171,6 +172,7 @@ You only need to do authorization in the browser once, following runs will reuse
 .. NOTE::
     If you want to store the credentials file somewhere else, specify the path to `credentials.json` and `authorized_user.json` in :meth:`~gspread.oauth`:
     ::
+
         gc = gspread.oauth(
             credentials_filename='path/to/the/credentials.json',
             authorized_user_filename='path/to/the/authorized_user.json'

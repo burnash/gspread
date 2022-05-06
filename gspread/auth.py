@@ -143,11 +143,13 @@ def oauth(
     :param str credentials_filename: Filepath (including name) pointing to a
         credentials `.json` file.
         Defaults to DEFAULT_CREDENTIALS_FILENAME:
+
             * `%APPDATA%\gspread\credentials.json` on Windows
             * `~/.config/gspread/credentials.json` everywhere else
     :param str authorized_user_filename: Filepath (including name) pointing to
         an authorized user `.json` file.
         Defaults to DEFAULT_AUTHORIZED_USER_FILENAME:
+
             * `%APPDATA%\gspread\authorized_user.json` on Windows
             * `~/.config/gspread/authorized_user.json` everywhere else
 
@@ -176,14 +178,14 @@ def oauth_from_dict(
     By default this function will use the local server strategy and open
     the authorization URL in the user's browser::
 
-        gc = gspread.oauth()
+        gc = gspread.oauth_from_dict()
 
     Another option is to run a console strategy. This way, the user is
     instructed to open the authorization URL in their browser. Once the
     authorization is complete, the user must then copy & paste the
     authorization code into the application::
 
-        gc = gspread.oauth(flow=gspread.auth.console_flow)
+        gc = gspread.oauth_from_dict(flow=gspread.auth.console_flow)
 
 
     ``scopes`` parameter defaults to read/write scope available in
@@ -199,7 +201,7 @@ def oauth_from_dict(
     Obviously any method of ``gspread`` that updates a spreadsheet
     **will not work** in this case::
 
-        gc = gspread.oauth(scopes=gspread.auth.READONLY_SCOPES)
+        gc = gspread.oauth_from_dict(scopes=gspread.auth.READONLY_SCOPES)
 
         sh = gc.open("A spreadsheet")
         sh.sheet1.update('A1', '42')   # <-- this will not work
@@ -209,9 +211,14 @@ def oauth_from_dict(
     the authenticated user info, this can be passed again to authenticate
     the user without the need to run the flow again.
 
-        gc = gspread.oauth(
-            credentials=my_creds,
-            authorized_user_info=my_auth_user,
+    ..
+        code block below must be explicitly announced using code-block
+
+    .. code-block:: python
+
+        gc = gspread.oauth_from_dict(
+                credentials=my_creds,
+                authorized_user_info=my_auth_user
         )
 
     :param dict credentials: The credentials from google cloud platform
