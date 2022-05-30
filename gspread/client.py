@@ -387,6 +387,10 @@ class Client:
            replaces the contents of the first worksheet.
 
         """
+        # Make sure we send utf-8
+        if type(data) is str:
+            data = data.encode("utf-8")
+
         headers = {"Content-Type": "text/csv"}
         url = "{}/{}".format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
 
