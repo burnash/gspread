@@ -919,19 +919,86 @@ class Worksheet:
 
         return response
 
-    def format(self, range_name, cell_format):
-        """Formats a cell or a group of cells.
+    def batch_format(self, formats):
+        """Formats cells in batch.
 
-        :param str range_name: Target range in the A1 notation.
-        :param dict cell_format: Dictionary containing the fields to update.
-            See `CellFormat`_ in the Sheets API for available fields.
+        :param list formats: List of ranges to format and they actual format to apply
+            for each range.
+
+            The list is composed of dict object with the following keys/values:
+
+            * range : A1 range notation
+            * format : a valid dict object with the format to apply
+              for that range see `CellFormat`_ in the Sheets API for available fields.
 
         .. _CellFormat: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat
 
         Examples::
 
+            # Format the range ``A1:C1`` with bold text
+            # and format the range ``A2:C2`` a font size of 16
+
+            formats = [
+                {
+                    "range": "A1:C1",
+                    "format": {
+                        "textFormat": {
+                            "bold": True,
+                        },
+                    },
+                },
+                {
+                    "range": "A2:C2",
+                    "format": {
+                        "textFormat": {
+                            "fontSize": 16,
+                        },
+                    },
+                },
+            ]
+            worksheet.batch_update(formats)
+
+        .. versionadded:: 5.4
+        """
+
+        body = {
+            "requests": [],
+        }
+
+        for format in formats:
+            range_name = format["range"]
+            cell_format = format["format"]
+
+            grid_range = a1_range_to_grid_range(range_name, self.id)
+
+            fields = "userEnteredFormat(%s)" % ",".join(cell_format.keys())
+
+            body["requests"].append(
+                {
+                    "repeatCell": {
+                        "range": grid_range,
+                        "cell": {"userEnteredFormat": cell_format},
+                        "fields": fields,
+                    }
+                }
+            )
+
+        return self.spreadsheet.batch_update(body)
+
+    def format(self, ranges, format):
+        """Format a list of ranges with the given format.
+
+        :param str|list ranges: Target ranges in the A1 notation.
+        :param dict cell_format: Dictionary containing the fields to update.
+            See `CellFormat`_ in the Sheets API for available fields.
+
+        Examples::
+
             # Set 'A4' cell's text format to bold
             worksheet.format("A4", {"textFormat": {"bold": True}})
+
+            # Set 'A1:D4' and 'A10:D10' cells's text format to bold
+            worksheet.format(["A1:D4", "A10:D10"], {"textFormat": {"bold": True}})
 
             # Color the background of 'A2:B2' cell range in black,
             # change horizontal alignment, text color and font size
@@ -955,23 +1022,13 @@ class Worksheet:
 
         .. versionadded:: 3.3
         """
-        grid_range = a1_range_to_grid_range(range_name, self.id)
 
-        fields = "userEnteredFormat(%s)" % ",".join(cell_format.keys())
+        if is_scalar(ranges):
+            ranges = [ranges]
 
-        body = {
-            "requests": [
-                {
-                    "repeatCell": {
-                        "range": grid_range,
-                        "cell": {"userEnteredFormat": cell_format},
-                        "fields": fields,
-                    }
-                }
-            ]
-        }
+        formats = [{"range": range, "format": format} for range in ranges]
 
-        return self.spreadsheet.batch_update(body)
+        return self.batch_format(formats)
 
     def resize(self, rows=None, cols=None):
         """Resizes the worksheet. Specify one of ``rows`` or ``cols``.
