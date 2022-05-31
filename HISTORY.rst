@@ -1,6 +1,28 @@
 Release History
 ===============
 
+5.4.0 (2022-06-01)
+------------------
+* fix typo by @joswlv in https://github.com/burnash/gspread/pull/1031
+* Fix error message in `get_all_records` by @lavigne958 in https://github.com/burnash/gspread/pull/1028
+* Added feature request #1022. Auto resizing is now available for rows … by @mketer1 in https://github.com/burnash/gspread/pull/1033
+* add new method to hide/show a worksheet by @lavigne958 in https://github.com/burnash/gspread/pull/1030
+* feat: Download PDF from Spreadsheet #1035 by @100paperkite in https://github.com/burnash/gspread/pull/1036
+* Add test on `auto_resize_columns` by @lavigne958 in https://github.com/burnash/gspread/pull/1039
+* Add method to unmerge cells by @lavigne958 in https://github.com/burnash/gspread/pull/1040
+* Add method to delete a protected range by @lavigne958 in https://github.com/burnash/gspread/pull/1042
+* Feature/clean organize documentation by @lavigne958 in https://github.com/burnash/gspread/pull/1043
+* Add warning about deprecated oauth flow by @lavigne958 in https://github.com/burnash/gspread/pull/1047
+* Add new `batch_format` method. by @lavigne958 in https://github.com/burnash/gspread/pull/1049
+* Encode string to utf-8 when importing CSV content by @lavigne958 in https://github.com/burnash/gspread/pull/1054
+
+New Contributors
+****************
+* @joswlv made their first contribution in https://github.com/burnash/gspread/pull/1031
+* @mketer1 made their first contribution in https://github.com/burnash/gspread/pull/1033
+* @100paperkite made their first contribution in https://github.com/burnash/gspread/pull/1036
+
+
 5.3.2 (2022-04-12)
 ------------------
 * Bugfix/black python3.10 by @lavigne958 in https://github.com/burnash/gspread/pull/1020
