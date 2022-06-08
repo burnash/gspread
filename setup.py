@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-import os.path
+import os
 import re
 import sys
+from pathlib import Path
 
 try:
     from setuptools import setup
@@ -14,8 +15,8 @@ if sys.argv[-1] == "publish":
     sys.exit()
 
 
-def read(filename):
-    return open(os.path.join(os.path.dirname(__file__), filename)).read()
+def file_content(filename):
+    return Path(filename).read_text(encoding="utf-8")
 
 
 description = "Google Spreadsheets Python API"
@@ -28,11 +29,15 @@ License
 MIT
 """
 
-long_description = long_description.lstrip("\n").format(index=read("docs/index.txt"))
-
+long_description = long_description.lstrip("\n").format(
+    index=file_content("docs/index.txt")
+)
 version = re.search(
-    r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', read("gspread/__init__.py"), re.MULTILINE
+    r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+    file_content("gspread/__init__.py"),
+    re.MULTILINE,
 ).group(1)
+
 
 setup(
     name="gspread",
