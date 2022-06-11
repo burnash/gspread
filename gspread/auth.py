@@ -9,6 +9,7 @@ Simple authentication with OAuth.
 import json
 import os
 import warnings
+from pathlib import Path
 
 from google.oauth2.credentials import Credentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
@@ -36,20 +37,16 @@ def get_config_dir(config_dir_name="gspread", os_is_windows=os.name == "nt"):
 
     """
     if os_is_windows:
-        return os.path.join(os.environ["APPDATA"], config_dir_name)
+        return Path(os.environ["APPDATA"], config_dir_name)
     else:
-        return os.path.join(os.path.expanduser("~"), ".config", config_dir_name)
+        return Path(Path.home(), ".config", config_dir_name)
 
 
 DEFAULT_CONFIG_DIR = get_config_dir()
 
-DEFAULT_CREDENTIALS_FILENAME = os.path.join(DEFAULT_CONFIG_DIR, "credentials.json")
-DEFAULT_AUTHORIZED_USER_FILENAME = os.path.join(
-    DEFAULT_CONFIG_DIR, "authorized_user.json"
-)
-DEFAULT_SERVICE_ACCOUNT_FILENAME = os.path.join(
-    DEFAULT_CONFIG_DIR, "service_account.json"
-)
+DEFAULT_CREDENTIALS_FILENAME = DEFAULT_CONFIG_DIR / "credentials.json"
+DEFAULT_AUTHORIZED_USER_FILENAME = DEFAULT_CONFIG_DIR / "authorized_user.json"
+DEFAULT_SERVICE_ACCOUNT_FILENAME = DEFAULT_CONFIG_DIR / "service_account.json"
 
 
 def local_server_flow(client_config, scopes, port=0):
@@ -91,15 +88,15 @@ def console_flow(client_config, scopes):
 
 
 def load_credentials(filename=DEFAULT_AUTHORIZED_USER_FILENAME):
-    if os.path.exists(filename):
+    if filename.exists():
         return Credentials.from_authorized_user_file(filename)
 
     return None
 
 
 def store_credentials(creds, filename=DEFAULT_AUTHORIZED_USER_FILENAME, strip="token"):
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, "w") as f:
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    with filename.open("w") as f:
         f.write(creds.to_json(strip))
 
 
@@ -168,16 +165,16 @@ def oauth(
 
     :rtype: :class:`gspread.Client`
     """
+    authorized_user_filename = Path(authorized_user_filename)
     creds = load_credentials(filename=authorized_user_filename)
 
-    if not creds:
+    if not type(creds) is Credentials:
         with open(credentials_filename) as json_file:
             client_config = json.load(json_file)
         creds = flow(client_config=client_config, scopes=scopes)
         store_credentials(creds, filename=authorized_user_filename)
 
-    client = Client(auth=creds)
-    return client
+    return Client(auth=creds)
 
 
 def oauth_from_dict(
@@ -241,7 +238,7 @@ def oauth_from_dict(
     :param function flow: OAuth flow to use for authentication.
         Defaults to :meth:`~gspread.auth.local_server_flow`
 
-    :rtype: :class:`gspread.Client`
+    :rtype: tuple(:class:`gspread.Client` , str)
     """
 
     creds = None
