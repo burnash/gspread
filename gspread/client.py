@@ -14,7 +14,6 @@ from google.auth.transport.requests import AuthorizedSession
 from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
 from .spreadsheet import Spreadsheet
 from .urls import (
-    DRIVE_FILES_API_V2_URL,
     DRIVE_FILES_API_V3_COMMENTS_URL,
     DRIVE_FILES_API_V3_URL,
     DRIVE_FILES_UPLOAD_API_V2_URL,
@@ -298,10 +297,10 @@ class Client:
            when you try to copy a spreadsheet.
 
         """
-        url = "{}/{}/copy".format(DRIVE_FILES_API_V2_URL, file_id)
+        url = "{}/{}/copy".format(DRIVE_FILES_API_V3_URL, file_id)
 
         payload = {
-            "title": title,
+            "name": title,
             "mimeType": MimeType.google_sheets,
         }
 
@@ -411,12 +410,27 @@ class Client:
 
         :param str file_id: a spreadsheet ID (aka file ID).
         """
-        url = "{}/{}/permissions".format(DRIVE_FILES_API_V2_URL, file_id)
+        url = "{}/{}/permissions".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params = {"supportsAllDrives": True}
-        r = self.request("get", url, params=params)
+        params = {
+            "supportsAllDrives": True,
+            "fields": "nextPageToken,permissions",
+        }
 
-        return r.json()["items"]
+        token = ""
+
+        permissions = []
+
+        while token is not None:
+            if token:
+                params["pageToken"] = token
+
+            r = self.request("get", url, params=params).json()
+            permissions.extend(r["permissions"])
+
+            token = r.get("nextPageToken", None)
+
+        return permissions
 
     def insert_permission(
         self,
@@ -467,10 +481,10 @@ class Client:
 
         """
 
-        url = "{}/{}/permissions".format(DRIVE_FILES_API_V2_URL, file_id)
+        url = "{}/{}/permissions".format(DRIVE_FILES_API_V3_URL, file_id)
 
         payload = {
-            "value": value,
+            "emailAddress": value,
             "type": perm_type,
             "role": role,
             "withLink": with_link,
@@ -491,7 +505,7 @@ class Client:
         :param str permission_id: an ID for the permission.
         """
         url = "{}/{}/permissions/{}".format(
-            DRIVE_FILES_API_V2_URL, file_id, permission_id
+            DRIVE_FILES_API_V3_URL, file_id, permission_id
         )
 
         params = {"supportsAllDrives": True}

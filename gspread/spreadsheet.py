@@ -474,7 +474,7 @@ class Spreadsheet:
 
     def share(
         self,
-        value,
+        email_address,
         perm_type,
         role,
         notify=True,
@@ -510,7 +510,7 @@ class Spreadsheet:
         """
         self.client.insert_permission(
             self.id,
-            value=value,
+            value=email_address,
             perm_type=perm_type,
             role=role,
             notify=notify,
