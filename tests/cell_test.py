@@ -37,6 +37,9 @@ class CellTest(GspreadTest):
         cell = self.sheet.acell("A1")
         same_cell = self.sheet.cell(1, 1)
         self.assertEqual(cell, same_cell)
+        self.sheet.update_acell("A2", update_value)
+        another_cell = self.sheet.acell("A2")
+        self.assertNotEqual(cell, another_cell)
 
     @pytest.mark.vcr()
     def test_numeric_value(self):
