@@ -41,7 +41,11 @@ class Cell:
         )
 
     def __eq__(self, other):
-        return self.row == other.row and self.col == other.col and self.value == other.value
+        return (
+            self.row == other.row
+            and self.col == other.col
+            and self.value == other.value
+        )
 
     @property
     def row(self):
