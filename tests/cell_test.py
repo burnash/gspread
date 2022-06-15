@@ -40,6 +40,9 @@ class CellTest(GspreadTest):
         self.sheet.update_acell("A2", update_value)
         another_cell = self.sheet.acell("A2")
         self.assertNotEqual(cell, another_cell)
+        self.sheet.update_acell("B1", update_value)
+        another_cell = self.sheet.acell("B1")
+        self.assertNotEqual(cell, another_cell)
 
     @pytest.mark.vcr()
     def test_numeric_value(self):
