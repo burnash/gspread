@@ -1438,23 +1438,6 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def delete_row(self, index):
-        """.. deprecated:: 5.0
-
-        Deletes the row from the worksheet at the specified index.
-
-        :param int index: Index of a row for deletion.
-        """
-        import warnings
-
-        warnings.warn(
-            "Worksheet.delete_row() is deprecated, "
-            "Please use `Worksheet.delete_rows()` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.delete_rows(index)
-
     @cast_to_a1_notation
     def add_protected_range(
         self,
