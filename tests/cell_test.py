@@ -30,6 +30,15 @@ class CellTest(GspreadTest):
         self.assertEqual(cell.col, 1)
 
     @pytest.mark.vcr()
+    def test_equality(self):
+        sg = self._sequence_generator()
+        update_value = next(sg)
+        self.sheet.update_acell("A1", update_value)
+        cell = self.sheet.acell("A1")
+        same_cell = self.sheet.cell(1, 1)
+        self.assertEqual(cell, same_cell)
+
+    @pytest.mark.vcr()
     def test_numeric_value(self):
         numeric_value = 1.0 / 1024
         # Use a formula here to avoid issues with differing decimal marks:

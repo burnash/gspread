@@ -40,6 +40,9 @@ class Cell:
             repr(self.value),
         )
 
+    def __eq__(self, other):
+        return self.row == other.row and self.col == other.col and self.value == other.value
+
     @property
     def row(self):
         """Row number of the cell.
