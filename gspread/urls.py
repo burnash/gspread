@@ -21,7 +21,6 @@ SPREADSHEET_VALUES_APPEND_URL = SPREADSHEET_VALUES_URL + ":append"
 SPREADSHEET_VALUES_CLEAR_URL = SPREADSHEET_VALUES_URL + ":clear"
 SPREADSHEET_SHEETS_COPY_TO_URL = SPREADSHEET_URL + "/sheets/%s:copyTo"
 
-DRIVE_FILES_API_V2_URL = "https://www.googleapis.com/drive/v2/files"
 DRIVE_FILES_API_V3_URL = "https://www.googleapis.com/drive/v3/files"
 DRIVE_FILES_UPLOAD_API_V2_URL = "https://www.googleapis.com" "/upload/drive/v2/files"
 
