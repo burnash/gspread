@@ -57,9 +57,6 @@
                     "Pragma": [
                         "no-cache"
                     ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
@@ -129,9 +126,6 @@
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
@@ -198,9 +192,6 @@
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
                     ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
@@ -275,9 +266,6 @@
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
@@ -345,9 +333,6 @@
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
@@ -414,9 +399,6 @@
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
                     ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
@@ -491,9 +473,6 @@
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
@@ -560,9 +539,6 @@
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
                     ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
@@ -637,9 +613,6 @@
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
                     ],
@@ -706,9 +679,6 @@
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
                     ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
@@ -804,6 +774,79 @@
                 },
                 "body": {
                     "string": ""
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://localhost:3128/token",
+                "body": "assertion=eyJ0eXAiOiAiSldUIiwgImFsZyI6ICJSUzI1NiIsICJraWQiOiAiYTg4ZGI4MGVhMzQ3ODI3OTg1MjQwM2ZjOTQwOWQwMWNhZDM2NDVlYyJ9.eyJpYXQiOiAxNjU1NDU0MTI1LCAiZXhwIjogMTY1NTQ1NzcyNSwgImlzcyI6ICJnc3ByZWFkLXRlc3RAcGxheXJvb20tMzUzNDE1LmlhbS5nc2VydmljZWFjY291bnQuY29tIiwgImF1ZCI6ICJodHRwczovL29hdXRoMi5nb29nbGVhcGlzLmNvbS90b2tlbiIsICJzY29wZSI6ICJodHRwczovL3NwcmVhZHNoZWV0cy5nb29nbGUuY29tL2ZlZWRzIGh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL2F1dGgvZHJpdmUuZmlsZSJ9.E7g2zFI4_Afb0uo4ZKsIO7kYqbI3LWDytDVy2CO-qhnsFojzsSCFFNggnpEwG4RaIOxyd16YiECSRkAAWn8M4z8Q_vPqlDZzCR32AW1IFMdesa3zh-rB5fsj7Uhyh_O4Hy6fBHA0PkJIut29oIYiRjcrLLNnqU_Mi9LvZfCM0uAoX5-q2LL5f-6AyoqXy8PrigieRscCATipToCWfCqkrBJKLQBtO2s4ZIsVjHB9mA4a486dHaprS7RkVzuhqTyizaQRwNnmmeKvfh915fie22KD4Eiuz6dL4RZKxHsOwoHMbBDH5El-8TwGAzRYX9OLhV-59iHTv_p3nnW2J16QwA&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.28.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "content-type": [
+                        "application/x-www-form-urlencoded"
+                    ],
+                    "Content-Length": [
+                        "847"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Server": [
+                        "scaffolding on HTTPServer2"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Fri, 17 Jun 2022 08:22:05 GMT"
+                    ],
+                    "content-length": [
+                        "1083"
+                    ]
+                },
+                "body": {
+                    "string": "{\"access_token\":\"ya29.c.b0AXv0zTPUNDrfT2piy95wVuhTpICf4_LJgvrQT_6y3lqk8jRBjYgbAUdy46SwTPbkeLyjaV7uixwXqZgquo3mlynZuoWIgSm3SwbXZBY5RlRQoPhrMEVFtnm2QW7idaWGxrgj2mcbW3-Plfe65ukWwbMyrVxaC47C6VL3xr2y_6iDBm6o5t3uK__QO04KzaCex6mO2CaVYjS3vptovSCwBw_cARcWgU6S.......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\",\"expires_in\":3599,\"token_type\":\"Bearer\"}"
                 }
             }
         }
