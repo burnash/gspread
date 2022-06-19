@@ -180,6 +180,11 @@ class Worksheet:
         """Number of frozen columns."""
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
+    @property
+    def tab_color_style(self):
+        """Tab color style."""
+        return self._properties["tabColorStyle"]["rgbColor"]
+
     def _get_sheet_property(self, property, default_value):
         """return a property of this worksheet or default value if not found"""
         meta = self.spreadsheet.fetch_sheet_metadata()
