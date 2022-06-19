@@ -1162,6 +1162,41 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
+    def update_tab_color(self, color):
+        """Changes the worksheet's tab color.
+
+        :param dict color: The red, green and blue values of the color, between 0 and 1.
+        """
+        body = {
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": self.id,
+                            "tabColor": {
+                                "red": color["red"],
+                                "green": color["green"],
+                                "blue": color["blue"],
+                            },
+                            "tabColorStyle": {
+                                "rgbColor": {
+                                    "red": color["red"],
+                                    "green": color["green"],
+                                    "blue": color["blue"],
+                                }
+                            },
+                        },
+                        "fields": "tabColor,tabColorStyle",
+                    }
+                }
+            ]
+        }
+
+        response = self.spreadsheet.batch_update(body)
+        self._properties["tabColorStyle"]["rgbColor"] = color
+        self._properties["tabColor"] = color
+        return response
+
     def update_index(self, index):
         """Updates the ``index`` property for the worksheet.
 
