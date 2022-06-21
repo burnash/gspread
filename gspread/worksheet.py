@@ -181,7 +181,7 @@ class Worksheet:
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
     @property
-    def tab_color_style(self):
+    def tab_color(self):
         """Tab color style."""
         return self._properties["tabColorStyle"]["rgbColor"]
 
