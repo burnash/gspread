@@ -459,6 +459,8 @@ class Client:
         :param bool with_link: (optional) Whether the link is required for this
             permission to be active.
 
+        :returns dict: the newly created permission
+
         Examples::
 
             # Give write permissions to otto@example.com
@@ -496,7 +498,7 @@ class Client:
             "supportsAllDrives": "true",
         }
 
-        self.request("post", url, json=payload, params=params)
+        return self.request("post", url, json=payload, params=params)
 
     def remove_permission(self, file_id, permission_id):
         """Deletes a permission from a file.

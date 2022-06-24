@@ -8,6 +8,7 @@ This module contains common spreadsheets' models.
 
 from .exceptions import WorksheetNotFound
 from .urls import (
+    DRIVE_FILES_API_V3_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
     SPREADSHEET_DRIVE_URL,
     SPREADSHEET_SHEETS_COPY_TO_URL,
@@ -505,8 +506,8 @@ class Spreadsheet:
             # Give Otto a write permission on this spreadsheet
             sh.share('otto@example.com', perm_type='user', role='writer')
 
-            # Transfer ownership to Otto
-            sh.share('otto@example.com', perm_type='user', role='owner')
+            # Give Otto's family a read permission on this spreadsheet
+            sh.share('otto-familly@example.com', perm_type='group', role='reader')
         """
         self.client.insert_permission(
             self.id,
@@ -577,6 +578,59 @@ class Spreadsheet:
             self.client.remove_permission(self.id, permission_id)
 
         return filtered_id_list
+
+    def transfer_ownership(self, permission_id):
+        """Transfer the ownership of this file to a new user.
+
+        It is necessary to first create the permission with the new owner's email address,
+        get the permission ID then use this method to transfer the ownership.
+
+        .. note::
+
+           you can list all permission using :meth:`gspread.spreadsheet.Spreadsheet.list_permissions`
+
+        .. warning::
+
+           you can only transfer ownership to a new user, you cannot transfer ownership to a group
+           or a domain email address.
+        """
+
+        url = "{}/{}/permissions/{}".format(
+            DRIVE_FILES_API_V3_URL, self.id, permission_id
+        )
+
+        payload = {
+            "role": "writer",  # new owner must be writer in order to accept ownership by editing permissions
+            "pendingOwner": True,
+        }
+
+        return self.client.request("patch", url, json=payload)
+
+    def accept_ownership(self, permission_id):
+        """Accept the pending ownership request on that file.
+
+        It is necessary to edit the permission with the pending ownership.
+
+        .. note::
+
+           You can only accept ownership transfer for the user currently being used.
+        """
+
+        url = "{}/{}/permissions/{}".format(
+            DRIVE_FILES_API_V3_URL,
+            self.id,
+            permission_id,
+        )
+
+        payload = {
+            "role": "owner",
+        }
+
+        params = {
+            "transferOwnership": True,
+        }
+
+        return self.client.request("patch", url, json=payload, params=params)
 
     def named_range(self, named_range):
         """return a list of :class:`gspread.cell.Cell` objects from
