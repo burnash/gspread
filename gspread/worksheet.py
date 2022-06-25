@@ -183,7 +183,9 @@ class Worksheet:
     @property
     def tab_color(self):
         """Tab color style."""
-        return self._properties["tabColorStyle"]["rgbColor"]
+        if "tabColorStyle" in self._properties:
+            return self._properties["tabColorStyle"]["rgbColor"]
+        return None
 
     def _get_sheet_property(self, property, default_value):
         """return a property of this worksheet or default value if not found"""
