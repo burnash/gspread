@@ -57,6 +57,12 @@ class Client:
         self.session.headers.update({"Authorization": "Bearer %s" % self.auth.token})
 
     def set_timeout(self, timeout):
+        """How long to wait for the server to send
+        data before giving up, as a float, or a ``(connect timeout,
+        read timeout)`` tuple.
+
+        Value for ``timeout`` is in seconds (s).
+        """
         self.timeout = timeout
 
     def request(
