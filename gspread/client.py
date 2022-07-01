@@ -8,6 +8,7 @@ Google API.
 """
 
 from http import HTTPStatus
+from typing import Type
 
 from google.auth.transport.requests import AuthorizedSession
 
@@ -54,7 +55,8 @@ class Client:
 
         self.auth.refresh(Request(self.session))
 
-        self.session.headers.update({"Authorization": "Bearer %s" % self.auth.token})
+        self.session.headers.update(
+            {"Authorization": "Bearer %s" % self.auth.token})
 
     def set_timeout(self, timeout):
         """How long to wait for the server to send
@@ -224,7 +226,8 @@ class Client:
         if folder_id is not None:
             payload["parents"] = [folder_id]
 
-        r = self.request("post", DRIVE_FILES_API_V3_URL, json=payload, params=params)
+        r = self.request("post", DRIVE_FILES_API_V3_URL,
+                         json=payload, params=params)
         spreadsheet_id = r.json()["id"]
         return self.open_by_key(spreadsheet_id)
 
@@ -353,12 +356,14 @@ class Client:
                 comments.extend(res["comments"])
                 page_token = res.get("nextPageToken", None)
 
-            destination_url = DRIVE_FILES_API_V3_COMMENTS_URL % (new_spreadsheet.id)
+            destination_url = DRIVE_FILES_API_V3_COMMENTS_URL % (
+                new_spreadsheet.id)
             # requesting some fields in the response is mandatory from the API.
             # choose 'id' randomly out of all the fields, but no need to use it for now.
             params = {"fields": "id"}
             for comment in comments:
-                self.request("post", destination_url, json=comment, params=params)
+                self.request("post", destination_url,
+                             json=comment, params=params)
 
         return new_spreadsheet
 
@@ -533,6 +538,11 @@ class BackoffClient(Client):
         Use it at your own risk !
 
     .. note::
+        To use with the `auth` module, make sure to pass this backoff
+        client factory using the ``client_factory`` parameter of the
+        method used.
+
+    .. note::
         Currently known issues are:
 
         * will retry exponentially even when the error should
@@ -579,3 +589,6 @@ class BackoffClient(Client):
 
             # failed too many times, raise APIEerror
             raise err
+
+
+ClientFactory = Type[Client]

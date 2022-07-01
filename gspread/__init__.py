@@ -15,7 +15,7 @@ __author__ = "Anton Burnashev"
 
 from .auth import oauth, oauth_from_dict, service_account, service_account_from_dict
 from .cell import Cell
-from .client import Client
+from .client import Client, ClientFactory
 from .exceptions import (
     CellNotFound,
     GSpreadException,
