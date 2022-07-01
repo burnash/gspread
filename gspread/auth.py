@@ -8,7 +8,6 @@ Simple authentication with OAuth.
 
 import json
 import os
-import typing
 import warnings
 from pathlib import Path
 
