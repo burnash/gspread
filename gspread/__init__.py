@@ -35,7 +35,7 @@ def authorize(credentials, client_factory=Client):
     By default :class:`gspread.Client` is used (but could also use
     :class:`gspread.BackoffClient` to avoid rate limiting).
 
-    :returns: `client_class` instance.
+    :returns: `client_factory` instance.
     """
 
     client = client_factory(auth=credentials)
