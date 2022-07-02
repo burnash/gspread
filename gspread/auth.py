@@ -163,12 +163,12 @@ def oauth(
 
             * `%APPDATA%\gspread\authorized_user.json` on Windows
             * `~/.config/gspread/authorized_user.json` everywhere else
-    :param :type:`gspread.ClientFactory` client_factory: A factory function
-        that returns a client class. Defaults to :class:`gspread.Client`
-        (but could also use :class:`gspread.BackoffClient` to avoid rate
-        limiting)
+    :type client_factory: :class:`gspread.ClientFactory`
+    :param client_factory: A factory function that returns a client class.
+        Defaults to :class:`gspread.Client` (but could also use
+        :class:`gspread.BackoffClient` to avoid rate limiting)
 
-    :rtype: :type:`gspread.ClientFactory`
+    :rtype: :class:`gspread.ClientFactory`
     """
     authorized_user_filename = Path(authorized_user_filename)
     creds = load_credentials(filename=authorized_user_filename)
@@ -243,12 +243,12 @@ def oauth_from_dict(
     :param list scopes: The scopes used to obtain authorization.
     :param function flow: OAuth flow to use for authentication.
         Defaults to :meth:`~gspread.auth.local_server_flow`
-    :param :type:`gspread.ClientFactory` client_factory: A factory function
-        that returns a client class. Defaults to :class:`gspread.Client`
-        (but could also use :class:`gspread.BackoffClient` to avoid rate
-        limiting)
+    :type client_factory: :class:`gspread.ClientFactory`
+    :param client_factory: A factory function that returns a client class.
+        Defaults to :class:`gspread.Client` (but could also use
+        :class:`gspread.BackoffClient` to avoid rate limiting)
 
-    :rtype: tuple(:type:`gspread.ClientFactory` , str)
+    :rtype: :class:`gspread.ClientFactory`
     """
 
     creds = None
@@ -288,12 +288,12 @@ def service_account(
 
     :param str filename: The path to the service account json file.
     :param list scopes: The scopes used to obtain authorization.
-    :param :type:`gspread.ClientFactory` client_factory: A factory function
-        that returns a client class. Defaults to :class:`gspread.Client`
-        (but could also use :class:`gspread.BackoffClient` to avoid rate
-        limiting)
+    :type client_factory: :class:`gspread.ClientFactory`
+    :param client_factory: A factory function that returns a client class.
+        Defaults to :class:`gspread.Client` (but could also use
+        :class:`gspread.BackoffClient` to avoid rate limiting)
 
-    :rtype: :type:`gspread.ClientFactory`
+    :rtype: :class:`gspread.ClientFactory`
     """
     creds = ServiceAccountCredentials.from_service_account_file(filename, scopes=scopes)
     return client_factory(auth=creds)
@@ -317,10 +317,10 @@ def service_account_from_dict(info, scopes=DEFAULT_SCOPES, client_factory=Client
 
     :param info (Mapping[str, str]): The service account info in Google format
     :param list scopes: The scopes used to obtain authorization.
-    :param :type:`gspread.ClientFactory` client_factory: A factory function
-        that returns a client class. Defaults to :class:`gspread.Client`
-        (but could also use :class:`gspread.BackoffClient` to avoid rate
-        limiting)
+    :type client_factory: :class:`gspread.ClientFactory`
+    :param client_factory: A factory function that returns a client class.
+        Defaults to :class:`gspread.Client` (but could also use
+        :class:`gspread.BackoffClient` to avoid rate limiting)
 
     :rtype: :class:`gspread.ClientFactory`
     """
