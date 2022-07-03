@@ -1,6 +1,8 @@
 Release History
 ===============
 
+* Add `client_factory` param to `auth` methods by @jlumbroso in https://github.com/burnash/gspread/pull/1075
+
 5.4.0 (2022-06-01)
 ------------------
 * fix typo by @joswlv in https://github.com/burnash/gspread/pull/1031

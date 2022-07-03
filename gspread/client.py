@@ -8,6 +8,7 @@ Google API.
 """
 
 from http import HTTPStatus
+from typing import Type
 
 from google.auth.transport.requests import AuthorizedSession
 
@@ -535,6 +536,11 @@ class BackoffClient(Client):
         Use it at your own risk !
 
     .. note::
+        To use with the `auth` module, make sure to pass this backoff
+        client factory using the ``client_factory`` parameter of the
+        method used.
+
+    .. note::
         Currently known issues are:
 
         * will retry exponentially even when the error should
@@ -581,3 +587,6 @@ class BackoffClient(Client):
 
             # failed too many times, raise APIEerror
             raise err
+
+
+ClientFactory = Type[Client]
