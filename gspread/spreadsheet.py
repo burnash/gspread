@@ -724,6 +724,7 @@ class Spreadsheet:
                 lambda sheet: sheet["properties"]["sheetId"] == sheetid, sheets
             )
 
-            return sheet["protectedRanges"]
-        except (StopIteration, KeyError):
-            return []
+        except StopIteration:
+            raise WorksheetNotFound("worksheet id {} not found".format(sheetid))
+
+        return sheet.get("protectedRanges", [])
