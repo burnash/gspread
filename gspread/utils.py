@@ -23,7 +23,7 @@ from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
-from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
+from .exceptions import IncorrectCellLabel, InvalidInputValue, NoValidUrlKeyFound
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")
@@ -412,6 +412,24 @@ def a1_range_to_grid_range(name, sheet_id=None):
         grid_range["sheetId"] = sheet_id
 
     return grid_range
+
+
+def column_letter_to_index(column):
+    try:
+        (_, index) = _a1_to_rowcol_unbounded(column)
+    except IncorrectCellLabel:
+        # make it coherent and raise the same exception in case of any error
+        # from user input value
+        raise InvalidInputValue(
+            "invalid value: {}, must be a column letter".format(column)
+        )
+
+    if index is inf:
+        raise InvalidInputValue(
+            "invalid value: {}, must be a column letter".format(column)
+        )
+
+    return index
 
 
 def cast_to_a1_notation(method):

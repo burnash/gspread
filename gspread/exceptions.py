@@ -35,6 +35,10 @@ class IncorrectCellLabel(GSpreadException):
     """The cell label is incorrect."""
 
 
+class InvalidInputValue(GSpreadException):
+    """The provided values is incorrect."""
+
+
 class APIError(GSpreadException):
     def __init__(self, response):
 
