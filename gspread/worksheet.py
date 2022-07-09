@@ -1354,7 +1354,13 @@ class Worksheet:
         """
         return self.insert_rows([values], index, value_input_option=value_input_option)
 
-    def insert_rows(self, values, row=1, value_input_option=ValueInputOption.raw):
+    def insert_rows(
+        self,
+        values,
+        row=1,
+        value_input_option=ValueInputOption.raw,
+        inherit_from_before=False,
+    ):
         """Adds multiple rows to the worksheet at the specified index and
         populates them with values.
 
@@ -1366,6 +1372,10 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
+        :param bool inherit_from_before: (optional) If true, tells the API to
+            give the new rows the same properties as the prior row; otherwise
+            the default behavior is that the new rows acquire the properties
+            of those that follow them
         """
 
         # can't insert row on sheet with colon ':'
@@ -1384,7 +1394,8 @@ class Worksheet:
                             "dimension": Dimension.rows,
                             "startIndex": row - 1,
                             "endIndex": len(values) + row - 1,
-                        }
+                        },
+                        "inheritFromBefore": inherit_from_before,
                     }
                 }
             ]
@@ -1400,7 +1411,13 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_cols(self, values, col=1, value_input_option=ValueInputOption.raw):
+    def insert_cols(
+        self,
+        values,
+        col=1,
+        value_input_option=ValueInputOption.raw,
+        inherit_from_before=False,
+    ):
         """Adds multiple new cols to the worksheet at specified index and
         populates them with values.
 
@@ -1412,6 +1429,10 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
+        :param bool inherit_from_before: (optional) If true, tells the API to
+            give the new columns the same properties as the prior column; otherwise
+            the default behavior is that the new columns acquire the properties
+            of those that follow them
         """
         body = {
             "requests": [
@@ -1422,7 +1443,8 @@ class Worksheet:
                             "dimension": Dimension.cols,
                             "startIndex": col - 1,
                             "endIndex": len(values) + col - 1,
-                        }
+                        },
+                        "inheritFromBefore": inherit_from_before,
                     }
                 }
             ]
