@@ -2061,7 +2061,7 @@ class Worksheet:
                 }
             ]
         }
-        self.spreadsheet.batch_update(body)
+        return self.spreadsheet.batch_update(body)
 
     def _add_dimension_group(self, start, end, dimension):
         """
