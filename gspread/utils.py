@@ -8,12 +8,10 @@ This module contains utility functions.
 
 import re
 from collections import defaultdict, namedtuple
-from functools import wraps
-from math import inf
-
 from collections.abc import Sequence
-
+from functools import wraps
 from itertools import chain
+from math import inf
 from urllib.parse import quote as uquote
 
 from google.auth.credentials import Credentials as Credentials
