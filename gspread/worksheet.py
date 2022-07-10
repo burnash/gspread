@@ -2171,7 +2171,7 @@ class Worksheet:
         """
         List all the grouped columns in this worksheet.
 
-        :returns: list of the groupped columns
+        :returns: list of the grouped columns
         :rtype: list
         """
         return self._get_sheet_property("columnGroups", [])
