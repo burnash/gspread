@@ -439,7 +439,7 @@ class Spreadsheet:
         return self.batch_update(body)
 
     def reorder_worksheets(self, worksheets_in_desired_order):
-        """Updates the ``index`` property of each Worksheets to reflect
+        """Updates the ``index`` property of each Worksheet to reflect
         its index in the provided sequence of Worksheets.
 
         :param worksheets_in_desired_order: Iterable of Worksheet objects in desired order.
