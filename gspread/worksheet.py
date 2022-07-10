@@ -989,7 +989,7 @@ class Worksheet:
         """Format a list of ranges with the given format.
 
         :param str|list ranges: Target ranges in the A1 notation.
-        :param dict cell_format: Dictionary containing the fields to update.
+        :param dict format: Dictionary containing the fields to update.
             See `CellFormat`_ in the Sheets API for available fields.
 
         Examples::
