@@ -230,9 +230,9 @@ class Client:
         return self.open_by_key(spreadsheet_id)
 
     def export(self, file_id, format=ExportFormat.PDF):
-        """Export the spreadsheet in the format.
+        """Export the spreadsheet in the given format.
 
-        :param str file_id: A key of a spreadsheet to export
+        :param str file_id: The key of the spreadsheet to export
 
         :param str format: The format of the resulting file.
             Possible values are:
@@ -246,7 +246,7 @@ class Client:
 
             See `ExportFormat`_ in the Drive API.
 
-        :returns bytes: A content of the exported file.
+        :returns bytes: The content of the exported file.
 
         .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
         """
