@@ -690,7 +690,7 @@ class Spreadsheet:
         return self.batch_update(body)
 
     def update_locale(self, locale):
-        """Update the locale of the spreaddsheet.
+        """Update the locale of the spreadsheet.
         Can be any of the ISO 639-1 language codes, such as: de, fr, en, ...
         Or an ISO 639-2 if no ISO 639-1 exists.
         Or a combination of the ISO language code and country code,
