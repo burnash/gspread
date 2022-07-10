@@ -182,16 +182,16 @@ def numericise(
 
 
 def numericise_all(
-    input,
+    values,
     empty2zero=False,
     default_blank="",
     allow_underscores_in_numeric_literals=False,
-    ignore=None,
+    ignore=[],
 ):
     """Returns a list of numericised values from strings except those from the
     row specified as ignore.
 
-    :param list input: Input row
+    :param list values: Input row
     :param bool empty2zero: (optional) Whether or not to return empty cells
         as 0 (zero). Defaults to ``False``.
     :param str default_blank: Which value to use for blank cells,
@@ -201,18 +201,18 @@ def numericise_all(
     :param list ignore: List of ints of indices of the row (index 1) to ignore
         numericising.
     """
-    ignored_rows = [input[x - 1] for x in (ignore or [])]
     numericised_list = [
-        s
-        if s in ignored_rows
+        values[index]
+        if index + 1 in ignore
         else numericise(
-            s,
+            values[index],
             empty2zero=empty2zero,
             default_blank=default_blank,
             allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals,
         )
-        for s in input
+        for index in range(len(values))
     ]
+
     return numericised_list
 
 
