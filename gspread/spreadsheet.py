@@ -439,7 +439,7 @@ class Spreadsheet:
         return self.batch_update(body)
 
     def reorder_worksheets(self, worksheets_in_desired_order):
-        """Updates the ``index`` property of each Worksheets to reflect
+        """Updates the ``index`` property of each Worksheet to reflect
         its index in the provided sequence of Worksheets.
 
         :param worksheets_in_desired_order: Iterable of Worksheet objects in desired order.
@@ -587,11 +587,11 @@ class Spreadsheet:
 
         .. note::
 
-           you can list all permission using :meth:`gspread.spreadsheet.Spreadsheet.list_permissions`
+           You can list all permissions using :meth:`gspread.spreadsheet.Spreadsheet.list_permissions`.
 
         .. warning::
 
-           you can only transfer ownership to a new user, you cannot transfer ownership to a group
+           You can only transfer ownership to a new user, you cannot transfer ownership to a group
            or a domain email address.
         """
 
@@ -636,8 +636,8 @@ class Spreadsheet:
         """return a list of :class:`gspread.cell.Cell` objects from
         the specified named range.
 
-        :param name: A string with a named range value to fecth.
-        :type name: str
+        :param named_range: A string with a named range value to fetch.
+        :type named_range: str
         """
 
         # the function `range` does all necessary actions to get a named range.
@@ -690,7 +690,7 @@ class Spreadsheet:
         return self.batch_update(body)
 
     def update_locale(self, locale):
-        """Update the locale of the spreaddsheet.
+        """Update the locale of the spreadsheet.
         Can be any of the ISO 639-1 language codes, such as: de, fr, en, ...
         Or an ISO 639-2 if no ISO 639-1 exists.
         Or a combination of the ISO language code and country code,
