@@ -587,11 +587,11 @@ class Spreadsheet:
 
         .. note::
 
-           you can list all permission using :meth:`gspread.spreadsheet.Spreadsheet.list_permissions`
+           You can list all permissions using :meth:`gspread.spreadsheet.Spreadsheet.list_permissions`.
 
         .. warning::
 
-           you can only transfer ownership to a new user, you cannot transfer ownership to a group
+           You can only transfer ownership to a new user, you cannot transfer ownership to a group
            or a domain email address.
         """
 
