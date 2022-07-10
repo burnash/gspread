@@ -1755,7 +1755,7 @@ class Worksheet:
 
     @cast_to_a1_notation
     def set_basic_filter(self, name=None):
-        """Add a basic filter to the worksheet. If a range or bundaries
+        """Add a basic filter to the worksheet. If a range or boundaries
         are passed, the filter will be limited to the given range.
 
         :param str name: A string with range value in A1 notation,
