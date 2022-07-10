@@ -922,10 +922,10 @@ class Worksheet:
     def batch_format(self, formats):
         """Formats cells in batch.
 
-        :param list formats: List of ranges to format and they actual format to apply
-            for each range.
+        :param list formats: List of ranges to format and the new format to apply
+            to each range.
 
-            The list is composed of dict object with the following keys/values:
+            The list is composed of dict objects with the following keys/values:
 
             * range : A1 range notation
             * format : a valid dict object with the format to apply
