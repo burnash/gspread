@@ -2095,8 +2095,8 @@ class Worksheet:
 
         .. note::
 
-            API behavior with nested groups and non matching ``[start:end[``
-            range can be found here `Add Dimension Group Request`_
+            API behavior with nested groups and non-matching ``[start:end]``
+            range can be found here: `Add Dimension Group Request`_
 
             .. _Add Dimension Group Request: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddDimensionGroupRequest
 
@@ -2111,7 +2111,7 @@ class Worksheet:
 
         .. note::
 
-            API behavior with nested groups and non matching ``[start:end[``
+            API behavior with nested groups and non-matching ``[start:end]``
             range can be found here `Add Dimension Group Request`_
 
         :param int start: The start (inclusive) of the group
@@ -2140,11 +2140,11 @@ class Worksheet:
 
     def delete_dimension_group_columns(self, start, end):
         """
-        Delete a grouped columns
+        Remove the grouping of a set of columns.
 
         .. note::
 
-            API behavior with nested groups and non matching ``[start:end[``
+            API behavior with nested groups and non-matching ``[start:end]``
             range can be found here `Delete Dimension Group Request`_
 
             .. _Delete Dimension Group Request: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#DeleteDimensionGroupRequest
@@ -2156,10 +2156,10 @@ class Worksheet:
 
     def delete_dimension_group_rows(self, start, end):
         """
-        Delete a grouped rows
+        Remove the grouping of a set of rows.
 
         .. note::
-            API behavior with nested groups and non matching ``[start:end[``
+            API behavior with nested groups and non-matching ``[start:end]``
             range can be found here `Delete Dimension Group Request`_
 
         :param int start: The start (inclusive) of the group
@@ -2169,7 +2169,7 @@ class Worksheet:
 
     def list_dimension_group_columns(self):
         """
-        List all the grouped columns in this worksheet
+        List all the grouped columns in this worksheet.
 
         :returns: list of the groupped columns
         :rtype: list
@@ -2178,7 +2178,7 @@ class Worksheet:
 
     def list_dimension_group_rows(self):
         """
-        List all the grouped rows in this worksheet
+        List all the grouped rows in this worksheet.
 
         :returns: list of the grouped rows
         :rtype: list
@@ -2187,9 +2187,9 @@ class Worksheet:
 
     def _hide_dimension(self, start, end, dimension):
         """
-        update this sheet by hiding the given 'dimension'
+        Update this sheet by hiding the given 'dimension'
 
-        Index start from 0.
+        Index starts from 0.
 
         :param int start: The (inclusive) start of the dimension to hide
         :param int end: The (exclusive) end of the dimension to hide
@@ -2221,7 +2221,7 @@ class Worksheet:
         """
         Explicitly hide the given column index range.
 
-        Index start from 0.
+        Index starts from 0.
 
         :param int start: The (inclusive) starting column to hide
         :param int end: The (exclusive) end column to hide
@@ -2232,7 +2232,7 @@ class Worksheet:
         """
         Explicitly hide the given row index range.
 
-        Index start from 0.
+        Index starts from 0.
 
         :param int start: The (inclusive) starting row to hide
         :param int end: The (exclusive) end row to hide
@@ -2241,9 +2241,9 @@ class Worksheet:
 
     def _unhide_dimension(self, start, end, dimension):
         """
-        update this sheet by unhideing the given 'dimension'
+        Update this sheet by unhiding the given 'dimension'
 
-        Index start from 0.
+        Index starts from 0.
 
         :param int start: The (inclusive) start of the dimension to unhide
         :param int end: The (inclusive) end of the dimension to unhide
