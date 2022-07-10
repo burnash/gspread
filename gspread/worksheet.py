@@ -196,7 +196,7 @@ class Worksheet:
                       Letter case is ignored.
         :type label: str
         :param value_render_option: (optional) Determines how values should be
-                                    rendered in the the output. See
+                                    rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
         :type value_render_option:  ( `ValueRenderOption.formatted` |
                                     `ValueRenderOption.unformatted` |
@@ -222,7 +222,7 @@ class Worksheet:
         :param col: Column number.
         :type col: int
         :param value_render_option: (optional) Determines how values should be
-                                    rendered in the the output. See
+                                    rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
         :type value_render_option:  ( `ValueRenderOption.formatted` |
                                     `ValueRenderOption.unformatted` |
@@ -341,7 +341,7 @@ class Worksheet:
             Defaults to Dimension.rows
 
         :param str value_render_option: (optional) Determines how values should
-            be rendered in the the output. See `ValueRenderOption`_ in
+            be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
             Possible values are:
@@ -452,7 +452,7 @@ class Worksheet:
             the row (starting at 1) to ignore numericising, special use
             of ['all'] to ignore numericising on all columns.
         :param str value_render_option: (optional) Determines how values should
-            be rendered in the the output. See `ValueRenderOption`_ in
+            be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
         :param list expected_headers: (optional) List of expected headers, they must be unique.
@@ -527,7 +527,7 @@ class Worksheet:
 
         :param int row: Row number (one-based).
         :param str value_render_option: (optional) Determines how values should
-            be rendered in the the output. See `ValueRenderOption`_ in
+            be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
@@ -545,7 +545,7 @@ class Worksheet:
 
         :param int col: Column number (one-based).
         :param str value_render_option: (optional) Determines how values should
-            be rendered in the the output. See `ValueRenderOption`_ in
+            be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
