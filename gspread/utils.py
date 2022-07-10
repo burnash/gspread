@@ -415,6 +415,30 @@ def a1_range_to_grid_range(name, sheet_id=None):
 
 
 def column_letter_to_index(column):
+    """Converts a column letter to its numerical index.
+
+    This is useful when using the method :meth:`gspread.worksheet.Worksheet.col_values`.
+    Which requires a column index.
+
+    This function is case-insensitive.
+
+    Raises :exc:`gspread.exceptions.InvalidInputValue` in case of invalid input.
+
+    Examples::
+
+        >>> column_letter_to_index("a")
+        1
+
+    >>> column_letter_to_index("A")
+    1
+
+    >>> column_letter_to_index("AZ")
+    52
+
+    >>> column_letter_to_index("!@#$%^&")
+    ...
+    gspread.exceptions.InvalidInputValue: invalid value: !@#$%^&, must be a column letter
+    """
     try:
         (_, index) = _a1_to_rowcol_unbounded(column)
     except IncorrectCellLabel:
