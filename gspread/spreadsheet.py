@@ -636,7 +636,7 @@ class Spreadsheet:
         """return a list of :class:`gspread.cell.Cell` objects from
         the specified named range.
 
-        :param named_range: A string with a named range value to fecth.
+        :param named_range: A string with a named range value to fetch.
         :type named_range: str
         """
 
