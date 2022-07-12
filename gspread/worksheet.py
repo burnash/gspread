@@ -196,7 +196,7 @@ class Worksheet:
                       Letter case is ignored.
         :type label: str
         :param value_render_option: (optional) Determines how values should be
-                                    rendered in the the output. See
+                                    rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
         :type value_render_option:  ( `ValueRenderOption.formatted` |
                                     `ValueRenderOption.unformatted` |
@@ -222,7 +222,7 @@ class Worksheet:
         :param col: Column number.
         :type col: int
         :param value_render_option: (optional) Determines how values should be
-                                    rendered in the the output. See
+                                    rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
         :type value_render_option:  ( `ValueRenderOption.formatted` |
                                     `ValueRenderOption.unformatted` |
@@ -341,7 +341,7 @@ class Worksheet:
             Defaults to Dimension.rows
 
         :param str value_render_option: (optional) Determines how values should
-            be rendered in the the output. See `ValueRenderOption`_ in
+            be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
             Possible values are:
@@ -452,7 +452,7 @@ class Worksheet:
             the row (starting at 1) to ignore numericising, special use
             of ['all'] to ignore numericising on all columns.
         :param str value_render_option: (optional) Determines how values should
-            be rendered in the the output. See `ValueRenderOption`_ in
+            be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
         :param list expected_headers: (optional) List of expected headers, they must be unique.
@@ -527,7 +527,7 @@ class Worksheet:
 
         :param int row: Row number (one-based).
         :param str value_render_option: (optional) Determines how values should
-            be rendered in the the output. See `ValueRenderOption`_ in
+            be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
@@ -545,7 +545,7 @@ class Worksheet:
 
         :param int col: Column number (one-based).
         :param str value_render_option: (optional) Determines how values should
-            be rendered in the the output. See `ValueRenderOption`_ in
+            be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
@@ -922,10 +922,10 @@ class Worksheet:
     def batch_format(self, formats):
         """Formats cells in batch.
 
-        :param list formats: List of ranges to format and they actual format to apply
-            for each range.
+        :param list formats: List of ranges to format and the new format to apply
+            to each range.
 
-            The list is composed of dict object with the following keys/values:
+            The list is composed of dict objects with the following keys/values:
 
             * range : A1 range notation
             * format : a valid dict object with the format to apply
@@ -989,7 +989,7 @@ class Worksheet:
         """Format a list of ranges with the given format.
 
         :param str|list ranges: Target ranges in the A1 notation.
-        :param dict cell_format: Dictionary containing the fields to update.
+        :param dict format: Dictionary containing the fields to update.
             See `CellFormat`_ in the Sheets API for available fields.
 
         Examples::
@@ -1755,7 +1755,7 @@ class Worksheet:
 
     @cast_to_a1_notation
     def set_basic_filter(self, name=None):
-        """Add a basic filter to the worksheet. If a range or bundaries
+        """Add a basic filter to the worksheet. If a range or boundaries
         are passed, the filter will be limited to the given range.
 
         :param str name: A string with range value in A1 notation,
@@ -2061,7 +2061,7 @@ class Worksheet:
                 }
             ]
         }
-        self.spreadsheet.batch_update(body)
+        return self.spreadsheet.batch_update(body)
 
     def _add_dimension_group(self, start, end, dimension):
         """
@@ -2095,8 +2095,8 @@ class Worksheet:
 
         .. note::
 
-            API behavior with nested groups and non matching ``[start:end[``
-            range can be found here `Add Dimension Group Request`_
+            API behavior with nested groups and non-matching ``[start:end)``
+            range can be found here: `Add Dimension Group Request`_
 
             .. _Add Dimension Group Request: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddDimensionGroupRequest
 
@@ -2111,7 +2111,7 @@ class Worksheet:
 
         .. note::
 
-            API behavior with nested groups and non matching ``[start:end[``
+            API behavior with nested groups and non-matching ``[start:end)``
             range can be found here `Add Dimension Group Request`_
 
         :param int start: The start (inclusive) of the group
@@ -2140,11 +2140,11 @@ class Worksheet:
 
     def delete_dimension_group_columns(self, start, end):
         """
-        Delete a grouped columns
+        Remove the grouping of a set of columns.
 
         .. note::
 
-            API behavior with nested groups and non matching ``[start:end[``
+            API behavior with nested groups and non-matching ``[start:end)``
             range can be found here `Delete Dimension Group Request`_
 
             .. _Delete Dimension Group Request: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#DeleteDimensionGroupRequest
@@ -2156,10 +2156,10 @@ class Worksheet:
 
     def delete_dimension_group_rows(self, start, end):
         """
-        Delete a grouped rows
+        Remove the grouping of a set of rows.
 
         .. note::
-            API behavior with nested groups and non matching ``[start:end[``
+            API behavior with nested groups and non-matching ``[start:end)``
             range can be found here `Delete Dimension Group Request`_
 
         :param int start: The start (inclusive) of the group
@@ -2169,16 +2169,16 @@ class Worksheet:
 
     def list_dimension_group_columns(self):
         """
-        List all the grouped columns in this worksheet
+        List all the grouped columns in this worksheet.
 
-        :returns: list of the groupped columns
+        :returns: list of the grouped columns
         :rtype: list
         """
         return self._get_sheet_property("columnGroups", [])
 
     def list_dimension_group_rows(self):
         """
-        List all the grouped rows in this worksheet
+        List all the grouped rows in this worksheet.
 
         :returns: list of the grouped rows
         :rtype: list
@@ -2187,9 +2187,9 @@ class Worksheet:
 
     def _hide_dimension(self, start, end, dimension):
         """
-        update this sheet by hiding the given 'dimension'
+        Update this sheet by hiding the given 'dimension'
 
-        Index start from 0.
+        Index starts from 0.
 
         :param int start: The (inclusive) start of the dimension to hide
         :param int end: The (exclusive) end of the dimension to hide
@@ -2221,7 +2221,7 @@ class Worksheet:
         """
         Explicitly hide the given column index range.
 
-        Index start from 0.
+        Index starts from 0.
 
         :param int start: The (inclusive) starting column to hide
         :param int end: The (exclusive) end column to hide
@@ -2232,7 +2232,7 @@ class Worksheet:
         """
         Explicitly hide the given row index range.
 
-        Index start from 0.
+        Index starts from 0.
 
         :param int start: The (inclusive) starting row to hide
         :param int end: The (exclusive) end row to hide
@@ -2241,9 +2241,9 @@ class Worksheet:
 
     def _unhide_dimension(self, start, end, dimension):
         """
-        update this sheet by unhideing the given 'dimension'
+        Update this sheet by unhiding the given 'dimension'
 
-        Index start from 0.
+        Index starts from 0.
 
         :param int start: The (inclusive) start of the dimension to unhide
         :param int end: The (inclusive) end of the dimension to unhide
