@@ -2095,7 +2095,7 @@ class Worksheet:
 
         .. note::
 
-            API behavior with nested groups and non-matching ``[start:end]``
+            API behavior with nested groups and non-matching ``[start:end)``
             range can be found here: `Add Dimension Group Request`_
 
             .. _Add Dimension Group Request: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#AddDimensionGroupRequest
@@ -2111,7 +2111,7 @@ class Worksheet:
 
         .. note::
 
-            API behavior with nested groups and non-matching ``[start:end]``
+            API behavior with nested groups and non-matching ``[start:end)``
             range can be found here `Add Dimension Group Request`_
 
         :param int start: The start (inclusive) of the group
@@ -2144,7 +2144,7 @@ class Worksheet:
 
         .. note::
 
-            API behavior with nested groups and non-matching ``[start:end]``
+            API behavior with nested groups and non-matching ``[start:end)``
             range can be found here `Delete Dimension Group Request`_
 
             .. _Delete Dimension Group Request: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#DeleteDimensionGroupRequest
@@ -2159,7 +2159,7 @@ class Worksheet:
         Remove the grouping of a set of rows.
 
         .. note::
-            API behavior with nested groups and non-matching ``[start:end]``
+            API behavior with nested groups and non-matching ``[start:end)``
             range can be found here `Delete Dimension Group Request`_
 
         :param int start: The start (inclusive) of the group
