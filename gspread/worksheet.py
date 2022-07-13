@@ -428,7 +428,7 @@ class Worksheet:
         head=1,
         default_blank="",
         allow_underscores_in_numeric_literals=False,
-        numericise_ignore=None,
+        numericise_ignore=[],
         value_render_option=None,
         expected_headers=None,
     ):
@@ -449,7 +449,7 @@ class Worksheet:
         :param bool allow_underscores_in_numeric_literals: (optional) Allow
             underscores in numeric literals, as introduced in PEP 515
         :param list numericise_ignore: (optional) List of ints of indices of
-            the row (starting at 1) to ignore numericising, special use
+            the columns (starting at 1) to ignore numericising, special use
             of ['all'] to ignore numericising on all columns.
         :param str value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
