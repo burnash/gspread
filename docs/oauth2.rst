@@ -188,14 +188,12 @@ manager.
     import gspread
 
     credentials = {
-        {
-            "installed": {
-                "client_id": "12345678901234567890abcdefghijklmn.apps.googleusercontent.com",
-                "project_id": "my-project1234",
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-                ...
-            }
+        "installed": {
+            "client_id": "12345678901234567890abcdefghijklmn.apps.googleusercontent.com",
+            "project_id": "my-project1234",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            ...
         }
     }
     gc, authorized_user = gspread.oauth_from_dict(credentials)
