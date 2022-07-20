@@ -1337,7 +1337,13 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_row(self, values, index=1, value_input_option=ValueInputOption.raw):
+    def insert_row(
+        self,
+        values,
+        index=1,
+        value_input_option=ValueInputOption.raw,
+        inherit_from_before=False,
+    ):
         """Adds a row to the worksheet at the specified index and populates it
         with values.
 
@@ -1351,8 +1357,14 @@ class Worksheet:
             See `ValueInputOption`_ in the Sheets API.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
+        :param bool inherit_from_before: (optional) If true, the new row will
+            inherit its properties from the previous row. Defaults to False,
+            meaning that the new row acquires the properties of the row
+            immediately after it.
         """
-        return self.insert_rows([values], index, value_input_option=value_input_option)
+        return self.insert_rows([values], index,
+                                value_input_option=value_input_option,
+                                inherit_from_before=inherit_from_before)
 
     def insert_rows(
         self,
