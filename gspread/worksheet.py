@@ -1372,10 +1372,10 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :param bool inherit_from_before: (optional) If true, tells the API to
-            give the new rows the same properties as the prior row; otherwise
-            the default behavior is that the new rows acquire the properties
-            of those that follow them
+        :param bool inherit_from_before: (optional) If true, new rows will
+            inherit their properties from the previous row. Defaults to False,
+            meaning that new rows acquire the properties of the row immediately
+            after them.
         """
 
         # can't insert row on sheet with colon ':'
