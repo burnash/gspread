@@ -1397,6 +1397,15 @@ class Worksheet:
                 "can't insert row in worksheet with colon ':' in its name. See issue: https://issuetracker.google.com/issues/36761154"
             )
 
+        if inherit_from_before and row == 1:
+            raise GSpreadException(
+                "inherit_from_before cannot be used when inserting row(s) at the top of a spreadsheet"
+            )
+        if not inherit_from_before and row == self.row_count + 1:
+            raise GSpreadException(
+                "inherit_from_before must be set to True when inserting row(s) at the bottom of a spreadsheet"
+            )
+
         body = {
             "requests": [
                 {
