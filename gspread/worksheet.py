@@ -1355,17 +1355,23 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-
-        .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         :param bool inherit_from_before: (optional) If True, the new row will
             inherit its properties from the previous row. Defaults to False,
             meaning that the new row acquires the properties of the row
-            immediately after it. This cannot be True if the row being added is
-            at the top of the sheet (i.e. index=1).
+            immediately after it.
+            .. warning::
+               `inherit_from_before` must be False when adding a row to the top
+               of a spreadsheet (`index=1`), and must be True when adding to
+               the bottom of the spreadsheet.
+
+        .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         """
-        return self.insert_rows([values], index,
-                                value_input_option=value_input_option,
-                                inherit_from_before=inherit_from_before)
+        return self.insert_rows(
+            [values],
+            index,
+            value_input_option=value_input_option,
+            inherit_from_before=inherit_from_before,
+        )
 
     def insert_rows(
         self,
@@ -1388,8 +1394,11 @@ class Worksheet:
         :param bool inherit_from_before: (optional) If true, new rows will
             inherit their properties from the previous row. Defaults to False,
             meaning that new rows acquire the properties of the row immediately
-            after them. This cannot be True if the rows being added are at the
-            top of the sheet (i.e. row=1).
+            after them.
+            .. warning::
+               `inherit_from_before` must be False when adding rows to the top
+               of a spreadsheet (`row=1`), and must be True when adding to
+               the bottom of the spreadsheet.
         """
 
         # can't insert row on sheet with colon ':'
@@ -1402,10 +1411,6 @@ class Worksheet:
         if inherit_from_before and row == 1:
             raise GSpreadException(
                 "inherit_from_before cannot be used when inserting row(s) at the top of a spreadsheet"
-            )
-        if not inherit_from_before and row == self.row_count + 1:
-            raise GSpreadException(
-                "inherit_from_before must be set to True when inserting row(s) at the bottom of a spreadsheet"
             )
 
         body = {
@@ -1455,8 +1460,12 @@ class Worksheet:
         :param bool inherit_from_before: (optional) If True, new columns will
             inherit their properties from the previous column. Defaults to
             False, meaning that new columns acquire the properties of the
-            column immediately after them. This cannot be True if the columns
-            being added are at the left edge of the sheet (i.e. col=1).
+            column immediately after them.
+
+            .. warning::
+               `inherit_from_before` must be False if adding at the left edge
+               of a spreadsheet (`col=1`), and must be True if adding at the
+               right edge of the spreadsheet.
         """
 
         if inherit_from_before and col == 1:
