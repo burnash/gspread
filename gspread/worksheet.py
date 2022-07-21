@@ -1357,10 +1357,11 @@ class Worksheet:
             See `ValueInputOption`_ in the Sheets API.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
-        :param bool inherit_from_before: (optional) If true, the new row will
+        :param bool inherit_from_before: (optional) If True, the new row will
             inherit its properties from the previous row. Defaults to False,
             meaning that the new row acquires the properties of the row
-            immediately after it.
+            immediately after it. This cannot be True if the row being added is
+            at the top of the sheet (i.e. index=1).
         """
         return self.insert_rows([values], index,
                                 value_input_option=value_input_option,
@@ -1387,7 +1388,8 @@ class Worksheet:
         :param bool inherit_from_before: (optional) If true, new rows will
             inherit their properties from the previous row. Defaults to False,
             meaning that new rows acquire the properties of the row immediately
-            after them.
+            after them. This cannot be True if the rows being added are at the
+            top of the sheet (i.e. row=1).
         """
 
         # can't insert row on sheet with colon ':'
@@ -1450,10 +1452,11 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :param bool inherit_from_before: (optional) If true, tells the API to
-            give the new columns the same properties as the prior column; otherwise
-            the default behavior is that the new columns acquire the properties
-            of those that follow them
+        :param bool inherit_from_before: (optional) If True, new columns will
+            inherit their properties from the previous column. Defaults to
+            False, meaning that new columns acquire the properties of the
+            column immediately after them. This cannot be True if the columns
+            being added are at the left edge of the sheet (i.e. col=1).
         """
 
         if inherit_from_before and col == 1:
