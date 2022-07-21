@@ -1455,6 +1455,12 @@ class Worksheet:
             the default behavior is that the new columns acquire the properties
             of those that follow them
         """
+
+        if inherit_from_before and col == 1:
+            raise GSpreadException(
+                "inherit_from_before cannot be used when inserting column(s) at the left edge of a spreadsheet"
+            )
+
         body = {
             "requests": [
                 {
