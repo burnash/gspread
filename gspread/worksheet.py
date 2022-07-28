@@ -1359,7 +1359,9 @@ class Worksheet:
             inherit its properties from the previous row. Defaults to False,
             meaning that the new row acquires the properties of the row
             immediately after it.
+
             .. warning::
+
                `inherit_from_before` must be False when adding a row to the top
                of a spreadsheet (`index=1`), and must be True when adding to
                the bottom of the spreadsheet.
@@ -1395,7 +1397,9 @@ class Worksheet:
             inherit their properties from the previous row. Defaults to False,
             meaning that new rows acquire the properties of the row immediately
             after them.
+
             .. warning::
+
                `inherit_from_before` must be False when adding rows to the top
                of a spreadsheet (`row=1`), and must be True when adding to
                the bottom of the spreadsheet.
@@ -1463,6 +1467,7 @@ class Worksheet:
             column immediately after them.
 
             .. warning::
+
                `inherit_from_before` must be False if adding at the left edge
                of a spreadsheet (`col=1`), and must be True if adding at the
                right edge of the spreadsheet.
