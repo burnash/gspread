@@ -1337,7 +1337,13 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_row(self, values, index=1, value_input_option=ValueInputOption.raw):
+    def insert_row(
+        self,
+        values,
+        index=1,
+        value_input_option=ValueInputOption.raw,
+        inherit_from_before=False,
+    ):
         """Adds a row to the worksheet at the specified index and populates it
         with values.
 
@@ -1349,12 +1355,33 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
+        :param bool inherit_from_before: (optional) If True, the new row will
+            inherit its properties from the previous row. Defaults to False,
+            meaning that the new row acquires the properties of the row
+            immediately after it.
+
+            .. warning::
+
+               `inherit_from_before` must be False when adding a row to the top
+               of a spreadsheet (`index=1`), and must be True when adding to
+               the bottom of the spreadsheet.
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         """
-        return self.insert_rows([values], index, value_input_option=value_input_option)
+        return self.insert_rows(
+            [values],
+            index,
+            value_input_option=value_input_option,
+            inherit_from_before=inherit_from_before,
+        )
 
-    def insert_rows(self, values, row=1, value_input_option=ValueInputOption.raw):
+    def insert_rows(
+        self,
+        values,
+        row=1,
+        value_input_option=ValueInputOption.raw,
+        inherit_from_before=False,
+    ):
         """Adds multiple rows to the worksheet at the specified index and
         populates them with values.
 
@@ -1366,6 +1393,16 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
+        :param bool inherit_from_before: (optional) If true, new rows will
+            inherit their properties from the previous row. Defaults to False,
+            meaning that new rows acquire the properties of the row immediately
+            after them.
+
+            .. warning::
+
+               `inherit_from_before` must be False when adding rows to the top
+               of a spreadsheet (`row=1`), and must be True when adding to
+               the bottom of the spreadsheet.
         """
 
         # can't insert row on sheet with colon ':'
@@ -1373,6 +1410,11 @@ class Worksheet:
         if ":" in self.title:
             raise GSpreadException(
                 "can't insert row in worksheet with colon ':' in its name. See issue: https://issuetracker.google.com/issues/36761154"
+            )
+
+        if inherit_from_before and row == 1:
+            raise GSpreadException(
+                "inherit_from_before cannot be used when inserting row(s) at the top of a spreadsheet"
             )
 
         body = {
@@ -1384,7 +1426,8 @@ class Worksheet:
                             "dimension": Dimension.rows,
                             "startIndex": row - 1,
                             "endIndex": len(values) + row - 1,
-                        }
+                        },
+                        "inheritFromBefore": inherit_from_before,
                     }
                 }
             ]
@@ -1400,7 +1443,13 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def insert_cols(self, values, col=1, value_input_option=ValueInputOption.raw):
+    def insert_cols(
+        self,
+        values,
+        col=1,
+        value_input_option=ValueInputOption.raw,
+        inherit_from_before=False,
+    ):
         """Adds multiple new cols to the worksheet at specified index and
         populates them with values.
 
@@ -1412,7 +1461,23 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
+        :param bool inherit_from_before: (optional) If True, new columns will
+            inherit their properties from the previous column. Defaults to
+            False, meaning that new columns acquire the properties of the
+            column immediately after them.
+
+            .. warning::
+
+               `inherit_from_before` must be False if adding at the left edge
+               of a spreadsheet (`col=1`), and must be True if adding at the
+               right edge of the spreadsheet.
         """
+
+        if inherit_from_before and col == 1:
+            raise GSpreadException(
+                "inherit_from_before cannot be used when inserting column(s) at the left edge of a spreadsheet"
+            )
+
         body = {
             "requests": [
                 {
@@ -1422,7 +1487,8 @@ class Worksheet:
                             "dimension": Dimension.cols,
                             "startIndex": col - 1,
                             "endIndex": len(values) + col - 1,
-                        }
+                        },
+                        "inheritFromBefore": inherit_from_before,
                     }
                 }
             ]

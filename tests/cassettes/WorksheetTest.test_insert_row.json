@@ -448,7 +448,7 @@
             "request": {
                 "method": "POST",
                 "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ij8FSXamZqVkz9G8W2HtTsF9DrrMuXxxLX6sHTXipXs:batchUpdate",
-                "body": "{\"requests\": [{\"insertDimension\": {\"range\": {\"sheetId\": 0, \"dimension\": \"ROWS\", \"startIndex\": 1, \"endIndex\": 2}}}]}",
+                "body": "{\"requests\": [{\"insertDimension\": {\"range\": {\"sheetId\": 0, \"dimension\": \"ROWS\", \"startIndex\": 1, \"endIndex\": 2}, \"inheritFromBefore\": false}}]}",
                 "headers": {
                     "User-Agent": [
                         "python-requests/2.27.1"
@@ -746,7 +746,7 @@
             "request": {
                 "method": "POST",
                 "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ij8FSXamZqVkz9G8W2HtTsF9DrrMuXxxLX6sHTXipXs:batchUpdate",
-                "body": "{\"requests\": [{\"insertDimension\": {\"range\": {\"sheetId\": 0, \"dimension\": \"ROWS\", \"startIndex\": 0, \"endIndex\": 1}}}]}",
+                "body": "{\"requests\": [{\"insertDimension\": {\"range\": {\"sheetId\": 0, \"dimension\": \"ROWS\", \"startIndex\": 0, \"endIndex\": 1}, \"inheritFromBefore\": false}}]}",
                 "headers": {
                     "User-Agent": [
                         "python-requests/2.27.1"
