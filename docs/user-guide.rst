@@ -226,7 +226,7 @@ Clear one or multiple celle ranges at once:
 
    worksheet.batch_clear(["A1:B1", "C2:E2", "my_named_range"])
 
-Clear the entire workshseet:
+Clear the entire worksheet:
 
 .. code:: python
 
