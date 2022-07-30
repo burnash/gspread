@@ -1195,7 +1195,9 @@ class Worksheet:
         }
 
         response = self.spreadsheet.batch_update(body)
-        self._properties["tabColorStyle"]["rgbColor"] = color
+        self._properties["tabColorStyle"] = {
+            "rgbColor": color,
+        }
         self._properties["tabColor"] = color
         return response
 

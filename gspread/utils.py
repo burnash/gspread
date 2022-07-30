@@ -14,7 +14,7 @@ from math import inf
 try:
     from collections.abc import Sequence
 except ImportError:
-    from collections import Sequence
+    from collections.abc import Sequence
 
 from itertools import chain
 from urllib.parse import quote as uquote

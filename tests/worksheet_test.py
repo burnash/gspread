@@ -165,7 +165,7 @@ class WorksheetTest(GspreadTest):
 
         cell = self.sheet.cell(1, 1)
         self.assertEqual(cell.value, I18N_STR)
-    
+
     @pytest.mark.vcr()
     def test_update_tab_color(self):
         # Assert that the method returns None.
