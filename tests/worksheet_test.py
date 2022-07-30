@@ -1021,7 +1021,7 @@ class WorksheetTest(GspreadTest):
         # we can only check the result of `auto_resize_columns`
         # using only code and the API.
         # To test `auto_resize_row` we must use a web browser and
-        # force the size of a row then auto resize it using gpsread.
+        # force the size of a row then auto resize it using gspread.
 
         # insert enough text to make it larger than the column
         w.update_acell("A1", "A" * 1024)
