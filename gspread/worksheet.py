@@ -180,6 +180,13 @@ class Worksheet:
         """Number of frozen columns."""
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
+    @property
+    def tab_color(self):
+        """Tab color style."""
+        if "tabColorStyle" in self._properties:
+            return self._properties["tabColorStyle"]["rgbColor"]
+        return None
+
     def _get_sheet_property(self, property, default_value):
         """return a property of this worksheet or default value if not found"""
         meta = self.spreadsheet.fetch_sheet_metadata()
@@ -1155,6 +1162,43 @@ class Worksheet:
 
         response = self.spreadsheet.batch_update(body)
         self._properties["title"] = title
+        return response
+
+    def update_tab_color(self, color):
+        """Changes the worksheet's tab color.
+
+        :param dict color: The red, green and blue values of the color, between 0 and 1.
+        """
+        body = {
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": self.id,
+                            "tabColor": {
+                                "red": color["red"],
+                                "green": color["green"],
+                                "blue": color["blue"],
+                            },
+                            "tabColorStyle": {
+                                "rgbColor": {
+                                    "red": color["red"],
+                                    "green": color["green"],
+                                    "blue": color["blue"],
+                                }
+                            },
+                        },
+                        "fields": "tabColor,tabColorStyle",
+                    }
+                }
+            ]
+        }
+
+        response = self.spreadsheet.batch_update(body)
+        self._properties["tabColorStyle"] = {
+            "rgbColor": color,
+        }
+        self._properties["tabColor"] = color
         return response
 
     def update_index(self, index):

@@ -167,6 +167,21 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(cell.value, I18N_STR)
 
     @pytest.mark.vcr()
+    def test_update_tab_color(self):
+        # Assert that the method returns None.
+        # Set the color.
+        # Get the color.
+        # Assert it contains each color, red, green, blue
+        red_color = {
+            "red": 1,
+            "green": 0,
+            "blue": 0,
+        }
+        self.assertEqual(self.sheet.tab_color, None)
+        self.sheet.update_tab_color(red_color)
+        self.assertEqual(self.sheet.tab_color, red_color)
+
+    @pytest.mark.vcr()
     def test_update_cells_noncontiguous(self):
         sg = self._sequence_generator()
 
