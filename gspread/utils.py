@@ -8,22 +8,17 @@ This module contains utility functions.
 
 import re
 from collections import defaultdict, namedtuple
+from collections.abc import Sequence
 from functools import wraps
-from math import inf
-
-try:
-    from collections.abc import Sequence
-except ImportError:
-    from collections.abc import Sequence
-
 from itertools import chain
+from math import inf
 from urllib.parse import quote as uquote
 
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
-from .exceptions import IncorrectCellLabel, NoValidUrlKeyFound
+from .exceptions import IncorrectCellLabel, InvalidInputValue, NoValidUrlKeyFound
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")
@@ -187,16 +182,16 @@ def numericise(
 
 
 def numericise_all(
-    input,
+    values,
     empty2zero=False,
     default_blank="",
     allow_underscores_in_numeric_literals=False,
-    ignore=None,
+    ignore=[],
 ):
     """Returns a list of numericised values from strings except those from the
     row specified as ignore.
 
-    :param list input: Input row
+    :param list values: Input row
     :param bool empty2zero: (optional) Whether or not to return empty cells
         as 0 (zero). Defaults to ``False``.
     :param str default_blank: Which value to use for blank cells,
@@ -206,18 +201,18 @@ def numericise_all(
     :param list ignore: List of ints of indices of the row (index 1) to ignore
         numericising.
     """
-    ignored_rows = [input[x - 1] for x in (ignore or [])]
     numericised_list = [
-        s
-        if s in ignored_rows
+        values[index]
+        if index + 1 in ignore
         else numericise(
-            s,
+            values[index],
             empty2zero=empty2zero,
             default_blank=default_blank,
             allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals,
         )
-        for s in input
+        for index in range(len(values))
     ]
+
     return numericised_list
 
 
@@ -412,6 +407,48 @@ def a1_range_to_grid_range(name, sheet_id=None):
         grid_range["sheetId"] = sheet_id
 
     return grid_range
+
+
+def column_letter_to_index(column):
+    """Converts a column letter to its numerical index.
+
+    This is useful when using the method :meth:`gspread.worksheet.Worksheet.col_values`.
+    Which requires a column index.
+
+    This function is case-insensitive.
+
+    Raises :exc:`gspread.exceptions.InvalidInputValue` in case of invalid input.
+
+    Examples::
+
+        >>> column_letter_to_index("a")
+        1
+
+    >>> column_letter_to_index("A")
+    1
+
+    >>> column_letter_to_index("AZ")
+    52
+
+    >>> column_letter_to_index("!@#$%^&")
+    ...
+    gspread.exceptions.InvalidInputValue: invalid value: !@#$%^&, must be a column letter
+    """
+    try:
+        (_, index) = _a1_to_rowcol_unbounded(column)
+    except IncorrectCellLabel:
+        # make it coherent and raise the same exception in case of any error
+        # from user input value
+        raise InvalidInputValue(
+            "invalid value: {}, must be a column letter".format(column)
+        )
+
+    if index is inf:
+        raise InvalidInputValue(
+            "invalid value: {}, must be a column letter".format(column)
+        )
+
+    return index
 
 
 def cast_to_a1_notation(method):

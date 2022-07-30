@@ -8,6 +8,7 @@ Google API.
 """
 
 from http import HTTPStatus
+from typing import Type
 
 from google.auth.transport.requests import AuthorizedSession
 
@@ -57,6 +58,12 @@ class Client:
         self.session.headers.update({"Authorization": "Bearer %s" % self.auth.token})
 
     def set_timeout(self, timeout):
+        """How long to wait for the server to send
+        data before giving up, as a float, or a ``(connect timeout,
+        read timeout)`` tuple.
+
+        Value for ``timeout`` is in seconds (s).
+        """
         self.timeout = timeout
 
     def request(
@@ -223,9 +230,9 @@ class Client:
         return self.open_by_key(spreadsheet_id)
 
     def export(self, file_id, format=ExportFormat.PDF):
-        """Export the spreadsheet in the format.
+        """Export the spreadsheet in the given format.
 
-        :param str file_id: A key of a spreadsheet to export
+        :param str file_id: The key of the spreadsheet to export
 
         :param str format: The format of the resulting file.
             Possible values are:
@@ -239,7 +246,7 @@ class Client:
 
             See `ExportFormat`_ in the Drive API.
 
-        :returns bytes: A content of the exported file.
+        :returns bytes: The content of the exported file.
 
         .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
         """
@@ -459,6 +466,8 @@ class Client:
         :param bool with_link: (optional) Whether the link is required for this
             permission to be active.
 
+        :returns dict: the newly created permission
+
         Examples::
 
             # Give write permissions to otto@example.com
@@ -496,7 +505,7 @@ class Client:
             "supportsAllDrives": "true",
         }
 
-        self.request("post", url, json=payload, params=params)
+        return self.request("post", url, json=payload, params=params)
 
     def remove_permission(self, file_id, permission_id):
         """Deletes a permission from a file.
@@ -525,6 +534,11 @@ class BackoffClient(Client):
     .. Warning::
         This Client is not production ready yet.
         Use it at your own risk !
+
+    .. note::
+        To use with the `auth` module, make sure to pass this backoff
+        client factory using the ``client_factory`` parameter of the
+        method used.
 
     .. note::
         Currently known issues are:
@@ -573,3 +587,6 @@ class BackoffClient(Client):
 
             # failed too many times, raise APIEerror
             raise err
+
+
+ClientFactory = Type[Client]

@@ -78,6 +78,21 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(utils.numericise(""), "")
         self.assertEqual(utils.numericise(None), None)
 
+        # test numericise_all
+        inputs = ["1", "2", "3"]
+        expected = [1, 2, 3]
+        self.assertEqual(utils.numericise_all(inputs), expected)
+
+        # skip non digit values
+        inputs + ["a"]
+        expected + ["a"]
+        self.assertEqual(utils.numericise_all(inputs), expected)
+
+        # skip ignored columns
+        inputs + ["5", "5"]
+        expected + ["5", 5]
+        self.assertEqual(utils.numericise_all(inputs, ignore=[5]), expected)
+
     def test_a1_to_grid_range_simple(self):
         expected_single_dimension = {
             "startRowIndex": 0,
@@ -169,3 +184,35 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(from_top_left, from_bottom_right)
         self.assertEqual(from_top_left, from_bottom_left)
         self.assertEqual(from_top_left, from_top_right)
+
+    def test_column_letter_to_index(self):
+        # All the input values to test one after an other
+        # [0] input value
+        # [1] expected return value
+        # [2] expected exception to raise
+        inputs = [
+            ("", None, gspread.exceptions.InvalidInputValue),
+            ("A", 1, None),
+            ("Z", 26, None),
+            ("AA", 27, None),
+            ("AAA", 703, None),
+            ("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 256094574536617744129141650397448476, None),
+            ("!@#$%^&*()", None, gspread.exceptions.InvalidInputValue),
+        ]
+
+        for label, expected, exception in inputs:
+            if exception is not None:
+
+                # assert the exception is raised
+                with self.assertRaises(exception):
+                    utils.column_letter_to_index(label)
+            else:
+                # assert the return values is correct
+                result = utils.column_letter_to_index(label)
+                self.assertEqual(
+                    result,
+                    expected,
+                    "could not convert column letter '{}' to the right value '{}".format(
+                        label, expected
+                    ),
+                )

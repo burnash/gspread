@@ -767,6 +767,10 @@ class WorksheetTest(GspreadTest):
         b3 = self.sheet.acell("B3", value_render_option=utils.ValueRenderOption.formula)
         self.assertEqual(b3.value, formula)
 
+        new_row_values = [next(sg) for i in range(num_cols + 4)]
+        with pytest.raises(GSpreadException):
+            self.sheet.insert_row(new_row_values, 1, inherit_from_before=True)
+
     @pytest.mark.vcr()
     def test_delete_row(self):
         sg = self._sequence_generator()

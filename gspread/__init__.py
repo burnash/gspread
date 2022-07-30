@@ -13,9 +13,15 @@ __version__ = "5.4.0"
 __author__ = "Anton Burnashev"
 
 
-from .auth import oauth, oauth_from_dict, service_account, service_account_from_dict
+from .auth import (
+    authorize,
+    oauth,
+    oauth_from_dict,
+    service_account,
+    service_account_from_dict,
+)
 from .cell import Cell
-from .client import Client
+from .client import BackoffClient, Client, ClientFactory
 from .exceptions import (
     CellNotFound,
     GSpreadException,
@@ -26,16 +32,3 @@ from .exceptions import (
 )
 from .spreadsheet import Spreadsheet
 from .worksheet import Worksheet
-
-
-def authorize(credentials, client_class=Client):
-    """Login to Google API using OAuth2 credentials.
-    This is a shortcut function which
-    instantiates `client_class`.
-    By default :class:`gspread.Client` is used.
-
-    :returns: `client_class` instance.
-    """
-
-    client = client_class(auth=credentials)
-    return client
