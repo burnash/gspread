@@ -963,7 +963,7 @@ class Worksheet:
                     },
                 },
             ]
-            worksheet.batch_update(formats)
+            worksheet.batch_format(formats)
 
         .. versionadded:: 5.4
         """
