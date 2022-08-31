@@ -1,7 +1,30 @@
 Release History
 ===============
 
+5.5.0 (2022-08-31)
+------------------
+* Use pathlib by @lavigne958 in https://github.com/burnash/gspread/pull/1057
+* Migrate to drive API V3 by @lavigne958 in https://github.com/burnash/gspread/pull/1060
+* Implement __eq__ method for `Cell` by @chisvi in https://github.com/burnash/gspread/pull/1063
+* Add missing documentation on `set_timeout` by @lavigne958 in https://github.com/burnash/gspread/pull/1070
+* Add method to transfer / accept ownership of a spreadsheet by @lavigne958 in https://github.com/burnash/gspread/pull/1068
 * Add `client_factory` param to `auth` methods by @jlumbroso in https://github.com/burnash/gspread/pull/1075
+* Fix `list_protected_ranges` by @lavigne958 in https://github.com/burnash/gspread/pull/1076
+* Add function to convert column letter to column index by @lavigne958 in https://github.com/burnash/gspread/pull/1077
+* Fix docstring name of named_range() param by @dgilman in https://github.com/burnash/gspread/pull/1081
+* Fix grammar in docstring for client.export by @dgilman in https://github.com/burnash/gspread/pull/1080
+* Many typo fixes to worksheet docstrings by @dgilman in https://github.com/burnash/gspread/pull/1083
+* Fix function `numericise_all` by @lavigne958 in https://github.com/burnash/gspread/pull/1082
+* Fix documentation about `oauth_from_dict` by @lavigne958 in https://github.com/burnash/gspread/pull/1088
+* inherit_from_before option for insert_row/insert_rows by @yongrenjie in https://github.com/burnash/gspread/pull/1092
+* add method to change the color of a tab by @lavigne958 in https://github.com/burnash/gspread/pull/1095
+* docs: Fix a few typos by @timgates42 in https://github.com/burnash/gspread/pull/1094
+* Fix typo in `Worksheet.batch_format` method by @lavigne958 in https://github.com/burnash/gspread/pull/1101
+
+## New Contributors
+* @chisvi made their first contribution in https://github.com/burnash/gspread/pull/1063
+* @jlumbroso made their first contribution in https://github.com/burnash/gspread/pull/1075
+* @yongrenjie made their first contribution in https://github.com/burnash/gspread/pull/1092
 
 5.4.0 (2022-06-01)
 ------------------
