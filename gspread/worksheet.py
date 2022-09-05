@@ -2060,19 +2060,13 @@ class Worksheet:
         if not isinstance(content, str):
             raise TypeError("Only string allowed as content for a note.")
 
-        (startRow, startColumn) = a1_to_rowcol(cell)
+        grid_range = a1_range_to_grid_range(cell, self.id)
 
         body = {
             "requests": [
                 {
                     "updateCells": {
-                        "range": {
-                            "sheetId": self.id,
-                            "startRowIndex": startRow - 1,
-                            "endRowIndex": startRow,
-                            "startColumnIndex": startColumn - 1,
-                            "endColumnIndex": startColumn,
-                        },
+                        "range": grid_range,
                         "rows": [{"values": [{"note": content}]}],
                         "fields": "note",
                     }
