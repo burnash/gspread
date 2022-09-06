@@ -500,7 +500,7 @@ class Client:
         }
 
         params = {
-            "sendNotificationEmails": notify,
+            "sendNotificationEmail": notify,
             "emailMessage": email_message,
             "supportsAllDrives": "true",
         }
