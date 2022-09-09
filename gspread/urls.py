@@ -29,4 +29,4 @@ DRIVE_FILES_API_V3_COMMENTS_URL = (
 )
 
 SPREADSHEET_DRIVE_URL = "https://docs.google.com/spreadsheets/d/%s"
-WORKSHEET_DRIVE_URL = SPREADSHEET_URL + "#gid=%s"
+WORKSHEET_DRIVE_URL = SPREADSHEET_DRIVE_URL + "#gid=%s"
