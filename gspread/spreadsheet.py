@@ -509,7 +509,7 @@ class Spreadsheet:
             # Give Otto's family a read permission on this spreadsheet
             sh.share('otto-familly@example.com', perm_type='group', role='reader')
         """
-        self.client.insert_permission(
+        return self.client.insert_permission(
             self.id,
             value=email_address,
             perm_type=perm_type,
