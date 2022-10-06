@@ -93,6 +93,9 @@ class UtilsTest(unittest.TestCase):
         expected + ["5", 5]
         self.assertEqual(utils.numericise_all(inputs, ignore=[5]), expected)
 
+        # provide explicit `None` as ignored list
+        self.assertEqual(utils.numericise_all(inputs, ignore=None), expected)
+
     def test_a1_to_grid_range_simple(self):
         expected_single_dimension = {
             "startRowIndex": 0,

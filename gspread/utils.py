@@ -201,6 +201,9 @@ def numericise_all(
     :param list ignore: List of ints of indices of the row (index 1) to ignore
         numericising.
     """
+    # in case someone explicitly passes `None` as ignored list
+    ignore = ignore or []
+
     numericised_list = [
         values[index]
         if index + 1 in ignore
