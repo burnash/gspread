@@ -1,6 +1,20 @@
 Release History
 ===============
 
+5.6.0 (2022-09-10)
+------------------
+* Fix `clear_note` method when using numeric boundaries by @lavigne958 in https://github.com/burnash/gspread/pull/1106
+* Fix a typo in the permissions:create API payload by @jiananma in https://github.com/burnash/gspread/pull/1107
+* Fix spreadsheet URL by @lavigne958 in https://github.com/burnash/gspread/pull/1110
+* Return created permission on `Spreadsheet.share()` by @lavigne958 in https://github.com/burnash/gspread/pull/1111
+* (fixed #1113) Supply correct Google API v3 permission for domains by @NickCrews in https://github.com/burnash/gspread/pull/1115
+* Bugfix/numericese all by @lavigne958 in https://github.com/burnash/gspread/pull/1119
+
+New Contributors
+****************
+* @jiananma made their first contribution in https://github.com/burnash/gspread/pull/1107
+* @NickCrews made their first contribution in https://github.com/burnash/gspread/pull/1115
+
 5.5.0 (2022-08-31)
 ------------------
 * Use pathlib by @lavigne958 in https://github.com/burnash/gspread/pull/1057
@@ -21,7 +35,8 @@ Release History
 * docs: Fix a few typos by @timgates42 in https://github.com/burnash/gspread/pull/1094
 * Fix typo in `Worksheet.batch_format` method by @lavigne958 in https://github.com/burnash/gspread/pull/1101
 
-## New Contributors
+New Contributors
+****************
 * @chisvi made their first contribution in https://github.com/burnash/gspread/pull/1063
 * @jlumbroso made their first contribution in https://github.com/burnash/gspread/pull/1075
 * @yongrenjie made their first contribution in https://github.com/burnash/gspread/pull/1092
