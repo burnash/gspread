@@ -491,19 +491,25 @@ class Client:
         """
 
         url = "{}/{}/permissions".format(DRIVE_FILES_API_V3_URL, file_id)
-
         payload = {
-            "emailAddress": value,
             "type": perm_type,
             "role": role,
             "withLink": with_link,
         }
-
         params = {
-            "sendNotificationEmail": notify,
-            "emailMessage": email_message,
             "supportsAllDrives": "true",
         }
+
+        if perm_type == "domain":
+            payload["domain"] = value
+        elif perm_type in {"user", "group"}:
+            payload["emailAddress"] = value
+            params["sendNotificationEmail"] = notify
+            params["emailMessage"] = email_message
+        elif perm_type == "anyone":
+            pass
+        else:
+            raise ValueError("Invalid permission type: {}".format(perm_type))
 
         return self.request("post", url, json=payload, params=params)
 
