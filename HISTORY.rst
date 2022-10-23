@@ -1,9 +1,9 @@
 Release History
 ===============
 
-5.6.1 (2022-10-23)
+5.6.2 (2022-10-23)
 ------------------
-* update parent forlder for `client.copy` method by @lavigne958 in https://github.com/burnash/gspread/pull/1123
+* update parent folder for `client.copy` method by @lavigne958 in https://github.com/burnash/gspread/pull/1123
 
 5.6.0 (2022-09-10)
 ------------------
