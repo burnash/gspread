@@ -312,7 +312,7 @@ class Client:
         }
 
         if folder_id is not None:
-            payload["parents"] = [{"id": folder_id}]
+            payload["parents"] = [folder_id]
 
         params = {"supportsAllDrives": True}
         r = self.request("post", url, json=payload, params=params)
