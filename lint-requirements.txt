@@ -1,4 +1,4 @@
-bandit==1.7.0
+bandit==1.7.4
 black==22.3.0
 codespell==2.1.0
 flake8==5.0.4
