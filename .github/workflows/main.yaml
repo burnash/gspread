@@ -7,6 +7,10 @@ on:
       - "*" # ignore all tags, release.yaml will trigger the CI
   pull_request: # run on all pull requests
 
+concurrency:
+  cancel-in-progress: true
+  group: group-${{ github.ref_name }}
+
 jobs:
   lint_python:
     runs-on: ubuntu-latest
