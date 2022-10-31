@@ -368,12 +368,28 @@ class Worksheet:
                 the formulas. For example, if A1 is 1.23 and A2 is =A1 and
                 formatted as currency, then A2 would return "=A1".
 
-        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
         :param str date_time_render_option: (optional) How dates, times, and
-            durations should be represented in the output. This is ignored if
-            ``value_render_option`` is ``ValueRenderOption.formatted``.
-            The default ``date_time_render_option`` is ``SERIAL_NUMBER``.
+            durations should be represented in the output.
+
+            Possible values are:
+
+            ``DateTimeOption.serial_number``
+                (default) Instructs date, time, datetime, and duration fields
+                to be output as doubles in "serial number" format,
+                as popularized by Lotus 1-2-3.
+
+            ``DateTimeOption.formated_string``
+                Instructs date, time, datetime, and duration fields to be output
+                as strings in their given number format
+                (which depends on the spreadsheet locale).
+
+            .. note::
+
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+
+            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
 
         .. note::
 
@@ -537,7 +553,45 @@ class Worksheet:
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
-        .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+            Possible values are:
+
+            ``ValueRenderOption.formatted``
+                (default) Values will be calculated and formatted according
+                to the cell's formatting. Formatting is based on the
+                spreadsheet's locale, not the requesting user's locale.
+
+            ``ValueRenderOption.unformatted``
+                Values will be calculated, but not formatted in the reply.
+                For example, if A1 is 1.23 and A2 is =A1 and formatted as
+                currency, then A2 would return the number 1.23.
+
+            ``ValueRenderOption.formula``
+                Values will not be calculated. The reply will include
+                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
+                formatted as currency, then A2 would return "=A1".
+
+            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        :param str date_time_render_option: (optional) How dates, times, and
+            durations should be represented in the output.
+
+            Possible values are:
+
+            ``DateTimeOption.serial_number``
+                (default) Instructs date, time, datetime, and duration fields
+                to be output as doubles in "serial number" format,
+                as popularized by Lotus 1-2-3.
+
+            ``DateTimeOption.formated_string``
+                Instructs date, time, datetime, and duration fields to be output
+                as strings in their given number format
+                (which depends on the spreadsheet locale).
+
+            .. note::
+
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+
+            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         """
         try:
             data = self.get("A{}:{}".format(row, row), **kwargs)
@@ -667,38 +721,73 @@ class Worksheet:
     def get(self, range_name=None, **kwargs):
         """Reads values of a single range or a cell of a sheet.
 
-        :param str range_name: (optional) Cell range in the A1 notation or
-            a named range.
+         :param str range_name: (optional) Cell range in the A1 notation or
+             a named range.
 
-        :param str major_dimension: (optional) The major dimension that results
-            should use. Either ``ROWS`` or ``COLUMNS``.
+         :param str major_dimension: (optional) The major dimension that results
+             should use. Either ``ROWS`` or ``COLUMNS``.
 
-        :param str value_render_option: (optional) How values should be
-            represented in the output. The default render option is
-            ``ValueRenderOption.formatted``.
+         :param str value_render_option: (optional) Determines how values should
+             be rendered in the output. See `ValueRenderOption`_ in
+             the Sheets API.
+
+             Possible values are:
+
+             ``ValueRenderOption.formatted``
+                 (default) Values will be calculated and formatted according
+                 to the cell's formatting. Formatting is based on the
+                 spreadsheet's locale, not the requesting user's locale.
+
+             ``ValueRenderOption.unformatted``
+                 Values will be calculated, but not formatted in the reply.
+                 For example, if A1 is 1.23 and A2 is =A1 and formatted as
+                 currency, then A2 would return the number 1.23.
+
+             ``ValueRenderOption.formula``
+                 Values will not be calculated. The reply will include
+                 the formulas. For example, if A1 is 1.23 and A2 is =A1 and
+                 formatted as currency, then A2 would return "=A1".
+
+             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
         :param str date_time_render_option: (optional) How dates, times, and
-            durations should be represented in the output. This is ignored if
-            ``value_render_option`` is ``ValueRenderOption.formatted``. The default
-            ``date_time_render_option`` is ``SERIAL_NUMBER``.
+             durations should be represented in the output.
 
-        :rtype: :class:`gspread.worksheet.ValueRange`
+             Possible values are:
 
-        Examples::
+             ``DateTimeOption.serial_number``
+                 (default) Instructs date, time, datetime, and duration fields
+                 to be output as doubles in "serial number" format,
+                 as popularized by Lotus 1-2-3.
 
-            # Return all values from the sheet
-            worksheet.get()
+             ``DateTimeOption.formated_string``
+                 Instructs date, time, datetime, and duration fields to be output
+                 as strings in their given number format
+                 (which depends on the spreadsheet locale).
 
-            # Return value of 'A1' cell
-            worksheet.get('A1')
+             .. note::
 
-            # Return values of 'A1:B2' range
-            worksheet.get('A1:B2')
+                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
-            # Return values of 'my_range' named range
-            worksheet.get('my_range')
+             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
 
-        .. versionadded:: 3.3
+         :rtype: :class:`gspread.worksheet.ValueRange`
+
+         Examples::
+
+             # Return all values from the sheet
+             worksheet.get()
+
+             # Return value of 'A1' cell
+             worksheet.get('A1')
+
+             # Return values of 'A1:B2' range
+             worksheet.get('A1:B2')
+
+             # Return values of 'my_range' named range
+             worksheet.get('my_range')
+
+         .. versionadded:: 3.3
         """
         range_name = absolute_range_name(self.title, range_name)
 
@@ -728,14 +817,49 @@ class Worksheet:
         :param str major_dimension: (optional) The major dimension that results
             should use. Either ``ROWS`` or ``COLUMNS``.
 
-        :param str value_render_option: (optional) How values should be
-            represented in the output. The default render option
-            is ``ValueRenderOption.formatted``.
+        :param str value_render_option: (optional) Determines how values should
+            be rendered in the output. See `ValueRenderOption`_ in
+            the Sheets API.
+
+            Possible values are:
+
+            ``ValueRenderOption.formatted``
+                (default) Values will be calculated and formatted according
+                to the cell's formatting. Formatting is based on the
+                spreadsheet's locale, not the requesting user's locale.
+
+            ``ValueRenderOption.unformatted``
+                Values will be calculated, but not formatted in the reply.
+                For example, if A1 is 1.23 and A2 is =A1 and formatted as
+                currency, then A2 would return the number 1.23.
+
+            ``ValueRenderOption.formula``
+                Values will not be calculated. The reply will include
+                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
+                formatted as currency, then A2 would return "=A1".
+
+            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
         :param str date_time_render_option: (optional) How dates, times, and
-            durations should be represented in the output. This is ignored if
-            value_render_option is ``ValueRenderOption.formatted``. The default dateTime
-            render option is ``SERIAL_NUMBER``.
+            durations should be represented in the output.
+
+            Possible values are:
+
+            ``DateTimeOption.serial_number``
+                (default) Instructs date, time, datetime, and duration fields
+                to be output as doubles in "serial number" format,
+                as popularized by Lotus 1-2-3.
+
+            ``DateTimeOption.formated_string``
+                Instructs date, time, datetime, and duration fields to be output
+                as strings in their given number format
+                (which depends on the spreadsheet locale).
+
+            .. note::
+
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+
+            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
 
         .. versionadded:: 3.3
 
@@ -794,6 +918,50 @@ class Worksheet:
                 to numbers, dates, etc. following the same rules that are
                 applied when entering text into a cell via
                 the Google Sheets UI.
+
+        :param str response_value_render_option: (optional) Determines how values should
+            be rendered in the output. See `ValueRenderOption`_ in
+            the Sheets API.
+
+            Possible values are:
+
+            ``ValueRenderOption.formatted``
+                (default) Values will be calculated and formatted according
+                to the cell's formatting. Formatting is based on the
+                spreadsheet's locale, not the requesting user's locale.
+
+            ``ValueRenderOption.unformatted``
+                Values will be calculated, but not formatted in the reply.
+                For example, if A1 is 1.23 and A2 is =A1 and formatted as
+                currency, then A2 would return the number 1.23.
+
+            ``ValueRenderOption.formula``
+                Values will not be calculated. The reply will include
+                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
+                formatted as currency, then A2 would return "=A1".
+
+            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        :param str response_date_time_render_option: (optional) How dates, times, and
+            durations should be represented in the output.
+
+            Possible values are:
+
+            ``DateTimeOption.serial_number``
+                (default) Instructs date, time, datetime, and duration fields
+                to be output as doubles in "serial number" format,
+                as popularized by Lotus 1-2-3.
+
+            ``DateTimeOption.formated_string``
+                Instructs date, time, datetime, and duration fields to be output
+                as strings in their given number format
+                (which depends on the spreadsheet locale).
+
+            .. note::
+
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+
+            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
 
         Examples::
 
@@ -884,6 +1052,50 @@ class Worksheet:
               to numbers, dates, etc. following the same rules that are
               applied when entering text into a cell via
               the Google Sheets UI.
+
+        :param str response_value_render_option: (optional) Determines how values should
+            be rendered in the output. See `ValueRenderOption`_ in
+            the Sheets API.
+
+            Possible values are:
+
+            ``ValueRenderOption.formatted``
+                (default) Values will be calculated and formatted according
+                to the cell's formatting. Formatting is based on the
+                spreadsheet's locale, not the requesting user's locale.
+
+            ``ValueRenderOption.unformatted``
+                Values will be calculated, but not formatted in the reply.
+                For example, if A1 is 1.23 and A2 is =A1 and formatted as
+                currency, then A2 would return the number 1.23.
+
+            ``ValueRenderOption.formula``
+                Values will not be calculated. The reply will include
+                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
+                formatted as currency, then A2 would return "=A1".
+
+            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        :param str response_date_time_render_option: (optional) How dates, times, and
+            durations should be represented in the output.
+
+            Possible values are:
+
+            ``DateTimeOption.serial_number``
+                (default) Instructs date, time, datetime, and duration fields
+                to be output as doubles in "serial number" format,
+                as popularized by Lotus 1-2-3.
+
+            ``DateTimeOption.formated_string``
+                Instructs date, time, datetime, and duration fields to be output
+                as strings in their given number format
+                (which depends on the spreadsheet locale).
+
+            .. note::
+
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+
+            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
 
         Examples::
 
