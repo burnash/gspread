@@ -1053,3 +1053,33 @@ class WorksheetTest(GspreadTest):
         size_after = res["sheets"][0]["data"][0]["columnMetadata"][0]["pixelSize"]
 
         self.assertGreater(size_after, size_before)
+
+    @pytest.mark.vcr()
+    def test_copy_cut_range(self):
+        w = self.sheet
+
+        # init the sheet values
+        values = [["A1"], ["A2"]]
+        w.update("A1:A2", values)
+
+        # copy the values
+        w.copy_range("A1:A2", "B1:B2")
+
+        # check the copied values
+        cells = w.range("B1:B2")
+        self.assertListEqual(
+            list(itertools.chain(*values)), [cell.value for cell in cells]
+        )
+
+        # cut the original values in A1:A2
+        w.cut_range("A1:A2", "C1")
+
+        # check the values have moved
+        cells = w.range("A1:A2")
+        self.assertListEqual([cell.value for cell in cells], ["", ""])
+
+        cells = w.range("C1:C2")
+        self.assertListEqual(
+            list(itertools.chain(*values)),
+            [cell.value for cell in cells],
+        )

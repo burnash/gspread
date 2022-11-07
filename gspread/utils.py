@@ -60,6 +60,31 @@ ExportFormat = namedtuple(
     MimeType.zip,
 )
 
+PasteType = namedtuple(
+    "PasteType",
+    [
+        "normal",
+        "values",
+        "format",
+        "no_borders",
+        "formula",
+        "data_validation",
+        "conditional_formating",
+    ],
+)(
+    "PASTE_NORMAL",
+    "PASTE_VALUES",
+    "PASTE_FORMAT",
+    "PASTE_NO_BORDERS",
+    "PASTE_FORMULA",
+    "PASTE_DATA_VALIDATION",
+    "PASTE_CONDITIONAL_FORMATTING",
+)
+
+PasteOrientation = namedtuple("PasteOrientation", ["normal", "transpose"])(
+    "NORMAL", "TRANSPOSE"
+)
+
 
 def convert_credentials(credentials):
     module = credentials.__module__

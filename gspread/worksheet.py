@@ -11,6 +11,8 @@ from .exceptions import GSpreadException
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
     Dimension,
+    PasteOrientation,
+    PasteType,
     ValueInputOption,
     ValueRenderOption,
     a1_range_to_grid_range,
@@ -2666,3 +2668,94 @@ class Worksheet:
     def show(self):
         """Show the current worksheet in the UI."""
         return self._set_hidden_flag(False)
+
+    def copy_range(
+        self,
+        source,
+        dest,
+        paste_type=PasteType.normal,
+        paste_orientation=PasteOrientation.normal,
+    ):
+        """Copies a range of data from source to dest
+
+        .. note::
+
+           ``paste_type`` values are explained here: `Paste Types`_
+
+           .. _Paste Types: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#pastetype
+
+        :param str source: The A1 notation of the source range to copy
+        :param str dest: The A1 notation of the destination where to paste the data
+            Can be the A1 notation of the top left corner where the range must be paste
+            ex: G16, or a complete range notation ex: G16:I20.
+            The dimensions of the destination range is not checked and has no effect,
+            if the destination range does not match the source range dimension, the entire
+            source range is copies anyway.
+        :param paste_type: the paste type to apply. Many paste type are available from
+            the Sheet API, see above note for detailed values for all values and their effects.
+            Defaults to ``PasteType.normal``
+        :type paste_type: :namedtuple:`~gspread.utils.PasteType`
+        :param paste_orientation: The paste orient to apply.
+            Possible values are: ``normal`` to keep the same orientation, ``transpose`` where all rows become columns and vice versa.
+        :type paste_orientation: :namedtuple:`~gspread.utils.PasteOrientation`
+        """
+        body = {
+            "requests": [
+                {
+                    "copyPaste": {
+                        "source": a1_range_to_grid_range(source, self.id),
+                        "destination": a1_range_to_grid_range(dest, self.id),
+                        "pasteType": paste_type,
+                        "pasteOrientation": paste_orientation,
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
+
+    def cut_range(
+        self,
+        source,
+        dest,
+        paste_type=PasteType.normal,
+    ):
+        """Moves a range of data form source to dest
+
+        .. note::
+
+           ``paste_type`` values are explained here: `Paste Types`_
+
+           .. _Paste Types: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#pastetype
+
+        :param str source: The A1 notation of the source range to move
+        :param str dest: The A1 notation of the destination where to paste the data
+            **it must be a single cell** in the A1 notation. ex: G16
+        :param paste_type: the paste type to apply. Many paste type are available from
+            the Sheet API, see above note for detailed values for all values and their effects.
+            Defaults to ``PasteType.normal``
+        :type paste_type: :namedtuple:`~gspread.utils.PasteType`
+        """
+
+        # in the cut/paste request, the destination object
+        # is a `gridCoordinate` and not a `gridRang`
+        # it has different object keys
+        grid_dest = a1_range_to_grid_range(dest, self.id)
+
+        body = {
+            "requests": [
+                {
+                    "cutPaste": {
+                        "source": a1_range_to_grid_range(source, self.id),
+                        "destination": {
+                            "sheetId": grid_dest["sheetId"],
+                            "rowIndex": grid_dest["startRowIndex"],
+                            "columnIndex": grid_dest["startColumnIndex"],
+                        },
+                        "pasteType": paste_type,
+                    }
+                }
+            ]
+        }
+
+        return self.spreadsheet.batch_update(body)
