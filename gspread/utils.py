@@ -34,6 +34,9 @@ ValueRenderOption = namedtuple(
 ValueInputOption = namedtuple("_ValueInputOption", ["raw", "user_entered"])(
     "RAW", "USER_ENTERED"
 )
+DateTimeOption = namedtuple("_DateTimeOption", ["serial_number", "formated_string"])(
+    "SERIAL_NUMBER", "FORMATTED_STRING"
+)
 MimeType = namedtuple(
     "_MimeType",
     ["google_sheets", "pdf", "excel", "csv", "open_office_sheet", "tsv", "zip"],
