@@ -524,7 +524,7 @@ class Spreadsheet:
 
         :param str file_id: A key of a spreadsheet to export
 
-        :param str format: The format of the resulting file.
+        :param format: The format of the resulting file.
             Possible values are:
 
                 ``ExportFormat.PDF``,
@@ -536,6 +536,7 @@ class Spreadsheet:
 
             See `ExportFormat`_ in the Drive API.
             Default value is ``ExportFormat.PDF``.
+        :type format: :namedtuple:`~gspread.utils.ExportFormat`
 
         :returns bytes: The content of the exported file.
 

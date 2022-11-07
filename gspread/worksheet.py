@@ -205,9 +205,7 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option:  ( `ValueRenderOption.formatted` |
-                                    `ValueRenderOption.unformatted` |
-                                    `ValueRenderOption.formula` )
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -231,9 +229,7 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option:  ( `ValueRenderOption.formatted` |
-                                    `ValueRenderOption.unformatted` |
-                                    `ValueRenderOption.formula` )
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -346,6 +342,7 @@ class Worksheet:
         :param str major_dimension: (optional) The major dimension of the
             values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
             Defaults to Dimension.rows
+        :type major_dimension: :namedtuple:`~gspread.utils.Dimension`
 
         :param str value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
@@ -369,6 +366,8 @@ class Worksheet:
                 formatted as currency, then A2 would return "=A1".
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
@@ -390,6 +389,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
+        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
 
         .. note::
 
@@ -474,9 +474,10 @@ class Worksheet:
         :param list numericise_ignore: (optional) List of ints of indices of
             the columns (starting at 1) to ignore numericising, special use
             of ['all'] to ignore numericising on all columns.
-        :param str value_render_option: (optional) Determines how values should
+        :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
 
         :param list expected_headers: (optional) List of expected headers, they must be unique.
 
@@ -549,7 +550,7 @@ class Worksheet:
         Empty cells in this list will be rendered as :const:`None`.
 
         :param int row: Row number (one-based).
-        :param str value_render_option: (optional) Determines how values should
+        :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
@@ -572,7 +573,9 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
-        :param str date_time_render_option: (optional) How dates, times, and
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+
+        :param date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
 
             Possible values are:
@@ -592,6 +595,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
+        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
         """
         try:
             data = self.get("A{}:{}".format(row, row), **kwargs)
@@ -608,6 +612,7 @@ class Worksheet:
         :param str value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
         """
@@ -667,7 +672,7 @@ class Worksheet:
         """Updates many cells at once.
 
         :param list cell_list: List of :class:`gspread.cell.Cell` objects to update.
-        :param str value_input_option: (optional) How the input data should be
+        :param  value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
             ``ValueInputOption.raw``
@@ -682,6 +687,8 @@ class Worksheet:
                 the Google Sheets UI.
 
             See `ValueInputOption`_ in the Sheets API.
+
+        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
 
@@ -727,7 +734,7 @@ class Worksheet:
          :param str major_dimension: (optional) The major dimension that results
              should use. Either ``ROWS`` or ``COLUMNS``.
 
-         :param str value_render_option: (optional) Determines how values should
+         :param value_render_option: (optional) Determines how values should
              be rendered in the output. See `ValueRenderOption`_ in
              the Sheets API.
 
@@ -750,6 +757,8 @@ class Worksheet:
 
              .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+
         :param str date_time_render_option: (optional) How dates, times, and
              durations should be represented in the output.
 
@@ -770,6 +779,7 @@ class Worksheet:
                  This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
              The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
+        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
 
          :rtype: :class:`gspread.worksheet.ValueRange`
 
@@ -817,7 +827,7 @@ class Worksheet:
         :param str major_dimension: (optional) The major dimension that results
             should use. Either ``ROWS`` or ``COLUMNS``.
 
-        :param str value_render_option: (optional) Determines how values should
+        :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
@@ -840,6 +850,8 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
 
@@ -860,6 +872,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
+        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
 
         .. versionadded:: 3.3
 
@@ -919,7 +932,9 @@ class Worksheet:
                 applied when entering text into a cell via
                 the Google Sheets UI.
 
-        :param str response_value_render_option: (optional) Determines how values should
+        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+
+        :param response_value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
@@ -942,6 +957,8 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
+        :type response_value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+
         :param str response_date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
 
@@ -962,6 +979,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
+        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
 
         Examples::
 
@@ -1053,7 +1071,9 @@ class Worksheet:
               applied when entering text into a cell via
               the Google Sheets UI.
 
-        :param str response_value_render_option: (optional) Determines how values should
+        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+
+        :param response_value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
 
@@ -1076,6 +1096,8 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
+        :type response_value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+
         :param str response_date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
 
@@ -1096,6 +1118,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
+        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
 
         Examples::
 
@@ -1525,9 +1548,10 @@ class Worksheet:
         Widens the worksheet if there are more values than columns.
 
         :param list values: List of values for the new row.
-        :param str value_input_option: (optional) Determines how the input data
+        :param value_input_option: (optional) Determines how the input data
             should be interpreted. See `ValueInputOption`_ in the Sheets API
             reference.
+        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
         :param str insert_data_option: (optional) Determines how the input data
             should be inserted. See `InsertDataOption`_ in the Sheets API
             reference.
@@ -1568,6 +1592,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
+        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
         :param str insert_data_option: (optional) Determines how the input data
             should be inserted. See `InsertDataOption`_ in the Sheets API
             reference.
@@ -1611,6 +1636,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
+        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
         :param bool inherit_from_before: (optional) If True, the new row will
             inherit its properties from the previous row. Defaults to False,
             meaning that the new row acquires the properties of the row
@@ -1649,6 +1675,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
+        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
         :param bool inherit_from_before: (optional) If true, new rows will
             inherit their properties from the previous row. Defaults to False,
             meaning that new rows acquire the properties of the row immediately
@@ -1717,6 +1744,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
+        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
         :param bool inherit_from_before: (optional) If True, new columns will
             inherit their properties from the previous column. Defaults to
             False, meaning that new columns acquire the properties of the
@@ -1869,7 +1897,8 @@ class Worksheet:
     def delete_dimension(self, dimension, start_index, end_index=None):
         """Deletes multi rows from the worksheet at the specified index.
 
-        :param str dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
+        :param dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
+        :type dimension: :namedtuple:`~gspread.utils.Dimension`
         :param int start_index: Index of a first row for deletion.
         :param int end_index: Index of a last row for deletion. When
             ``end_index`` is not specified this method only deletes a single
@@ -2511,6 +2540,7 @@ class Worksheet:
         :param int end: The (exclusive) end of the dimension to hide
         :param str dimension: The dimension to hide, can be one of
             ``ROWS`` or ``COLUMNS``.
+        :type diension: :namedtuple:`~gspread.utils.Dimension`
         """
         body = {
             "requests": [
@@ -2565,6 +2595,7 @@ class Worksheet:
         :param int end: The (inclusive) end of the dimension to unhide
         :param str dimension: The dimension to hide, can be one of
             ``ROWS`` or ``COLUMNS``.
+        :type dimension: :namedtuple:`~gspread.utils.Dimension`
         """
         body = {
             "requests": [

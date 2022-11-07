@@ -27,18 +27,18 @@ A1_ADDR_ROW_COL_RE = re.compile(r"([A-Za-z]+)?([1-9]\d*)?$")
 URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
 
-Dimension = namedtuple("_Dimension", ["rows", "cols"])("ROWS", "COLUMNS")
+Dimension = namedtuple("Dimension", ["rows", "cols"])("ROWS", "COLUMNS")
 ValueRenderOption = namedtuple(
-    "_ValueRenderOption", ["formatted", "unformatted", "formula"]
+    "ValueRenderOption", ["formatted", "unformatted", "formula"]
 )("FORMATTED_VALUE", "UNFORMATTED_VALUE", "FORMULA")
-ValueInputOption = namedtuple("_ValueInputOption", ["raw", "user_entered"])(
+ValueInputOption = namedtuple("ValueInputOption", ["raw", "user_entered"])(
     "RAW", "USER_ENTERED"
 )
-DateTimeOption = namedtuple("_DateTimeOption", ["serial_number", "formated_string"])(
+DateTimeOption = namedtuple("DateTimeOption", ["serial_number", "formated_string"])(
     "SERIAL_NUMBER", "FORMATTED_STRING"
 )
 MimeType = namedtuple(
-    "_MimeType",
+    "MimeType",
     ["google_sheets", "pdf", "excel", "csv", "open_office_sheet", "tsv", "zip"],
 )(
     "application/vnd.google-apps.spreadsheet",
@@ -50,7 +50,7 @@ MimeType = namedtuple(
     "application/zip",
 )
 ExportFormat = namedtuple(
-    "_ExportFormat", ["PDF", "EXCEL", "CSV", "OPEN_OFFICE_SHEET", "TSV", "ZIPPED_HTML"]
+    "ExportFormat", ["PDF", "EXCEL", "CSV", "OPEN_OFFICE_SHEET", "TSV", "ZIPPED_HTML"]
 )(
     MimeType.pdf,
     MimeType.excel,
