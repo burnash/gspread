@@ -246,6 +246,8 @@ class Client:
 
             See `ExportFormat`_ in the Drive API.
 
+        :type format: :namedtuple:`~gspread.utils.ExportFormat`
+
         :returns bytes: The content of the exported file.
 
         .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats

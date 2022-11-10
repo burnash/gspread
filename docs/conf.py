@@ -29,12 +29,13 @@ from gspread import __version__  # noqa: E402
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
     "sphinx.ext.ifconfig",
     "sphinx.ext.intersphinx",
+    "sphinx_toolbox.more_autodoc.autonamedtuple",
+    "sphinx.ext.autodoc",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
