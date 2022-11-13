@@ -138,10 +138,10 @@ class Worksheet:
     def index(self):
         """Worksheet index."""
         return self._properties["index"]
-    
+
     @property
     def isSheetHidden(self):
-        """WorkSheet Hidden Status."""
+        """Worksheet hidden status."""
         return self._properties["hidden"]
 
     @property
