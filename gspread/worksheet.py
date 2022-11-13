@@ -142,6 +142,11 @@ class Worksheet:
         return self._properties["index"]
 
     @property
+    def isSheetHidden(self):
+        """Worksheet hidden status."""
+        return self._properties["hidden"]
+
+    @property
     def updated(self):
         """.. deprecated:: 2.0
 
