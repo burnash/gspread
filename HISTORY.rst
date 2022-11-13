@@ -1,6 +1,22 @@
 Release History
 ===============
 
+5.7.0 (2022-11-13)
+------------------
+* chore: Update outdated LICENSE year by @bluzir in https://github.com/burnash/gspread/pull/1124
+* add dependabot to maintain dependencies by @lavigne958 in https://github.com/burnash/gspread/pull/1126
+* improve trigger on CI by @lavigne958 in https://github.com/burnash/gspread/pull/1134
+* Bump bandit from 1.7.0 to 1.7.4 by @dependabot in https://github.com/burnash/gspread/pull/1133
+* cancel previous run on same ref by @lavigne958 in https://github.com/burnash/gspread/pull/1135
+* Bump actions/setup-python from 2 to 4 by @dependabot in https://github.com/burnash/gspread/pull/1127
+* Bump actions/checkout from 2 to 3 by @dependabot in https://github.com/burnash/gspread/pull/1128
+* Bump black from 22.3.0 to 22.10.0 by @dependabot in https://github.com/burnash/gspread/pull/1132
+* Bump isort from 5.9.3 to 5.10.1 by @dependabot in https://github.com/burnash/gspread/pull/1131
+* Bump codespell from 2.1.0 to 2.2.2 by @dependabot in https://github.com/burnash/gspread/pull/1130
+* add named tuple for `DateTimeRenderOption` by @lavigne958 in https://github.com/burnash/gspread/pull/1136
+* Feature/copy cut paste by @lavigne958 in https://github.com/burnash/gspread/pull/1138
+* isSheetHidden method added to worksheet.py by @SazidAF in https://github.com/burnash/gspread/pull/1140
+
 5.6.2 (2022-10-23)
 ------------------
 * update parent folder for `client.copy` method by @lavigne958 in https://github.com/burnash/gspread/pull/1123
