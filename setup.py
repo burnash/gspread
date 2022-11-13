@@ -51,7 +51,7 @@ setup(
     maintainer_email="lavigne958@gmail.com",
     url="https://github.com/burnash/gspread",
     keywords=["spreadsheets", "google-spreadsheets"],
-    install_requires=["google-auth==1.12.0", "google-auth-oauthlib==0.5.3"],
+    install_requires=["google-auth==2.14.1", "google-auth-oauthlib==0.5.3"],
     python_requires=">=3.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     classifiers=[
         "Programming Language :: Python",
