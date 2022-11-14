@@ -23,7 +23,6 @@ description = "Google Spreadsheets Python API"
 
 long_description = """
 {index}
-
 License
 -------
 MIT
@@ -38,35 +37,64 @@ version = re.search(
     re.MULTILINE,
 ).group(1)
 
+INSTALL_REQUIRES = [
+    "google-auth-oauthlib>=0.7.1",
+    "google-auth>=2.14.1",
+]
 
-setup(
-    name="gspread",
-    packages=["gspread"],
-    description=description,
-    long_description=long_description,
-    version=version,
-    author="Anton Burnashev",
-    author_email="fuss.here@gmail.com",
-    maintainer="Alexandre Lavigne",
-    maintainer_email="lavigne958@gmail.com",
-    url="https://github.com/burnash/gspread",
-    keywords=["spreadsheets", "google-spreadsheets"],
-    install_requires=["google-auth==1.12.0", "google-auth-oauthlib==0.5.3"],
-    python_requires=">=3.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
-    classifiers=[
+EXTRAS_REQUIRE = {
+    "lint": [
+        "bandit>=1.7.1",
+        "codespell>=2.2.1",
+        "flake8>=4.0.1",
+        "isort>=5.8.0",
+        "black>=22.8.0",
+    ],
+    "test": [
+        "google-auth>=2.14.1",
+        "google-auth-oauthlib>=0.7.1",
+        "vcrpy>=4.1.1",
+        "pytest>=7.0.1",
+        "pytest-vcr>=1.0.2",
+    ],
+}
+
+setup_kwargs = {
+    "name": "gspread",
+    "version": "5.7.0",
+    "description": "Google Spreadsheets Python API",
+    "long_description": long_description,
+    "license": "MIT",
+    "author": "",
+    "author_email": "Anton Burnashev <fuss.here@gmail.com>",
+    "maintainer": "",
+    "maintainer_email": "Alexandre Lavigne <lavigne958@gmail.com>",
+    "url": "",
+    "packages": [
+        "gspread",
+    ],
+    "package_data": {"": ["*"]},
+    "long_description_content_type": "text/markdown",
+    "keywords": ["spreadsheets", "google-spreadsheets"],
+    "classifiers": [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "Intended Audience :: End Users/Desktop",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Development Status :: 5 - Production/Stable",
-        "Intended Audience :: Developers",
-        "Intended Audience :: End Users/Desktop",
-        "Intended Audience :: Science/Research",
         "Topic :: Office/Business :: Financial :: Spreadsheet",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    license="MIT",
-)
+    "install_requires": INSTALL_REQUIRES,
+    "extras_require": EXTRAS_REQUIRE,
+    "python_requires": ">=3.6.2, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
+}
+
+
+setup(**setup_kwargs)
