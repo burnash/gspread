@@ -1,6 +1,9 @@
 Release History
 ===============
 
+5.7.1 (2022-11-17)
+* Fix dependencies required version by @lavigne958 in https://github.com/burnash/gspread/pull/1147
+
 5.7.0 (2022-11-13)
 ------------------
 * chore: Update outdated LICENSE year by @bluzir in https://github.com/burnash/gspread/pull/1124
