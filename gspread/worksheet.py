@@ -148,21 +148,6 @@ class Worksheet:
         return self._properties.get("hidden", False)
 
     @property
-    def updated(self):
-        """.. deprecated:: 2.0
-
-        This feature is not supported in Sheets API v4.
-        """
-        import warnings
-
-        warnings.warn(
-            "Worksheet.updated() is deprecated, "
-            "this feature is not supported in Sheets API v4",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-    @property
     def row_count(self):
         """Number of rows."""
         return self._properties["gridProperties"]["rowCount"]
@@ -1796,23 +1781,6 @@ class Worksheet:
 
         return self.spreadsheet.values_append(range_label, params, body)
 
-    def delete_row(self, index):
-        """.. deprecated:: 5.0
-
-        Deletes the row from the worksheet at the specified index.
-
-        :param int index: Index of a row for deletion.
-        """
-        import warnings
-
-        warnings.warn(
-            "Worksheet.delete_row() is deprecated, "
-            "Please use `Worksheet.delete_rows()` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.delete_rows(index)
-
     @cast_to_a1_notation
     def add_protected_range(
         self,
@@ -2156,20 +2124,6 @@ class Worksheet:
         }
 
         return self.spreadsheet.batch_update(body)
-
-    def export(self, format):
-        """.. deprecated:: 2.0
-
-        This feature is not supported in Sheets API v4.
-        """
-        import warnings
-
-        warnings.warn(
-            "Worksheet.export() is deprecated, "
-            "this feature is not supported in Sheets API v4",
-            DeprecationWarning,
-            stacklevel=2,
-        )
 
     def duplicate(
         self, insert_sheet_index=None, new_sheet_id=None, new_sheet_name=None

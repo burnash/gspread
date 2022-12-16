@@ -8,7 +8,6 @@ Simple authentication with OAuth.
 
 import json
 import os
-import warnings
 from pathlib import Path
 
 from google.oauth2.credentials import Credentials
@@ -75,30 +74,6 @@ def local_server_flow(client_config, scopes, port=0):
     """
     flow = InstalledAppFlow.from_client_config(client_config, scopes)
     return flow.run_local_server(port=port)
-
-
-def console_flow(client_config, scopes):
-    """Run an OAuth flow using a console strategy.
-
-    Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_console <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_console>`_.
-
-    Pass this function to ``flow`` parameter of :meth:`~gspread.oauth` to run
-    a console strategy.
-    """
-    # The console flow has been disabled by google
-    # see: https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html?m=1#disallowed-oob
-    # now: warn the user about this
-    # next: remove this deprecated method
-    warnings.warn(
-        "The gspread.auth.console_flow flow won't succeed.\n"
-        "The OAuth out-of-band (OOB) flow is deprecated. "
-        "New clients will be unable to use this flow starting on Feb 28, 2022. "
-        "This flow will be deprecated for all clients on Oct 3, 2022. "
-        "Migrate to an alternative flow: gspread.auth.local_server_flow"
-        "see: https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html?m=1#disallowed-oob"
-    )
-    flow = InstalledAppFlow.from_client_config(client_config, scopes)
-    return flow.run_console()
 
 
 def load_credentials(filename=DEFAULT_AUTHORIZED_USER_FILENAME):

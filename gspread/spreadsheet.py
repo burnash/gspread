@@ -80,21 +80,6 @@ class Spreadsheet:
             return self._properties["modifiedTime"]
 
     @property
-    def updated(self):
-        """.. deprecated:: 2.0
-
-        This feature is not supported in Sheets API v4.
-        """
-        import warnings
-
-        warnings.warn(
-            "Spreadsheet.updated() is deprecated, "
-            "this feature is not supported in Sheets API v4",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-    @property
     def timezone(self):
         """Spreadsheet timeZone"""
         return self._properties["timeZone"]
