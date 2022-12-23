@@ -23,7 +23,7 @@ class Cell:
         self.value: str = value
 
     @classmethod
-    def from_address(cls, label: str, value: str = "") -> Cell:
+    def from_address(cls, label: str, value: str = "") -> "Cell":
         """Instantiate a new :class:`~gspread.cell.Cell`
         from an A1 notation address and a value
 
