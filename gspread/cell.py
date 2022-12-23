@@ -6,6 +6,7 @@ This module contains common cells' models.
 
 """
 
+from typing import Optional, Union
 from .utils import a1_to_rowcol, numericise, rowcol_to_a1
 
 
@@ -14,15 +15,15 @@ class Cell:
     in a :class:`~gspread.worksheet.Worksheet`.
     """
 
-    def __init__(self, row, col, value=""):
-        self._row = row
-        self._col = col
+    def __init__(self, row: int, col: int, value: str = "") -> None:
+        self._row: int = row
+        self._col: int = col
 
         #: Value of the cell.
-        self.value = value
+        self.value: str = value
 
     @classmethod
-    def from_address(cls, label, value=""):
+    def from_address(cls, label: str, value: str = "") -> Cell:
         """Instantiate a new :class:`~gspread.cell.Cell`
         from an A1 notation address and a value
 
@@ -30,9 +31,10 @@ class Cell:
         :param string value: the value for the returned cell
         :rtype: Cell
         """
-        return cls(*a1_to_rowcol(label), value=value)
+        row, col = a1_to_rowcol(label)
+        return cls(row, col, value)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<{} R{}C{} {}>".format(
             self.__class__.__name__,
             self.row,
@@ -40,14 +42,17 @@ class Cell:
             repr(self.value),
         )
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Cell):
+            return False
+
         same_row = self.row == other.row
         same_col = self.col == other.col
         same_value = self.value == other.value
         return same_row and same_col and same_value
 
     @property
-    def row(self):
+    def row(self) -> int:
         """Row number of the cell.
 
         :type: int
@@ -55,7 +60,7 @@ class Cell:
         return self._row
 
     @property
-    def col(self):
+    def col(self) -> int:
         """Column number of the cell.
 
         :type: int
@@ -63,7 +68,7 @@ class Cell:
         return self._col
 
     @property
-    def numeric_value(self):
+    def numeric_value(self) -> Optional[Union[int, float]]:
         """Numeric value of this cell.
 
         Will try to numericise this cell value,
@@ -81,7 +86,7 @@ class Cell:
             return None
 
     @property
-    def address(self):
+    def address(self) -> str:
         """Cell address in A1 notation.
 
         :type: str
