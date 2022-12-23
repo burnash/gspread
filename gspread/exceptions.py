@@ -7,7 +7,7 @@ Exceptions used in gspread.
 """
 
 from requests import Response
-from typing import Optional
+from typing import Dict, Optional, Union
 
 
 class UnSupportedExportFormat(Exception):
@@ -48,12 +48,16 @@ class APIError(GSpreadException):
         super().__init__(self._extract_text(response))
         self.response: Response = response
 
-    def _extract_text(self, response: Response) -> str:
+    def _extract_text(
+        self, response: Response
+    ) -> Union[Dict[str, Union[int, str]], str]:
         return self._text_from_detail(response) or response.text
 
-    def _text_from_detail(self, response: Response) -> Optional[str]:
+    def _text_from_detail(
+        self, response: Response
+    ) -> Optional[Dict[str, Union[int, str]]]:
         try:
             errors = response.json()
-            return str(errors["error"])
+            return dict(errors["error"])
         except (AttributeError, KeyError, ValueError):
             return None
