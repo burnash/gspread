@@ -6,6 +6,9 @@ Exceptions used in gspread.
 
 """
 
+from requests import Response
+from typing import Optional
+
 
 class UnSupportedExportFormat(Exception):
     """Raised when export format is not supported."""
@@ -40,17 +43,17 @@ class InvalidInputValue(GSpreadException):
 
 
 class APIError(GSpreadException):
-    def __init__(self, response):
+    def __init__(self, response: Response):
 
         super().__init__(self._extract_text(response))
-        self.response = response
+        self.response: Response = response
 
-    def _extract_text(self, response):
+    def _extract_text(self, response: Response) -> str:
         return self._text_from_detail(response) or response.text
 
-    def _text_from_detail(self, response):
+    def _text_from_detail(self, response: Response) -> Optional[str]:
         try:
             errors = response.json()
-            return errors["error"]
+            return str(errors["error"])
         except (AttributeError, KeyError, ValueError):
             return None
