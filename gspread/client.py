@@ -8,9 +8,11 @@ Google API.
 """
 
 from http import HTTPStatus
-from typing import Type
+from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
 
 from google.auth.transport.requests import AuthorizedSession
+from google.auth.credentials import Credentials
+from requests import Response, Session
 
 from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
 from .spreadsheet import Spreadsheet
@@ -41,23 +43,23 @@ class Client:
     >>> c = gspread.Client(auth=OAuthCredentialObject)
     """
 
-    def __init__(self, auth, session=None):
+    def __init__(self, auth: Optional[Credentials], session: Optional[Session] = None) -> None:
         if auth is not None:
-            self.auth = convert_credentials(auth)
-            self.session = session or AuthorizedSession(self.auth)
+            self.auth: Credentials = convert_credentials(auth)
+            self.session: Session = session or AuthorizedSession(self.auth)
         else:
             self.session = session
 
-        self.timeout = None
+        self.timeout: Union[float, Tuple[float, float], None] = None
 
-    def login(self):
+    def login(self) -> None:
         from google.auth.transport.requests import Request
 
         self.auth.refresh(Request(self.session))
 
         self.session.headers.update({"Authorization": "Bearer %s" % self.auth.token})
 
-    def set_timeout(self, timeout):
+    def set_timeout(self, timeout: Union[float, Tuple[float, float]]) -> None:
         """How long to wait for the server to send
         data before giving up, as a float, or a ``(connect timeout,
         read timeout)`` tuple.
@@ -68,14 +70,14 @@ class Client:
 
     def request(
         self,
-        method,
-        endpoint,
-        params=None,
-        data=None,
-        json=None,
-        files=None,
-        headers=None,
-    ):
+        method: str,
+        endpoint: str,
+        params: Optional[Mapping[str, Union[str, int, bool, None]]] = None,
+        data: Optional[bytes] = None,
+        json: Optional[Mapping[str, Union[str, bool, None]]] = None,
+        files: Optional[Any] = None,
+        headers: Optional[Mapping[str, str]] = None,
+    ) -> Response:
         response = getattr(self.session, method)(
             endpoint,
             json=json,
@@ -91,7 +93,11 @@ class Client:
         else:
             raise APIError(response)
 
-    def list_spreadsheet_files(self, title=None, folder_id=None):
+    def list_spreadsheet_files(
+            self,
+            title: Optional[str] = None,
+            folder_id: Optional[str] = None
+    ) -> List[Dict[str, Union[dict, list, str, int, bool]]]:
         """List all the spreadsheet files
 
         Will list all spreadsheet files owned by/shared with this user account.
@@ -130,7 +136,7 @@ class Client:
 
         return files
 
-    def open(self, title, folder_id=None):
+    def open(self, title: str, folder_id: Optional[str] = None) -> Spreadsheet:
         """Opens a spreadsheet.
 
         :param str title: A title of a spreadsheet.
@@ -159,7 +165,7 @@ class Client:
         except StopIteration:
             raise SpreadsheetNotFound
 
-    def open_by_key(self, key):
+    def open_by_key(self, key: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `key` (a.k.a Spreadsheet ID).
 
         :param str key: A key of a spreadsheet as it appears in a URL in a browser.
@@ -169,7 +175,7 @@ class Client:
         """
         return Spreadsheet(self, {"id": key})
 
-    def open_by_url(self, url):
+    def open_by_url(self, url: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `url`.
 
         :param str url: URL of a spreadsheet as it appears in a browser.
@@ -183,7 +189,7 @@ class Client:
         """
         return self.open_by_key(extract_id_from_url(url))
 
-    def openall(self, title=None):
+    def openall(self, title: Optional[str] = None) -> List[Spreadsheet]:
         """Opens all available spreadsheets.
 
         :param str title: (optional) If specified can be used to filter
@@ -202,7 +208,7 @@ class Client:
             Spreadsheet(self, dict(title=x["name"], **x)) for x in spreadsheet_files
         ]
 
-    def create(self, title, folder_id=None):
+    def create(self, title: str, folder_id: Optional[str] = None) -> Spreadsheet:
         """Creates a new spreadsheet.
 
         :param str title: A title of a new spreadsheet.
@@ -229,7 +235,7 @@ class Client:
         spreadsheet_id = r.json()["id"]
         return self.open_by_key(spreadsheet_id)
 
-    def export(self, file_id, format=ExportFormat.PDF):
+    def export(self, file_id: str, format: str = ExportFormat.PDF) -> bytes:
         """Export the spreadsheet in the given format.
 
         :param str file_id: The key of the spreadsheet to export
@@ -265,12 +271,12 @@ class Client:
 
     def copy(
         self,
-        file_id,
-        title=None,
-        copy_permissions=False,
-        folder_id=None,
-        copy_comments=True,
-    ):
+        file_id: str,
+        title: Optional[str] = None,
+        copy_permissions: bool = False,
+        folder_id: Optional[str] = None,
+        copy_comments: bool = True,
+    ) -> Spreadsheet:
         """Copies a spreadsheet.
 
         :param str file_id: A key of a spreadsheet to copy.
@@ -331,7 +337,7 @@ class Client:
                     continue
                 try:
                     new_spreadsheet.share(
-                        value=p["emailAddress"],
+                        email_address=p["emailAddress"],
                         perm_type=p["type"],
                         role=p["role"],
                         notify=False,
@@ -365,7 +371,7 @@ class Client:
 
         return new_spreadsheet
 
-    def del_spreadsheet(self, file_id):
+    def del_spreadsheet(self, file_id: str) -> None:
         """Deletes a spreadsheet.
 
         :param str file_id: a spreadsheet ID (a.k.a file ID).
@@ -375,9 +381,10 @@ class Client:
         params = {"supportsAllDrives": True}
         self.request("delete", url, params=params)
 
-    def import_csv(self, file_id, data):
+    def import_csv(self, file_id: str, data: Union[str, bytes]) -> None:
         """Imports data into the first page of the spreadsheet.
 
+        :param str file_id:
         :param str data: A CSV string of data.
 
         Example:
@@ -414,7 +421,7 @@ class Client:
             headers=headers,
         )
 
-    def list_permissions(self, file_id):
+    def list_permissions(self, file_id: str) -> List[Dict[str, Union[str, bool]]]:
         """Retrieve a list of permissions for a file.
 
         :param str file_id: a spreadsheet ID (aka file ID).
@@ -443,14 +450,14 @@ class Client:
 
     def insert_permission(
         self,
-        file_id,
-        value,
-        perm_type,
-        role,
-        notify=True,
-        email_message=None,
-        with_link=False,
-    ):
+        file_id: str,
+        value: Optional[str],
+        perm_type: Optional[str],
+        role: Optional[str],
+        notify: bool = True,
+        email_message: Optional[str] = None,
+        with_link: bool = False,
+    ) -> Response:
         """Creates a new permission for a file.
 
         :param str file_id: a spreadsheet ID (aka file ID).
@@ -515,7 +522,7 @@ class Client:
 
         return self.request("post", url, json=payload, params=params)
 
-    def remove_permission(self, file_id, permission_id):
+    def remove_permission(self, file_id: str, permission_id: str) -> None:
         """Deletes a permission from a file.
 
         :param str file_id: a spreadsheet ID (aka file ID.)
@@ -556,16 +563,16 @@ class BackoffClient(Client):
           403 (Forbidden) errors for forbidden access and
           for api rate limit exceeded."""
 
-    _HTTP_ERROR_CODES = [
+    _HTTP_ERROR_CODES: List[HTTPStatus] = [
         HTTPStatus.FORBIDDEN,  # Drive API return a 403 Forbidden on usage rate limit exceeded
         HTTPStatus.REQUEST_TIMEOUT,  # in case of a timeout
         HTTPStatus.TOO_MANY_REQUESTS,  # sheet API usage rate limit exceeded
     ]
-    _NR_BACKOFF = 0
-    _MAX_BACKOFF = 128  # arbitrary maximum backoff
-    _MAX_BACKOFF_REACHED = False  # Stop after reaching _MAX_BACKOFF
+    _NR_BACKOFF: int = 0
+    _MAX_BACKOFF: int = 128  # arbitrary maximum backoff
+    _MAX_BACKOFF_REACHED: bool = False  # Stop after reaching _MAX_BACKOFF
 
-    def request(self, *args, **kwargs):
+    def request(self, *args: Any, **kwargs: Any) -> Response:
         try:
             return super().request(*args, **kwargs)
         except APIError as err:
