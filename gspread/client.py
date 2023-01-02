@@ -43,7 +43,9 @@ class Client:
     >>> c = gspread.Client(auth=OAuthCredentialObject)
     """
 
-    def __init__(self, auth: Optional[Credentials], session: Optional[Session] = None) -> None:
+    def __init__(
+        self, auth: Optional[Credentials], session: Optional[Session] = None
+    ) -> None:
         if auth is not None:
             self.auth: Credentials = convert_credentials(auth)
             self.session: Session = session or AuthorizedSession(self.auth)
@@ -94,9 +96,7 @@ class Client:
             raise APIError(response)
 
     def list_spreadsheet_files(
-            self,
-            title: Optional[str] = None,
-            folder_id: Optional[str] = None
+        self, title: Optional[str] = None, folder_id: Optional[str] = None
     ) -> List[Dict[str, Union[dict, list, str, int, bool]]]:
         """List all the spreadsheet files
 
