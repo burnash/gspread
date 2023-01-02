@@ -10,8 +10,8 @@ Google API.
 from http import HTTPStatus
 from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
 
-from google.auth.transport.requests import AuthorizedSession
 from google.auth.credentials import Credentials
+from google.auth.transport.requests import AuthorizedSession
 from requests import Response, Session
 
 from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
