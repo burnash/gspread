@@ -7,6 +7,7 @@ This module contains common cells' models.
 """
 
 from typing import Optional, Union
+
 from .utils import a1_to_rowcol, numericise, rowcol_to_a1
 
 
