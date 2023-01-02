@@ -6,8 +6,9 @@ Exceptions used in gspread.
 
 """
 
-from requests import Response
 from typing import Dict, Optional, Union
+
+from requests import Response
 
 
 class UnSupportedExportFormat(Exception):
