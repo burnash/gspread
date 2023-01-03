@@ -438,6 +438,15 @@ class Spreadsheet:
 
         return self.batch_update(body)
 
+    def del_worksheet_by_id(self, worksheet_id: str):
+        """
+        Deletes a Worksheet by id
+        """
+
+        body = {"requests": [{"deleteSheet": {"sheetId": worksheet_id}}]}
+
+        return self.batch_update(body)
+
     def reorder_worksheets(self, worksheets_in_desired_order):
         """Updates the ``index`` property of each Worksheet to reflect
         its index in the provided sequence of Worksheets.
@@ -601,7 +610,8 @@ class Spreadsheet:
         )
 
         payload = {
-            "role": "writer",  # new owner must be writer in order to accept ownership by editing permissions
+            # new owner must be writer in order to accept ownership by editing permissions
+            "role": "writer",
             "pendingOwner": True,
         }
 
