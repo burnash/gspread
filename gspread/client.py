@@ -8,7 +8,7 @@ Google API.
 """
 
 from http import HTTPStatus
-from typing import Any, Dict, List, Mapping, Optional, Tuple, Type, Union
+from typing import IO, Any, Dict, List, Mapping, Optional, Tuple, Type, Union
 
 from google.auth.credentials import Credentials
 from google.auth.transport.requests import AuthorizedSession
@@ -52,7 +52,7 @@ class Client:
         else:
             self.session = session
 
-        self.timeout: Union[float, Tuple[float, float], None] = None
+        self.timeout: Optional[Union[float, Tuple[float, float]]] = None
 
     def login(self) -> None:
         from google.auth.transport.requests import Request
@@ -74,10 +74,10 @@ class Client:
         self,
         method: str,
         endpoint: str,
-        params: Optional[Mapping[str, Union[str, int, bool, None]]] = None,
+        params: Optional[Mapping[str, Union[str, int, bool, float, None]]] = None,
         data: Optional[bytes] = None,
-        json: Optional[Mapping[str, Union[str, bool, None]]] = None,
-        files: Optional[Any] = None,
+        json: Optional[Mapping[str, Any]] = None,
+        files: Optional[IO] = None,
         headers: Optional[Mapping[str, str]] = None,
     ) -> Response:
         response = getattr(self.session, method)(
@@ -97,7 +97,7 @@ class Client:
 
     def list_spreadsheet_files(
         self, title: Optional[str] = None, folder_id: Optional[str] = None
-    ) -> List[Dict[str, Union[dict, list, str, int, bool]]]:
+    ) -> List[Dict[str, Any]]:
         """List all the spreadsheet files
 
         Will list all spreadsheet files owned by/shared with this user account.
