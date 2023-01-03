@@ -1,7 +1,12 @@
 Release History
 ===============
 
+5.7.2 (2022-12-03)
+------------------
+* Fix: `hidden` property might not be set from the API by @lavigne958 in https://github.com/burnash/gspread/pull/1151
+
 5.7.1 (2022-11-17)
+------------------
 * Fix dependencies required version by @lavigne958 in https://github.com/burnash/gspread/pull/1147
 
 5.7.0 (2022-11-13)

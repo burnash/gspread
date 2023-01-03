@@ -144,7 +144,8 @@ class Worksheet:
     @property
     def isSheetHidden(self):
         """Worksheet hidden status."""
-        return self._properties["hidden"]
+        # if the property is not set then hidden=False
+        return self._properties.get("hidden", False)
 
     @property
     def updated(self):
