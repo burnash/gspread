@@ -9,10 +9,12 @@ Simple authentication with OAuth.
 import json
 import os
 from pathlib import Path
+from typing import Any, Callable, Dict, Iterable, Mapping, Optional, Tuple, Type, Union
 
-from google.oauth2.credentials import Credentials
-from google.oauth2.service_account import Credentials as ServiceAccountCredentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.credentials import Credentials  # type: ignore
+from google.oauth2.credentials import Credentials as OAuthCredentials  # type: ignore
+from google.oauth2.service_account import Credentials as SACredentials  # type: ignore
+from google_auth_oauthlib.flow import InstalledAppFlow  # type: ignore
 
 from .client import Client
 
@@ -27,7 +29,9 @@ READONLY_SCOPES = [
 ]
 
 
-def get_config_dir(config_dir_name="gspread", os_is_windows=os.name == "nt"):
+def get_config_dir(
+    config_dir_name: str = "gspread", os_is_windows: bool = os.name == "nt"
+) -> Path:
     r"""Construct a config dir path.
 
     By default:
@@ -48,7 +52,7 @@ DEFAULT_AUTHORIZED_USER_FILENAME = DEFAULT_CONFIG_DIR / "authorized_user.json"
 DEFAULT_SERVICE_ACCOUNT_FILENAME = DEFAULT_CONFIG_DIR / "service_account.json"
 
 
-def authorize(credentials, client_factory=Client):
+def authorize(credentials: Credentials, client_factory: Type[Client] = Client):
     """Login to Google API using OAuth2 credentials.
     This is a shortcut/helper function which
     instantiates a client using `client_factory`.
@@ -62,7 +66,9 @@ def authorize(credentials, client_factory=Client):
     return client_factory(auth=credentials)
 
 
-def local_server_flow(client_config, scopes, port=0):
+def local_server_flow(
+    client_config: Mapping[str, Any], scopes: Iterable[str], port: int = 0
+) -> Credentials:
     """Run an OAuth flow using a local server strategy.
 
     Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_local_server <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_local_server>`_.
@@ -76,25 +82,31 @@ def local_server_flow(client_config, scopes, port=0):
     return flow.run_local_server(port=port)
 
 
-def load_credentials(filename=DEFAULT_AUTHORIZED_USER_FILENAME):
+def load_credentials(
+    filename: Path = DEFAULT_AUTHORIZED_USER_FILENAME,
+) -> Optional[Credentials]:
     if filename.exists():
-        return Credentials.from_authorized_user_file(filename)
+        return OAuthCredentials.from_authorized_user_file(filename)
 
     return None
 
 
-def store_credentials(creds, filename=DEFAULT_AUTHORIZED_USER_FILENAME, strip="token"):
+def store_credentials(
+    creds: Credentials,
+    filename: Path = DEFAULT_AUTHORIZED_USER_FILENAME,
+    strip: str = "token",
+) -> None:
     filename.parent.mkdir(parents=True, exist_ok=True)
     with filename.open("w") as f:
         f.write(creds.to_json(strip))
 
 
 def oauth(
-    scopes=DEFAULT_SCOPES,
-    flow=local_server_flow,
-    credentials_filename=DEFAULT_CREDENTIALS_FILENAME,
-    authorized_user_filename=DEFAULT_AUTHORIZED_USER_FILENAME,
-    client_factory=Client,
+    scopes: Iterable[str] = DEFAULT_SCOPES,
+    flow: Callable[..., Credentials] = local_server_flow,
+    credentials_filename: Union[str, Path] = DEFAULT_CREDENTIALS_FILENAME,
+    authorized_user_filename: Union[str, Path] = DEFAULT_AUTHORIZED_USER_FILENAME,
+    client_factory: Type[Client] = Client,
 ):
     r"""Authenticate with OAuth Client ID.
 
@@ -172,12 +184,12 @@ def oauth(
 
 
 def oauth_from_dict(
-    credentials=None,
-    authorized_user_info=None,
-    scopes=DEFAULT_SCOPES,
-    flow=local_server_flow,
-    client_factory=Client,
-):
+    credentials: Optional[Mapping[str, Any]] = None,
+    authorized_user_info: Optional[Mapping[str, Any]] = None,
+    scopes: Iterable[str] = DEFAULT_SCOPES,
+    flow: Callable[..., Credentials] = local_server_flow,
+    client_factory: Type[Client] = Client,
+) -> Tuple[Client, Dict[str, Any]]:
     r"""Authenticate with OAuth Client ID.
 
     By default this function will use the local server strategy and open
@@ -240,12 +252,12 @@ def oauth_from_dict(
     :rtype: (`gspread.client.Client`, str)
     """
 
-    creds = None
+    creds: Credentials = None
     if authorized_user_info is not None:
-        creds = Credentials.from_authorized_user_info(authorized_user_info, scopes)
+        creds = OAuthCredentials.from_authorized_user_info(authorized_user_info, scopes)
 
-    if not creds:
-        creds = flow(client_config=credentials, scopes=scopes)
+    if not creds and credentials is not None:
+        creds = flow(client_config=credentials, scopres=scopes)
 
     client = client_factory(auth=creds)
 
@@ -256,10 +268,10 @@ def oauth_from_dict(
 
 
 def service_account(
-    filename=DEFAULT_SERVICE_ACCOUNT_FILENAME,
-    scopes=DEFAULT_SCOPES,
-    client_factory=Client,
-):
+    filename: Union[Path, str] = DEFAULT_SERVICE_ACCOUNT_FILENAME,
+    scopes: Iterable[str] = DEFAULT_SCOPES,
+    client_factory: Type[Client] = Client,
+) -> Client:
     """Authenticate using a service account.
 
     ``scopes`` parameter defaults to read/write scope available in
@@ -284,11 +296,15 @@ def service_account(
 
     :rtype: :class:`gspread.client.Client`
     """
-    creds = ServiceAccountCredentials.from_service_account_file(filename, scopes=scopes)
+    creds = SACredentials.from_service_account_file(filename, scopes=scopes)
     return client_factory(auth=creds)
 
 
-def service_account_from_dict(info, scopes=DEFAULT_SCOPES, client_factory=Client):
+def service_account_from_dict(
+    info: Mapping[str, Any],
+    scopes: Iterable[str] = DEFAULT_SCOPES,
+    client_factory: Type[Client] = Client,
+) -> Client:
     """Authenticate using a service account (json).
 
     ``scopes`` parameter defaults to read/write scope available in
@@ -313,7 +329,7 @@ def service_account_from_dict(info, scopes=DEFAULT_SCOPES, client_factory=Client
 
     :rtype: :class:`gspread.client.Client`
     """
-    creds = ServiceAccountCredentials.from_service_account_info(
+    creds = SACredentials.from_service_account_info(
         info=info,
         scopes=scopes,
     )
