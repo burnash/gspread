@@ -12,6 +12,7 @@ from collections.abc import Sequence
 from functools import wraps
 from itertools import chain
 from math import inf
+from typing import AnyStr, Optional, Tuple, Union
 from urllib.parse import quote as uquote
 
 from google.auth.credentials import Credentials as Credentials
@@ -134,11 +135,11 @@ def finditem(func, seq):
 
 
 def numericise(
-    value,
-    empty2zero=False,
-    default_blank="",
-    allow_underscores_in_numeric_literals=False,
-):
+    value: Optional[AnyStr],
+    empty2zero: bool = False,
+    default_blank: Optional[str] = "",
+    allow_underscores_in_numeric_literals: bool = False,
+) -> Optional[Union[int, float, str]]:
     """Returns a value that depends on the input:
 
         - Float if input is a string that can be converted to Float
@@ -247,7 +248,7 @@ def numericise_all(
     return numericised_list
 
 
-def rowcol_to_a1(row, col):
+def rowcol_to_a1(row: int, col: int) -> str:
     """Translates a row and column cell address to A1 notation.
 
     :param row: The row of the cell to be converted.
@@ -266,9 +267,6 @@ def rowcol_to_a1(row, col):
     A1
 
     """
-    row = int(row)
-    col = int(col)
-
     if row < 1 or col < 1:
         raise IncorrectCellLabel("({}, {})".format(row, col))
 
@@ -287,7 +285,7 @@ def rowcol_to_a1(row, col):
     return label
 
 
-def a1_to_rowcol(label):
+def a1_to_rowcol(label: AnyStr) -> Tuple[int, int]:
     """Translates a cell's address in A1 notation to a tuple of integers.
 
     :param str label: A cell label in A1 notation, e.g. 'B1'.
