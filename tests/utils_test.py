@@ -205,7 +205,6 @@ class UtilsTest(unittest.TestCase):
 
         for label, expected, exception in inputs:
             if exception is not None:
-
                 # assert the exception is raised
                 with self.assertRaises(exception):
                     utils.column_letter_to_index(label)
