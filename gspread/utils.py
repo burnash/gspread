@@ -38,10 +38,11 @@ ValueInputOption = namedtuple("ValueInputOption", ["raw", "user_entered"])(
 DateTimeOption = namedtuple("DateTimeOption", ["serial_number", "formated_string"])(
     "SERIAL_NUMBER", "FORMATTED_STRING"
 )
-MimeType = namedtuple(
+MimeTypeType = namedtuple(
     "MimeType",
     ["google_sheets", "pdf", "excel", "csv", "open_office_sheet", "tsv", "zip"],
-)(
+)
+MimeType = MimeTypeType(
     "application/vnd.google-apps.spreadsheet",
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -50,9 +51,10 @@ MimeType = namedtuple(
     "text/tab-separated-values",
     "application/zip",
 )
-ExportFormat = namedtuple(
+ExportFormatType = namedtuple(
     "ExportFormat", ["PDF", "EXCEL", "CSV", "OPEN_OFFICE_SHEET", "TSV", "ZIPPED_HTML"]
-)(
+)
+ExportFormat = ExportFormatType(
     MimeType.pdf,
     MimeType.excel,
     MimeType.csv,

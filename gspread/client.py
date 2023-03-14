@@ -8,7 +8,18 @@ Google API.
 """
 
 from http import HTTPStatus
-from typing import IO, Any, Dict, List, Mapping, Optional, Tuple, Type, Union
+from typing import (
+    IO,
+    Any,
+    Dict,
+    List,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+)
 
 from google.auth.credentials import Credentials  # type: ignore
 from google.auth.transport.requests import AuthorizedSession  # type: ignore
@@ -29,6 +40,8 @@ from .utils import (
     finditem,
 )
 
+ParamsType = MutableMapping[str, Optional[Union[str, int, bool, float]]]
+
 
 class Client:
     """An instance of this class communicates with Google API.
@@ -43,14 +56,10 @@ class Client:
     >>> c = gspread.Client(auth=OAuthCredentialObject)
     """
 
-    def __init__(
-        self, auth: Optional[Credentials], session: Optional[Session] = None
-    ) -> None:
-        if auth is not None:
-            self.auth: Credentials = convert_credentials(auth)
-            self.session: Session = session or AuthorizedSession(self.auth)
-        else:
-            self.session = session
+    def __init__(self, auth: Credentials) -> None:
+
+        self.auth: Credentials = convert_credentials(auth)
+        self.session: Session = AuthorizedSession(self.auth)
 
         self.timeout: Optional[Union[float, Tuple[float, float]]] = None
 
@@ -74,7 +83,7 @@ class Client:
         self,
         method: str,
         endpoint: str,
-        params: Optional[Mapping[str, Union[str, int, bool, float, None]]] = None,
+        params: Optional[ParamsType] = None,
         data: Optional[bytes] = None,
         json: Optional[Mapping[str, Any]] = None,
         files: Optional[IO] = None,
@@ -118,7 +127,7 @@ class Client:
         if folder_id:
             q += ' and parents in "{}"'.format(folder_id)
 
-        params = {
+        params: ParamsType = {
             "q": q,
             "pageSize": 1000,
             "supportsAllDrives": True,
@@ -224,7 +233,7 @@ class Client:
             "mimeType": MimeType.google_sheets,
         }
 
-        params = {
+        params: ParamsType = {
             "supportsAllDrives": True,
         }
 
@@ -264,7 +273,7 @@ class Client:
 
         url = "{}/{}/export".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params = {"mimeType": format}
+        params: ParamsType = {"mimeType": format}
 
         r = self.request("get", url, params=params)
         return r.content
@@ -322,7 +331,7 @@ class Client:
         if folder_id is not None:
             payload["parents"] = [folder_id]
 
-        params = {"supportsAllDrives": True}
+        params: ParamsType = {"supportsAllDrives": True}
         r = self.request("post", url, json=payload, params=params)
         spreadsheet_id = r.json()["id"]
 
@@ -378,7 +387,7 @@ class Client:
         """
         url = "{}/{}".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params = {"supportsAllDrives": True}
+        params: ParamsType = {"supportsAllDrives": True}
         self.request("delete", url, params=params)
 
     def import_csv(self, file_id: str, data: Union[str, bytes]) -> None:
@@ -404,7 +413,7 @@ class Client:
         """
         # Make sure we send utf-8
         if type(data) is str:
-            data = data.encode("utf-8")
+            payload = data.encode("utf-8")
 
         headers = {"Content-Type": "text/csv"}
         url = "{}/{}".format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
@@ -412,7 +421,7 @@ class Client:
         self.request(
             "put",
             url,
-            data=data,
+            data=bytes(payload),
             params={
                 "uploadType": "media",
                 "convert": True,
@@ -428,7 +437,7 @@ class Client:
         """
         url = "{}/{}/permissions".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params = {
+        params: ParamsType = {
             "supportsAllDrives": True,
             "fields": "nextPageToken,permissions",
         }
@@ -505,7 +514,7 @@ class Client:
             "role": role,
             "withLink": with_link,
         }
-        params = {
+        params: ParamsType = {
             "supportsAllDrives": "true",
         }
 
@@ -532,7 +541,7 @@ class Client:
             DRIVE_FILES_API_V3_URL, file_id, permission_id
         )
 
-        params = {"supportsAllDrives": True}
+        params: ParamsType = {"supportsAllDrives": True}
         self.request("delete", url, params=params)
 
 
