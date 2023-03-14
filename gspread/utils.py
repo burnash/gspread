@@ -532,7 +532,6 @@ def rightpad(row, max_len):
 
 
 def fill_gaps(L, rows=None, cols=None):
-
     try:
         max_cols = max(len(row) for row in L) if cols is None else cols
         max_rows = len(L) if rows is None else rows
