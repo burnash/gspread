@@ -57,7 +57,6 @@ class Client:
     """
 
     def __init__(self, auth: Credentials) -> None:
-
         self.auth: Credentials = convert_credentials(auth)
         self.session: Session = AuthorizedSession(self.auth)
 

@@ -45,7 +45,6 @@ class InvalidInputValue(GSpreadException):
 
 class APIError(GSpreadException):
     def __init__(self, response: Response):
-
         super().__init__(self._extract_text(response))
         self.response: Response = response
 
