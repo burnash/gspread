@@ -218,3 +218,33 @@ class UtilsTest(unittest.TestCase):
                         label, expected
                     ),
                 )
+
+    def test_column_index_to_letter(self):
+        # All the input values to test one after an other
+        # [0] input value
+        # [1] expected return value
+        # [2] expected exception to raise
+        inputs = [
+            ("", None, gspread.exceptions.InvalidInputValue),
+            (1, 'A', None),
+            (26, 'Z', None),
+            (27, 'AA', None),
+            (703, 'AAA', None),
+            (256094574536617744129141650397448476, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', None),
+        ]
+
+        for label, expected, exception in inputs:
+            if exception is not None:
+                # assert the exception is raised
+                with self.assertRaises(exception):
+                    utils.column_letter_to_index(label)
+            else:
+                # assert the return values is correct
+                result = utils.column_index_to_letter(label)
+                self.assertEqual(
+                    result,
+                    expected,
+                    "could not convert column index '{}' to the right letter '{}".format(
+                        label, expected
+                    ),
+                )

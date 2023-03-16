@@ -482,6 +482,33 @@ def column_letter_to_index(column):
     return index
 
 
+def column_index_to_letter(column: int) -> str:
+    """Converts a column's numerical index to its letter
+
+    This fucntion is case insensitive
+
+    :param str letter: An int corrensponding to the column's numerical index.
+        Indexed from 1.
+    :returns: A column label in A1 notation, e.g. 'B'.
+        Letter case is ignored.
+    :rtype: int
+
+    Raises :exc:`gspread.exceptions.InvalidInputValue` in case of invalid input.
+
+    Example:
+
+    >>> a1_to_rowcol(1)
+    'A'
+    """
+
+    if not isinstance(column, int) or column < 1:
+        raise InvalidInputValue(
+            f'invalid value: {column}, must be an int >= 1'
+        )
+
+    return rowcol_to_a1(1, column).strip('1')
+
+
 def cast_to_a1_notation(method):
     """Decorator function casts wrapped arguments to A1 notation in range
     method calls.
