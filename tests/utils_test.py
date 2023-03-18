@@ -226,11 +226,11 @@ class UtilsTest(unittest.TestCase):
         # [2] expected exception to raise
         inputs = [
             ("", None, gspread.exceptions.InvalidInputValue),
-            (1, 'A', None),
-            (26, 'Z', None),
-            (27, 'AA', None),
-            (703, 'AAA', None),
-            (256094574536617744129141650397448476, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', None),
+            (1, "A", None),
+            (26, "Z", None),
+            (27, "AA", None),
+            (703, "AAA", None),
+            (256094574536617744129141650397448476, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", None),
         ]
 
         for label, expected, exception in inputs:

@@ -487,9 +487,9 @@ def column_letter_to_index(column):
 def column_index_to_letter(column: int) -> str:
     """Converts a column's numerical index to its letter
 
-    This fucntion is case insensitive
+    This function is case insensitive
 
-    :param str letter: An int corrensponding to the column's numerical index.
+    :param str letter: An int corresponding to the column's numerical index.
         Indexed from 1.
     :returns: A column label in A1 notation, e.g. 'B'.
         Letter case is ignored.
@@ -504,11 +504,9 @@ def column_index_to_letter(column: int) -> str:
     """
 
     if not isinstance(column, int) or column < 1:
-        raise InvalidInputValue(
-            f'invalid value: {column}, must be an int >= 1'
-        )
+        raise InvalidInputValue(f"invalid value: {column}, must be an int >= 1")
 
-    return rowcol_to_a1(1, column).strip('1')
+    return rowcol_to_a1(1, column).strip("1")
 
 
 def cast_to_a1_notation(method):
@@ -549,8 +547,8 @@ def extract_id_from_url(url):
 
 
 def extract_title_from_range(range_string: str) -> str:
-    """ Will extract the sheet title from a range.
-    
+    """Will extract the sheet title from a range.
+
     :param str letter: A range string
     :returns: the title of the worksheet from the range string
     :rtype: str
@@ -565,8 +563,9 @@ def extract_title_from_range(range_string: str) -> str:
     match = TITLE_RANGE_RE.search(range_string)
     if match:
         return match.group(1)
-    
+
     raise InvalidInputValue
+
 
 def wid_to_gid(wid):
     """Calculate gid of a worksheet from its wid."""

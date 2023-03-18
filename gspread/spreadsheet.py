@@ -22,12 +22,13 @@ from .urls import (
 )
 from .utils import (
     ExportFormat,
-    finditem, quote,
     column_index_to_letter,
     extract_title_from_range,
     fill_gaps,
+    finditem,
+    quote,
 )
-from .worksheet import Worksheet, ValueRange
+from .worksheet import ValueRange, Worksheet
 
 
 class Spreadsheet:
@@ -747,8 +748,8 @@ class Spreadsheet:
         return sheet.get("protectedRanges", [])
 
     def get_all_worksheet_values(self, skip_worksheet_titles: list[str] = None):
-        """ Grabs all the data from all the worksheets in one API call. Skips any worksheets that were named in the
-        skip_worksheet_title parm.
+        """Grabs all the data from all the worksheets in one API call. Skips any worksheets that were named in the
+        skip_worksheet_title param.
         :returns Dict of worksheet data with worksheet title as key
         """
 
@@ -759,16 +760,18 @@ class Spreadsheet:
 
         for worksheet in self.google_sheet.worksheets():
             if worksheet.title not in skip_worksheet_titles:
-                ranges.append(f'{worksheet.title}!A1:{column_index_to_letter(worksheet.col_count)}')
+                ranges.append(
+                    f"{worksheet.title}!A1:{column_index_to_letter(worksheet.col_count)}"
+                )
 
-        values = self.google_sheet.values_batch_get(
-            ranges=ranges
-        )
+        values = self.google_sheet.values_batch_get(ranges=ranges)
 
         return_data = {}
 
-        for values in values['valueRanges']:
+        for values in values["valueRanges"]:
             value_range = ValueRange.from_json(values)
-            return_data[extract_title_from_range(value_range.range)] = fill_gaps(value_range)
+            return_data[extract_title_from_range(value_range.range)] = fill_gaps(
+                value_range
+            )
 
         return return_data
