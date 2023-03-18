@@ -27,6 +27,8 @@ A1_ADDR_ROW_COL_RE = re.compile(r"([A-Za-z]+)?([1-9]\d*)?$")
 URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
 
+TITLE_RANGE_RE = re.compile(r"'(.*?)'!.*")
+
 Dimension = namedtuple("Dimension", ["rows", "cols"])("ROWS", "COLUMNS")
 ValueRenderOption = namedtuple(
     "ValueRenderOption", ["formatted", "unformatted", "formula"]
@@ -545,6 +547,26 @@ def extract_id_from_url(url):
 
     raise NoValidUrlKeyFound
 
+
+def extract_title_from_range(range_string: str) -> str:
+    """ Will extract the sheet title from a range.
+    
+    :param str letter: A range string
+    :returns: the title of the worksheet from the range string
+    :rtype: str
+
+    Raises :exc: `gspread.exceptions.InvalidInputValue`
+
+    Example:
+
+    >>> extract_title_from_range("'Volunteer Portal'!A1:Z1005" -> "Volunteer Portal")
+    'Volunteer Portal'
+    """
+    match = TITLE_RANGE_RE.search(range_string)
+    if match:
+        return match.group(1)
+    
+    raise InvalidInputValue
 
 def wid_to_gid(wid):
     """Calculate gid of a worksheet from its wid."""
