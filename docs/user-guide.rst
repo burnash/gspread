@@ -12,6 +12,12 @@ You can open a spreadsheet by its title as it appears in Google Docs:
 .. code:: python
 
    sh = gc.open('My poor gym results')
+   
+.. NOTE::
+    If you have multiple Google Sheets with the same title, only the latest sheet will be 
+    opened by this method without throwing an error. It's recommended to open the sheet
+    using its unique ID instead (see below)
+      
 
 If you want to be specific, use a key (which can be extracted from
 the spreadsheet's url):
