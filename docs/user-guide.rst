@@ -226,7 +226,7 @@ Find all cells matching a regexp:
 Clear A Worksheet
 ~~~~~~~~~~~~~~~~~
 
-Clear one or multiple celle ranges at once:
+Clear one or multiple cells ranges at once:
 
 .. code:: python
 
