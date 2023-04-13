@@ -758,7 +758,7 @@ class Spreadsheet:
             if worksheet.title not in skip_worksheet_titles:
                 ranges.append(worksheet.title)
 
-        values = self.worksheet.values_batch_get(ranges=ranges)
+        values = self.values_batch_get(ranges=ranges)
 
         return_data = {}
 
