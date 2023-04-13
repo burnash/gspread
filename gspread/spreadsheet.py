@@ -743,7 +743,10 @@ class Spreadsheet:
     def get_all_worksheet_values(self, skip_worksheet_titles: list = None):
         """Grabs all the data from all the worksheets in one API call. Skips any worksheets that were named in the
         skip_worksheet_title param.
-        :returns Dict of worksheet data with worksheet title as key
+
+        :param list skip_worksheet_titles: A list of worksheet titles to skip.
+        :returns: a dict of worksheet data with worksheet title as key
+        :rtype: dict
         """
 
         if skip_worksheet_titles is None:

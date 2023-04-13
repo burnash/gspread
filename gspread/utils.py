@@ -528,7 +528,8 @@ def extract_title_from_range(range_string: str) -> str:
     :returns: the title of the worksheet from the range string
     :rtype: str
 
-    Raises :exc: `gspread.exceptions.InvalidInputValue`
+    :raises:
+        :class:`~gspread.exceptions.InvalidInputValue`: if can't extract a title
 
     Example:
 
