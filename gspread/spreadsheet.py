@@ -20,14 +20,7 @@ from .urls import (
     SPREADSHEET_VALUES_CLEAR_URL,
     SPREADSHEET_VALUES_URL,
 )
-from .utils import (
-    ExportFormat,
-    column_index_to_letter,
-    extract_title_from_range,
-    fill_gaps,
-    finditem,
-    quote,
-)
+from .utils import ExportFormat, extract_title_from_range, fill_gaps, finditem, quote
 from .worksheet import ValueRange, Worksheet
 
 
@@ -747,7 +740,7 @@ class Spreadsheet:
 
         return sheet.get("protectedRanges", [])
 
-    def get_all_worksheet_values(self, skip_worksheet_titles: list[str] = None):
+    def get_all_worksheet_values(self, skip_worksheet_titles: list = None):
         """Grabs all the data from all the worksheets in one API call. Skips any worksheets that were named in the
         skip_worksheet_title param.
         :returns Dict of worksheet data with worksheet title as key
@@ -758,13 +751,11 @@ class Spreadsheet:
 
         ranges = []
 
-        for worksheet in self.google_sheet.worksheets():
+        for worksheet in self.worksheets().worksheets():
             if worksheet.title not in skip_worksheet_titles:
-                ranges.append(
-                    f"{worksheet.title}!A1:{column_index_to_letter(worksheet.col_count)}"
-                )
+                ranges.append(worksheet.title)
 
-        values = self.google_sheet.values_batch_get(ranges=ranges)
+        values = self.worksheet.values_batch_get(ranges=ranges)
 
         return_data = {}
 
