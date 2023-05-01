@@ -21,7 +21,7 @@ from .auth import (
     service_account_from_dict,
 )
 from .cell import Cell
-from .client import BackoffClient, Client, ClientFactory
+from .client import Client
 from .exceptions import (
     CellNotFound,
     GSpreadException,
@@ -30,5 +30,6 @@ from .exceptions import (
     SpreadsheetNotFound,
     WorksheetNotFound,
 )
+from .http_client import BackOffHTTPClient, HTTPClient
 from .spreadsheet import Spreadsheet
 from .worksheet import Worksheet

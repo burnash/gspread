@@ -1,0 +1,8 @@
+HTTPClient
+======
+
+.. autoclass:: gspread.HTTPClient
+   :members:
+
+.. autoclass:: gspread.BackOffHTTPClient
+   :members:

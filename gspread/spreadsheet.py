@@ -27,8 +27,8 @@ from .worksheet import Worksheet
 class Spreadsheet:
     """The class that represents a spreadsheet."""
 
-    def __init__(self, client, properties):
-        self.client = client
+    def __init__(self, http_client, properties):
+        self.client = http_client
         self._properties = properties
 
         metadata = self.fetch_sheet_metadata()
