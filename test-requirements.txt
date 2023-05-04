@@ -3,3 +3,4 @@ google-auth-oauthlib>=0.8.0
 vcrpy
 pytest
 pytest-vcr
+urllib3==1.26.15
