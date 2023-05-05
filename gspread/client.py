@@ -91,6 +91,24 @@ class Client:
         else:
             raise APIError(response)
 
+    def _get_file_drive_metadata(self, id):
+        """Get the metadata from the Drive API for a specific file
+        This method is mainly here to retrieve the create/update time
+        of a file (these metadata are only accessible from the Drive API).
+        """
+
+        url = DRIVE_FILES_API_V3_URL + "/{}".format(id)
+
+        params = {
+            "supportsAllDrives": True,
+            "includeItemsFromAllDrives": True,
+            "fields": "id,name,createdTime,modifiedTime",
+        }
+
+        res = self.request("get", url, params=params)
+
+        return res.json()
+
     def list_spreadsheet_files(self, title=None, folder_id=None):
         """List all the spreadsheet files
 

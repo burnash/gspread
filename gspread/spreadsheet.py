@@ -55,12 +55,7 @@ class Spreadsheet:
         try:
             return self._properties["createdTime"]
         except KeyError:
-            # Filter the list using the name to reduce the request size
-            # Filter the item using the unique ID to ensure we update the exacte same item
-            metadata = finditem(
-                lambda x: x["id"] == self.id,
-                self.client.list_spreadsheet_files(self.title),
-            )
+            metadata = self.client._get_file_drive_metadata(self.id)
             self._properties.update(metadata)
             return self._properties["createdTime"]
 
@@ -70,12 +65,7 @@ class Spreadsheet:
         try:
             return self._properties["modifiedTime"]
         except KeyError:
-            # Filter the list using the name to reduce the request size
-            # Filter the item using the unique ID to ensure we update the exacte same item
-            metadata = finditem(
-                lambda x: x["id"] == self.id,
-                self.client.list_spreadsheet_files(self.title),
-            )
+            metadata = self.client._get_file_drive_metadata(self.id)
             self._properties.update(metadata)
             return self._properties["modifiedTime"]
 
