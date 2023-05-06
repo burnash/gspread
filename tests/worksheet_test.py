@@ -530,7 +530,7 @@ class WorksheetTest(GspreadTest):
         expected_values = [
             [2, 43831, "string", 53],
             [3 / 2, 0.12, 36162, ""],
-            ]
+        ]
         self.assertEqual(read_records, expected_values)
 
         # with value_render as unformatted
@@ -542,7 +542,7 @@ class WorksheetTest(GspreadTest):
         expected_values = [
             [2, "2020-01-01", "string", 53],
             [3 / 2, 0.12, "1999-01-02", ""],
-            ]
+        ]
         self.assertEqual(read_records, expected_values)
 
         # with value_render as formatted (overrides date_time_render)
@@ -562,7 +562,6 @@ class WorksheetTest(GspreadTest):
                 value_render_option=utils.ValueRenderOption.formatted,
                 date_time_render_option=utils.DateTimeOption.formatted_string,
             )
-        
 
     @pytest.mark.vcr()
     def test_get_all_records(self):
