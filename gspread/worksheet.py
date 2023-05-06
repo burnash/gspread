@@ -385,7 +385,7 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
@@ -591,7 +591,7 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
@@ -775,7 +775,7 @@ class Worksheet:
                  to be output as doubles in "serial number" format,
                  as popularized by Lotus 1-2-3.
 
-             ``DateTimeOption.formated_string``
+             ``DateTimeOption.formatted_string``
                  Instructs date, time, datetime, and duration fields to be output
                  as strings in their given number format
                  (which depends on the spreadsheet locale).
@@ -868,7 +868,7 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
@@ -975,7 +975,7 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
@@ -1114,7 +1114,7 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
