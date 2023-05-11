@@ -12,7 +12,7 @@ from google.auth.credentials import Credentials  # type: ignore
 from requests import Response
 
 from .exceptions import SpreadsheetNotFound, UnSupportedExportFormat
-from .http_client import HTTPClientType, HTTPClient, ParamsType
+from .http_client import HTTPClient, HTTPClientType, ParamsType
 from .spreadsheet import Spreadsheet
 from .urls import (
     DRIVE_FILES_API_V3_COMMENTS_URL,
@@ -149,7 +149,8 @@ class Client:
             ]
 
         return [
-            Spreadsheet(self.http_client, dict(title=x["name"], **x)) for x in spreadsheet_files
+            Spreadsheet(self.http_client, dict(title=x["name"], **x))
+            for x in spreadsheet_files
         ]
 
     def create(self, title: str, folder_id: Optional[str] = None) -> Spreadsheet:

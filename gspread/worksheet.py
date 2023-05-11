@@ -8,7 +8,7 @@ This module contains common worksheets' models.
 
 from .cell import Cell
 from .exceptions import GSpreadException
-from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
+from .urls import WORKSHEET_DRIVE_URL
 from .utils import (
     Dimension,
     PasteOrientation,
@@ -109,9 +109,9 @@ class Worksheet:
     (aka "worksheet").
     """
 
-    def __init__(self, spreadsheet, properties):
-        self.spreadsheet = spreadsheet
-        self.client = spreadsheet.client
+    def __init__(self, spreadsheet_id, client, properties):
+        self.spreadsheet_id = spreadsheet_id
+        self.client = client
         self._properties = properties
 
     def __repr__(self):
@@ -134,7 +134,7 @@ class Worksheet:
     @property
     def url(self):
         """Worksheet URL."""
-        return WORKSHEET_DRIVE_URL % (self.spreadsheet.id, self.id)
+        return WORKSHEET_DRIVE_URL % (self.spreadsheet_id, self.id)
 
     @property
     def index(self):
@@ -182,7 +182,7 @@ class Worksheet:
 
     def _get_sheet_property(self, property, default_value):
         """return a property of this worksheet or default value if not found"""
-        meta = self.spreadsheet.fetch_sheet_metadata()
+        meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
         sheet = finditem(
             lambda x: x["properties"]["sheetId"] == self.id, meta["sheets"]
         )
@@ -283,7 +283,7 @@ class Worksheet:
         """
         range_label = absolute_range_name(self.title, name)
 
-        data = self.spreadsheet.values_get(range_label)
+        data = self.client.values_get(self.spreadsheet_id, range_label)
 
         if ":" not in name:
             name = data.get("range", "")
@@ -615,7 +615,8 @@ class Worksheet:
 
         range_name = absolute_range_name(self.title, range_label)
 
-        data = self.spreadsheet.values_get(
+        data = self.client.values_get(
+            self.spreadsheet_id,
             range_name,
             params={
                 "valueRenderOption": value_render_option,
@@ -653,7 +654,8 @@ class Worksheet:
         """
         range_name = absolute_range_name(self.title, rowcol_to_a1(row, col))
 
-        data = self.spreadsheet.values_update(
+        data = self.client.values_update(
+            self.spreadsheet_id,
             range_name,
             params={"valueInputOption": ValueInputOption.user_entered},
             body={"values": [[value]]},
@@ -705,7 +707,8 @@ class Worksheet:
 
         range_name = absolute_range_name(self.title, "{}:{}".format(start, end))
 
-        data = self.spreadsheet.values_update(
+        data = self.client.values_update(
+            self.spreadsheet_id,
             range_name,
             params={"valueInputOption": value_input_option},
             body={"values": values_rect},
@@ -802,7 +805,9 @@ class Worksheet:
             }
         )
 
-        response = self.spreadsheet.values_get(range_name, params=params)
+        response = self.client.values_get(
+            self.spreadsheet_id, range_name, params=params
+        )
 
         return ValueRange.from_json(response)
 
@@ -884,7 +889,9 @@ class Worksheet:
             }
         )
 
-        response = self.spreadsheet.values_batch_get(ranges=ranges, params=params)
+        response = self.client.values_batch_get(
+            self.spreadsheet_id, ranges=ranges, params=params
+        )
 
         return [ValueRange.from_json(x) for x in response["valueRanges"]]
 
@@ -1023,7 +1030,8 @@ class Worksheet:
             }
         )
 
-        response = self.spreadsheet.values_update(
+        response = self.client.values_update(
+            self.spreadsheet_id,
             range_name,
             params=params,
             body=filter_dict_values(
@@ -1150,7 +1158,7 @@ class Worksheet:
             }
         )
 
-        response = self.spreadsheet.values_batch_update(body=body)
+        response = self.client.values_batch_update(self.spreadsheet_id, body=body)
 
         return response
 
@@ -1218,7 +1226,7 @@ class Worksheet:
                 }
             )
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def format(self, ranges, format):
         """Format a list of ranges with the given format.
@@ -1298,7 +1306,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     # TODO(post Python 2): replace the method signature with
     # def sort(self, *specs, range=None):
@@ -1369,7 +1377,7 @@ class Worksheet:
             ]
         }
 
-        response = self.spreadsheet.batch_update(body)
+        response = self.client.batch_update(self.spreadsheet_id, body)
         return response
 
     def update_title(self, title):
@@ -1388,7 +1396,7 @@ class Worksheet:
             ]
         }
 
-        response = self.spreadsheet.batch_update(body)
+        response = self.client.batch_update(self.spreadsheet_id, body)
         self._properties["title"] = title
         return response
 
@@ -1422,7 +1430,7 @@ class Worksheet:
             ]
         }
 
-        response = self.spreadsheet.batch_update(body)
+        response = self.client.batch_update(self.spreadsheet_id, body)
         self._properties["tabColorStyle"] = {
             "rgbColor": color,
         }
@@ -1452,7 +1460,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def _auto_resize(self, start_index, end_index, dimension):
         """Updates the size of rows or columns in the  worksheet.
@@ -1481,7 +1489,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def columns_auto_resize(self, start_column_index, end_column_index):
         """Updates the size of rows or columns in the  worksheet.
@@ -1609,7 +1617,7 @@ class Worksheet:
 
         body = {"values": values}
 
-        return self.spreadsheet.values_append(range_label, params, body)
+        return self.client.values_append(self.spreadsheet_id, range_label, params, body)
 
     def insert_row(
         self,
@@ -1709,7 +1717,7 @@ class Worksheet:
             ]
         }
 
-        self.spreadsheet.batch_update(body)
+        self.client.batch_update(self.spreadsheet_id, body)
 
         range_label = absolute_range_name(self.title, "A%s" % row)
 
@@ -1717,7 +1725,7 @@ class Worksheet:
 
         body = {"majorDimension": Dimension.rows, "values": values}
 
-        return self.spreadsheet.values_append(range_label, params, body)
+        return self.client.values_append(self.spreadsheet_id, range_label, params, body)
 
     def insert_cols(
         self,
@@ -1771,7 +1779,7 @@ class Worksheet:
             ]
         }
 
-        self.spreadsheet.batch_update(body)
+        self.client.batch_update(self.spreadsheet_id, body)
 
         range_label = absolute_range_name(self.title, rowcol_to_a1(1, col))
 
@@ -1779,7 +1787,7 @@ class Worksheet:
 
         body = {"majorDimension": Dimension.cols, "values": values}
 
-        return self.spreadsheet.values_append(range_label, params, body)
+        return self.client.values_append(self.spreadsheet_id, range_label, params, body)
 
     @cast_to_a1_notation
     def add_protected_range(
@@ -1849,7 +1857,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def delete_protected_range(self, id):
         """Delete protected range identified by the ID ``id``.
@@ -1868,7 +1876,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def delete_dimension(self, dimension, start_index, end_index=None):
         """Deletes multi rows from the worksheet at the specified index.
@@ -1898,7 +1906,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def delete_rows(self, start_index, end_index=None):
         """Deletes multiple rows from the worksheet at the specified index.
@@ -1931,7 +1939,9 @@ class Worksheet:
 
     def clear(self):
         """Clears all cells in the worksheet."""
-        return self.spreadsheet.values_clear(absolute_range_name(self.title))
+        return self.client.values_clear(
+            self.spreadsheet_id, absolute_range_name(self.title)
+        )
 
     def batch_clear(self, ranges):
         """Clears multiple ranges of cells with 1 API call.
@@ -1955,12 +1965,14 @@ class Worksheet:
 
         body = {"ranges": ranges}
 
-        response = self.spreadsheet.values_batch_clear(body=body)
+        response = self.client.values_batch_clear(self.spreadsheet_id, body=body)
 
         return response
 
     def _finder(self, func, query, case_sensitive, in_row=None, in_column=None):
-        data = self.spreadsheet.values_get(absolute_range_name(self.title))
+        data = self.client.values_get(
+            self.spreadsheet_id, absolute_range_name(self.title)
+        )
 
         try:
             values = fill_gaps(data["values"])
@@ -2078,7 +2090,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     @cast_to_a1_notation
     def set_basic_filter(self, name=None):
@@ -2106,7 +2118,7 @@ class Worksheet:
 
         body = {"requests": [{"setBasicFilter": {"filter": {"range": grid_range}}}]}
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def clear_basic_filter(self):
         """Remove the basic filter from a worksheet.
@@ -2123,7 +2135,57 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
+
+    @classmethod
+    def _duplicate(
+        cls,
+        client,
+        spreadsheet_id,
+        sheet_id,
+        insert_sheet_index=None,
+        new_sheet_id=None,
+        new_sheet_name=None,
+    ):
+        """Class method to duplicate a :class:`gspread.worksheet.Worksheet`.
+
+        :param Session client: The HTTP client used for the HTTP request
+        :param str spreadsheet_id: The spreadsheet ID (used for the HTTP request)
+        :param int sheet_id: The original sheet ID
+        :param int insert_sheet_index: (optional) The zero-based index
+            where the new sheet should be inserted. The index of all sheets
+            after this are incremented.
+        :param int new_sheet_id: (optional) The ID of the new sheet.
+            If not set, an ID is chosen. If set, the ID must not conflict with
+            any existing sheet ID. If set, it must be non-negative.
+        :param str new_sheet_name: (optional) The name of the new sheet.
+            If empty, a new name is chosen for you.
+
+        :returns: a newly created :class:`gspread.worksheet.Worksheet`.
+
+        .. note::
+           This is a class method in order for the spreadsheet class
+           to use it without an instance of a Worksheet object
+        """
+
+        body = {
+            "requests": [
+                {
+                    "duplicateSheet": {
+                        "sourceSheetId": sheet_id,
+                        "insertSheetIndex": insert_sheet_index,
+                        "newSheetId": new_sheet_id,
+                        "newSheetName": new_sheet_name,
+                    }
+                }
+            ]
+        }
+
+        data = cls.client.batch_update(spreadsheet_id, body)
+
+        properties = data["replies"][0]["duplicateSheet"]["properties"]
+
+        return Worksheet(spreadsheet_id, properties)
 
     def duplicate(
         self, insert_sheet_index=None, new_sheet_id=None, new_sheet_name=None
@@ -2143,8 +2205,13 @@ class Worksheet:
 
         .. versionadded:: 3.1
         """
-        return self.spreadsheet.duplicate_sheet(
-            self.id, insert_sheet_index, new_sheet_id, new_sheet_name
+        return Worksheet._duplicate(
+            self.client,
+            self.spreadsheet_id,
+            self.id,
+            insert_sheet_index=insert_sheet_index,
+            new_sheet_id=new_sheet_id,
+            new_sheet_name=new_sheet_name,
         )
 
     def copy_to(
@@ -2159,7 +2226,7 @@ class Worksheet:
             the newly created sheet.
         :rtype: dict
         """
-        return self.spreadsheet._spreadsheets_sheets_copy_to(self.id, spreadsheet_id)
+        return self.client.spreadsheets_sheets_copy_to(spreadsheet_id, self.id)
 
     @cast_to_a1_notation
     def merge_cells(self, name, merge_type="MERGE_ALL"):
@@ -2191,7 +2258,7 @@ class Worksheet:
             "requests": [{"mergeCells": {"mergeType": merge_type, "range": grid_range}}]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     @cast_to_a1_notation
     def unmerge_cells(self, name):
@@ -2225,7 +2292,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def get_note(self, cell):
         """Get the content of the note located at `cell`, or the empty string if the
@@ -2235,16 +2302,11 @@ class Worksheet:
             e.g. 'D7'.
         """
         absolute_cell = absolute_range_name(self.title, cell)
-        url = SPREADSHEET_URL % (self.spreadsheet.id)
         params = {"ranges": absolute_cell, "fields": "sheets/data/rowData/values/note"}
-        response = self.client.request("get", url, params=params)
-        response.raise_for_status()
-        response_json = response.json()
+        res = self.client.spreadsheets_get(self.spreadsheet_id, params)
 
         try:
-            note = response_json["sheets"][0]["data"][0]["rowData"][0]["values"][0][
-                "note"
-            ]
+            note = res["sheets"][0]["data"][0]["rowData"][0]["values"][0]["note"]
         except (IndexError, KeyError):
             note = ""
 
@@ -2276,7 +2338,7 @@ class Worksheet:
                 }
             ]
         }
-        self.spreadsheet.batch_update(body)
+        self.client.batch_update(self.spreadsheet_id, body)
 
     @cast_to_a1_notation
     def insert_note(self, cell, content):
@@ -2349,7 +2411,7 @@ class Worksheet:
                 }
             ]
         }
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def delete_named_range(self, named_range_id):
         """
@@ -2368,7 +2430,7 @@ class Worksheet:
                 }
             ]
         }
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def _add_dimension_group(self, start, end, dimension):
         """
@@ -2394,7 +2456,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def add_dimension_group_columns(self, start, end):
         """
@@ -2443,7 +2505,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def delete_dimension_group_columns(self, start, end):
         """
@@ -2523,7 +2585,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def hide_columns(self, start, end):
         """
@@ -2578,7 +2640,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def unhide_columns(self, start, end):
         """
@@ -2619,7 +2681,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def hide(self):
         """Hides the current worksheet from the UI."""
@@ -2672,7 +2734,7 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def cut_range(
         self,
@@ -2718,4 +2780,4 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)

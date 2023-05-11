@@ -14,7 +14,18 @@ from google.auth.transport.requests import AuthorizedSession  # type: ignore
 from requests import Response, Session
 
 from .exceptions import APIError
-from .utils import convert_credentials
+from .urls import (
+    SPREADSHEET_BATCH_UPDATE_URL,
+    SPREADSHEET_SHEETS_COPY_TO_URL,
+    SPREADSHEET_URL,
+    SPREADSHEET_VALUES_APPEND_URL,
+    SPREADSHEET_VALUES_BATCH_CLEAR_URL,
+    SPREADSHEET_VALUES_BATCH_UPDATE_URL,
+    SPREADSHEET_VALUES_BATCH_URL,
+    SPREADSHEET_VALUES_CLEAR_URL,
+    SPREADSHEET_VALUES_URL,
+)
+from .utils import convert_credentials, quote
 
 ParamsType = MutableMapping[str, Optional[Union[str, int, bool, float]]]
 
@@ -22,15 +33,14 @@ ParamsType = MutableMapping[str, Optional[Union[str, int, bool, float]]]
 class HTTPClient:
     """An instance of this class communicates with Google API.
 
-    :param auth: An OAuth2 credential object. Credential objects
+    :param Session auth: An OAuth2 credential object. Credential objects
         created by `google-auth <https://github.com/googleapis/google-auth-library-python>`_.
 
     This class is not intended to be created manually.
     It will be created by the gspread.Client class.
     """
 
-    def __init__(self, auth: Credentials, session = None) -> None:
-
+    def __init__(self, auth: Credentials, session=None) -> None:
         if session is not None:
             self.session = session
         else:
@@ -79,6 +89,162 @@ class HTTPClient:
             return response
         else:
             raise APIError(response)
+
+    def batch_update(self, id, body):
+        """Lower-level method that directly calls `spreadsheets/<ID>:batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate>`_.
+
+        :param dict body: `Batch Update Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#request-body>`_.
+        :returns: `Batch Update Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#response-body>`_.
+        :rtype: dict
+
+        .. versionadded:: 3.0
+        """
+        r = self.request("post", SPREADSHEET_BATCH_UPDATE_URL % id, json=body)
+
+        return r.json()
+
+    def values_update(self, id, range, params=None, body=None):
+        """Lower-level method that directly calls `PUT spreadsheets/<ID>/values/<range> <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update>`_.
+
+        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to update.
+        :param dict params: (optional) `Values Update Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update#query-parameters>`_.
+        :param dict body: (optional) `Values Update Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update#request-body>`_.
+        :returns: `Values Update Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update#response-body>`_.
+        :rtype: dict
+
+        Example::
+
+            sh.values_update(
+                'Sheet1!A2',
+                params={
+                    'valueInputOption': 'USER_ENTERED'
+                },
+                body={
+                    'values': [[1, 2, 3]]
+                }
+            )
+
+        .. versionadded:: 3.0
+        """
+        url = SPREADSHEET_VALUES_URL % (id, quote(range))
+        r = self.request("put", url, params=params, json=body)
+        return r.json()
+
+    def values_append(self, id, range, params, body):
+        """Lower-level method that directly calls `spreadsheets/<ID>/values:append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
+
+        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_
+                          of a range to search for a logical table of data. Values will be appended after the last row of the table.
+        :param dict params: `Values Append Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#query-parameters>`_.
+        :param dict body: `Values Append Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#request-body>`_.
+        :returns: `Values Append Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#response-body>`_.
+        :rtype: dict
+
+        .. versionadded:: 3.0
+        """
+        url = SPREADSHEET_VALUES_APPEND_URL % (id, quote(range))
+        r = self.request("post", url, params=params, json=body)
+        return r.json()
+
+    def values_clear(self, id, range):
+        """Lower-level method that directly calls `spreadsheets/<ID>/values:clear <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/clear>`_.
+
+        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to clear.
+        :returns: `Values Clear Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/clear#response-body>`_.
+        :rtype: dict
+
+        .. versionadded:: 3.0
+        """
+        url = SPREADSHEET_VALUES_CLEAR_URL % (id, quote(range))
+        r = self.request("post", url)
+        return r.json()
+
+    def values_batch_clear(self, id, params=None, body=None):
+        """Lower-level method that directly calls `spreadsheets/<ID>/values:batchClear`
+
+        :param dict params: (optional) `Values Batch Clear Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchClear#path-parameters>`_.
+        :param dict body: (optional) `Values Batch Clear request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchClear#request-body>`_.
+        :rtype: dict
+        """
+        url = SPREADSHEET_VALUES_BATCH_CLEAR_URL % id
+        r = self.request("post", url, params=params, json=body)
+        return r.json()
+
+    def values_get(self, id, range, params=None):
+        """Lower-level method that directly calls `GET spreadsheets/<ID>/values/<range> <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get>`_.
+
+        :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
+        :param dict params: (optional) `Values Get Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#query-parameters>`_.
+        :returns: `Values Get Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get#response-body>`_.
+        :rtype: dict
+
+        .. versionadded:: 3.0
+        """
+        url = SPREADSHEET_VALUES_URL % (id, quote(range))
+        r = self.request("get", url, params=params)
+        return r.json()
+
+    def values_batch_get(self, id, ranges, params=None):
+        """Lower-level method that directly calls `spreadsheets/<ID>/values:batchGet <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet>`_.
+
+        :param list ranges: List of ranges in the `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
+        :param dict params: (optional) `Values Batch Get Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet#query-parameters>`_.
+        :returns: `Values Batch Get Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet#response-body>`_.
+        :rtype: dict
+        """
+        if params is None:
+            params = {}
+
+        params.update(ranges=ranges)
+
+        url = SPREADSHEET_VALUES_BATCH_URL % id
+        r = self.request("get", url, params=params)
+        return r.json()
+
+    def values_batch_update(self, id, body=None):
+        """Lower-level method that directly calls `spreadsheets/<ID>/values:batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate>`_.
+
+        :param dict body: (optional) `Values Batch Update Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate#request-body>`_.
+        :returns: `Values Batch Update Response body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate#response-body>`_.
+        :rtype: dict
+        """
+        url = SPREADSHEET_VALUES_BATCH_UPDATE_URL % id
+        r = self.request("post", url, json=body)
+        return r.json()
+
+    def spreadsheets_get(self, id, params=None):
+        """A method stub that directly calls `spreadsheets.get <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/get>`_."""
+        url = SPREADSHEET_URL % id
+        r = self.request("get", url, params=params)
+        return r.json()
+
+    def spreadsheets_sheets_copy_to(self, id, sheet_id, destination_spreadsheet_id):
+        """Lower-level method that directly calls `spreadsheets.sheets.copyTo <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.sheets/copyTo>`_."""
+        url = SPREADSHEET_SHEETS_COPY_TO_URL % (id, sheet_id)
+
+        body = {"destinationSpreadsheetId": destination_spreadsheet_id}
+        r = self.request("post", url, json=body)
+        return r.json()
+
+    def fetch_sheet_metadata(self, id, params=None):
+        """Similar to :method spreadsheets_get:`gspread.http_client.spreadsheets_get`,
+        get the spreadsheet form the API but by default **does not get the cells data**.
+        It only retrieve the the metadata from the spreadsheet.
+
+        :param str id: the spreadsheet ID key
+        :param dict params: (optional) the HTTP params for the GET request.
+            By default sets the parameter ``includeGridData`` to ``false``.
+        :returns: The raw spreadsheet
+        :rtype: dict
+        """
+        if params is None:
+            params = {"includeGridData": "false"}
+
+        url = SPREADSHEET_URL % id
+
+        r = self.request("get", url, params=params)
+
+        return r.json()
 
 
 class BackOffHTTPClient(HTTPClient):
