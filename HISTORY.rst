@@ -1,6 +1,12 @@
 Release History
 ===============
 
+5.9.0 (2023-05-11)
+------------------
+
+* Bugfix/fix get last update time by @lavigne958 in https://github.com/burnash/gspread/pull/1186
+* Add batch notes insert/update/clear by @lavigne958 in https://github.com/burnash/gspread/pull/1189
+
 5.8.0 (2023-04-05)
 ------------------
 * Bump black from 22.10.0 to 22.12.0 by @dependabot in https://github.com/burnash/gspread/pull/1154
