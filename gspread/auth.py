@@ -58,7 +58,7 @@ def authorize(credentials: Credentials, http_client: HTTPClientType = HTTPClient
     This is a shortcut/helper function which
     instantiates a client using `http_client`.
     By default :class:`gspread.HTTPClient` is used (but could also use
-    :class:`gspread.BackoffClient` to avoid rate limiting).
+    :class:`gspread.BackOffHTTPClient` to avoid rate limiting).
 
     :returns: An instance of the class produced by `http_client`.
     :rtype: :class:`gspread.client.Client`
@@ -250,7 +250,7 @@ def oauth_from_dict(
         Defaults to :class:`gspread.http_client.HTTPClient` (but could also use
         :class:`gspread.http_client.BackOffHTTPClient` to avoid rate limiting)
 
-    :rtype: (`gspread.client.Client`, str)
+    :rtype: (:class:`gspread.client.Client`, str)
     """
 
     creds: Credentials = None
