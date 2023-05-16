@@ -9,8 +9,8 @@ Google API.
 from http import HTTPStatus
 from typing import IO, Any, List, Mapping, MutableMapping, Optional, Tuple, Type, Union
 
-from google.auth.credentials import Credentials  # type: ignore
-from google.auth.transport.requests import AuthorizedSession  # type: ignore
+from google.auth.credentials import Credentials
+from google.auth.transport.requests import AuthorizedSession
 from requests import Response, Session
 
 from .exceptions import APIError
@@ -28,25 +28,44 @@ from .urls import (
 )
 from .utils import convert_credentials, quote
 
-ParamsType = MutableMapping[str, Optional[Union[str, int, bool, float]]]
+ParamsType = MutableMapping[str, Optional[Union[str, int, bool, float, List[str]]]]
+
+FileType = Optional[
+    Union[
+        MutableMapping[str, IO[Any]],
+        MutableMapping[str, Tuple[str, IO[Any]]],
+        MutableMapping[str, Tuple[str, IO[Any], str]],
+        MutableMapping[str, Tuple[str, IO[Any], str, MutableMapping[str, str]]],
+    ]
+]
 
 
 class HTTPClient:
     """An instance of this class communicates with Google API.
 
-    :param Session auth: An OAuth2 credential object. Credential objects
+    :param Credentials auth: An instance of google.auth.Credentials used to authenticate requests
+        created by either:
+
+        * gspread.auth.oauth()
+        * gspread.auth.oauth_from_dict()
+        * gspread.auth.service_account()
+        * gspread.auth.service_account_from_dict()
+
+    :param Session session: (Optional) An OAuth2 credential object. Credential objects
         created by `google-auth <https://github.com/googleapis/google-auth-library-python>`_.
+
+        You can pass you own Session object, simply pass ``auth=None`` and ``session=my_custom_session``.
 
     This class is not intended to be created manually.
     It will be created by the gspread.Client class.
     """
 
-    def __init__(self, auth: Credentials, session=None) -> None:
+    def __init__(self, auth: Credentials, session: Optional[Session] = None) -> None:
         if session is not None:
             self.session = session
         else:
             self.auth: Credentials = convert_credentials(auth)
-            self.session: Session = AuthorizedSession(self.auth)
+            self.session = AuthorizedSession(self.auth)
 
         self.timeout: Optional[Union[float, Tuple[float, float]]] = None
 
@@ -73,11 +92,12 @@ class HTTPClient:
         params: Optional[ParamsType] = None,
         data: Optional[bytes] = None,
         json: Optional[Mapping[str, Any]] = None,
-        files: Optional[IO] = None,
-        headers: Optional[Mapping[str, str]] = None,
+        files: FileType = None,
+        headers: Optional[MutableMapping[str, str]] = None,
     ) -> Response:
-        response = getattr(self.session, method)(
-            endpoint,
+        response = self.session.request(
+            method=method,
+            url=endpoint,
             json=json,
             params=params,
             data=data,
@@ -91,7 +111,7 @@ class HTTPClient:
         else:
             raise APIError(response)
 
-    def batch_update(self, id, body):
+    def batch_update(self, id: str, body: Optional[Mapping[str, Any]]) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>:batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate>`_.
 
         :param dict body: `Batch Update Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#request-body>`_.
@@ -104,7 +124,13 @@ class HTTPClient:
 
         return r.json()
 
-    def values_update(self, id, range, params=None, body=None):
+    def values_update(
+        self,
+        id: str,
+        range: str,
+        params: Optional[ParamsType] = None,
+        body: Optional[Mapping[str, Any]] = None,
+    ) -> Any:
         """Lower-level method that directly calls `PUT spreadsheets/<ID>/values/<range> <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to update.
@@ -131,7 +157,9 @@ class HTTPClient:
         r = self.request("put", url, params=params, json=body)
         return r.json()
 
-    def values_append(self, id, range, params, body):
+    def values_append(
+        self, id: str, range: str, params: ParamsType, body: Optional[Mapping[str, Any]]
+    ) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_
@@ -147,7 +175,7 @@ class HTTPClient:
         r = self.request("post", url, params=params, json=body)
         return r.json()
 
-    def values_clear(self, id, range):
+    def values_clear(self, id: str, range: str) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:clear <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/clear>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to clear.
@@ -160,7 +188,12 @@ class HTTPClient:
         r = self.request("post", url)
         return r.json()
 
-    def values_batch_clear(self, id, params=None, body=None):
+    def values_batch_clear(
+        self,
+        id: str,
+        params: Optional[ParamsType] = None,
+        body: Optional[Mapping[str, Any]] = None,
+    ) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:batchClear`
 
         :param dict params: (optional) `Values Batch Clear Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchClear#path-parameters>`_.
@@ -171,7 +204,9 @@ class HTTPClient:
         r = self.request("post", url, params=params, json=body)
         return r.json()
 
-    def values_get(self, id, range, params=None):
+    def values_get(
+        self, id: str, range: str, params: Optional[ParamsType] = None
+    ) -> Any:
         """Lower-level method that directly calls `GET spreadsheets/<ID>/values/<range> <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
@@ -185,7 +220,9 @@ class HTTPClient:
         r = self.request("get", url, params=params)
         return r.json()
 
-    def values_batch_get(self, id, ranges, params=None):
+    def values_batch_get(
+        self, id: str, ranges: List[str], params: Optional[ParamsType] = None
+    ) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:batchGet <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet>`_.
 
         :param list ranges: List of ranges in the `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
@@ -196,13 +233,15 @@ class HTTPClient:
         if params is None:
             params = {}
 
-        params.update(ranges=ranges)
+        params["ranges"] = ranges
 
         url = SPREADSHEET_VALUES_BATCH_URL % id
         r = self.request("get", url, params=params)
         return r.json()
 
-    def values_batch_update(self, id, body=None):
+    def values_batch_update(
+        self, id: str, body: Optional[Mapping[str, Any]] = None
+    ) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate>`_.
 
         :param dict body: (optional) `Values Batch Update Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate#request-body>`_.
@@ -213,13 +252,15 @@ class HTTPClient:
         r = self.request("post", url, json=body)
         return r.json()
 
-    def spreadsheets_get(self, id, params=None):
+    def spreadsheets_get(self, id: str, params: Optional[ParamsType] = None) -> Any:
         """A method stub that directly calls `spreadsheets.get <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/get>`_."""
         url = SPREADSHEET_URL % id
         r = self.request("get", url, params=params)
         return r.json()
 
-    def spreadsheets_sheets_copy_to(self, id, sheet_id, destination_spreadsheet_id):
+    def spreadsheets_sheets_copy_to(
+        self, id: str, sheet_id: str, destination_spreadsheet_id: str
+    ) -> Any:
         """Lower-level method that directly calls `spreadsheets.sheets.copyTo <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.sheets/copyTo>`_."""
         url = SPREADSHEET_SHEETS_COPY_TO_URL % (id, sheet_id)
 
@@ -227,7 +268,7 @@ class HTTPClient:
         r = self.request("post", url, json=body)
         return r.json()
 
-    def fetch_sheet_metadata(self, id, params=None):
+    def fetch_sheet_metadata(self, id: str, params: Optional[ParamsType] = None) -> Any:
         """Similar to :method spreadsheets_get:`gspread.http_client.spreadsheets_get`,
         get the spreadsheet form the API but by default **does not get the cells data**.
         It only retrieve the the metadata from the spreadsheet.
@@ -247,7 +288,7 @@ class HTTPClient:
 
         return r.json()
 
-    def _get_file_drive_metadata(self, id):
+    def _get_file_drive_metadata(self, id: str) -> Any:
         """Get the metadata from the Drive API for a specific file
         This method is mainly here to retrieve the create/update time
         of a file (these metadata are only accessible from the Drive API).
@@ -255,7 +296,7 @@ class HTTPClient:
 
         url = DRIVE_FILES_API_V3_URL + "/{}".format(id)
 
-        params = {
+        params: ParamsType = {
             "supportsAllDrives": True,
             "includeItemsFromAllDrives": True,
             "fields": "id,name,createdTime,modifiedTime",

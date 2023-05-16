@@ -8,7 +8,7 @@ This module contains Client class responsible for managing spreadsheet files
 
 from typing import Any, Dict, List, Optional, Union
 
-from google.auth.credentials import Credentials  # type: ignore
+from google.auth.credentials import Credentials
 from requests import Response
 
 from .exceptions import SpreadsheetNotFound, UnSupportedExportFormat
@@ -282,15 +282,13 @@ class Client:
             for p in permissions:
                 if p.get("deleted"):
                     continue
-                try:
-                    new_spreadsheet.share(
-                        email_address=p["emailAddress"],
-                        perm_type=p["type"],
-                        role=p["role"],
-                        notify=False,
-                    )
-                except Exception:
-                    pass
+
+                new_spreadsheet.share(
+                    email_address=p["emailAddress"],
+                    perm_type=p["type"],
+                    role=p["role"],
+                    notify=False,
+                )
 
         if copy_comments is True:
             source_url = DRIVE_FILES_API_V3_COMMENTS_URL % (file_id)

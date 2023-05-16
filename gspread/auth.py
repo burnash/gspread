@@ -11,10 +11,10 @@ import os
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Mapping, Optional, Tuple, Union
 
-from google.auth.credentials import Credentials  # type: ignore
-from google.oauth2.credentials import Credentials as OAuthCredentials  # type: ignore
-from google.oauth2.service_account import Credentials as SACredentials  # type: ignore
-from google_auth_oauthlib.flow import InstalledAppFlow  # type: ignore
+from google.auth.credentials import Credentials
+from google.oauth2.credentials import Credentials as OAuthCredentials
+from google.oauth2.service_account import Credentials as SACredentials
+from google_auth_oauthlib.flow import InstalledAppFlow
 
 from .client import Client
 from .http_client import HTTPClient, HTTPClientType
@@ -53,7 +53,9 @@ DEFAULT_AUTHORIZED_USER_FILENAME = DEFAULT_CONFIG_DIR / "authorized_user.json"
 DEFAULT_SERVICE_ACCOUNT_FILENAME = DEFAULT_CONFIG_DIR / "service_account.json"
 
 
-def authorize(credentials: Credentials, http_client: HTTPClientType = HTTPClient):
+def authorize(
+    credentials: Credentials, http_client: HTTPClientType = HTTPClient
+) -> Client:
     """Login to Google API using OAuth2 credentials.
     This is a shortcut/helper function which
     instantiates a client using `http_client`.
@@ -108,7 +110,7 @@ def oauth(
     credentials_filename: Union[str, Path] = DEFAULT_CREDENTIALS_FILENAME,
     authorized_user_filename: Union[str, Path] = DEFAULT_AUTHORIZED_USER_FILENAME,
     http_client: HTTPClientType = HTTPClient,
-):
+) -> Client:
     r"""Authenticate with OAuth Client ID.
 
     By default this function will use the local server strategy and open
