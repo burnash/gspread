@@ -9,7 +9,7 @@ Simple authentication with OAuth.
 import json
 import os
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, Mapping, Optional, Tuple, Type, Union
+from typing import Any, Callable, Dict, Iterable, Mapping, Optional, Tuple, Union
 
 from google.auth.credentials import Credentials  # type: ignore
 from google.oauth2.credentials import Credentials as OAuthCredentials  # type: ignore
@@ -17,6 +17,7 @@ from google.oauth2.service_account import Credentials as SACredentials  # type: 
 from google_auth_oauthlib.flow import InstalledAppFlow  # type: ignore
 
 from .client import Client
+from .http_client import HTTPClient, HTTPClientType
 
 DEFAULT_SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -52,18 +53,18 @@ DEFAULT_AUTHORIZED_USER_FILENAME = DEFAULT_CONFIG_DIR / "authorized_user.json"
 DEFAULT_SERVICE_ACCOUNT_FILENAME = DEFAULT_CONFIG_DIR / "service_account.json"
 
 
-def authorize(credentials: Credentials, client_factory: Type[Client] = Client):
+def authorize(credentials: Credentials, http_client: HTTPClientType = HTTPClient):
     """Login to Google API using OAuth2 credentials.
     This is a shortcut/helper function which
-    instantiates a client using `client_factory`.
-    By default :class:`gspread.Client` is used (but could also use
-    :class:`gspread.BackoffClient` to avoid rate limiting).
+    instantiates a client using `http_client`.
+    By default :class:`gspread.HTTPClient` is used (but could also use
+    :class:`gspread.BackOffHTTPClient` to avoid rate limiting).
 
-    :returns: An instance of the class produced by `client_factory`.
+    :returns: An instance of the class produced by `http_client`.
     :rtype: :class:`gspread.client.Client`
     """
 
-    return client_factory(auth=credentials)
+    return Client(auth=credentials, http_client=http_client)
 
 
 def local_server_flow(
@@ -106,7 +107,7 @@ def oauth(
     flow: Callable[..., Credentials] = local_server_flow,
     credentials_filename: Union[str, Path] = DEFAULT_CREDENTIALS_FILENAME,
     authorized_user_filename: Union[str, Path] = DEFAULT_AUTHORIZED_USER_FILENAME,
-    client_factory: Type[Client] = Client,
+    http_client: HTTPClientType = HTTPClient,
 ):
     r"""Authenticate with OAuth Client ID.
 
@@ -164,10 +165,10 @@ def oauth(
 
             * `%APPDATA%\gspread\authorized_user.json` on Windows
             * `~/.config/gspread/authorized_user.json` everywhere else
-    :type client_factory: :class:`gspread.ClientFactory`
-    :param client_factory: A factory function that returns a client class.
-        Defaults to :class:`gspread.Client` (but could also use
-        :class:`gspread.BackoffClient` to avoid rate limiting)
+    :type http_client: :class:`gspread.HTTPClient`
+    :param http_client: A factory function that returns a client class.
+        Defaults to :class:`gspread.http_client.HTTPClient` (but could also use
+        :class:`gspread.http_client.BackOffHTTPClient` to avoid rate limiting)
 
     :rtype: :class:`gspread.client.Client`
     """
@@ -180,7 +181,7 @@ def oauth(
         creds = flow(client_config=client_config, scopes=scopes)
         store_credentials(creds, filename=authorized_user_filename)
 
-    return client_factory(auth=creds)
+    return Client(auth=creds, http_client=http_client)
 
 
 def oauth_from_dict(
@@ -188,7 +189,7 @@ def oauth_from_dict(
     authorized_user_info: Optional[Mapping[str, Any]] = None,
     scopes: Iterable[str] = DEFAULT_SCOPES,
     flow: Callable[..., Credentials] = local_server_flow,
-    client_factory: Type[Client] = Client,
+    http_client: HTTPClientType = HTTPClient,
 ) -> Tuple[Client, Dict[str, Any]]:
     r"""Authenticate with OAuth Client ID.
 
@@ -244,12 +245,12 @@ def oauth_from_dict(
     :param list scopes: The scopes used to obtain authorization.
     :param function flow: OAuth flow to use for authentication.
         Defaults to :meth:`~gspread.auth.local_server_flow`
-    :type client_factory: :class:`gspread.ClientFactory`
-    :param client_factory: A factory function that returns a client class.
-        Defaults to :class:`gspread.Client` (but could also use
-        :class:`gspread.BackoffClient` to avoid rate limiting)
+    :type http_client: :class:`gspread.HTTPClientType`
+    :param http_client: A factory function that returns a client class.
+        Defaults to :class:`gspread.http_client.HTTPClient` (but could also use
+        :class:`gspread.http_client.BackOffHTTPClient` to avoid rate limiting)
 
-    :rtype: (`gspread.client.Client`, str)
+    :rtype: (:class:`gspread.client.Client`, str)
     """
 
     creds: Credentials = None
@@ -259,7 +260,7 @@ def oauth_from_dict(
     if not creds and credentials is not None:
         creds = flow(client_config=credentials, scopres=scopes)
 
-    client = client_factory(auth=creds)
+    client = Client(auth=creds, http_client=http_client)
 
     # must return the creds to the user
     # must strip the token an use the dedicated method from Credentials
@@ -270,7 +271,7 @@ def oauth_from_dict(
 def service_account(
     filename: Union[Path, str] = DEFAULT_SERVICE_ACCOUNT_FILENAME,
     scopes: Iterable[str] = DEFAULT_SCOPES,
-    client_factory: Type[Client] = Client,
+    http_client: HTTPClientType = HTTPClient,
 ) -> Client:
     """Authenticate using a service account.
 
@@ -289,21 +290,21 @@ def service_account(
 
     :param str filename: The path to the service account json file.
     :param list scopes: The scopes used to obtain authorization.
-    :type client_factory: :class:`gspread.ClientFactory`
-    :param client_factory: A factory function that returns a client class.
-        Defaults to :class:`gspread.Client` (but could also use
-        :class:`gspread.BackoffClient` to avoid rate limiting)
+    :type http_client: :class:`gspread.HTTPClientType`
+    :param http_client: A factory function that returns a client class.
+        Defaults to :class:`gspread.HTTPClient` (but could also use
+        :class:`gspread.BackOffHTTPClient` to avoid rate limiting)
 
     :rtype: :class:`gspread.client.Client`
     """
     creds = SACredentials.from_service_account_file(filename, scopes=scopes)
-    return client_factory(auth=creds)
+    return Client(auth=creds, http_client=http_client)
 
 
 def service_account_from_dict(
     info: Mapping[str, Any],
     scopes: Iterable[str] = DEFAULT_SCOPES,
-    client_factory: Type[Client] = Client,
+    http_client: HTTPClientType = HTTPClient,
 ) -> Client:
     """Authenticate using a service account (json).
 
@@ -322,10 +323,10 @@ def service_account_from_dict(
 
     :param info (Mapping[str, str]): The service account info in Google format
     :param list scopes: The scopes used to obtain authorization.
-    :type client_factory: :class:`gspread.ClientFactory`
-    :param client_factory: A factory function that returns a client class.
-        Defaults to :class:`gspread.Client` (but could also use
-        :class:`gspread.BackoffClient` to avoid rate limiting)
+    :type http_client: :class:`gspread.HTTPClientType`
+    :param http_client: A factory function that returns a client class.
+        Defaults to :class:`gspread.http_client.HTTPClient` (but could also use
+        :class:`gspread.http_client.BackOffHTTPClient` to avoid rate limiting)
 
     :rtype: :class:`gspread.client.Client`
     """
@@ -333,4 +334,4 @@ def service_account_from_dict(
         info=info,
         scopes=scopes,
     )
-    return client_factory(auth=creds)
+    return Client(auth=creds, http_client=http_client)
