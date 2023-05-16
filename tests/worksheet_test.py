@@ -901,11 +901,28 @@ class WorksheetTest(GspreadTest):
 
         # will trigger a Exception in case of any issue
         self.assertEqual(w.get_note("A1"), "")
-        test_note_string = "This is a test note"
+        test_note_string = "slim shaddy"
         w.insert_note("A1", test_note_string)
         self.assertEqual(w.get_note("A1"), test_note_string)
+        update_note = "the real " + test_note_string
+        w.update_note("A1", update_note)
+        self.assertEqual(w.get_note("A1"), update_note)
         w.clear_note("A1")
         self.assertEqual(w.get_note("A1"), "")
+
+        notes = {"A1": "read my note", "B2": "Or don't"}
+
+        w.insert_notes(notes)
+        self.assertEqual(w.get_note("A1"), notes["A1"])
+        self.assertEqual(w.get_note("B2"), notes["B2"])
+
+        notes["A1"] = "remember to clean bedroom"
+        notes["B2"] = "do homeworks"
+        w.update_notes(notes)
+        self.assertEqual(w.get_note("A1"), notes["A1"])
+        self.assertEqual(w.get_note("B2"), notes["B2"])
+
+        w.clear_notes(["A1", "B2"])
 
         with self.assertRaises(TypeError) as _:
             w.insert_note("A1", 42)

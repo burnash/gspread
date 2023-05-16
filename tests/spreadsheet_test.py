@@ -161,3 +161,17 @@ class SpreadsheetTest(GspreadTest):
 
         self.assertNotEqual(prev_title, properties["title"])
         self.assertEqual(new_title, properties["title"])
+
+    @pytest.mark.vcr()
+    def test_get_updated_time(self):
+        current_metadata = self.spreadsheet._properties
+        self.assertNotIn("modifiedTime", self.spreadsheet._properties)
+
+        res = self.spreadsheet.lastUpdateTime
+
+        self.assertIsNotNone(res)
+
+        new_metadata = self.spreadsheet._properties
+        self.assertIn("modifiedTime", self.spreadsheet._properties)
+
+        self.assertDictContainsSubset(current_metadata, new_metadata)

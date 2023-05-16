@@ -1,6 +1,27 @@
 Release History
 ===============
 
+5.9.0 (2023-05-11)
+------------------
+
+* Bugfix/fix get last update time by @lavigne958 in https://github.com/burnash/gspread/pull/1186
+* Add batch notes insert/update/clear by @lavigne958 in https://github.com/burnash/gspread/pull/1189
+
+5.8.0 (2023-04-05)
+------------------
+* Bump black from 22.10.0 to 22.12.0 by @dependabot in https://github.com/burnash/gspread/pull/1154
+* Bump isort from 5.10.1 to 5.11.3 by @dependabot in https://github.com/burnash/gspread/pull/1155
+* Bump isort from 5.11.3 to 5.11.4 by @dependabot in https://github.com/burnash/gspread/pull/1157
+* #1104: added a delete by worksheet id method by @muddi900 in https://github.com/burnash/gspread/pull/1148
+* improve CI workflow - upgrade setuptools to fix CVE by @lavigne958 in https://github.com/burnash/gspread/pull/1179
+* Bump codespell from 2.2.2 to 2.2.4 by @dependabot in https://github.com/burnash/gspread/pull/1178
+* Bump bandit from 1.7.4 to 1.7.5 by @dependabot in https://github.com/burnash/gspread/pull/1177
+* Bump black from 22.12.0 to 23.1.0 by @dependabot in https://github.com/burnash/gspread/pull/1168
+* Update user-guide.rst to include a warning by @alsaenko in https://github.com/burnash/gspread/pull/1181
+* Fixed typo in docs/user-guide.rst by @raboba2re in https://github.com/burnash/gspread/pull/1182
+* Bump black from 23.1.0 to 23.3.0 by @dependabot in https://github.com/burnash/gspread/pull/1183
+* Handle cases when rgbColor is not set by @lavigne958 in https://github.com/burnash/gspread/pull/1184
+
 5.7.2 (2022-12-03)
 ------------------
 * Fix: `hidden` property might not be set from the API by @lavigne958 in https://github.com/burnash/gspread/pull/1151

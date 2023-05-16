@@ -176,9 +176,7 @@ class Worksheet:
     @property
     def tab_color(self):
         """Tab color style."""
-        if "tabColorStyle" in self._properties:
-            return self._properties["tabColorStyle"]["rgbColor"]
-        return None
+        return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
 
     def _get_sheet_property(self, property, default_value):
         """return a property of this worksheet or default value if not found"""
@@ -2312,6 +2310,57 @@ class Worksheet:
 
         return note
 
+    def update_notes(self, notes):
+        """update multiple notes. The notes are attached to a certain cell.
+
+        :param notes dict: A dict of notes with their cells coordinates and respective content
+
+            dict format is:
+
+            * key: the cell coordinates as A1 range format
+            * value: the string content of the cell
+
+            Example::
+
+                {
+                    "D7": "Please read my notes",
+                    "GH42": "this one is too far",
+                }
+
+        .. versionadded:: 5.9
+        """
+
+        body = {"requests": []}
+
+        for range, content in notes.items():
+            if not isinstance(content, str):
+                raise TypeError(
+                    "Only string allowed as content for a note: '{} - {}'".format(
+                        range, content
+                    )
+                )
+
+            req = {
+                "updateCells": {
+                    "range": a1_range_to_grid_range(range, self.id),
+                    "fields": "note",
+                    "rows": [
+                        {
+                            "values": [
+                                {
+                                    "note": content,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            }
+
+            body["requests"].append(req)
+
+        self.client.batch_update(self.spreadsheet_id, body)
+
+    @cast_to_a1_notation
     def update_note(self, cell, content):
         """Update the content of the note located at `cell`.
 
@@ -2321,24 +2370,7 @@ class Worksheet:
 
         .. versionadded:: 3.7
         """
-
-        if not isinstance(content, str):
-            raise TypeError("Only string allowed as content for a note.")
-
-        grid_range = a1_range_to_grid_range(cell, self.id)
-
-        body = {
-            "requests": [
-                {
-                    "updateCells": {
-                        "range": grid_range,
-                        "rows": [{"values": [{"note": content}]}],
-                        "fields": "note",
-                    }
-                }
-            ]
-        }
-        self.client.batch_update(self.spreadsheet_id, body)
+        self.update_notes({cell: content})
 
     @cast_to_a1_notation
     def insert_note(self, cell, content):
@@ -2358,7 +2390,38 @@ class Worksheet:
 
         .. versionadded:: 3.7
         """
-        self.update_note(cell, content)
+        self.update_notes({cell: content})
+
+    def insert_notes(self, notes):
+        """insert multiple notes. The notes are attached to a certain cell.
+
+        :param notes dict: A dict of notes with their cells coordinates and respective content
+
+            dict format is:
+
+            * key: the cell coordinates as A1 range format
+            * value: the string content of the cell
+
+            Example::
+
+                {
+                    "D7": "Please read my notes",
+                    "GH42": "this one is too far",
+                }
+
+        .. versionadded:: 5.9
+        """
+        self.update_notes(notes)
+
+    def clear_notes(self, ranges):
+        """Clear all notes located at the at the coordinates
+        pointed to by ``ranges``.
+
+        :param ranges list: List of A1 coordinates where to clear the notes.
+            e.g. ``["A1", "GH42", "D7"]``
+        """
+        notes = {range: "" for range in ranges}
+        self.update_notes(notes)
 
     @cast_to_a1_notation
     def clear_note(self, cell):
@@ -2378,7 +2441,7 @@ class Worksheet:
         .. versionadded:: 3.7
         """
         # set the note to <empty string> will clear it
-        self.update_note(cell, "")
+        self.update_notes({cell: ""})
 
     @cast_to_a1_notation
     def define_named_range(self, name, range_name):
