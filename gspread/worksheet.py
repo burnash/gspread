@@ -1521,7 +1521,7 @@ class Worksheet:
 
         .. versionadded:: 5.3.3
         """
-        return self._auto_resize(self, start_row_index, end_row_index, Dimension.rows)
+        return self._auto_resize(start_row_index, end_row_index, Dimension.rows)
 
     def add_rows(self, rows):
         """Adds rows to worksheet.
