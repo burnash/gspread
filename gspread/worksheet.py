@@ -6,6 +6,8 @@ This module contains common worksheets' models.
 
 """
 
+from typing import Any, Mapping, Optional, TypeVar, Type, MutableMapping
+
 from .cell import Cell
 from .exceptions import GSpreadException
 from .urls import WORKSHEET_DRIVE_URL
@@ -27,6 +29,8 @@ from .utils import (
     numericise_all,
     rowcol_to_a1,
 )
+
+T = TypeVar("T", bound="ValueRange")
 
 
 class ValueRange(list):
@@ -65,8 +69,10 @@ class ValueRange(list):
        It will be instantiated using the response from the sheet API.
     """
 
+    _json: MutableMapping[str, Any] = {}
+
     @classmethod
-    def from_json(cls, json):
+    def from_json(cls: Type[T], json: Mapping[str, Any]) -> T:
         values = json.get("values", [])
         new_obj = cls(values)
         new_obj._json = {
@@ -77,12 +83,12 @@ class ValueRange(list):
         return new_obj
 
     @property
-    def range(self):
+    def range(self) -> str:
         """The range of the values"""
         return self._json["range"]
 
     @property
-    def major_dimension(self):
+    def major_dimension(self) -> str:
         """The major dimension of this range
 
         Can be one of:
@@ -92,7 +98,7 @@ class ValueRange(list):
         """
         return self._json["majorDimension"]
 
-    def first(self, default=None):
+    def first(self, default: Optional[str] = None) -> Optional[str]:
         """Returns the value of a first cell in a range.
 
         If the range is empty, return the default value.
