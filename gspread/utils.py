@@ -61,6 +61,11 @@ class ValueInputOption(StrEnum):
     user_entered = "USER_ENTERED"
 
 
+class InsertDataOption(StrEnum):
+    overwrite = "OVERWRITE"
+    insert_rows = "INSERT_ROWS"
+
+
 class DateTimeOption(StrEnum):
     serial_number = "SERIAL_NUMBER"
     formatted_string = "FORMATTED_STRING"

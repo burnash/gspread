@@ -80,7 +80,7 @@ class WorksheetTest(GspreadTest):
             ["1", "2", "3", "4"],
         ]
 
-        self.sheet.update("A1:D4", rows)
+        self.sheet.update(rows, "A1:D4")
 
         cell_range1 = self.sheet.range()
         cell_range2 = self.sheet.range("A1:D4")
@@ -100,7 +100,7 @@ class WorksheetTest(GspreadTest):
             ["num", "val", "", "0"],
         ]
 
-        self.sheet.update("A1:D4", sheet_data)
+        self.sheet.update(sheet_data, "A1:D4")
 
         self.sheet.merge_cells("A1:B2")
         self.sheet.merge_cells("C2:D2")
@@ -129,7 +129,7 @@ class WorksheetTest(GspreadTest):
             ["", "", "2", ""],
             ["num", "val", "", "0"],
         ]
-        self.sheet.update("A1:D4", sheet_data)
+        self.sheet.update(sheet_data, "A1:D4")
 
         data_args = self.sheet.get_values(
             "A1:D4", False, None, utils.ValueRenderOption.formatted
@@ -1090,7 +1090,7 @@ class WorksheetTest(GspreadTest):
             ["A4", "B4", "", "D4"],
         ]
 
-        self.sheet.update("A1", values)
+        self.sheet.update(values, "A1")
 
         read_data = self.sheet.get("A1:D4")
 
@@ -1107,7 +1107,7 @@ class WorksheetTest(GspreadTest):
             ["A4", "B4", "", "D4"],
         ]
 
-        self.sheet.update("A1", values)
+        self.sheet.update(values, "A1")
 
         value_ranges = self.sheet.batch_get(["A1:B1", "B4:D4"])
 
@@ -1237,8 +1237,8 @@ class WorksheetTest(GspreadTest):
         self.assertListEqual(w.get_values("C2:E2"), [[]])
 
         # fill the cells
-        w.update("A1:B1", [["12345", "ThisIsText"]])
-        w.update("C2:E2", [["5678", "Second", "Text"]])
+        w.update([["12345", "ThisIsText"]], "A1:B1")
+        w.update([["5678", "Second", "Text"]], "C2:E2")
 
         # confirm the cells are not empty
         self.assertNotEqual(w.get_values("A1:B1"), [[]])
@@ -1431,7 +1431,7 @@ class WorksheetTest(GspreadTest):
 
         # init the sheet values
         values = [["A1"], ["A2"]]
-        w.update("A1:A2", values)
+        w.update(values, "A1:A2")
 
         # copy the values
         w.copy_range("A1:A2", "B1:B2")
