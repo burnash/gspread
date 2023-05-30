@@ -30,7 +30,6 @@ from .utils import (
     is_scalar,
     numericise_all,
     rowcol_to_a1,
-    
 )
 
 
