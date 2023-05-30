@@ -6,10 +6,13 @@ This module contains common worksheets' models.
 
 """
 
+import warnings
+
 from .cell import Cell
 from .exceptions import GSpreadException
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
+    DEPRECATION_WARNING_TEMPLATE,
     Dimension,
     PasteOrientation,
     PasteType,
@@ -27,6 +30,7 @@ from .utils import (
     is_scalar,
     numericise_all,
     rowcol_to_a1,
+    
 )
 
 
@@ -1333,8 +1337,19 @@ class Worksheet:
             # and column 'B' Z -> A
             wks.sort((7, 'asc'), (2, 'des'), range='A2:G8')
 
+        Warning::
+
+            This function signature will change to: sort(range: str, specs: List[Tuple[int, Union['asc', 'desc']]])
+
         .. versionadded:: 3.4
         """
+        warnings.warn(
+            DEPRECATION_WARNING_TEMPLATE.format(
+                v_deprecated="6.0.0",
+                msg_deprecated="This function signature will change to: sort(range: str, specs: List[Tuple[int, Union['asc', 'desc']]])",
+            ),
+            DeprecationWarning,
+        )
         range_name = kwargs.pop("range", None)
 
         if range_name:
