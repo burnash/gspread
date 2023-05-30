@@ -6,7 +6,7 @@ This module contains Client class responsible for communicating with
 Google API.
 
 """
-
+import warnings
 from http import HTTPStatus
 from typing import Type
 
@@ -20,6 +20,7 @@ from .urls import (
     DRIVE_FILES_UPLOAD_API_V2_URL,
 )
 from .utils import (
+    DEPRECATION_WARNING_TEMPLATE,
     ExportFormat,
     MimeType,
     convert_credentials,
@@ -582,6 +583,16 @@ class BackoffClient(Client):
     _NR_BACKOFF = 0
     _MAX_BACKOFF = 128  # arbitrary maximum backoff
     _MAX_BACKOFF_REACHED = False  # Stop after reaching _MAX_BACKOFF
+
+    def __init__(self, auth):
+        warnings.warn(
+            DEPRECATION_WARNING_TEMPLATE.format(
+                v_deprecated="6.0.0",
+                msg_deprecated="this class will be deprecated and moved to gspread.http_client package",
+            ),
+            DeprecationWarning,
+        )
+        super().__init__(auth)
 
     def request(self, *args, **kwargs):
         try:

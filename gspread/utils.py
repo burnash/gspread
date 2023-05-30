@@ -85,6 +85,10 @@ PasteOrientation = namedtuple("PasteOrientation", ["normal", "transpose"])(
     "NORMAL", "TRANSPOSE"
 )
 
+DEPRECATION_WARNING_TEMPLATE = (
+    "[Deprecated][in version {v_deprecated}]: {msg_deprecated}"
+)
+
 
 def convert_credentials(credentials):
     module = credentials.__module__
