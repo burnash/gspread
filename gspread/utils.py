@@ -35,7 +35,7 @@ ValueRenderOption = namedtuple(
 ValueInputOption = namedtuple("ValueInputOption", ["raw", "user_entered"])(
     "RAW", "USER_ENTERED"
 )
-DateTimeOption = namedtuple("DateTimeOption", ["serial_number", "formated_string"])(
+DateTimeOption = namedtuple("DateTimeOption", ["serial_number", "formatted_string"])(
     "SERIAL_NUMBER", "FORMATTED_STRING"
 )
 MimeTypeType = namedtuple(
