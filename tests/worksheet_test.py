@@ -788,7 +788,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cells(cell_list)
 
         self.sheet.clear()
-        self.assertEqual(self.sheet.get_all_values(), [])
+        self.assertEqual(self.sheet.get_all_values(), [[]])
 
     @pytest.mark.vcr()
     def test_update_and_get(self):
@@ -934,24 +934,24 @@ class WorksheetTest(GspreadTest):
         w = self.spreadsheet.sheet1
 
         # make sure cells are empty
-        self.assertListEqual(w.get_values("A1:B1"), [])
-        self.assertListEqual(w.get_values("C2:E2"), [])
+        self.assertListEqual(w.get_values("A1:B1"), [[]])
+        self.assertListEqual(w.get_values("C2:E2"), [[]])
 
         # fill the cells
         w.update("A1:B1", [["12345", "ThisIsText"]])
         w.update("C2:E2", [["5678", "Second", "Text"]])
 
         # confirm the cells are not empty
-        self.assertNotEqual(w.get_values("A1:B1"), [])
-        self.assertNotEqual(w.get_values("C2:E2"), [])
+        self.assertNotEqual(w.get_values("A1:B1"), [[]])
+        self.assertNotEqual(w.get_values("C2:E2"), [[]])
 
         # empty both cell range at once
         w.batch_clear(["A1:B1", "C2:E2"])
 
         # confirm cells are empty
         # make sure cells are empty
-        self.assertListEqual(w.get_values("A1:B1"), [])
-        self.assertListEqual(w.get_values("C2:E2"), [])
+        self.assertListEqual(w.get_values("A1:B1"), [[]])
+        self.assertListEqual(w.get_values("C2:E2"), [[]])
 
     @pytest.mark.vcr()
     def test_group_columns(self):
