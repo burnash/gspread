@@ -21,7 +21,6 @@ from typing import (
     NewType,
     Optional,
     Tuple,
-    TypedDict,
     TypeVar,
     Union,
 )
@@ -394,18 +393,7 @@ def _a1_to_rowcol_unbounded(label: str) -> Tuple[IntOrInf, IntOrInf]:
     return (row, col)
 
 
-GridRange = TypedDict(
-    "GridRange",
-    {
-        "startRowIndex": Optional[int],
-        "endRowIndex": Optional[int],
-        "startColumnIndex": Optional[int],
-        "endColumnIndex": Optional[int],
-    },
-)
-
-
-def a1_range_to_grid_range(name: str, sheet_id: Optional[int] = None) -> GridRange:
+def a1_range_to_grid_range(name: str, sheet_id: Optional[int] = None) -> Dict[str, int]:
     """Converts a range defined in A1 notation to a dict representing
     a `GridRange`_.
 
@@ -468,7 +456,7 @@ def a1_range_to_grid_range(name: str, sheet_id: Optional[int] = None) -> GridRan
     if sheet_id is not None:
         filtered_grid_range["sheetId"] = sheet_id
 
-    return GridRange(**filtered_grid_range)
+    return filtered_grid_range
 
 
 def column_letter_to_index(column: str) -> int:
