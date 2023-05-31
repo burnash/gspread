@@ -11,17 +11,27 @@ from collections import defaultdict, namedtuple
 from collections.abc import Sequence
 from functools import wraps
 from itertools import chain
-from typing import (Any, AnyStr, Callable, Dict, Iterable, List, NewType,
-                    Optional, Tuple, TypedDict, TypeVar, Union)
+from typing import (
+    Any,
+    AnyStr,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    NewType,
+    Optional,
+    Tuple,
+    TypedDict,
+    TypeVar,
+    Union,
+)
 from urllib.parse import quote as uquote
 
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
-from google.oauth2.service_account import \
-    Credentials as ServiceAccountCredentials
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
-from .exceptions import (IncorrectCellLabel, InvalidInputValue,
-                         NoValidUrlKeyFound)
+from .exceptions import IncorrectCellLabel, InvalidInputValue, NoValidUrlKeyFound
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")
@@ -54,8 +64,7 @@ MimeType = MimeTypeType(
     "application/zip",
 )
 ExportFormatType = namedtuple(
-    "ExportFormat", ["PDF", "EXCEL", "CSV",
-                     "OPEN_OFFICE_SHEET", "TSV", "ZIPPED_HTML"]
+    "ExportFormat", ["PDF", "EXCEL", "CSV", "OPEN_OFFICE_SHEET", "TSV", "ZIPPED_HTML"]
 )
 ExportFormat = ExportFormatType(
     MimeType.pdf,
@@ -396,10 +405,7 @@ GridRange = TypedDict(
 )
 
 
-def a1_range_to_grid_range(
-    name: str,
-    sheet_id: Optional[int] = None
-) -> GridRange:
+def a1_range_to_grid_range(name: str, sheet_id: Optional[int] = None) -> GridRange:
     """Converts a range defined in A1 notation to a dict representing
     a `GridRange`_.
 
@@ -440,8 +446,7 @@ def a1_range_to_grid_range(
 
     start_row_index, start_column_index = _a1_to_rowcol_unbounded(start_label)
 
-    end_row_index, end_column_index = _a1_to_rowcol_unbounded(
-        end_label or start_label)
+    end_row_index, end_column_index = _a1_to_rowcol_unbounded(end_label or start_label)
 
     if start_row_index > end_row_index:
         start_row_index, end_row_index = end_row_index, start_row_index
@@ -457,9 +462,7 @@ def a1_range_to_grid_range(
     }
 
     filtered_grid_range: Dict[str, int] = {
-        key: value
-        for (key, value) in grid_range.items()
-        if isinstance(value, int)
+        key: value for (key, value) in grid_range.items() if isinstance(value, int)
     }
 
     if sheet_id is not None:
@@ -562,9 +565,7 @@ def rightpad(row: List[Any], max_len: int) -> List[Any]:
 
 
 def fill_gaps(
-    L: List[List[Any]],
-    rows: Optional[int] = None,
-    cols: Optional[int] = None
+    L: List[List[Any]], rows: Optional[int] = None, cols: Optional[int] = None
 ) -> List[List[Any]]:
     try:
         max_cols = max(len(row) for row in L) if cols is None else cols
@@ -611,10 +612,7 @@ def quote(value: str, safe: str = "", encoding: str = "utf-8") -> str:
     return uquote(value.encode(encoding), safe)
 
 
-def absolute_range_name(
-    sheet_name: str,
-    range_name: Optional[str] = None
-) -> str:
+def absolute_range_name(sheet_name: str, range_name: Optional[str] = None) -> str:
     """Return an absolutized path of a range.
 
     >>> absolute_range_name("Sheet1", "A1:B1")
@@ -691,7 +689,7 @@ def filter_dict_values(D: Dict[Any, Any]) -> Dict[Any, AnyNotNone]:
 
 
 def accepted_kwargs(
-    **default_kwargs: Any
+    **default_kwargs: Any,
 ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """
     >>> @accepted_kwargs(d='d', e=None)
