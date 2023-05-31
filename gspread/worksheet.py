@@ -1435,7 +1435,6 @@ class Worksheet:
         self._properties["tabColorStyle"] = {
             "rgbColor": color,
         }
-        self._properties["tabColor"] = color
         return response
 
     def clear_tab_color(self):
@@ -1459,7 +1458,6 @@ class Worksheet:
         self._properties["tabColorStyle"] = {
             "rgbColor": None,
         }
-        self._properties["tabColor"] = None
         return response
 
     def update_index(self, index):
