@@ -190,7 +190,9 @@ class Worksheet:
 
     @property
     def tab_color(self):
-        """Tab color style."""
+        """Tab color style. Dict with RGB color values.
+        If any of R, G, B are 0, they will not be present in the dict.
+        """
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
 
     def _get_sheet_property(self, property, default_value):
