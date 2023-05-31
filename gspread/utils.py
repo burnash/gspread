@@ -220,7 +220,7 @@ def numericise(
 def numericise_all(
     values: List[Optional[AnyStr]],
     empty2zero: bool = False,
-    default_blank: Optional[str] = "",
+    default_blank: Union[AnyStr, int, float] = "",
     allow_underscores_in_numeric_literals: bool = False,
     ignore: List[int] = [],
 ) -> List[Optional[Union[int, float, AnyStr]]]:
@@ -562,10 +562,10 @@ def rightpad(row: List[Any], max_len: int) -> List[Any]:
 
 
 def fill_gaps(
-    L: List[Any],
+    L: List[List[Any]],
     rows: Optional[int] = None,
     cols: Optional[int] = None
-) -> List[Any]:
+) -> List[List[Any]]:
     try:
         max_cols = max(len(row) for row in L) if cols is None else cols
         max_rows = len(L) if rows is None else rows
@@ -577,7 +577,7 @@ def fill_gaps(
 
         return [rightpad(row, max_cols) for row in L]
     except ValueError:
-        return []
+        return [[]]
 
 
 def cell_list_to_rect(cell_list: List["Cell"]) -> List[List[Optional[str]]]:
