@@ -1448,7 +1448,9 @@ class Worksheet:
         return response
 
     def clear_tab_color(self):
-        """Clears the worksheet's tab color."""
+        """Clears the worksheet's tab color.
+        Use update_tab_color() to set the color.
+        """
         body = {
             "requests": [
                 {
