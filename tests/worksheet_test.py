@@ -208,13 +208,42 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(color_param_before, None)
         self.assertEqual(color_after, pink_color_from_google)
         self.assertEqual(color_param_after, pink_color_from_google)
+
+    @pytest.mark.vcr()
+    def test_clear_tab_color(self):
+        # Set the color.
+        # Clear the color.
+        # Assert that the color is None.
+        pink_color = {
             "red": 1,
             "green": 0,
-            "blue": 0,
+            "blue": 0.5,
         }
-        self.assertEqual(self.sheet.tab_color, None)
-        self.sheet.update_tab_color(red_color)
-        self.assertEqual(self.sheet.tab_color, red_color)
+
+        params = {"fields": "sheets.properties.tabColorStyle"}
+        res = self.spreadsheet.fetch_sheet_metadata(params=params)
+        color_before = (
+            res["sheets"][0]["properties"]
+            .get("tabColorStyle", {})
+            .get("rgbColor", None)
+        )
+        color_param_before = self.sheet.tab_color
+
+        self.sheet.update_tab_color(pink_color)
+        self.sheet.clear_tab_color()
+
+        res = self.spreadsheet.fetch_sheet_metadata(params=params)
+        color_after = (
+            res["sheets"][0]["properties"]
+            .get("tabColorStyle", {})
+            .get("rgbColor", None)
+        )
+        color_param_after = self.sheet.tab_color
+
+        self.assertEqual(color_before, None)
+        self.assertEqual(color_param_before, None)
+        self.assertEqual(color_after, None)
+        self.assertEqual(color_param_after, None)
 
     @pytest.mark.vcr()
     def test_update_cells_noncontiguous(self):
