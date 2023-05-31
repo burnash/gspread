@@ -581,7 +581,7 @@ def fill_gaps(
         return [[]]
 
 
-def cell_list_to_rect(cell_list: List["Cell"]) -> List[List[Optional[str]]]:
+def cell_list_to_rect(cell_list: List[Any]) -> List[List[Optional[str]]]:
     if not cell_list:
         return []
 
