@@ -1407,6 +1407,7 @@ class Worksheet:
 
     def update_tab_color(self, color):
         """Changes the worksheet's tab color.
+        Use clear_tab_color() to remove the color.
 
         :param dict color: The red, green and blue values of the color, between 0 and 1.
         """
@@ -1435,6 +1436,30 @@ class Worksheet:
             "rgbColor": color,
         }
         self._properties["tabColor"] = color
+        return response
+
+    def clear_tab_color(self):
+        """Clears the worksheet's tab color."""
+        body = {
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": self.id,
+                            "tabColorStyle": {
+                                "rgbColor": None,
+                            },
+                        },
+                        "fields": "tabColorStyle",
+                    },
+                },
+            ],
+        }
+        response = self.spreadsheet.batch_update(body)
+        self._properties["tabColorStyle"] = {
+            "rgbColor": None,
+        }
+        self._properties["tabColor"] = None
         return response
 
     def update_index(self, index):
