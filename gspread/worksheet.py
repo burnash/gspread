@@ -1434,9 +1434,17 @@ class Worksheet:
         }
 
         response = self.spreadsheet.batch_update(body)
-        self._properties["tabColorStyle"] = {
-            "rgbColor": color,
+        # get new color from API
+        # this is because sheets rounds the colour value we give it to the nearest n/255
+        params = {
+            "fields": "sheets.properties.tabColorStyle.rgbColor,sheets.properties.sheetId",
         }
+        response = self.spreadsheet.fetch_sheet_metadata(params=params)
+        sheet = [
+            s for s in response["sheets"] if s["properties"]["sheetId"] == self.id
+        ][0]
+        sheet_color = sheet["properties"].get("tabColorStyle", {}).get("rgbColor", {})
+        self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
         return response
 
     def clear_tab_color(self):
