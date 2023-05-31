@@ -1416,11 +1416,6 @@ class Worksheet:
                     "updateSheetProperties": {
                         "properties": {
                             "sheetId": self.id,
-                            "tabColor": {
-                                "red": color["red"],
-                                "green": color["green"],
-                                "blue": color["blue"],
-                            },
                             "tabColorStyle": {
                                 "rgbColor": {
                                     "red": color["red"],
@@ -1429,7 +1424,7 @@ class Worksheet:
                                 }
                             },
                         },
-                        "fields": "tabColor,tabColorStyle",
+                        "fields": "tabColorStyle",
                     }
                 }
             ]
