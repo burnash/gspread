@@ -172,7 +172,42 @@ class WorksheetTest(GspreadTest):
         # Set the color.
         # Get the color.
         # Assert it contains each color, red, green, blue
-        red_color = {
+        pink_color = {
+            "red": 1,
+            "green": 0,
+            "blue": 0.5,
+        }
+        # if a color is 0, it is not returned by google
+        # also, floats are coalesced to the closest 8-bit value
+        #   so 0.5 becomes 0.49803922 (127/255)
+        pink_color_from_google = {
+            "red": 1,
+            "blue": 0.49803922,  # 127/255
+        }
+
+        params = {"fields": "sheets.properties.tabColorStyle"}
+        res = self.spreadsheet.fetch_sheet_metadata(params=params)
+        color_before = (
+            res["sheets"][0]["properties"]
+            .get("tabColorStyle", {})
+            .get("rgbColor", None)
+        )
+        color_param_before = self.sheet.tab_color
+
+        self.sheet.update_tab_color(pink_color)
+
+        res = self.spreadsheet.fetch_sheet_metadata(params=params)
+        color_after = (
+            res["sheets"][0]["properties"]
+            .get("tabColorStyle", {})
+            .get("rgbColor", None)
+        )
+        color_param_after = self.sheet.tab_color
+
+        self.assertEqual(color_before, None)
+        self.assertEqual(color_param_before, None)
+        self.assertEqual(color_after, pink_color_from_google)
+        self.assertEqual(color_param_after, pink_color_from_google)
             "red": 1,
             "green": 0,
             "blue": 0,
