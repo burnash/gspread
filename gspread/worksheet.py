@@ -1405,7 +1405,7 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color):
+    def update_tab_color(self, color: dict):
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
