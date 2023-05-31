@@ -168,10 +168,9 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_update_tab_color(self):
-        # Assert that the method returns None.
         # Set the color.
         # Get the color.
-        # Assert it contains each color, red, green, blue
+        # Assert the color is the set and changed by google.
         pink_color = {
             "red": 1,
             "green": 0,
