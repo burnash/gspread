@@ -1455,9 +1455,7 @@ class Worksheet:
             ],
         }
         response = self.spreadsheet.batch_update(body)
-        self._properties["tabColorStyle"] = {
-            "rgbColor": None,
-        }
+        self._properties.pop("tabColorStyle")
         return response
 
     def update_index(self, index):
