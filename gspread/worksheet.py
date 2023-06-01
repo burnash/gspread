@@ -2745,6 +2745,36 @@ class Worksheet:
         """Show the current worksheet in the UI."""
         return self._set_hidden_flag(False)
 
+    def _set_gridlines_hidden_flag(self, hidden):
+        """Hide/show gridlines on the current worksheet"""
+
+        body = {
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": self.id,
+                            "gridProperties": {
+                                "hideGridlines": hidden,
+                            },
+                        },
+                        "fields": "gridProperties.hideGridlines",
+                    }
+                }
+            ]
+        }
+
+        self._properties["gridProperties"]["hideGridlines"] = hidden
+        return self.spreadsheet.batch_update(body)
+
+    def hide_gridlines(self):
+        """Hide gridlines on the current worksheet"""
+        return self._set_gridlines_hidden_flag(True)
+
+    def show_gridlines(self):
+        """Show gridlines on the current worksheet"""
+        return self._set_gridlines_hidden_flag(False)
+
     def copy_range(
         self,
         source,
