@@ -189,6 +189,13 @@ class Worksheet:
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
     @property
+    def is_gridlines_hidden(self):
+        """Whether or not gridlines hidden. Boolean.
+        True if hidden. False if shown.
+        """
+        return self._properties["gridProperties"].get("hideGridlines", False)
+
+    @property
     def tab_color(self):
         """Tab color style."""
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
