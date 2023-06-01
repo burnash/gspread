@@ -1047,6 +1047,67 @@ class WorksheetTest(GspreadTest):
         self.assertFalse(before_hide)
 
     @pytest.mark.vcr()
+    def test_hide_gridlines(self):
+        """Hide gridlines. Check API to see if they are hidden."""
+
+        def are_gridlines_hidden():
+            res = self.spreadsheet.fetch_sheet_metadata()
+            sheets = res["sheets"]
+            sheet = utils.finditem(
+                lambda x: x["properties"]["sheetId"] == self.sheet.id,
+                sheets,
+            )
+            return (
+                sheet["properties"]
+                .get("gridProperties", {})
+                .get("hideGridlines", False)
+            )
+
+        hidden_before = are_gridlines_hidden()
+        hidden_before_property = self.sheet.is_gridlines_hidden
+
+        self.sheet.hide_gridlines()
+
+        hidden_after = are_gridlines_hidden()
+        hidden_after_property = self.sheet.is_gridlines_hidden
+
+        self.assertFalse(hidden_before)
+        self.assertFalse(hidden_before_property)
+        self.assertTrue(hidden_after)
+        self.assertTrue(hidden_after_property)
+
+    @pytest.mark.vcr()
+    def test_show_gridlines(self):
+        """Show gridlines. Check API to see if they are shown."""
+
+        def are_gridlines_hidden():
+            res = self.spreadsheet.fetch_sheet_metadata()
+            sheets = res["sheets"]
+            sheet = utils.finditem(
+                lambda x: x["properties"]["sheetId"] == self.sheet.id,
+                sheets,
+            )
+            return (
+                sheet["properties"]
+                .get("gridProperties", {})
+                .get("hideGridlines", False)
+            )
+
+        hidden_before = are_gridlines_hidden()
+        hidden_before_property = self.sheet.is_gridlines_hidden
+
+        self.sheet.hide_gridlines()
+        self.sheet.show_gridlines()
+
+        hidden_after = are_gridlines_hidden()
+        hidden_after_property = self.sheet.is_gridlines_hidden
+
+        self.assertFalse(hidden_before)
+        self.assertFalse(hidden_before_property)
+        self.assertFalse(hidden_after)
+        self.assertFalse(hidden_after_property)
+
+    @pytest.mark.vcr()
     def test_auto_resize_columns(self):
         w = self.sheet
 
