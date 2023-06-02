@@ -189,6 +189,13 @@ class Worksheet:
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
     @property
+    def is_gridlines_hidden(self):
+        """Whether or not gridlines hidden. Boolean.
+        True if hidden. False if shown.
+        """
+        return self._properties["gridProperties"].get("hideGridlines", False)
+
+    @property
     def tab_color(self):
         """Tab color style. Dict with RGB color values.
         If any of R, G, B are 0, they will not be present in the dict.
@@ -2765,6 +2772,36 @@ class Worksheet:
     def show(self):
         """Show the current worksheet in the UI."""
         return self._set_hidden_flag(False)
+
+    def _set_gridlines_hidden_flag(self, hidden):
+        """Hide/show gridlines on the current worksheet"""
+
+        body = {
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": self.id,
+                            "gridProperties": {
+                                "hideGridlines": hidden,
+                            },
+                        },
+                        "fields": "gridProperties.hideGridlines",
+                    }
+                }
+            ]
+        }
+
+        self._properties["gridProperties"]["hideGridlines"] = hidden
+        return self.spreadsheet.batch_update(body)
+
+    def hide_gridlines(self):
+        """Hide gridlines on the current worksheet"""
+        return self._set_gridlines_hidden_flag(True)
+
+    def show_gridlines(self):
+        """Show gridlines on the current worksheet"""
+        return self._set_gridlines_hidden_flag(False)
 
     def copy_range(
         self,
