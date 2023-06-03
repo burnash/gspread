@@ -12,6 +12,7 @@ from collections.abc import Sequence
 from functools import wraps
 from itertools import chain
 from typing import (
+    TYPE_CHECKING,
     Any,
     AnyStr,
     Callable,
@@ -31,6 +32,10 @@ from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
 from .exceptions import IncorrectCellLabel, InvalidInputValue, NoValidUrlKeyFound
+
+if TYPE_CHECKING:
+    from .cell import Cell
+
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")
@@ -569,7 +574,7 @@ def fill_gaps(
         return [[]]
 
 
-def cell_list_to_rect(cell_list: List[Any]) -> List[List[Optional[str]]]:
+def cell_list_to_rect(cell_list: List["Cell"]) -> List[List[Optional[str]]]:
     if not cell_list:
         return []
 
