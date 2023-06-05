@@ -1,19 +1,22 @@
 # Contributing Guide
 
-* Check the [GitHub Issues](https://github.com/burnash/gspread/issues) for open issues that need attention.
-* Follow the [How to submit a contribution](https://opensource.guide/how-to-contribute/#how-to-submit-a-contribution) Guide.
+- Check the [GitHub Issues](https://github.com/burnash/gspread/issues) for open issues that need attention.
+- Follow the [How to submit a contribution](https://opensource.guide/how-to-contribute/#how-to-submit-a-contribution) Guide.
 
-* Make sure unit tests pass. Please read how to run unit tests below.
+- Make sure unit tests pass. Please read how to run unit tests below.
 
-* If you are fixing a bug:
-  * If you are resolving an existing issue, reference the issue id in a commit message `(fixed #XXX)`.
-  * If the issue has not been reported, please add a detailed description of the bug in the PR.
-  * Please add a regression test case.
+- If you are fixing a bug:
+  - If you are resolving an existing issue, reference the issue ID in a commit message `(e.g., fixed #XXXX)`.
+  - If the issue has not been reported, please add a detailed description of the bug in the Pull Request (PR).
+  - Please add a regression test case to check the bug is fixed.
 
-* If you are adding a new feature:
-  * Please open a suggestion issue first.
-  * Provide a convincing reason to add this feature and have it greenlighted before working on it.
-  * Add tests to cover the functionality.
+- If you are adding a new feature:
+  - Please open a suggestion issue first.
+  - Provide a convincing reason to add this feature and have it greenlighted before working on it.
+  - Add tests to cover the functionality.
+
+- Please follow [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/).
+
 
 * Please follow [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/).
 
