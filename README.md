@@ -176,15 +176,15 @@ worksheet.batch_update([{
 
 ## [Documentation](https://gspread.readthedocs.io/en/latest/)
 
+### Ask Questions
+
+The best way to get an answer to a question is to ask on [Stack Overflow with a gspread tag](http://stackoverflow.com/questions/tagged/gspread?sort=votes&pageSize=50).
+
 ## [Contributors](https://github.com/burnash/gspread/graphs/contributors)
 
 ## How to Contribute
 
 Please make sure to take a moment and read the [Code of Conduct](https://github.com/burnash/gspread/blob/master/.github/CODE_OF_CONDUCT.md).
-
-### Ask Questions
-
-The best way to get an answer to a question is to ask on [Stack Overflow with a gspread tag](http://stackoverflow.com/questions/tagged/gspread?sort=votes&pageSize=50).
 
 ### Report Issues
 
