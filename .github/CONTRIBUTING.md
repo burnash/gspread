@@ -27,10 +27,10 @@
 2. Run tests offline:
 
 Run the test suite using your current python version, in offline mode.
-This will use the curently recorded HTTP requests + responses. It does not make any HTTP call, does not require an active internet connection.
+This will use the currently recorded HTTP requests + responses. It does not make any HTTP call, does not require an active internet connection.
 
-**Note:** the CI runs that command, if it fail you won't be able to merge
-your changes in GSpread.
+**Note:** the CI runs that command, if it fails you won't be able to merge
+your changes in gspread.
 
 ```
 tox -e py
