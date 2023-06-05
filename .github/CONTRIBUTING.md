@@ -51,6 +51,7 @@ You must in that case provide a service account credentials in order to make the
 You can control vcrpy's [Record Mode](https://vcrpy.readthedocs.io/en/latest/usage.html#record-modes) using `GS_RECORD_MODE` environment variable.
 
 The following command will run the entire test suite and record every HTTP request.
+
 ```python
 GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 ```
@@ -58,56 +59,57 @@ GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 You need to update the recorded HTTP requests in the following cases:
 
 - new test is added
-- a existing test is updated and does a new HTTP request
+- an existing test is updated and does a new HTTP request
 - gspread is updated and does a new HTTP request
 
 In any of the above cases:
 
-- remove the file holding the init/teardown of the test suite.
+- Remove the file holding the recorded HTTP requests of the test(s).
 
-  ex: for the file `tests/cell_test.py` delete `tests/cassettes/CellTest.json`
+  e.g.: for the file `tests/cell_test.py` delete `tests/cassettes/CellTest.json`
 - please update the HTTP recording using the command above
 - set the `GS_RECORD_MODE` to `new_episodes`.
 
 This will tell `vcrpy` to record only new episodes and replay existing episodes.
 
-**Note:** this will mostly result in a lot of udpated files under `tests/cassettes/` don't forget to add them in your PR.
+**Note:** this will mostly result in a lot of updated files under `tests/cassettes/` don't forget to add them in your PR.
 
 Add these new files a dedicated commit, in order to make the review process easier please.
 
 The following command will replay existing requests and record new requests:
-```
+
+```bash
 GS_RECORD_MODE=new_episodes GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 ```
 
 Then run the tests in offline mode to make sure you have recorded everything.
 
-```
+```bash
 tox -e py
 ```
 
-**Note::** In some cases if the test suite can't record new episodes or it can't
+**Note::** In some cases if the test suite can't record new episodes, or it can't
 replay them offline, you can run a complete update of the cassettes using the following command:
 
-```
+```bash
 GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 ```
 
-3. Format your code:
+1. Format your code:
 
 Use the following command to format your code. Doing so will ensure
 all code respects the same format.
 
-```
+```bash
 tox -e format
 ```
 
 Then run the linter to validate change, if any.
 
-**Note:** the CI runs that command, if it fail you won't be able to merge
-your changes in GSpread.
+**Note:** the CI runs that command, if it fails you won't be able to merge
+your changes in gspread.
 
-```
+```bash
 tox -e lint
 ```
 
@@ -117,7 +119,7 @@ The documentation uses [reStructuredText](http://www.sphinx-doc.org/en/master/us
 
 To build the documentation locally, use the following command:
 
-```
+```bash
 tox -e doc
 ```
 
