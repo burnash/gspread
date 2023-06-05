@@ -36,7 +36,7 @@ your changes in gspread.
 tox -e py
 ```
 
-**Tip:** To run a specific test method use the option `-k` to specifcy a test name and `-v` and `-s` to get test's output on console.
+**Tip:** To run a specific test method use the option `-k` to specify a test name and `-v` and `-s` to get test's output on console.
 
 Example:
 
