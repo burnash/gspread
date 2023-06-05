@@ -32,7 +32,7 @@ This will use the currently recorded HTTP requests + responses. It does not make
 **Note:** the CI runs that command, if it fails you won't be able to merge
 your changes in gspread.
 
-```
+```bash
 tox -e py
 ```
 
@@ -40,7 +40,7 @@ tox -e py
 
 Example:
 
-```
+```python
 tox -e py -- -k test_find -v -s
 ```
 
@@ -51,7 +51,7 @@ You must in that case provide a service account credentials in order to make the
 You can control vcrpy's [Record Mode](https://vcrpy.readthedocs.io/en/latest/usage.html#record-modes) using `GS_RECORD_MODE` environment variable.
 
 The following command will run the entire test suite and record every HTTP request.
-```
+```python
 GS_RECORD_MODE=all GS_CREDS_FILENAME=<YOUR_CREDS.json> tox -e py
 ```
 
