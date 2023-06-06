@@ -75,7 +75,7 @@ gspread uses [vcrpy](https://github.com/kevin1024/vcrpy) to record and replay HT
 
 You must provide service account credentials using the `GS_CREDS_FILENAME` environment variable in order to make HTTP requests to the Sheets API.
 
-[Obtain OAuth2 credentials from Google Developers Console](http://gspread.readthedocs.org/en/latest/oauth2.html).
+[Obtain service account credentials from Google Developers Console](https://docs.gspread.org/en/latest/oauth2.html#for-bots-using-service-account).
 
 ### `GS_RECORD_MODE` environment variable
 
