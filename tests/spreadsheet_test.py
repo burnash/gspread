@@ -47,6 +47,17 @@ class SpreadsheetTest(GspreadTest):
         self.assertTrue(isinstance(sheet, gspread.Worksheet))
 
     @pytest.mark.vcr()
+    def test_worksheets(self):
+        n_worksheets_before = len(self.spreadsheet.worksheets())
+
+        self.spreadsheet.add_worksheet("finances", 100, 100)
+
+        n_worksheets_after = len(self.spreadsheet.worksheets())
+
+        self.assertEqual(n_worksheets_before, 1)
+        self.assertEqual(n_worksheets_after, 2)
+
+    @pytest.mark.vcr()
     def test_worksheet_iteration(self):
         self.assertEqual(
             [x.id for x in self.spreadsheet.worksheets()],
