@@ -174,13 +174,19 @@ worksheet.batch_update([{
 }])
 ```
 
-## [Documentation](https://gspread.readthedocs.io/en/latest/)
+## Documentation
+
+[Documentation]\: [https://gspread.readthedocs.io/][Documentation]
+
+[Documentation]: https://gspread.readthedocs.io/en/latest/
 
 ### Ask Questions
 
 The best way to get an answer to a question is to ask on [Stack Overflow with a gspread tag](http://stackoverflow.com/questions/tagged/gspread?sort=votes&pageSize=50).
 
-## [Contributors](https://github.com/burnash/gspread/graphs/contributors)
+## Contributors
+
+[List of contributors](https://github.com/burnash/gspread/graphs/contributors)
 
 ## How to Contribute
 
