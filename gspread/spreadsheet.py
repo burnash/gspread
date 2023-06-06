@@ -295,12 +295,22 @@ class Spreadsheet:
         except (StopIteration, KeyError):
             raise WorksheetNotFound("id {} not found".format(id))
 
-    def worksheets(self):
+    def worksheets(self, exclude_hidden: bool = False):
         """Returns a list of all :class:`worksheets <gspread.worksheet.Worksheet>`
         in a spreadsheet.
+
+        :param exclude_hidden: (optional) If set to ``True`` will only return
+                                 visible worksheets. Default is ``False``.
+        :type exclude_hidden: bool
+
+        :returns: a list of :class:`worksheets <gspread.worksheet.Worksheet>`.
+        :rtype: list
         """
         sheet_data = self.fetch_sheet_metadata()
-        return [Worksheet(self, x["properties"]) for x in sheet_data["sheets"]]
+        worksheets = [Worksheet(self, s["properties"]) for s in sheet_data["sheets"]]
+        if exclude_hidden:
+            worksheets = [w for w in worksheets if not w.isSheetHidden]
+        return worksheets
 
     def worksheet(self, title):
         """Returns a worksheet with specified `title`.
