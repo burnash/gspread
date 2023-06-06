@@ -58,6 +58,18 @@ class SpreadsheetTest(GspreadTest):
         self.assertEqual(n_worksheets_after, 2)
 
     @pytest.mark.vcr()
+    def test_worksheets_exclude_hidden(self):
+        self.spreadsheet.add_worksheet("finances", 100, 100)
+        gacha_worksheet = self.spreadsheet.add_worksheet("gacha", 100, 100)
+        gacha_worksheet.hide()
+
+        n_worksheets_and_hidden = len(self.spreadsheet.worksheets(exclude_hidden=False))
+        n_worksheets_no_hidden = len(self.spreadsheet.worksheets(exclude_hidden=True))
+
+        self.assertEqual(n_worksheets_and_hidden, 3)
+        self.assertEqual(n_worksheets_no_hidden, 2)
+
+    @pytest.mark.vcr()
     def test_worksheet_iteration(self):
         self.assertEqual(
             [x.id for x in self.spreadsheet.worksheets()],
