@@ -25,11 +25,8 @@ Use [format](#format) to format your code before submitting a PR. Not doing so m
 
 ## Install dependencies
 
-Installing all the `*.txt` files is optional (tox installs dependencies per-run).
-
 ```bash
 pip install tox
-pip install -r ./test-requirements.txt -r ./lint-requirements.txt -r ./docs/requirements.txt
 ```
 
 ## Run tests (offline)
