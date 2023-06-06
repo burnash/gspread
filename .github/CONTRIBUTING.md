@@ -104,7 +104,10 @@ GS_CREDS_FILENAME=<./YOUR_CREDS.json> GS_RECORD_MODE=all tox -e py
 To record new HTTP requests:
 
 1. Remove the file holding the recorded HTTP requests of the test(s).
-  (e.g.: for the file `tests/cell_test.py` delete `tests/cassettes/CellTest.json`)
+  e.g.,
+     1. for the file `tests/cell_test.py`:
+     2. for the test `test_a1_value`
+     3. remove the file `tests/cassettes/CellTest.test_a1_value.json`
 1. Run the tests with `GS_RECORD_MODE=new_episodes`.
 
 ```bash
