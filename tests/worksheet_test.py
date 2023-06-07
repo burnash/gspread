@@ -1117,7 +1117,7 @@ class WorksheetTest(GspreadTest):
         # if missing => value is False
         res = self.spreadsheet.fetch_sheet_metadata()
         hidden_before = res["sheets"][1]["properties"].get("hidden", False)
-        hidden_before_prop = self.sheet.isSheetHidden
+        hidden_before_prop = new_sheet.isSheetHidden
 
         self.assertFalse(hidden_before)
         self.assertFalse(hidden_before_prop)
@@ -1126,7 +1126,7 @@ class WorksheetTest(GspreadTest):
 
         res = self.spreadsheet.fetch_sheet_metadata()
         hidden_after = res["sheets"][1]["properties"].get("hidden", False)
-        hidden_after_prop = self.sheet.isSheetHidden
+        hidden_after_prop = new_sheet.isSheetHidden
         self.assertTrue(hidden_after)
         self.assertTrue(hidden_after_prop)
 
@@ -1134,7 +1134,7 @@ class WorksheetTest(GspreadTest):
 
         res = self.spreadsheet.fetch_sheet_metadata()
         hidden_before = res["sheets"][1]["properties"].get("hidden", False)
-        hidden_before_prop = self.sheet.isSheetHidden
+        hidden_before_prop = new_sheet.isSheetHidden
         self.assertFalse(hidden_before)
         self.assertFalse(hidden_before_prop)
 
