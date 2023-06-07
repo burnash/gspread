@@ -1318,7 +1318,12 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        if rows is not None:
+            self._properties["gridProperties"]["rowCount"] = rows
+        if cols is not None:
+            self._properties["gridProperties"]["columnCount"] = cols
+        return res
 
     # TODO(post Python 2): replace the method signature with
     # def sort(self, *specs, range=None):
