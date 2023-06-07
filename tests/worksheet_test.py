@@ -1116,27 +1116,27 @@ class WorksheetTest(GspreadTest):
         # the response does not include some default values.
         # if missing => value is False
         res = self.spreadsheet.fetch_sheet_metadata()
-        before_hide = res["sheets"][1]["properties"].get("hidden", False)
-        before_hide_prop = self.sheet.isSheetHidden
+        hidden_before = res["sheets"][1]["properties"].get("hidden", False)
+        hidden_before_prop = self.sheet.isSheetHidden
 
-        self.assertFalse(before_hide)
-        self.assertFalse(before_hide_prop)
+        self.assertFalse(hidden_before)
+        self.assertFalse(hidden_before_prop)
 
         new_sheet.hide()
 
         res = self.spreadsheet.fetch_sheet_metadata()
-        after_hide = res["sheets"][1]["properties"].get("hidden", False)
-        after_hide_prop = self.sheet.isSheetHidden
-        self.assertTrue(after_hide)
-        self.assertTrue(after_hide_prop)
+        hidden_after = res["sheets"][1]["properties"].get("hidden", False)
+        hidden_after_prop = self.sheet.isSheetHidden
+        self.assertTrue(hidden_after)
+        self.assertTrue(hidden_after_prop)
 
         new_sheet.show()
 
         res = self.spreadsheet.fetch_sheet_metadata()
-        before_hide = res["sheets"][1]["properties"].get("hidden", False)
-        before_hide_prop = self.sheet.isSheetHidden
-        self.assertFalse(before_hide)
-        self.assertFalse(before_hide_prop)
+        hidden_before = res["sheets"][1]["properties"].get("hidden", False)
+        hidden_before_prop = self.sheet.isSheetHidden
+        self.assertFalse(hidden_before)
+        self.assertFalse(hidden_before_prop)
 
     @pytest.mark.vcr()
     def test_hide_gridlines(self):
