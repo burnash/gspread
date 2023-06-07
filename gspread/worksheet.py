@@ -2115,9 +2115,12 @@ class Worksheet:
             ]
         }
 
-        self._properties["gridProperties"]["frozenRowCount"] = rows
-        self._properties["gridProperties"]["frozenColumnCount"] = cols
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        if rows is not None:
+            self._properties["gridProperties"]["frozenRowCount"] = rows
+        if cols is not None:
+            self._properties["gridProperties"]["frozenColumnCount"] = cols
+        return res
 
     @cast_to_a1_notation
     def set_basic_filter(self, name=None):
