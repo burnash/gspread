@@ -2747,8 +2747,9 @@ class Worksheet:
             ]
         }
 
+        res = self.spreadsheet.batch_update(body)
         self._properties["hidden"] = hidden
-        return self.spreadsheet.batch_update(body)
+        return res
 
     def hide(self):
         """Hides the current worksheet from the UI."""
