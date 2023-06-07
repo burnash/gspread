@@ -2115,6 +2115,8 @@ class Worksheet:
             ]
         }
 
+        self._properties["gridProperties"]["frozenRowCount"] = rows
+        self._properties["gridProperties"]["frozenColumnCount"] = cols
         return self.spreadsheet.batch_update(body)
 
     @cast_to_a1_notation
@@ -2735,6 +2737,7 @@ class Worksheet:
             ]
         }
 
+        self._properties["hidden"] = hidden
         return self.spreadsheet.batch_update(body)
 
     def hide(self):
