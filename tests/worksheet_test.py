@@ -167,6 +167,24 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(cell.value, I18N_STR)
 
     @pytest.mark.vcr()
+    def test_update_title(self):
+        res = self.spreadsheet.fetch_sheet_metadata()
+        title_before = res["sheets"][0]["properties"]["title"]
+        title_before_prop = self.sheet.title
+
+        new_title = "I'm a new title"
+        self.sheet.update_title(new_title)
+
+        res = self.spreadsheet.fetch_sheet_metadata()
+        title_after = res["sheets"][0]["properties"]["title"]
+        title_after_prop = self.sheet.title
+
+        self.assertEqual(title_after, new_title)
+        self.assertEqual(title_after_prop, new_title)
+        self.assertNotEqual(title_before, new_title)
+        self.assertNotEqual(title_before_prop, new_title)
+
+    @pytest.mark.vcr()
     def test_update_tab_color(self):
         # Assert that the method returns None.
         # Set the color.
