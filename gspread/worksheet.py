@@ -1477,7 +1477,9 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        self._properties["index"] = index
+        return res
 
     def _auto_resize(self, start_index, end_index, dimension):
         """Updates the size of rows or columns in the  worksheet.
