@@ -979,12 +979,19 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_worksheet_update_index(self):
-        w = self.spreadsheet.worksheets()
-        last_sheet = w[-1]
+        # need to have multiple worksheets to reorder them
+        self.spreadsheet.add_worksheet("test_sheet", 100, 100)
+        self.spreadsheet.add_worksheet("test_sheet 2", 100, 100)
+
+        worksheets = self.spreadsheet.worksheets()
+        last_sheet = worksheets[-1]
+        self.assertEqual(last_sheet.index, len(worksheets) - 1)
+
         last_sheet.update_index(0)
-        w = self.spreadsheet.worksheets()
-        self.assertEqual(w[0].id, last_sheet.id)
-        self.assertEuql(last_sheet.index, 0)
+
+        worksheets = self.spreadsheet.worksheets()
+        self.assertEqual(worksheets[0].id, last_sheet.id)
+        self.assertEqual(last_sheet.index, 0)
 
     @pytest.mark.vcr()
     def test_worksheet_notes(self):
