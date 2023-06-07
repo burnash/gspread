@@ -608,6 +608,63 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_data, rows)
 
     @pytest.mark.vcr()
+    def test_get_all_values_date_time_render_options(self):
+        self.sheet.resize(2, 4)
+        # put in new values
+        rows = [
+            ["=4/2", "2020-01-01", "string", 53],
+            ["=3/2", 0.12, "1999-01-02", ""],
+        ]
+        cell_list = self.sheet.range("A1:D2")
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(
+            cell_list, value_input_option=utils.ValueInputOption.user_entered
+        )
+
+        # with value_render as unformatted
+        # date_time_render as serial_number
+        read_records = self.sheet.get_values(
+            value_render_option=utils.ValueRenderOption.unformatted,
+            date_time_render_option=utils.DateTimeOption.serial_number,
+        )
+        expected_values = [
+            [2, 43831, "string", 53],
+            [3 / 2, 0.12, 36162, ""],
+        ]
+        self.assertEqual(read_records, expected_values)
+
+        # with value_render as unformatted
+        # date_time_render as formatted_string
+        read_records = self.sheet.get_values(
+            value_render_option=utils.ValueRenderOption.unformatted,
+            date_time_render_option=utils.DateTimeOption.formatted_string,
+        )
+        expected_values = [
+            [2, "2020-01-01", "string", 53],
+            [3 / 2, 0.12, "1999-01-02", ""],
+        ]
+        self.assertEqual(read_records, expected_values)
+
+        # with value_render as formatted (overrides date_time_render)
+        # date_time_render as serial_number
+        # CONFLICT - raises APIError 404 NOT_FOUND
+        with self.assertRaises(APIError):
+            read_records = self.sheet.get_values(
+                value_render_option=utils.ValueRenderOption.formatted,
+                date_time_render_option=utils.DateTimeOption.serial_number,
+            )
+
+        # with value_render as formatted (overrides date_time_render)
+        # date_time_render as formatted_string
+        # CONFLICT - raises APIError 404 NOT_FOUND
+        with self.assertRaises(APIError):
+            read_records = self.sheet.get_values(
+                value_render_option=utils.ValueRenderOption.formatted,
+                date_time_render_option=utils.DateTimeOption.formatted_string,
+            )
+
+    @pytest.mark.vcr()
     def test_get_all_records(self):
         self.sheet.resize(4, 4)
         # put in new values

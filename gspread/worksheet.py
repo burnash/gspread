@@ -395,14 +395,14 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
-            .. note::
+            .. warning::
 
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -601,14 +601,14 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
-            .. note::
+            .. warning::
 
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -785,14 +785,14 @@ class Worksheet:
                  to be output as doubles in "serial number" format,
                  as popularized by Lotus 1-2-3.
 
-             ``DateTimeOption.formated_string``
+             ``DateTimeOption.formatted_string``
                  Instructs date, time, datetime, and duration fields to be output
                  as strings in their given number format
                  (which depends on the spreadsheet locale).
 
-             .. note::
+             .. warning::
 
-                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+                 Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
 
              The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -878,14 +878,14 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
-            .. note::
+            .. warning::
 
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -985,14 +985,14 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
             .. note::
 
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -1124,14 +1124,14 @@ class Worksheet:
                 to be output as doubles in "serial number" format,
                 as popularized by Lotus 1-2-3.
 
-            ``DateTimeOption.formated_string``
+            ``DateTimeOption.formatted_string``
                 Instructs date, time, datetime, and duration fields to be output
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
             .. note::
 
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
