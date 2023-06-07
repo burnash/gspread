@@ -1134,6 +1134,7 @@ class WorksheetTest(GspreadTest):
 
         res = self.spreadsheet.fetch_sheet_metadata()
         before_hide = res["sheets"][1]["properties"].get("hidden", False)
+        before_hide_prop = self.sheet.isSheetHidden
         self.assertFalse(before_hide)
         self.assertFalse(before_hide_prop)
 
