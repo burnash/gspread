@@ -6,7 +6,6 @@ This module contains common worksheets' models.
 
 """
 
-import math
 from .cell import Cell
 from .exceptions import GSpreadException
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
@@ -1444,18 +1443,11 @@ class Worksheet:
 
         response = self.spreadsheet.batch_update(body)
 
-        # compute color from Google sheets
-        def coalesce_color_to_255(color: float) -> float:
-            return round(math.floor(color * 255) / 255, 8)
-
-        # Google sheets does not include the color if it is 0
-        sheet_color = {}
-        if red != 0:
-            sheet_color["red"] = coalesce_color_to_255(red)
-        if green != 0:
-            sheet_color["green"] = coalesce_color_to_255(green)
-        if blue != 0:
-            sheet_color["blue"] = coalesce_color_to_255(blue)
+        sheet_color = {
+            "red": red,
+            "green": green,
+            "blue": blue,
+        }
 
         self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
         return response
