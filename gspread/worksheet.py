@@ -1338,14 +1338,14 @@ class Worksheet:
 
         Warning::
 
-            This function signature will change to: sort(range: str, specs: List[Tuple[int, Union['asc', 'desc']]])
+            This function signature will change, arguments will swap places:  sort(range, specs)
 
         .. versionadded:: 3.4
         """
         warnings.warn(
             DEPRECATION_WARNING_TEMPLATE.format(
                 v_deprecated="6.0.0",
-                msg_deprecated="This function signature will change to: sort(range: str, specs: List[Tuple[int, Union['asc', 'desc']]])",
+                msg_deprecated="This function signature will change, arguments will swap places:  sort(range, specs)",
             ),
             DeprecationWarning,
         )
