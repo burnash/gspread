@@ -238,14 +238,14 @@ class UtilsTest(unittest.TestCase):
                 {
                     "startRowIndex": 1,
                     "endRowIndex": 2,
-                    "startColumnIndex": 3,
-                    "endColumnIndex": 5,
+                    "startColumnIndex": 2,
+                    "endColumnIndex": 4,
                 },
                 {
                     "startRowIndex": 2,
                     "endRowIndex": 4,
-                    "startColumnIndex": 3,
-                    "endColumnIndex": 4,
+                    "startColumnIndex": 2,
+                    "endColumnIndex": 3,
                 },
             ],
         }
