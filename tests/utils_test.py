@@ -218,3 +218,46 @@ class UtilsTest(unittest.TestCase):
                         label, expected
                     ),
                 )
+
+    def test_combine_merge_values(self):
+        sheet_data = [
+            [1, None, None, None],
+            [None, None, "title", None],
+            [None, None, None, None],
+            ["num", "val", 2, 0],
+        ]
+        sheet_metadata = {
+            "properties": {"sheetId": 0},
+            "merges": [
+                {
+                    "startRowIndex": 0,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 0,
+                    "endColumnIndex": 2,
+                },
+                {
+                    "startRowIndex": 1,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 3,
+                    "endColumnIndex": 5,
+                },
+                {
+                    "startRowIndex": 2,
+                    "endRowIndex": 4,
+                    "startColumnIndex": 3,
+                    "endColumnIndex": 4,
+                },
+            ],
+        }
+        expected_combine = [
+            [1, 1, None, None],
+            [1, 1, "title", "title"],
+            [None, None, 2, None],
+            ["num", "val", 2, 0],
+        ]
+
+        actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data)
+
+        print(actual_combine)
+
+        self.assertEqual(actual_combine, expected_combine)
