@@ -223,8 +223,8 @@ class UtilsTest(unittest.TestCase):
         sheet_data = [
             [1, None, None, None],
             [None, None, "title", None],
-            [None, None, None, None],
-            ["num", "val", 2, 0],
+            [None, None, 2, None],
+            ["num", "val", None, 0],
         ]
         sheet_metadata = {
             "properties": {"sheetId": 0},
@@ -257,7 +257,5 @@ class UtilsTest(unittest.TestCase):
         ]
 
         actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data)
-
-        print(actual_combine)
 
         self.assertEqual(actual_combine, expected_combine)
