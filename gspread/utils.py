@@ -711,31 +711,21 @@ def accepted_kwargs(**default_kwargs):
 
 def combined_merge_values(worksheet_metadata, values):
     """For each merged region, replace all values with the value of the top-left cell of the region.
-    `worksheet_metadata` is the metadata returned by the Google API for the worksheet.
-      i.e.,
-        {
-            "properties": { ... }
-            "merges": [
-                {
-                    "startRowIndex": 0,
-                    "endRowIndex": 2,
-                    "startColumnIndex": 0,
-                    "endColumnIndex": 2
-                }
-            ]
-        }
-    `values` is a 2D array of values returned by the Google API for the worksheet.
     e.g., replaces
-        [
-            [1, None, None],
-            [None, None, None],
-        ]
+    [
+    [1, None, None],
+    [None, None, None],
+    ]
     with
-        [
-            [1, 1, None],
-            [1, 1, None],
-        ]
+    [
+    [1, 1, None],
+    [1, 1, None],
+    ]
     if the top-left four cells are merged.
+
+    :param worksheet_metadata: The metadata returned by the Google API for the worksheet. Should have a "merges" key.
+
+    :param values: The values returned by the Google API for the worksheet. 2D array.
     """
     merges = worksheet_metadata.get("merges", [])
     # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex
