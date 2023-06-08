@@ -200,7 +200,9 @@ class Worksheet:
 
     @property
     def tab_color(self):
-        """Tab color style."""
+        """Tab color style. Dict with RGB color values.
+        If any of R, G, B are 0, they will not be present in the dict.
+        """
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
 
     def _get_sheet_property(self, property, default_value):
@@ -1431,10 +1433,47 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color):
+    def update_tab_color(self, color: dict):
         """Changes the worksheet's tab color.
+        Use clear_tab_color() to remove the color.
 
         :param dict color: The red, green and blue values of the color, between 0 and 1.
+        """
+        red, green, blue = color["red"], color["green"], color["blue"]
+        body = {
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": self.id,
+                            "tabColorStyle": {
+                                "rgbColor": {
+                                    "red": red,
+                                    "green": green,
+                                    "blue": blue,
+                                }
+                            },
+                        },
+                        "fields": "tabColorStyle",
+                    }
+                }
+            ]
+        }
+
+        response = self.spreadsheet.batch_update(body)
+
+        sheet_color = {
+            "red": red,
+            "green": green,
+            "blue": blue,
+        }
+
+        self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
+        return response
+
+    def clear_tab_color(self):
+        """Clears the worksheet's tab color.
+        Use update_tab_color() to set the color.
         """
         body = {
             "requests": [
@@ -1442,30 +1481,17 @@ class Worksheet:
                     "updateSheetProperties": {
                         "properties": {
                             "sheetId": self.id,
-                            "tabColor": {
-                                "red": color["red"],
-                                "green": color["green"],
-                                "blue": color["blue"],
-                            },
                             "tabColorStyle": {
-                                "rgbColor": {
-                                    "red": color["red"],
-                                    "green": color["green"],
-                                    "blue": color["blue"],
-                                }
+                                "rgbColor": None,
                             },
                         },
-                        "fields": "tabColor,tabColorStyle",
-                    }
-                }
-            ]
+                        "fields": "tabColorStyle",
+                    },
+                },
+            ],
         }
-
         response = self.spreadsheet.batch_update(body)
-        self._properties["tabColorStyle"] = {
-            "rgbColor": color,
-        }
-        self._properties["tabColor"] = color
+        self._properties.pop("tabColorStyle")
         return response
 
     def update_index(self, index):
