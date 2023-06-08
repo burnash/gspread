@@ -167,6 +167,24 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(cell.value, I18N_STR)
 
     @pytest.mark.vcr()
+    def test_update_title(self):
+        res = self.spreadsheet.fetch_sheet_metadata()
+        title_before = res["sheets"][0]["properties"]["title"]
+        title_before_prop = self.sheet.title
+
+        new_title = "I'm a new title"
+        self.sheet.update_title(new_title)
+
+        res = self.spreadsheet.fetch_sheet_metadata()
+        title_after = res["sheets"][0]["properties"]["title"]
+        title_after_prop = self.sheet.title
+
+        self.assertEqual(title_after, new_title)
+        self.assertEqual(title_after_prop, new_title)
+        self.assertNotEqual(title_before, new_title)
+        self.assertNotEqual(title_before_prop, new_title)
+
+    @pytest.mark.vcr()
     def test_update_tab_color(self):
         # Assert that the method returns None.
         # Set the color.
@@ -243,25 +261,25 @@ class WorksheetTest(GspreadTest):
         self.sheet.add_rows(add_num)
 
         grid_props = get_grid_props()
-
         self.assertEqual(grid_props["rowCount"], new_rows)
+        self.assertEqual(self.sheet.row_count, new_rows)
 
         new_cols = self.sheet.col_count + add_num
-
         self.sheet.add_cols(add_num)
 
         grid_props = get_grid_props()
-
         self.assertEqual(grid_props["columnCount"], new_cols)
+        self.assertEqual(self.sheet.col_count, new_cols)
 
         new_rows -= add_num
         new_cols -= add_num
         self.sheet.resize(new_rows, new_cols)
 
         grid_props = get_grid_props()
-
         self.assertEqual(grid_props["rowCount"], new_rows)
         self.assertEqual(grid_props["columnCount"], new_cols)
+        self.assertEqual(self.sheet.row_count, new_rows)
+        self.assertEqual(self.sheet.col_count, new_cols)
 
     @pytest.mark.vcr()
     def test_sort(self):
@@ -331,21 +349,22 @@ class WorksheetTest(GspreadTest):
         self.sheet.freeze(freeze_rows)
 
         grid_props = get_grid_props()
-
         self.assertEqual(grid_props["frozenRowCount"], freeze_rows)
+        self.assertEqual(self.sheet.frozen_row_count, freeze_rows)
 
         self.sheet.freeze(cols=freeze_cols)
 
         grid_props = get_grid_props()
-
         self.assertEqual(grid_props["frozenColumnCount"], freeze_cols)
+        self.assertEqual(self.sheet.frozen_col_count, freeze_cols)
 
         self.sheet.freeze(0, 0)
 
         grid_props = get_grid_props()
-
         self.assertTrue("frozenRowCount" not in grid_props)
         self.assertTrue("frozenColumnCount" not in grid_props)
+        self.assertEqual(self.sheet.frozen_row_count, 0)
+        self.assertEqual(self.sheet.frozen_col_count, 0)
 
     @pytest.mark.vcr()
     def test_basic_filters(self):
@@ -960,11 +979,19 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_worksheet_update_index(self):
-        w = self.spreadsheet.worksheets()
-        last_sheet = w[-1]
+        # need to have multiple worksheets to reorder them
+        self.spreadsheet.add_worksheet("test_sheet", 100, 100)
+        self.spreadsheet.add_worksheet("test_sheet 2", 100, 100)
+
+        worksheets = self.spreadsheet.worksheets()
+        last_sheet = worksheets[-1]
+        self.assertEqual(last_sheet.index, len(worksheets) - 1)
+
         last_sheet.update_index(0)
-        w = self.spreadsheet.worksheets()
-        self.assertEqual(w[0].id, last_sheet.id)
+
+        worksheets = self.spreadsheet.worksheets()
+        self.assertEqual(worksheets[0].id, last_sheet.id)
+        self.assertEqual(last_sheet.index, 0)
 
     @pytest.mark.vcr()
     def test_worksheet_notes(self):
@@ -1089,19 +1116,27 @@ class WorksheetTest(GspreadTest):
         # the response does not include some default values.
         # if missing => value is False
         res = self.spreadsheet.fetch_sheet_metadata()
-        before_hide = res["sheets"][1]["properties"].get("hidden", False)
-        self.assertFalse(before_hide)
+        hidden_before = res["sheets"][1]["properties"].get("hidden", False)
+        hidden_before_prop = new_sheet.isSheetHidden
+
+        self.assertFalse(hidden_before)
+        self.assertFalse(hidden_before_prop)
 
         new_sheet.hide()
 
         res = self.spreadsheet.fetch_sheet_metadata()
-        after_hide = res["sheets"][1]["properties"].get("hidden", False)
-        self.assertTrue(after_hide)
+        hidden_after = res["sheets"][1]["properties"].get("hidden", False)
+        hidden_after_prop = new_sheet.isSheetHidden
+        self.assertTrue(hidden_after)
+        self.assertTrue(hidden_after_prop)
 
         new_sheet.show()
+
         res = self.spreadsheet.fetch_sheet_metadata()
-        before_hide = res["sheets"][1]["properties"].get("hidden", False)
-        self.assertFalse(before_hide)
+        hidden_before = res["sheets"][1]["properties"].get("hidden", False)
+        hidden_before_prop = new_sheet.isSheetHidden
+        self.assertFalse(hidden_before)
+        self.assertFalse(hidden_before_prop)
 
     @pytest.mark.vcr()
     def test_hide_gridlines(self):

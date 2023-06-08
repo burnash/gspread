@@ -1321,7 +1321,12 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        if rows is not None:
+            self._properties["gridProperties"]["rowCount"] = rows
+        if cols is not None:
+            self._properties["gridProperties"]["columnCount"] = cols
+        return res
 
     # TODO(post Python 2): replace the method signature with
     # def sort(self, *specs, range=None):
@@ -1486,7 +1491,9 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        self._properties["index"] = index
+        return res
 
     def _auto_resize(self, start_index, end_index, dimension):
         """Updates the size of rows or columns in the  worksheet.
@@ -2129,7 +2136,12 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        if rows is not None:
+            self._properties["gridProperties"]["frozenRowCount"] = rows
+        if cols is not None:
+            self._properties["gridProperties"]["frozenColumnCount"] = cols
+        return res
 
     @cast_to_a1_notation
     def set_basic_filter(self, name=None):
@@ -2749,7 +2761,9 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        self._properties["hidden"] = hidden
+        return res
 
     def hide(self):
         """Hides the current worksheet from the UI."""
