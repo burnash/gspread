@@ -24,13 +24,13 @@ from .utils import (
     accepted_kwargs,
     cast_to_a1_notation,
     cell_list_to_rect,
+    combined_merge_values,
     fill_gaps,
     filter_dict_values,
     finditem,
     is_scalar,
     numericise_all,
     rowcol_to_a1,
-    combined_merge_values,
 )
 
 
