@@ -715,29 +715,16 @@ def combined_merge_values(worksheet_metadata, values):
     # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex
     new_values = [[None for _ in row] for row in values]
 
-    def is_in_merged_region(merges, row_index, col_index):
-        for merge_index, merge in enumerate(merges):
-            start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
-            start_col, end_col = (merge["startColumnIndex"], merge["endColumnIndex"])
-            print(
-                "checking if {} <= {} < {} and {} <= {} < {}".format(
-                    start_row, row_index, end_row, start_col, col_index, end_col
-                )
-            )
-            if start_row <= row_index < end_row and start_col <= col_index < end_col:
-                return merge_index
-        return -1
-
-    for row_index, row in enumerate(values):
-        for col_index, col in enumerate(row):
-            merge_index = is_in_merged_region(merges, row_index, col_index)
-            if merge_index >= 0:
-                merge = merges[merge_index]
-                new_values[row_index][col_index] = values[merge["startRowIndex"]][
-                    merge["startColumnIndex"]
-                ]
-            else:
-                new_values[row_index][col_index] = values[row_index][col_index]
+    for merge in merges:
+        start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
+        start_col, end_col = (merge["startColumnIndex"], merge["endColumnIndex"])
+        top_left_value = values[start_row][start_col]
+        row_indices = range(start_row, end_row)
+        col_indices = range(start_col, end_col)
+        print("merging", row_indices, col_indices)
+        for row_index in row_indices:
+            for col_index in col_indices:
+                print("setting", row_index, col_index)
 
     return new_values
 
