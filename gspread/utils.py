@@ -713,7 +713,7 @@ def combined_merge_values(worksheet_metadata, values):
     """For each merged region, replace all values with the value of the top-left cell of the region."""
     merges = worksheet_metadata.get("merges", [])
     # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex
-    new_values = [[None for _ in row] for row in values]
+    new_values = [[v for v in row] for row in values]
 
     for merge in merges:
         start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
@@ -721,10 +721,9 @@ def combined_merge_values(worksheet_metadata, values):
         top_left_value = values[start_row][start_col]
         row_indices = range(start_row, end_row)
         col_indices = range(start_col, end_col)
-        print("merging", row_indices, col_indices)
         for row_index in row_indices:
             for col_index in col_indices:
-                print("setting", row_index, col_index)
+                new_values[row_index][col_index] = top_left_value
 
     return new_values
 
