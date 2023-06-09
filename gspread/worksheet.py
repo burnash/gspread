@@ -402,9 +402,9 @@ class Worksheet:
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
-            .. warning::
+            .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -608,9 +608,9 @@ class Worksheet:
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
-            .. warning::
+            .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -792,9 +792,9 @@ class Worksheet:
                  as strings in their given number format
                  (which depends on the spreadsheet locale).
 
-             .. warning::
+            .. note::
 
-                 Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
              The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -885,9 +885,9 @@ class Worksheet:
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
-            .. warning::
+            .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -994,7 +994,7 @@ class Worksheet:
 
             .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -1133,7 +1133,7 @@ class Worksheet:
 
             .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`

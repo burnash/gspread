@@ -632,21 +632,27 @@ class WorksheetTest(GspreadTest):
 
         # with value_render as formatted (overrides date_time_render)
         # date_time_render as serial_number
-        # CONFLICT - raises APIError 404 NOT_FOUND
-        with self.assertRaises(APIError):
-            read_records = self.sheet.get_values(
-                value_render_option=utils.ValueRenderOption.formatted,
-                date_time_render_option=utils.DateTimeOption.serial_number,
-            )
+        read_records = self.sheet.get_values(
+            value_render_option=utils.ValueRenderOption.formatted,
+            date_time_render_option=utils.DateTimeOption.serial_number,
+        )
+        expected_values = [
+            ["2", "2020-01-01", "string", "53"],
+            ["1.5", "0.12", "1999-01-02", ""],
+        ]
+        self.assertEqual(read_records, expected_values)
 
         # with value_render as formatted (overrides date_time_render)
         # date_time_render as formatted_string
-        # CONFLICT - raises APIError 404 NOT_FOUND
-        with self.assertRaises(APIError):
-            read_records = self.sheet.get_values(
-                value_render_option=utils.ValueRenderOption.formatted,
-                date_time_render_option=utils.DateTimeOption.formatted_string,
-            )
+        read_records = self.sheet.get_values(
+            value_render_option=utils.ValueRenderOption.formatted,
+            date_time_render_option=utils.DateTimeOption.formatted_string,
+        )
+        expected_values = [
+            ["2", "2020-01-01", "string", "53"],
+            ["1.5", "0.12", "1999-01-02", ""],
+        ]
+        self.assertEqual(read_records, expected_values)
 
     @pytest.mark.vcr()
     def test_get_all_records(self):
