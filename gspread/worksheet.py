@@ -2818,8 +2818,9 @@ class Worksheet:
             ]
         }
 
+        res = self.spreadsheet.batch_update(body)
         self._properties["gridProperties"]["hideGridlines"] = hidden
-        return self.spreadsheet.batch_update(body)
+        return res
 
     def hide_gridlines(self):
         """Hide gridlines on the current worksheet"""
