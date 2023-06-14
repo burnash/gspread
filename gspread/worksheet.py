@@ -24,6 +24,7 @@ from .utils import (
     accepted_kwargs,
     cast_to_a1_notation,
     cell_list_to_rect,
+    combined_merge_values,
     fill_gaps,
     filter_dict_values,
     finditem,
@@ -344,10 +345,11 @@ class Worksheet:
 
     @accepted_kwargs(
         major_dimension=None,
+        combine_merged_cells=False,
         value_render_option=None,
         date_time_render_option=None,
     )
-    def get_values(self, range_name=None, **kwargs):
+    def get_values(self, range_name=None, combine_merged_cells=False, **kwargs):
         """Returns a list of lists containing all values from specified range.
 
         By default values are returned as strings. See ``value_render_option``
@@ -361,6 +363,16 @@ class Worksheet:
             values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
             Defaults to Dimension.rows
         :type major_dimension: :namedtuple:`~gspread.utils.Dimension`
+
+        :param bool combine_merged_cells: (optional) If True, then all cells that
+            are part of a merged cell will have the same value as the top-left
+            cell of the merged cell. Defaults to False.
+
+            .. warning::
+
+                Setting this to True will cause an additional API request to be
+                made to retrieve the values of all merged cells.
+
 
         :param str value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
@@ -434,7 +446,15 @@ class Worksheet:
             worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.formula)
         """
         try:
-            return fill_gaps(self.get(range_name, **kwargs))
+            vals = fill_gaps(self.get(range_name, **kwargs))
+            if combine_merged_cells is True:
+                spreadsheet_meta = self.spreadsheet.fetch_sheet_metadata()
+                worksheet_meta = finditem(
+                    lambda x: x["properties"]["title"] == self.title,
+                    spreadsheet_meta["sheets"],
+                )
+                return combined_merge_values(worksheet_meta, vals)
+            return vals
         except KeyError:
             return []
 
