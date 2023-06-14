@@ -20,8 +20,8 @@ from .urls import (
     SPREADSHEET_VALUES_CLEAR_URL,
     SPREADSHEET_VALUES_URL,
 )
-from .utils import ExportFormat, finditem, quote
-from .worksheet import Worksheet
+from .utils import ExportFormat, extract_title_from_range, fill_gaps, finditem, quote
+from .worksheet import ValueRange, Worksheet
 
 
 class Spreadsheet:
@@ -739,3 +739,33 @@ class Spreadsheet:
             raise WorksheetNotFound("worksheet id {} not found".format(sheetid))
 
         return sheet.get("protectedRanges", [])
+
+    def get_all_worksheet_values(self, skip_worksheet_titles: list = None):
+        """Grabs all the data from all the worksheets in one API call. Skips any worksheets that were named in the
+        skip_worksheet_title param.
+
+        :param list skip_worksheet_titles: A list of worksheet titles to skip.
+        :returns: a dict of worksheet data with worksheet title as key
+        :rtype: dict
+        """
+
+        if skip_worksheet_titles is None:
+            skip_worksheet_titles = []
+
+        ranges = []
+
+        for worksheet in self.worksheets().worksheets():
+            if worksheet.title not in skip_worksheet_titles:
+                ranges.append(worksheet.title)
+
+        values = self.values_batch_get(ranges=ranges)
+
+        return_data = {}
+
+        for values in values["valueRanges"]:
+            value_range = ValueRange.from_json(values)
+            return_data[extract_title_from_range(value_range.range)] = fill_gaps(
+                value_range
+            )
+
+        return return_data

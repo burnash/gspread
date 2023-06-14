@@ -218,3 +218,23 @@ class UtilsTest(unittest.TestCase):
                         label, expected
                     ),
                 )
+
+    def test_extract_title_from_range(self):
+        # All the input values to test one after an other
+        # [0] input value
+        # [1] expected return value
+        # [2] expected exception to raise
+        inputs = [
+            ("asdf", None, gspread.exceptions.InvalidInputValue),
+            ("'Volunteer Portal'!A1:Z1005", "Volunteer Portal", None),
+        ]
+
+        for label, expected, exception in inputs:
+            if exception is not None:
+                # assert the exception is raised
+                with self.assertRaises(exception):
+                    utils.extract_title_from_range(label)
+            else:
+                # assert the return values is correct
+                result = utils.extract_title_from_range(label)
+                self.assertEqual(result, expected)
