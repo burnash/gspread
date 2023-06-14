@@ -447,7 +447,7 @@ class Worksheet:
         """
         try:
             vals = fill_gaps(self.get(range_name, **kwargs))
-            if combine_merged_cells:
+            if combine_merged_cells is True:
                 spreadsheet_meta = self.spreadsheet.fetch_sheet_metadata()
                 worksheet_meta = finditem(
                     lambda x: x["properties"]["title"] == self.title,
