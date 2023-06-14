@@ -733,7 +733,7 @@ def combined_merge_values(worksheet_metadata, values):
 
     for merge in merges:
         start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
-        start_col, end_col = (merge["startColumnIndex"], merge["endColumnIndex"])
+        start_col, end_col = merge["startColumnIndex"], merge["endColumnIndex"]
         top_left_value = values[start_row][start_col]
         row_indices = range(start_row, end_row)
         col_indices = range(start_col, end_col)
