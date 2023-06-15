@@ -1002,7 +1002,12 @@ class WorksheetTest(GspreadTest):
 
         prev_row = self.sheet.row_values(1)
         next_row = self.sheet.row_values(3)
+        row_count_before = self.sheet.row_count
+
         self.sheet.delete_row(2)
+
+        row_count_after = self.sheet.row_count
+        self.assertEqual(row_count_before - 1, row_count_after)
         self.assertEqual(self.sheet.row_values(1), prev_row)
         self.assertEqual(self.sheet.row_values(2), next_row)
 
