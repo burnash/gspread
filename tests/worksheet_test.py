@@ -965,6 +965,34 @@ class WorksheetTest(GspreadTest):
             self.sheet.insert_row(new_row_values, 1, inherit_from_before=True)
 
     @pytest.mark.vcr()
+    def test_insert_cols(self):
+        sequence_generator = self._sequence_generator()
+        num_rows = 6
+        num_cols = 4
+        rows = [
+            [next(sequence_generator) for j in range(num_cols)] for i in range(num_rows)
+        ]
+        cell_list = self.sheet.range("A1:D6")
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        new_col_values = [
+            [next(sequence_generator) for i in range(num_cols)] for i in range(2)
+        ]
+        col_count_before = self.sheet.col_count
+
+        self.sheet.insert_cols(new_col_values, 2)
+
+        read_values_1 = self.sheet.col_values(2)
+        read_values_2 = self.sheet.col_values(3)
+        read_values = [read_values_1, read_values_2]
+        col_count_after = self.sheet.col_count
+
+        self.assertEqual(col_count_before + 2, col_count_after)
+        self.assertEqual(new_col_values, read_values)
+
+    @pytest.mark.vcr()
     def test_delete_row(self):
         sg = self._sequence_generator()
 
