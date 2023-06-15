@@ -91,6 +91,35 @@ class WorksheetTest(GspreadTest):
         self.assertSequenceEqual(tuples1, tuples2)
 
     @pytest.mark.vcr()
+    def test_get_values_and_combine_merged_cells(self):
+        self.sheet.resize(4, 4)
+        sheet_data = [
+            ["1", "", "", ""],
+            ["", "", "title", ""],
+            ["", "", "2", ""],
+            ["num", "val", "", "0"],
+        ]
+
+        self.sheet.update("A1:D4", sheet_data)
+
+        self.sheet.merge_cells("A1:B2")
+        self.sheet.merge_cells("C2:D2")
+        self.sheet.merge_cells("C3:C4")
+
+        expected_merge = [
+            ["1", "1", "", ""],
+            ["1", "1", "title", "title"],
+            ["", "", "2", ""],
+            ["num", "val", "2", "0"],
+        ]
+
+        values = self.sheet.get_values()
+        values_with_merged = self.sheet.get_values(combine_merged_cells=True)
+
+        self.assertEqual(values, sheet_data)
+        self.assertEqual(values_with_merged, expected_merge)
+
+    @pytest.mark.vcr()
     def test_update_acell(self):
         sg = self._sequence_generator()
         value = next(sg)
