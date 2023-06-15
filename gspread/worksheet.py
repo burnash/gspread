@@ -1872,7 +1872,10 @@ class Worksheet:
 
         body = {"majorDimension": Dimension.cols, "values": values}
 
-        return self.spreadsheet.values_append(range_label, params, body)
+        res = self.spreadsheet.values_append(range_label, params, body)
+        num_new_cols = len(values)
+        self._properties["gridProperties"]["columnCount"] += num_new_cols
+        return res
 
     def delete_row(self, index):
         """.. deprecated:: 5.0
