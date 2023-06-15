@@ -857,11 +857,16 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_append_row(self):
+        row_num_before = self.sheet.row_count
         sg = self._sequence_generator()
         value_list = [next(sg) for i in range(10)]
+
         self.sheet.append_row(value_list)
         read_values = self.sheet.row_values(1)
+        row_num_after = self.sheet.row_count
+
         self.assertEqual(value_list, read_values)
+        self.assertEqual(row_num_before + 1, row_num_after)
 
     @pytest.mark.vcr()
     def test_append_row_with_empty_value(self):

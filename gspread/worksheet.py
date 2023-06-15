@@ -1676,7 +1676,10 @@ class Worksheet:
 
         body = {"values": values}
 
-        return self.spreadsheet.values_append(range_label, params, body)
+        res = self.spreadsheet.values_append(range_label, params, body)
+        num_new_rows = len(values)
+        self._properties["gridProperties"]["rowCount"] += num_new_rows
+        return res
 
     def insert_row(
         self,
