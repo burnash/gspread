@@ -906,18 +906,29 @@ class WorksheetTest(GspreadTest):
         cell_list = self.sheet.range("A1:D6")
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
+
         self.sheet.update_cells(cell_list)
 
         new_row_values = [next(sg) for i in range(num_cols + 4)]
+        row_count_before = self.sheet.row_count
+
         self.sheet.insert_row(new_row_values, 2)
         read_values = self.sheet.row_values(2)
+        row_count_after = self.sheet.row_count
+
         self.assertEqual(new_row_values, read_values)
+        self.assertEqual(row_count_before + 1, row_count_after)
 
         formula = "=1+1"
+
         self.sheet.update_acell("B2", formula)
+
         values = [next(sg) for i in range(num_cols + 4)]
+
         self.sheet.insert_row(values, 1)
+
         b3 = self.sheet.acell("B3", value_render_option=utils.ValueRenderOption.formula)
+
         self.assertEqual(b3.value, formula)
 
         new_row_values = [next(sg) for i in range(num_cols + 4)]
