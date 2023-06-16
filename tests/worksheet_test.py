@@ -1012,6 +1012,33 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(self.sheet.row_values(2), next_row)
 
     @pytest.mark.vcr()
+    def test_delete_cols(self):
+        sequence_generator = self._sequence_generator()
+        num_rows = 6
+        num_cols = 4
+        rows = [
+            [next(sequence_generator) for j in range(num_cols)] for i in range(num_rows)
+        ]
+        cell_list = self.sheet.range("A1:D6")
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        col_count_before = self.sheet.col_count
+        first_col_before = self.sheet.col_values(1)
+        fourth_col_before = self.sheet.col_values(4)
+
+        self.sheet.delete_columns(2, 3)
+
+        col_count_after = self.sheet.col_count
+        first_col_after = self.sheet.col_values(1)
+        second_col_after = self.sheet.col_values(2)
+
+        self.assertEqual(col_count_before - 2, col_count_after)
+        self.assertEqual(first_col_before, first_col_after)
+        self.assertEqual(fourth_col_before, second_col_after)
+
+    @pytest.mark.vcr()
     def test_clear(self):
         rows = [
             ["", "", "", ""],
