@@ -677,9 +677,9 @@ class Spreadsheet:
             ]
         }
 
-        response = self.batch_update(body)
+        res = self.batch_update(body)
         self._properties["title"] = title
-        return response
+        return res
 
     def update_timezone(self, timezone):
         """Updates the current spreadsheet timezone.
