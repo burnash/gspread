@@ -698,7 +698,9 @@ class Spreadsheet:
             ]
         }
 
-        return self.batch_update(body)
+        res = self.batch_update(body)
+        self._properties["timeZone"] = timezone
+        return res
 
     def update_locale(self, locale):
         """Update the locale of the spreadsheet.
