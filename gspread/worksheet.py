@@ -2011,7 +2011,15 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        if end_index is None:
+            end_index = start_index
+        num_deleted = end_index - start_index + 1
+        if dimension == Dimension.rows:
+            self._properties["gridProperties"]["rowCount"] -= num_deleted
+        elif dimension == Dimension.cols:
+            self._properties["gridProperties"]["columnCount"] -= num_deleted
+        return res
 
     def delete_rows(self, start_index, end_index=None):
         """Deletes multiple rows from the worksheet at the specified index.
