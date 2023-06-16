@@ -2038,12 +2038,7 @@ class Worksheet:
             worksheet.delete_rows(2)
 
         """
-        res = self.delete_dimension(Dimension.rows, start_index, end_index)
-        if end_index is None:
-            end_index = start_index
-        num_deleted = end_index - start_index + 1
-        self._properties["gridProperties"]["rowCount"] -= num_deleted
-        return res
+        return self.delete_dimension(Dimension.rows, start_index, end_index)
 
     def delete_columns(self, start_index, end_index=None):
         """Deletes multiple columns from the worksheet at the specified index.
