@@ -886,11 +886,16 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_append_row(self):
+        row_num_before = self.sheet.row_count
         sg = self._sequence_generator()
         value_list = [next(sg) for i in range(10)]
+
         self.sheet.append_row(value_list)
         read_values = self.sheet.row_values(1)
+        row_num_after = self.sheet.row_count
+
         self.assertEqual(value_list, read_values)
+        self.assertEqual(row_num_before + 1, row_num_after)
 
     @pytest.mark.vcr()
     def test_append_row_with_empty_value(self):
@@ -930,23 +935,62 @@ class WorksheetTest(GspreadTest):
         cell_list = self.sheet.range("A1:D6")
         for cell, value in zip(cell_list, itertools.chain(*rows)):
             cell.value = value
+
         self.sheet.update_cells(cell_list)
 
         new_row_values = [next(sg) for i in range(num_cols + 4)]
+        row_count_before = self.sheet.row_count
+
         self.sheet.insert_row(new_row_values, 2)
         read_values = self.sheet.row_values(2)
+        row_count_after = self.sheet.row_count
+
         self.assertEqual(new_row_values, read_values)
+        self.assertEqual(row_count_before + 1, row_count_after)
 
         formula = "=1+1"
+
         self.sheet.update_acell("B2", formula)
+
         values = [next(sg) for i in range(num_cols + 4)]
+
         self.sheet.insert_row(values, 1)
+
         b3 = self.sheet.acell("B3", value_render_option=utils.ValueRenderOption.formula)
+
         self.assertEqual(b3.value, formula)
 
         new_row_values = [next(sg) for i in range(num_cols + 4)]
         with pytest.raises(GSpreadException):
             self.sheet.insert_row(new_row_values, 1, inherit_from_before=True)
+
+    @pytest.mark.vcr()
+    def test_insert_cols(self):
+        sequence_generator = self._sequence_generator()
+        num_rows = 6
+        num_cols = 4
+        rows = [
+            [next(sequence_generator) for j in range(num_cols)] for i in range(num_rows)
+        ]
+        cell_list = self.sheet.range("A1:D6")
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        new_col_values = [
+            [next(sequence_generator) for i in range(num_cols)] for i in range(2)
+        ]
+        col_count_before = self.sheet.col_count
+
+        self.sheet.insert_cols(new_col_values, 2)
+
+        read_values_1 = self.sheet.col_values(2)
+        read_values_2 = self.sheet.col_values(3)
+        read_values = [read_values_1, read_values_2]
+        col_count_after = self.sheet.col_count
+
+        self.assertEqual(col_count_before + 2, col_count_after)
+        self.assertEqual(new_col_values, read_values)
 
     @pytest.mark.vcr()
     def test_delete_row(self):
@@ -958,9 +1002,41 @@ class WorksheetTest(GspreadTest):
 
         prev_row = self.sheet.row_values(1)
         next_row = self.sheet.row_values(3)
+        row_count_before = self.sheet.row_count
+
         self.sheet.delete_row(2)
+
+        row_count_after = self.sheet.row_count
+        self.assertEqual(row_count_before - 1, row_count_after)
         self.assertEqual(self.sheet.row_values(1), prev_row)
         self.assertEqual(self.sheet.row_values(2), next_row)
+
+    @pytest.mark.vcr()
+    def test_delete_cols(self):
+        sequence_generator = self._sequence_generator()
+        num_rows = 6
+        num_cols = 4
+        rows = [
+            [next(sequence_generator) for j in range(num_cols)] for i in range(num_rows)
+        ]
+        cell_list = self.sheet.range("A1:D6")
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        col_count_before = self.sheet.col_count
+        first_col_before = self.sheet.col_values(1)
+        fourth_col_before = self.sheet.col_values(4)
+
+        self.sheet.delete_columns(2, 3)
+
+        col_count_after = self.sheet.col_count
+        first_col_after = self.sheet.col_values(1)
+        second_col_after = self.sheet.col_values(2)
+
+        self.assertEqual(col_count_before - 2, col_count_after)
+        self.assertEqual(first_col_before, first_col_after)
+        self.assertEqual(fourth_col_before, second_col_after)
 
     @pytest.mark.vcr()
     def test_clear(self):

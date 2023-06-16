@@ -1696,7 +1696,10 @@ class Worksheet:
 
         body = {"values": values}
 
-        return self.spreadsheet.values_append(range_label, params, body)
+        res = self.spreadsheet.values_append(range_label, params, body)
+        num_new_rows = len(values)
+        self._properties["gridProperties"]["rowCount"] += num_new_rows
+        return res
 
     def insert_row(
         self,
@@ -1804,7 +1807,10 @@ class Worksheet:
 
         body = {"majorDimension": Dimension.rows, "values": values}
 
-        return self.spreadsheet.values_append(range_label, params, body)
+        res = self.spreadsheet.values_append(range_label, params, body)
+        num_new_rows = len(values)
+        self._properties["gridProperties"]["rowCount"] += num_new_rows
+        return res
 
     def insert_cols(
         self,
@@ -1866,7 +1872,10 @@ class Worksheet:
 
         body = {"majorDimension": Dimension.cols, "values": values}
 
-        return self.spreadsheet.values_append(range_label, params, body)
+        res = self.spreadsheet.values_append(range_label, params, body)
+        num_new_cols = len(values)
+        self._properties["gridProperties"]["columnCount"] += num_new_cols
+        return res
 
     def delete_row(self, index):
         """.. deprecated:: 5.0
@@ -2002,7 +2011,15 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        res = self.spreadsheet.batch_update(body)
+        if end_index is None:
+            end_index = start_index
+        num_deleted = end_index - start_index + 1
+        if dimension == Dimension.rows:
+            self._properties["gridProperties"]["rowCount"] -= num_deleted
+        elif dimension == Dimension.cols:
+            self._properties["gridProperties"]["columnCount"] -= num_deleted
+        return res
 
     def delete_rows(self, start_index, end_index=None):
         """Deletes multiple rows from the worksheet at the specified index.
