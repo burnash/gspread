@@ -159,14 +159,18 @@ class SpreadsheetTest(GspreadTest):
         self.spreadsheet.update_timezone(new_timezone)
         self.spreadsheet.update_locale(new_locale)
 
-        # must fect metadata
+        # must fetch metadata
         properties = self.spreadsheet.fetch_sheet_metadata()["properties"]
+        timezone_prop_after = self.spreadsheet.timezone
+        locale_prop_after = self.spreadsheet.locale
 
         self.assertNotEqual(prev_timezone, properties["timeZone"])
         self.assertNotEqual(prev_locale, properties["locale"])
 
         self.assertEqual(new_timezone, properties["timeZone"])
+        self.assertEqual(new_timezone, timezone_prop_after)
         self.assertEqual(new_locale, properties["locale"])
+        self.assertEqual(new_locale, locale_prop_after)
 
     @pytest.mark.vcr()
     def test_update_title(self):
