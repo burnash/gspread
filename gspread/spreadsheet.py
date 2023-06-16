@@ -724,7 +724,9 @@ class Spreadsheet:
             ]
         }
 
-        return self.batch_update(body)
+        res = self.batch_update(body)
+        self._properties["locale"] = locale
+        return res
 
     def list_protected_ranges(self, sheetid):
         """Lists the spreadsheet's protected named ranges"""
