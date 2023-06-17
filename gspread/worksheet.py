@@ -1043,6 +1043,13 @@ class Worksheet:
 
         .. versionadded:: 3.3
         """
+        warnings.warn(
+            DEPRECATION_WARNING_TEMPLATE.format(
+                v_deprecated="6.0.0",
+                msg_deprecated="method signature will change to: 'Worksheet.update(value = [[]], range_name=)'"
+                " arguments 'range_name' and 'values' will swap, values will be mandatory of type: 'list(list(...))'",
+            )
+        )
         if is_scalar(range_name):
             range_name = absolute_range_name(self.title, range_name)
         else:
