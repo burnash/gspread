@@ -21,6 +21,7 @@ from .utils import (
     accepted_kwargs,
     cast_to_a1_notation,
     cell_list_to_rect,
+    combined_merge_values,
     fill_gaps,
     filter_dict_values,
     finditem,
@@ -174,8 +175,17 @@ class Worksheet:
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
     @property
+    def is_gridlines_hidden(self):
+        """Whether or not gridlines hidden. Boolean.
+        True if hidden. False if shown.
+        """
+        return self._properties["gridProperties"].get("hideGridlines", False)
+
+    @property
     def tab_color(self):
-        """Tab color style."""
+        """Tab color style. Dict with RGB color values.
+        If any of R, G, B are 0, they will not be present in the dict.
+        """
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
 
     def _get_sheet_property(self, property, default_value):
@@ -317,10 +327,11 @@ class Worksheet:
 
     @accepted_kwargs(
         major_dimension=None,
+        combine_merged_cells=False,
         value_render_option=None,
         date_time_render_option=None,
     )
-    def get_values(self, range_name=None, **kwargs):
+    def get_values(self, range_name=None, combine_merged_cells=False, **kwargs):
         """Returns a list of lists containing all values from specified range.
 
         By default values are returned as strings. See ``value_render_option``
@@ -334,6 +345,16 @@ class Worksheet:
             values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
             Defaults to Dimension.rows
         :type major_dimension: :namedtuple:`~gspread.utils.Dimension`
+
+        :param bool combine_merged_cells: (optional) If True, then all cells that
+            are part of a merged cell will have the same value as the top-left
+            cell of the merged cell. Defaults to False.
+
+            .. warning::
+
+                Setting this to True will cause an additional API request to be
+                made to retrieve the values of all merged cells.
+
 
         :param str value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
@@ -375,9 +396,9 @@ class Worksheet:
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
-            .. warning::
+            .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -407,7 +428,15 @@ class Worksheet:
             worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.formula)
         """
         try:
-            return fill_gaps(self.get(range_name, **kwargs))
+            vals = fill_gaps(self.get(range_name, **kwargs))
+            if combine_merged_cells is True:
+                spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
+                worksheet_meta = finditem(
+                    lambda x: x["properties"]["title"] == self.title,
+                    spreadsheet_meta["sheets"],
+                )
+                return combined_merge_values(worksheet_meta, vals)
+            return vals
         except KeyError:
             return []
 
@@ -581,9 +610,9 @@ class Worksheet:
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
-            .. warning::
+            .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -768,9 +797,9 @@ class Worksheet:
                  as strings in their given number format
                  (which depends on the spreadsheet locale).
 
-             .. warning::
+            .. note::
 
-                 Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
              The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -863,9 +892,9 @@ class Worksheet:
                 as strings in their given number format
                 (which depends on the spreadsheet locale).
 
-            .. warning::
+            .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -974,7 +1003,7 @@ class Worksheet:
 
             .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -1114,7 +1143,7 @@ class Worksheet:
 
             .. note::
 
-                Setting this to anything while ``value_render_option`` is ``ValueRenderOption.formatted`` will throw an :exc:`~gspread.exceptions.APIError`.
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
@@ -1304,7 +1333,12 @@ class Worksheet:
             ]
         }
 
-        return self.client.batch_update(self.spreadsheet_id, body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
+        if rows is not None:
+            self._properties["gridProperties"]["rowCount"] = rows
+        if cols is not None:
+            self._properties["gridProperties"]["columnCount"] = cols
+        return res
 
     # TODO(post Python 2): replace the method signature with
     # def sort(self, *specs, range=None):
@@ -1325,6 +1359,10 @@ class Worksheet:
             # Sort range A2:G8 basing on column 'G' A -> Z
             # and column 'B' Z -> A
             wks.sort((7, 'asc'), (2, 'des'), range='A2:G8')
+
+        Warning::
+
+            This function signature will change, arguments will swap places:  sort(range, specs)
 
         .. versionadded:: 3.4
         """
@@ -1398,10 +1436,47 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color):
+    def update_tab_color(self, color: dict):
         """Changes the worksheet's tab color.
+        Use clear_tab_color() to remove the color.
 
         :param dict color: The red, green and blue values of the color, between 0 and 1.
+        """
+        red, green, blue = color["red"], color["green"], color["blue"]
+        body = {
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": self.id,
+                            "tabColorStyle": {
+                                "rgbColor": {
+                                    "red": red,
+                                    "green": green,
+                                    "blue": blue,
+                                }
+                            },
+                        },
+                        "fields": "tabColorStyle",
+                    }
+                }
+            ]
+        }
+
+        response = self.client.batch_update(self.spreadsheet_id, body)
+
+        sheet_color = {
+            "red": red,
+            "green": green,
+            "blue": blue,
+        }
+
+        self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
+        return response
+
+    def clear_tab_color(self):
+        """Clears the worksheet's tab color.
+        Use update_tab_color() to set the color.
         """
         body = {
             "requests": [
@@ -1409,30 +1484,17 @@ class Worksheet:
                     "updateSheetProperties": {
                         "properties": {
                             "sheetId": self.id,
-                            "tabColor": {
-                                "red": color["red"],
-                                "green": color["green"],
-                                "blue": color["blue"],
-                            },
                             "tabColorStyle": {
-                                "rgbColor": {
-                                    "red": color["red"],
-                                    "green": color["green"],
-                                    "blue": color["blue"],
-                                }
+                                "rgbColor": None,
                             },
                         },
-                        "fields": "tabColor,tabColorStyle",
-                    }
-                }
-            ]
+                        "fields": "tabColorStyle",
+                    },
+                },
+            ],
         }
-
         response = self.client.batch_update(self.spreadsheet_id, body)
-        self._properties["tabColorStyle"] = {
-            "rgbColor": color,
-        }
-        self._properties["tabColor"] = color
+        self._properties.pop("tabColorStyle")
         return response
 
     def update_index(self, index):
@@ -1458,7 +1520,9 @@ class Worksheet:
             ]
         }
 
-        return self.client.batch_update(self.spreadsheet_id, body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
+        self._properties["index"] = index
+        return res
 
     def _auto_resize(self, start_index, end_index, dimension):
         """Updates the size of rows or columns in the  worksheet.
@@ -1514,7 +1578,7 @@ class Worksheet:
 
         .. versionadded:: 5.3.3
         """
-        return self._auto_resize(self, start_row_index, end_row_index, Dimension.rows)
+        return self._auto_resize(start_row_index, end_row_index, Dimension.rows)
 
     def add_rows(self, rows):
         """Adds rows to worksheet.
@@ -1615,7 +1679,10 @@ class Worksheet:
 
         body = {"values": values}
 
-        return self.client.values_append(self.spreadsheet_id, range_label, params, body)
+        res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
+        num_new_rows = len(values)
+        self._properties["gridProperties"]["rowCount"] += num_new_rows
+        return res
 
     def insert_row(
         self,
@@ -1723,7 +1790,10 @@ class Worksheet:
 
         body = {"majorDimension": Dimension.rows, "values": values}
 
-        return self.client.values_append(self.spreadsheet_id, range_label, params, body)
+        res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
+        num_new_rows = len(values)
+        self._properties["gridProperties"]["rowCount"] += num_new_rows
+        return res
 
     def insert_cols(
         self,
@@ -1785,7 +1855,10 @@ class Worksheet:
 
         body = {"majorDimension": Dimension.cols, "values": values}
 
-        return self.client.values_append(self.spreadsheet_id, range_label, params, body)
+        res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
+        num_new_cols = len(values)
+        self._properties["gridProperties"]["columnCount"] += num_new_cols
+        return res
 
     @cast_to_a1_notation
     def add_protected_range(
@@ -1904,7 +1977,15 @@ class Worksheet:
             ]
         }
 
-        return self.client.batch_update(self.spreadsheet_id, body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
+        if end_index is None:
+            end_index = start_index
+        num_deleted = end_index - start_index + 1
+        if dimension == Dimension.rows:
+            self._properties["gridProperties"]["rowCount"] -= num_deleted
+        elif dimension == Dimension.cols:
+            self._properties["gridProperties"]["columnCount"] -= num_deleted
+        return res
 
     def delete_rows(self, start_index, end_index=None):
         """Deletes multiple rows from the worksheet at the specified index.
@@ -2088,7 +2169,12 @@ class Worksheet:
             ]
         }
 
-        return self.client.batch_update(self.spreadsheet_id, body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
+        if rows is not None:
+            self._properties["gridProperties"]["frozenRowCount"] = rows
+        if cols is not None:
+            self._properties["gridProperties"]["frozenColumnCount"] = cols
+        return res
 
     @cast_to_a1_notation
     def set_basic_filter(self, name=None):
@@ -2744,7 +2830,9 @@ class Worksheet:
             ]
         }
 
-        return self.client.batch_update(self.spreadsheet_id, body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
+        self._properties["hidden"] = hidden
+        return res
 
     def hide(self):
         """Hides the current worksheet from the UI."""
@@ -2753,6 +2841,37 @@ class Worksheet:
     def show(self):
         """Show the current worksheet in the UI."""
         return self._set_hidden_flag(False)
+
+    def _set_gridlines_hidden_flag(self, hidden):
+        """Hide/show gridlines on the current worksheet"""
+
+        body = {
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": self.id,
+                            "gridProperties": {
+                                "hideGridlines": hidden,
+                            },
+                        },
+                        "fields": "gridProperties.hideGridlines",
+                    }
+                }
+            ]
+        }
+
+        res = self.client.batch_update(self.spreadsheet_id, body)
+        self._properties["gridProperties"]["hideGridlines"] = hidden
+        return res
+
+    def hide_gridlines(self):
+        """Hide gridlines on the current worksheet"""
+        return self._set_gridlines_hidden_flag(True)
+
+    def show_gridlines(self):
+        """Show gridlines on the current worksheet"""
+        return self._set_gridlines_hidden_flag(False)
 
     def copy_range(
         self,

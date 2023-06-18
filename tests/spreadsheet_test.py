@@ -47,6 +47,29 @@ class SpreadsheetTest(GspreadTest):
         self.assertTrue(isinstance(sheet, gspread.Worksheet))
 
     @pytest.mark.vcr()
+    def test_worksheets(self):
+        n_worksheets_before = len(self.spreadsheet.worksheets())
+
+        self.spreadsheet.add_worksheet("finances", 100, 100)
+
+        n_worksheets_after = len(self.spreadsheet.worksheets())
+
+        self.assertEqual(n_worksheets_before, 1)
+        self.assertEqual(n_worksheets_after, 2)
+
+    @pytest.mark.vcr()
+    def test_worksheets_exclude_hidden(self):
+        self.spreadsheet.add_worksheet("finances", 100, 100)
+        gacha_worksheet = self.spreadsheet.add_worksheet("gacha", 100, 100)
+        gacha_worksheet.hide()
+
+        n_worksheets_and_hidden = len(self.spreadsheet.worksheets(exclude_hidden=False))
+        n_worksheets_no_hidden = len(self.spreadsheet.worksheets(exclude_hidden=True))
+
+        self.assertEqual(n_worksheets_and_hidden, 3)
+        self.assertEqual(n_worksheets_no_hidden, 2)
+
+    @pytest.mark.vcr()
     def test_worksheet_iteration(self):
         self.assertEqual(
             [x.id for x in self.spreadsheet.worksheets()],
@@ -136,14 +159,18 @@ class SpreadsheetTest(GspreadTest):
         self.spreadsheet.update_timezone(new_timezone)
         self.spreadsheet.update_locale(new_locale)
 
-        # must fect metadata
+        # must fetch metadata
         properties = self.spreadsheet.fetch_sheet_metadata()["properties"]
+        timezone_prop_after = self.spreadsheet.timezone
+        locale_prop_after = self.spreadsheet.locale
 
         self.assertNotEqual(prev_timezone, properties["timeZone"])
         self.assertNotEqual(prev_locale, properties["locale"])
 
         self.assertEqual(new_timezone, properties["timeZone"])
+        self.assertEqual(new_timezone, timezone_prop_after)
         self.assertEqual(new_locale, properties["locale"])
+        self.assertEqual(new_locale, locale_prop_after)
 
     @pytest.mark.vcr()
     def test_update_title(self):

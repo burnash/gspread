@@ -255,15 +255,25 @@ class Spreadsheet:
         except (StopIteration, KeyError):
             raise WorksheetNotFound("id {} not found".format(id))
 
-    def worksheets(self):
+    def worksheets(self, exclude_hidden: bool = False):
         """Returns a list of all :class:`worksheets <gspread.worksheet.Worksheet>`
         in a spreadsheet.
+
+        :param exclude_hidden: (optional) If set to ``True`` will only return
+                                 visible worksheets. Default is ``False``.
+        :type exclude_hidden: bool
+
+        :returns: a list of :class:`worksheets <gspread.worksheet.Worksheet>`.
+        :rtype: list
         """
         sheet_data = self.fetch_sheet_metadata()
-        return [
-            Worksheet(self.id, self.client, x["properties"])
-            for x in sheet_data["sheets"]
+        worksheets = [
+            Worksheet(self.id, self.client, s["properties"])
+            for s in sheet_data["sheets"]
         ]
+        if exclude_hidden:
+            worksheets = [w for w in worksheets if not w.isSheetHidden]
+        return worksheets
 
     def worksheet(self, title):
         """Returns a worksheet with specified `title`.
@@ -619,9 +629,9 @@ class Spreadsheet:
             ]
         }
 
-        response = self.client.batch_update(self.id, body)
+        res = self.batch_update(body)
         self._properties["title"] = title
-        return response
+        return res
 
     def update_timezone(self, timezone):
         """Updates the current spreadsheet timezone.
@@ -640,7 +650,9 @@ class Spreadsheet:
             ]
         }
 
-        return self.client.batch_update(self.id, body)
+        res = self.batch_update(body)
+        self._properties["timeZone"] = timezone
+        return res
 
     def update_locale(self, locale):
         """Update the locale of the spreadsheet.
@@ -664,7 +676,9 @@ class Spreadsheet:
             ]
         }
 
-        return self.client.batch_update(self.id, body)
+        res = self.batch_update(body)
+        self._properties["locale"] = locale
+        return res
 
     def list_protected_ranges(self, sheetid):
         """Lists the spreadsheet's protected named ranges"""

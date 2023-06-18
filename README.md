@@ -1,16 +1,19 @@
 # Google Spreadsheets Python API v4
-![latest workflow](https://github.com/burnash/gspread/actions/workflows/main.yaml/badge.svg?branch=master)
- [![GitHub version](https://badge.fury.io/gh/burnash%2Fgspread.svg)](https://badge.fury.io/gh/burnash%2Fgspread) ![pypi]( https://badge.fury.io/py/gspread.svg) ![downloads](https://img.shields.io/pypi/dm/gspread.svg) ![doc](https://readthedocs.org/projects/gspread/badge/?version=latest)
 
+![latest workflow](https://github.com/burnash/gspread/actions/workflows/main.yaml/badge.svg?branch=master)
+[![GitHub version](https://badge.fury.io/gh/burnash%2Fgspread.svg)](https://badge.fury.io/gh/burnash%2Fgspread)
+![PyPi]( https://badge.fury.io/py/gspread.svg)
+![downloads](https://img.shields.io/pypi/dm/gspread.svg)
+![doc](https://readthedocs.org/projects/gspread/badge/?version=latest)
 
 Simple interface for working with Google Sheets.
 
 Features:
 
-* Open a spreadsheet by **title**, **key** or **url**.
-* Read, write, and format cell ranges.
-* Sharing and access control.
-* Batching updates.
+- Open a spreadsheet by **title**, **key** or **URL**.
+- Read, write, and format cell ranges.
+- Sharing and access control.
+- Batching updates.
 
 ## Installation
 
@@ -19,7 +22,6 @@ pip install gspread
 ```
 
 Requirements: Python 3.7+.
-
 
 ## Basic Usage
 
@@ -174,17 +176,23 @@ worksheet.batch_update([{
 }])
 ```
 
-## [Documentation](https://gspread.readthedocs.io/en/latest/)
+## Documentation
 
-## [Contributors](https://github.com/burnash/gspread/graphs/contributors)
+[Documentation]\: [https://gspread.readthedocs.io/][Documentation]
 
-## How to Contribute
-
-Please make sure to take a moment and read the [Code of Conduct](https://github.com/burnash/gspread/blob/master/.github/CODE_OF_CONDUCT.md).
+[Documentation]: https://gspread.readthedocs.io/en/latest/
 
 ### Ask Questions
 
 The best way to get an answer to a question is to ask on [Stack Overflow with a gspread tag](http://stackoverflow.com/questions/tagged/gspread?sort=votes&pageSize=50).
+
+## Contributors
+
+[List of contributors](https://github.com/burnash/gspread/graphs/contributors)
+
+## How to Contribute
+
+Please make sure to take a moment and read the [Code of Conduct](https://github.com/burnash/gspread/blob/master/.github/CODE_OF_CONDUCT.md).
 
 ### Report Issues
 

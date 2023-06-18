@@ -51,9 +51,9 @@ ValueRenderOption = namedtuple(
 ValueInputOption = namedtuple("ValueInputOption", ["raw", "user_entered"])(
     "RAW", "USER_ENTERED"
 )
-DateTimeOption = namedtuple("DateTimeOption", ["serial_number", "formatted_string"])(
-    "SERIAL_NUMBER", "FORMATTED_STRING"
-)
+DateTimeOption = namedtuple(
+    "DateTimeOption", ["serial_number", "formatted_string", "formated_string"]
+)("SERIAL_NUMBER", "FORMATTED_STRING", "FORMATTED_STRING")
 MimeTypeType = namedtuple(
     "MimeType",
     ["google_sheets", "pdf", "excel", "csv", "open_office_sheet", "tsv", "zip"],
@@ -102,6 +102,10 @@ PasteType = namedtuple(
 
 PasteOrientation = namedtuple("PasteOrientation", ["normal", "transpose"])(
     "NORMAL", "TRANSPOSE"
+)
+
+DEPRECATION_WARNING_TEMPLATE = (
+    "[Deprecated][in version {v_deprecated}]: {msg_deprecated}"
 )
 
 
@@ -736,6 +740,41 @@ def accepted_kwargs(
         return wrapper
 
     return decorate
+
+
+def combined_merge_values(worksheet_metadata, values):
+    """For each merged region, replace all values with the value of the top-left cell of the region.
+    e.g., replaces
+    [
+    [1, None, None],
+    [None, None, None],
+    ]
+    with
+    [
+    [1, 1, None],
+    [1, 1, None],
+    ]
+    if the top-left four cells are merged.
+
+    :param worksheet_metadata: The metadata returned by the Google API for the worksheet. Should have a "merges" key.
+
+    :param values: The values returned by the Google API for the worksheet. 2D array.
+    """
+    merges = worksheet_metadata.get("merges", [])
+    # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex
+    new_values = [[v for v in row] for row in values]
+
+    for merge in merges:
+        start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
+        start_col, end_col = merge["startColumnIndex"], merge["endColumnIndex"]
+        top_left_value = values[start_row][start_col]
+        row_indices = range(start_row, end_row)
+        col_indices = range(start_col, end_col)
+        for row_index in row_indices:
+            for col_index in col_indices:
+                new_values[row_index][col_index] = top_left_value
+
+    return new_values
 
 
 if __name__ == "__main__":

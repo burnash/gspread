@@ -174,6 +174,7 @@ def oauth(
 
     :rtype: :class:`gspread.client.Client`
     """
+
     authorized_user_filename = Path(authorized_user_filename)
     creds = load_credentials(filename=authorized_user_filename)
 
