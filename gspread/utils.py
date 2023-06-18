@@ -19,7 +19,6 @@ from typing import (
     Dict,
     Iterable,
     List,
-    NewType,
     Optional,
     Tuple,
     TypeVar,
@@ -662,84 +661,6 @@ def is_scalar(x: Any) -> bool:
     True
     """
     return isinstance(x, str) or not isinstance(x, Sequence)
-
-
-AnyNotNone = NewType("AnyNotNone", object)
-
-
-def filter_dict_values(D: Dict[Any, Any]) -> Dict[Any, AnyNotNone]:
-    """Return a shallow copy of D with all `None` values excluded.
-
-    >>> filter_dict_values({'a': 1, 'b': 2, 'c': None})
-    {'a': 1, 'b': 2}
-
-    >>> filter_dict_values({'a': 1, 'b': 2, 'c': 0})
-    {'a': 1, 'b': 2, 'c': 0}
-
-    >>> filter_dict_values({})
-    {}
-
-    >>> filter_dict_values({'imnone': None})
-    {}
-    """
-    return {k: v for k, v in D.items() if v is not None}
-
-
-def accepted_kwargs(
-    **default_kwargs: Any,
-) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-    """
-    >>> @accepted_kwargs(d='d', e=None)
-    ... def foo(a, b, c='c', **kwargs):
-    ...     return {
-    ...         'a': a,
-    ...         'b': b,
-    ...         'c': c,
-    ...         'd': kwargs['d'],
-    ...         'e': kwargs['e'],
-    ...     }
-    ...
-
-    >>> foo('a', 'b')
-    {'a': 'a', 'b': 'b', 'c': 'c', 'd': 'd', 'e': None}
-
-    >>> foo('a', 'b', 'NEW C')
-    {'a': 'a', 'b': 'b', 'c': 'NEW C', 'd': 'd', 'e': None}
-
-    >>> foo('a', 'b', e='Not None')
-    {'a': 'a', 'b': 'b', 'c': 'c', 'd': 'd', 'e': 'Not None'}
-
-    >>> foo('a', 'b', d='NEW D')
-    {'a': 'a', 'b': 'b', 'c': 'c', 'd': 'NEW D', 'e': None}
-
-    >>> foo('a', 'b', a_typo='IS DETECTED')
-    Traceback (most recent call last):
-    ...
-    TypeError: foo got unexpected keyword arguments: ['a_typo']
-
-    >>> foo('a', 'b', d='NEW D', c='THIS DOES NOT WORK BECAUSE OF d')
-    Traceback (most recent call last):
-    ...
-    TypeError: foo got unexpected keyword arguments: ['c']
-
-    """
-
-    def decorate(f: Callable[..., Any]) -> Callable[..., Any]:
-        @wraps(f)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
-            unexpected_kwargs = set(kwargs) - set(default_kwargs)
-            if unexpected_kwargs:
-                err = "%s got unexpected keyword arguments: %s"
-                raise TypeError(err % (f.__name__, list(unexpected_kwargs)))
-
-            for k, v in default_kwargs.items():
-                kwargs.setdefault(k, v)
-
-            return f(*args, **kwargs)
-
-        return wrapper
-
-    return decorate
 
 
 def combined_merge_values(worksheet_metadata, values):

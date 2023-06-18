@@ -120,6 +120,30 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values_with_merged, expected_merge)
 
     @pytest.mark.vcr()
+    def test_get_values_with_args_or_kwargs(self):
+        # test that get_values accepts args and kwargs
+        self.sheet.resize(4, 4)
+        sheet_data = [
+            ["1", "", "", ""],
+            ["x", "y", "title", ""],
+            ["", "", "2", ""],
+            ["num", "val", "", "0"],
+        ]
+        self.sheet.update("A1:D4", sheet_data)
+
+        data_args = self.sheet.get_values(
+            "A1:D4", False, None, utils.ValueRenderOption.formatted
+        )
+        data_kwargs = self.sheet.get_values(
+            range_name="A1:D4",
+            major_dimension=None,
+            value_render_option=utils.ValueRenderOption.formatted,
+        )
+
+        self.assertEqual(data_args, sheet_data)
+        self.assertEqual(data_kwargs, sheet_data)
+
+    @pytest.mark.vcr()
     def test_update_acell(self):
         sg = self._sequence_generator()
         value = next(sg)

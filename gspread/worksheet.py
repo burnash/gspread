@@ -18,12 +18,10 @@ from .utils import (
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
-    accepted_kwargs,
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
     fill_gaps,
-    filter_dict_values,
     finditem,
     is_scalar,
     numericise_all,
@@ -325,13 +323,14 @@ class Worksheet:
             for j, value in enumerate(row)
         ]
 
-    @accepted_kwargs(
-        major_dimension=None,
+    def get_values(
+        self,
+        range_name=None,
         combine_merged_cells=False,
+        major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
-    )
-    def get_values(self, range_name=None, combine_merged_cells=False, **kwargs):
+    ):
         """Returns a list of lists containing all values from specified range.
 
         By default values are returned as strings. See ``value_render_option``
@@ -428,7 +427,14 @@ class Worksheet:
             worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.formula)
         """
         try:
-            vals = fill_gaps(self.get(range_name, **kwargs))
+            vals = fill_gaps(
+                self.get(
+                    range_name=range_name,
+                    major_dimension=major_dimension,
+                    value_render_option=value_render_option,
+                    date_time_render_option=date_time_render_option,
+                )
+            )
             if combine_merged_cells is True:
                 spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
                 worksheet_meta = finditem(
@@ -440,12 +446,12 @@ class Worksheet:
         except KeyError:
             return []
 
-    @accepted_kwargs(
+    def get_all_values(
+        self,
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
-    )
-    def get_all_values(self, **kwargs):
+    ):
         """Returns a list of lists containing all cells' values as strings.
 
         This is an alias to :meth:`~gspread.worksheet.Worksheet.get_values`
@@ -463,7 +469,11 @@ class Worksheet:
             # Is equivalent to
             worksheet.get_values()
         """
-        return self.get_values(**kwargs)
+        return self.get_values(
+            major_dimension=major_dimension,
+            value_render_option=value_render_option,
+            date_time_render_option=date_time_render_option,
+        )
 
     def get_all_records(
         self,
@@ -559,12 +569,13 @@ class Worksheet:
 
         return self.range()
 
-    @accepted_kwargs(
+    def row_values(
+        self,
+        row,
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
-    )
-    def row_values(self, row, **kwargs):
+    ):
         """Returns a list of all values in a `row`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -618,7 +629,12 @@ class Worksheet:
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
         """
         try:
-            data = self.get("A{}:{}".format(row, row), **kwargs)
+            data = self.get(
+                "A{}:{}".format(row, row),
+                major_dimension,
+                value_render_option,
+                date_time_render_option,
+            )
             return data[0] if data else []
         except KeyError:
             return []
@@ -743,12 +759,13 @@ class Worksheet:
 
         return data
 
-    @accepted_kwargs(
+    def get(
+        self,
+        range_name=None,
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
-    )
-    def get(self, range_name=None, **kwargs):
+    ):
         """Reads values of a single range or a cell of a sheet.
 
          :param str range_name: (optional) Cell range in the A1 notation or
@@ -824,13 +841,11 @@ class Worksheet:
         """
         range_name = absolute_range_name(self.title, range_name)
 
-        params = filter_dict_values(
-            {
-                "majorDimension": kwargs["major_dimension"],
-                "valueRenderOption": kwargs["value_render_option"],
-                "dateTimeRenderOption": kwargs["date_time_render_option"],
-            }
-        )
+        params = {
+            "majorDimension": major_dimension,
+            "valueRenderOption": value_render_option,
+            "dateTimeRenderOption": date_time_render_option,
+        }
 
         response = self.client.values_get(
             self.spreadsheet_id, range_name, params=params
@@ -838,12 +853,13 @@ class Worksheet:
 
         return ValueRange.from_json(response)
 
-    @accepted_kwargs(
+    def batch_get(
+        self,
+        ranges,
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
-    )
-    def batch_get(self, ranges, **kwargs):
+    ):
         """Returns one or more ranges of values from the sheet.
 
         :param list ranges: List of cell ranges in the A1 notation or named
@@ -908,13 +924,11 @@ class Worksheet:
         """
         ranges = [absolute_range_name(self.title, r) for r in ranges if r]
 
-        params = filter_dict_values(
-            {
-                "majorDimension": kwargs["major_dimension"],
-                "valueRenderOption": kwargs["value_render_option"],
-                "dateTimeRenderOption": kwargs["date_time_render_option"],
-            }
-        )
+        params = {
+            "majorDimension": major_dimension,
+            "valueRenderOption": value_render_option,
+            "dateTimeRenderOption": date_time_render_option,
+        }
 
         response = self.client.values_batch_get(
             self.spreadsheet_id, ranges=ranges, params=params
@@ -922,15 +936,17 @@ class Worksheet:
 
         return [ValueRange.from_json(x) for x in response["valueRanges"]]
 
-    @accepted_kwargs(
+    def update(
+        self,
+        range_name,
+        values=None,
         raw=True,
         major_dimension=None,
         value_input_option=None,
         include_values_in_response=None,
         response_value_render_option=None,
         response_date_time_render_option=None,
-    )
-    def update(self, range_name, values=None, **kwargs):
+    ):
         """Sets values in a cell range of the sheet.
 
         :param str range_name: The A1 notation of the values
@@ -1041,41 +1057,36 @@ class Worksheet:
         if is_scalar(values):
             values = [[values]]
 
-        if not kwargs["value_input_option"]:
-            kwargs["value_input_option"] = (
-                ValueInputOption.raw if kwargs["raw"] else ValueInputOption.user_entered
+        if not value_input_option:
+            value_input_option = (
+                ValueInputOption.raw if raw is True else ValueInputOption.user_entered
             )
 
-        params = filter_dict_values(
-            {
-                "valueInputOption": kwargs["value_input_option"],
-                "includeValuesInResponse": kwargs["include_values_in_response"],
-                "responseValueRenderOption": kwargs["response_value_render_option"],
-                "responseDateTimeRenderOption": kwargs[
-                    "response_date_time_render_option"
-                ],
-            }
-        )
+        params = {
+            "valueInputOption": value_input_option,
+            "includeValuesInResponse": include_values_in_response,
+            "responseValueRenderOption": response_value_render_option,
+            "responseDateTimeRenderOption": response_date_time_render_option,
+        }
 
         response = self.client.values_update(
             self.spreadsheet_id,
             range_name,
             params=params,
-            body=filter_dict_values(
-                {"values": values, "majorDimension": kwargs["major_dimension"]}
-            ),
+            body={"values": values, "majorDimension": major_dimension},
         )
 
         return response
 
-    @accepted_kwargs(
+    def batch_update(
+        self,
+        data,
         raw=True,
         value_input_option=None,
         include_values_in_response=None,
         response_value_render_option=None,
         response_date_time_render_option=None,
-    )
-    def batch_update(self, data, **kwargs):
+    ):
         """Sets values in one or more cell ranges of the sheet at once.
 
         :param list data: List of dictionaries in the form of
@@ -1164,26 +1175,22 @@ class Worksheet:
 
         .. versionadded:: 3.3
         """
-        if not kwargs["value_input_option"]:
-            kwargs["value_input_option"] = (
-                ValueInputOption.raw if kwargs["raw"] else ValueInputOption.user_entered
+        if not value_input_option:
+            value_input_option = (
+                ValueInputOption.raw if raw else ValueInputOption.user_entered
             )
 
         data = [
             dict(vr, range=absolute_range_name(self.title, vr["range"])) for vr in data
         ]
 
-        body = filter_dict_values(
-            {
-                "valueInputOption": kwargs["value_input_option"],
-                "includeValuesInResponse": kwargs["include_values_in_response"],
-                "responseValueRenderOption": kwargs["response_value_render_option"],
-                "responseDateTimeRenderOption": kwargs[
-                    "response_date_time_render_option"
-                ],
-                "data": data,
-            }
-        )
+        body = {
+            "valueInputOption": value_input_option,
+            "includeValuesInResponse": include_values_in_response,
+            "responseValueRenderOption": response_value_render_option,
+            "responseDateTimeRenderOption": response_date_time_render_option,
+            "data": data,
+        }
 
         response = self.client.values_batch_update(self.spreadsheet_id, body=body)
 
