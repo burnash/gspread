@@ -21,6 +21,7 @@ from .utils import (
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
+    extract_enum_values,
     fill_gaps,
     finditem,
     is_scalar,
@@ -204,7 +205,7 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -228,7 +229,7 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -343,7 +344,7 @@ class Worksheet:
         :param str major_dimension: (optional) The major dimension of the
             values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
             Defaults to Dimension.rows
-        :type major_dimension: :namedtuple:`~gspread.utils.Dimension`
+        :type major_dimension: :class:`~gspread.utils.Dimension`
 
         :param bool combine_merged_cells: (optional) If True, then all cells that
             are part of a merged cell will have the same value as the top-left
@@ -377,7 +378,7 @@ class Worksheet:
                 formatted as currency, then A2 would return "=A1".
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
 
         :param str date_time_render_option: (optional) How dates, times, and
@@ -400,7 +401,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
         .. note::
 
@@ -507,7 +508,7 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         :param list expected_headers: (optional) List of expected headers, they must be unique.
 
@@ -581,6 +582,12 @@ class Worksheet:
         Empty cells in this list will be rendered as :const:`None`.
 
         :param int row: Row number (one-based).
+
+        :param str major_dimension: (optional) The major dimension of the
+            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
+            Defaults to Dimension.rows
+        :type major_dimension: :class:`~gspread.utils.Dimension`
+
         :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
@@ -604,7 +611,7 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         :param date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
@@ -626,7 +633,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
         """
         try:
             data = self.get(
@@ -648,7 +655,7 @@ class Worksheet:
         :param str value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
         """
@@ -662,8 +669,8 @@ class Worksheet:
             self.spreadsheet_id,
             range_name,
             params={
-                "valueRenderOption": value_render_option,
-                "majorDimension": Dimension.cols,
+                "valueRenderOption": value_render_option.value,
+                "majorDimension": Dimension.cols.value,
             },
         )
 
@@ -700,7 +707,7 @@ class Worksheet:
         data = self.client.values_update(
             self.spreadsheet_id,
             range_name,
-            params={"valueInputOption": ValueInputOption.user_entered},
+            params={"valueInputOption": ValueInputOption.user_entered.value},
             body={"values": [[value]]},
         )
 
@@ -714,7 +721,7 @@ class Worksheet:
             interpreted. Possible values are:
 
             ``ValueInputOption.raw``
-                The values the user has entered will not be parsed and will be
+                (default) The values the user has entered will not be parsed and will be
                 stored as-is.
 
             ``ValueInputOption.user_entered``
@@ -753,7 +760,7 @@ class Worksheet:
         data = self.client.values_update(
             self.spreadsheet_id,
             range_name,
-            params={"valueInputOption": value_input_option},
+            params={"valueInputOption": value_input_option.value},
             body={"values": values_rect},
         )
 
@@ -768,105 +775,13 @@ class Worksheet:
     ):
         """Reads values of a single range or a cell of a sheet.
 
-         :param str range_name: (optional) Cell range in the A1 notation or
-             a named range.
+        :param str range_name: (optional) Cell range in the A1 notation or
+            a named range.
 
-         :param str major_dimension: (optional) The major dimension that results
-             should use. Either ``ROWS`` or ``COLUMNS``.
-
-         :param value_render_option: (optional) Determines how values should
-             be rendered in the output. See `ValueRenderOption`_ in
-             the Sheets API.
-
-             Possible values are:
-
-             ``ValueRenderOption.formatted``
-                 (default) Values will be calculated and formatted according
-                 to the cell's formatting. Formatting is based on the
-                 spreadsheet's locale, not the requesting user's locale.
-
-             ``ValueRenderOption.unformatted``
-                 Values will be calculated, but not formatted in the reply.
-                 For example, if A1 is 1.23 and A2 is =A1 and formatted as
-                 currency, then A2 would return the number 1.23.
-
-             ``ValueRenderOption.formula``
-                 Values will not be calculated. The reply will include
-                 the formulas. For example, if A1 is 1.23 and A2 is =A1 and
-                 formatted as currency, then A2 would return "=A1".
-
-             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
-
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
-
-        :param str date_time_render_option: (optional) How dates, times, and
-             durations should be represented in the output.
-
-             Possible values are:
-
-             ``DateTimeOption.serial_number``
-                 (default) Instructs date, time, datetime, and duration fields
-                 to be output as doubles in "serial number" format,
-                 as popularized by Lotus 1-2-3.
-
-             ``DateTimeOption.formatted_string``
-                 Instructs date, time, datetime, and duration fields to be output
-                 as strings in their given number format
-                 (which depends on the spreadsheet locale).
-
-            .. note::
-
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
-
-             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
-
-         :rtype: :class:`gspread.worksheet.ValueRange`
-
-         Examples::
-
-             # Return all values from the sheet
-             worksheet.get()
-
-             # Return value of 'A1' cell
-             worksheet.get('A1')
-
-             # Return values of 'A1:B2' range
-             worksheet.get('A1:B2')
-
-             # Return values of 'my_range' named range
-             worksheet.get('my_range')
-
-         .. versionadded:: 3.3
-        """
-        range_name = absolute_range_name(self.title, range_name)
-
-        params = {
-            "majorDimension": major_dimension,
-            "valueRenderOption": value_render_option,
-            "dateTimeRenderOption": date_time_render_option,
-        }
-
-        response = self.client.values_get(
-            self.spreadsheet_id, range_name, params=params
-        )
-
-        return ValueRange.from_json(response)
-
-    def batch_get(
-        self,
-        ranges,
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-    ):
-        """Returns one or more ranges of values from the sheet.
-
-        :param list ranges: List of cell ranges in the A1 notation or named
-            ranges.
-
-        :param str major_dimension: (optional) The major dimension that results
-            should use. Either ``ROWS`` or ``COLUMNS``.
+        :param str major_dimension: (optional) The major dimension of the
+            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
+            Defaults to Dimension.rows
+        :type major_dimension: :class:`~gspread.utils.Dimension`
 
         :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
@@ -891,7 +806,7 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
@@ -913,7 +828,105 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
+
+        :rtype: :class:`gspread.worksheet.ValueRange`
+
+        Examples::
+
+            # Return all values from the sheet
+            worksheet.get()
+
+            # Return value of 'A1' cell
+            worksheet.get('A1')
+
+            # Return values of 'A1:B2' range
+            worksheet.get('A1:B2')
+
+            # Return values of 'my_range' named range
+            worksheet.get('my_range')
+
+         .. versionadded:: 3.3
+        """
+        range_name = absolute_range_name(self.title, range_name)
+
+        params = extract_enum_values(
+            {
+                "majorDimension": major_dimension,
+                "valueRenderOption": value_render_option,
+                "dateTimeRenderOption": date_time_render_option,
+            }
+        )
+
+        response = self.client.values_get(
+            self.spreadsheet_id, range_name, params=params
+        )
+
+        return ValueRange.from_json(response)
+
+    def batch_get(
+        self,
+        ranges,
+        major_dimension=None,
+        value_render_option=None,
+        date_time_render_option=None,
+    ):
+        """Returns one or more ranges of values from the sheet.
+
+        :param list ranges: List of cell ranges in the A1 notation or named
+            ranges.
+
+        :param str major_dimension: (optional) The major dimension of the
+            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
+            Defaults to Dimension.rows
+        :type major_dimension: :class:`~gspread.utils.Dimension`
+
+        :param value_render_option: (optional) Determines how values should
+            be rendered in the output. See `ValueRenderOption`_ in
+            the Sheets API.
+
+            Possible values are:
+
+            ``ValueRenderOption.formatted``
+                (default) Values will be calculated and formatted according
+                to the cell's formatting. Formatting is based on the
+                spreadsheet's locale, not the requesting user's locale.
+
+            ``ValueRenderOption.unformatted``
+                Values will be calculated, but not formatted in the reply.
+                For example, if A1 is 1.23 and A2 is =A1 and formatted as
+                currency, then A2 would return the number 1.23.
+
+            ``ValueRenderOption.formula``
+                Values will not be calculated. The reply will include
+                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
+                formatted as currency, then A2 would return "=A1".
+
+            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
+
+        :param str date_time_render_option: (optional) How dates, times, and
+            durations should be represented in the output.
+
+            Possible values are:
+
+            ``DateTimeOption.serial_number``
+                (default) Instructs date, time, datetime, and duration fields
+                to be output as doubles in "serial number" format,
+                as popularized by Lotus 1-2-3.
+
+            ``DateTimeOption.formatted_string``
+                Instructs date, time, datetime, and duration fields to be output
+                as strings in their given number format
+                (which depends on the spreadsheet locale).
+
+            .. note::
+
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+
+            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
         .. versionadded:: 3.3
 
@@ -924,11 +937,13 @@ class Worksheet:
         """
         ranges = [absolute_range_name(self.title, r) for r in ranges if r]
 
-        params = {
-            "majorDimension": major_dimension,
-            "valueRenderOption": value_render_option,
-            "dateTimeRenderOption": date_time_render_option,
-        }
+        params = extract_enum_values(
+            {
+                "majorDimension": major_dimension,
+                "valueRenderOption": value_render_option,
+                "dateTimeRenderOption": date_time_render_option,
+            }
+        )
 
         response = self.client.values_batch_get(
             self.spreadsheet_id, ranges=ranges, params=params
@@ -959,13 +974,15 @@ class Worksheet:
             the ``value_input_option`` parameter.
 
         :param str major_dimension: (optional) The major dimension of the
-            values. Either ``ROWS`` or ``COLUMNS``.
+            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
+            Defaults to Dimension.rows
+        :type major_dimension: :class:`~gspread.utils.Dimension`
 
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
             ``ValueInputOption.raw``
-                The values the user has entered will not be parsed and will be
+                (default) The values the user has entered will not be parsed and will be
                 stored as-is.
 
             ``ValueInputOption.user_entered``
@@ -975,7 +992,7 @@ class Worksheet:
                 applied when entering text into a cell via
                 the Google Sheets UI.
 
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
 
         :param response_value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
@@ -1000,7 +1017,7 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
-        :type response_value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type response_value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         :param str response_date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
@@ -1022,7 +1039,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
         Examples::
 
@@ -1062,18 +1079,25 @@ class Worksheet:
                 ValueInputOption.raw if raw is True else ValueInputOption.user_entered
             )
 
-        params = {
-            "valueInputOption": value_input_option,
-            "includeValuesInResponse": include_values_in_response,
-            "responseValueRenderOption": response_value_render_option,
-            "responseDateTimeRenderOption": response_date_time_render_option,
-        }
+        params = extract_enum_values(
+            {
+                "valueInputOption": value_input_option,
+                "includeValuesInResponse": include_values_in_response,
+                "responseValueRenderOption": response_value_render_option,
+                "responseDateTimeRenderOption": response_date_time_render_option,
+            }
+        )
+
+        # get actual value only if not None
+        major_dimension_value = (
+            major_dimension.value if major_dimension is not None else None
+        )
 
         response = self.client.values_update(
             self.spreadsheet_id,
             range_name,
             params=params,
-            body={"values": values, "majorDimension": major_dimension},
+            body={"values": values, "majorDimension": major_dimension_value},
         )
 
         return response
@@ -1110,7 +1134,7 @@ class Worksheet:
               applied when entering text into a cell via
               the Google Sheets UI.
 
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
 
         :param response_value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
@@ -1135,7 +1159,7 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
-        :type response_value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type response_value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         :param str response_date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
@@ -1157,7 +1181,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
         Examples::
 
@@ -1177,20 +1201,23 @@ class Worksheet:
         """
         if not value_input_option:
             value_input_option = (
-                ValueInputOption.raw if raw else ValueInputOption.user_entered
+                ValueInputOption.raw if raw is True else ValueInputOption.user_entered
             )
 
         data = [
             dict(vr, range=absolute_range_name(self.title, vr["range"])) for vr in data
         ]
 
-        body = {
-            "valueInputOption": value_input_option,
-            "includeValuesInResponse": include_values_in_response,
-            "responseValueRenderOption": response_value_render_option,
-            "responseDateTimeRenderOption": response_date_time_render_option,
-            "data": data,
-        }
+        body = extract_enum_values(
+            {
+                "valueInputOption": value_input_option,
+                "responseValueRenderOption": response_value_render_option,
+                "responseDateTimeRenderOption": response_date_time_render_option,
+            }
+        )
+
+        body["includeValuesInResponse"] = include_values_in_response
+        body["data"] = data
 
         response = self.client.values_batch_update(self.spreadsheet_id, body=body)
 
@@ -1539,6 +1566,7 @@ class Worksheet:
         :param start_index: The index (inclusive) to begin resizing
         :param end_index: The index (exclusive) to finish resizing
         :param dimension: Specifies whether to resize the row or column
+        :type major_dimension: :class:`~gspread.utils.Dimension`
 
 
         .. versionadded:: 5.3.3
@@ -1549,7 +1577,7 @@ class Worksheet:
                     "autoResizeDimensions": {
                         "dimensions": {
                             "sheetId": self.id,
-                            "dimension": dimension,
+                            "dimension": dimension.value,
                             "startIndex": int(start_index),
                             "endIndex": int(end_index),
                         }
@@ -1621,7 +1649,7 @@ class Worksheet:
         :param value_input_option: (optional) Determines how the input data
             should be interpreted. See `ValueInputOption`_ in the Sheets API
             reference.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param str insert_data_option: (optional) Determines how the input data
             should be inserted. See `InsertDataOption`_ in the Sheets API
             reference.
@@ -1658,11 +1686,11 @@ class Worksheet:
 
         :param list values: List of rows each row is List of values for
             the new row.
-        :param str value_input_option: (optional) Determines how input data
+        :param value_input_option: (optional) Determines how input data
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param str insert_data_option: (optional) Determines how the input data
             should be inserted. See `InsertDataOption`_ in the Sheets API
             reference.
@@ -1678,11 +1706,15 @@ class Worksheet:
         """
         range_label = absolute_range_name(self.title, table_range)
 
-        params = {
-            "valueInputOption": value_input_option,
-            "insertDataOption": insert_data_option,
-            "includeValuesInResponse": include_values_in_response,
-        }
+        params = extract_enum_values(
+            {
+                "valueInputOption": value_input_option,
+                "insertDataOption": insert_data_option,
+            }
+        )
+
+        # Not an Enum, does not pass `extract_enum_values`
+        params["includeValuesInResponse"] = include_values_in_response
 
         body = {"values": values}
 
@@ -1709,7 +1741,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param bool inherit_from_before: (optional) If True, the new row will
             inherit its properties from the previous row. Defaults to False,
             meaning that the new row acquires the properties of the row
@@ -1748,7 +1780,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param bool inherit_from_before: (optional) If true, new rows will
             inherit their properties from the previous row. Defaults to False,
             meaning that new rows acquire the properties of the row immediately
@@ -1779,7 +1811,7 @@ class Worksheet:
                     "insertDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": Dimension.rows,
+                            "dimension": Dimension.rows.value,
                             "startIndex": row - 1,
                             "endIndex": len(values) + row - 1,
                         },
@@ -1793,9 +1825,9 @@ class Worksheet:
 
         range_label = absolute_range_name(self.title, "A%s" % row)
 
-        params = {"valueInputOption": value_input_option}
+        params = {"valueInputOption": value_input_option.value}
 
-        body = {"majorDimension": Dimension.rows, "values": values}
+        body = {"majorDimension": Dimension.rows.value, "values": values}
 
         res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
         num_new_rows = len(values)
@@ -1820,7 +1852,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param bool inherit_from_before: (optional) If True, new columns will
             inherit their properties from the previous column. Defaults to
             False, meaning that new columns acquire the properties of the
@@ -1844,7 +1876,7 @@ class Worksheet:
                     "insertDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": Dimension.cols,
+                            "dimension": Dimension.cols.value,
                             "startIndex": col - 1,
                             "endIndex": len(values) + col - 1,
                         },
@@ -1858,9 +1890,9 @@ class Worksheet:
 
         range_label = absolute_range_name(self.title, rowcol_to_a1(1, col))
 
-        params = {"valueInputOption": value_input_option}
+        params = {"valueInputOption": value_input_option.value}
 
-        body = {"majorDimension": Dimension.cols, "values": values}
+        body = {"majorDimension": Dimension.cols.value, "values": values}
 
         res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
         num_new_cols = len(values)
@@ -1960,7 +1992,7 @@ class Worksheet:
         """Deletes multi rows from the worksheet at the specified index.
 
         :param dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
-        :type dimension: :namedtuple:`~gspread.utils.Dimension`
+        :type dimension: :class:`~gspread.utils.Dimension`
         :param int start_index: Index of a first row for deletion.
         :param int end_index: Index of a last row for deletion. When
             ``end_index`` is not specified this method only deletes a single
@@ -1975,7 +2007,7 @@ class Worksheet:
                     "deleteDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension,
+                            "dimension": dimension.value,
                             "startIndex": start_index - 1,
                             "endIndex": end_index,
                         }
@@ -2596,6 +2628,7 @@ class Worksheet:
         :param int end: The end (exclusive) of the grou
         :param str dimension: The dimension to group, can be one of
             ``ROWS`` or ``COLUMNS``.
+        :type diension: :class:`~gspread.utils.Dimension`
         """
         body = {
             "requests": [
@@ -2603,7 +2636,7 @@ class Worksheet:
                     "addDimensionGroup": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension,
+                            "dimension": dimension.value,
                             "startIndex": start,
                             "endIndex": end,
                         },
@@ -2652,7 +2685,7 @@ class Worksheet:
                     "deleteDimensionGroup": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension,
+                            "dimension": dimension.value,
                             "startIndex": start,
                             "endIndex": end,
                         }
@@ -2720,7 +2753,7 @@ class Worksheet:
         :param int end: The (exclusive) end of the dimension to hide
         :param str dimension: The dimension to hide, can be one of
             ``ROWS`` or ``COLUMNS``.
-        :type diension: :namedtuple:`~gspread.utils.Dimension`
+        :type diension: :class:`~gspread.utils.Dimension`
         """
         body = {
             "requests": [
@@ -2728,7 +2761,7 @@ class Worksheet:
                     "updateDimensionProperties": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension,
+                            "dimension": dimension.value,
                             "startIndex": start,
                             "endIndex": end,
                         },
@@ -2775,7 +2808,7 @@ class Worksheet:
         :param int end: The (inclusive) end of the dimension to unhide
         :param str dimension: The dimension to hide, can be one of
             ``ROWS`` or ``COLUMNS``.
-        :type dimension: :namedtuple:`~gspread.utils.Dimension`
+        :type dimension: :class:`~gspread.utils.Dimension`
         """
         body = {
             "requests": [
@@ -2783,7 +2816,7 @@ class Worksheet:
                     "updateDimensionProperties": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension,
+                            "dimension": dimension.value,
                             "startIndex": start,
                             "endIndex": end,
                         },
@@ -2905,10 +2938,10 @@ class Worksheet:
         :param paste_type: the paste type to apply. Many paste type are available from
             the Sheet API, see above note for detailed values for all values and their effects.
             Defaults to ``PasteType.normal``
-        :type paste_type: :namedtuple:`~gspread.utils.PasteType`
+        :type paste_type: :class:`~gspread.utils.PasteType`
         :param paste_orientation: The paste orient to apply.
             Possible values are: ``normal`` to keep the same orientation, ``transpose`` where all rows become columns and vice versa.
-        :type paste_orientation: :namedtuple:`~gspread.utils.PasteOrientation`
+        :type paste_orientation: :class:`~gspread.utils.PasteOrientation`
         """
         body = {
             "requests": [
@@ -2916,8 +2949,8 @@ class Worksheet:
                     "copyPaste": {
                         "source": a1_range_to_grid_range(source, self.id),
                         "destination": a1_range_to_grid_range(dest, self.id),
-                        "pasteType": paste_type,
-                        "pasteOrientation": paste_orientation,
+                        "pasteType": paste_type.value,
+                        "pasteOrientation": paste_orientation.value,
                     }
                 }
             ]
@@ -2945,7 +2978,7 @@ class Worksheet:
         :param paste_type: the paste type to apply. Many paste type are available from
             the Sheet API, see above note for detailed values for all values and their effects.
             Defaults to ``PasteType.normal``
-        :type paste_type: :namedtuple:`~gspread.utils.PasteType`
+        :type paste_type: :class:`~gspread.utils.PasteType`
         """
 
         # in the cut/paste request, the destination object
@@ -2963,7 +2996,7 @@ class Worksheet:
                             "rowIndex": grid_dest["startRowIndex"],
                             "columnIndex": grid_dest["startColumnIndex"],
                         },
-                        "pasteType": paste_type,
+                        "pasteType": paste_type.value,
                     }
                 }
             ]

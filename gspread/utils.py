@@ -7,8 +7,9 @@ This module contains utility functions.
 """
 
 import re
-from collections import defaultdict, namedtuple
+from collections import defaultdict
 from collections.abc import Sequence
+from enum import Enum
 from functools import wraps
 from itertools import chain
 from typing import (
@@ -19,6 +20,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    MutableMapping,
     Optional,
     Tuple,
     TypeVar,
@@ -43,69 +45,60 @@ A1_ADDR_ROW_COL_RE = re.compile(r"([A-Za-z]+)?([1-9]\d*)?$")
 URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
 
-Dimension = namedtuple("Dimension", ["rows", "cols"])("ROWS", "COLUMNS")
-ValueRenderOption = namedtuple(
-    "ValueRenderOption", ["formatted", "unformatted", "formula"]
-)("FORMATTED_VALUE", "UNFORMATTED_VALUE", "FORMULA")
-ValueInputOption = namedtuple("ValueInputOption", ["raw", "user_entered"])(
-    "RAW", "USER_ENTERED"
-)
-DateTimeOption = namedtuple(
-    "DateTimeOption", ["serial_number", "formatted_string", "formated_string"]
-)("SERIAL_NUMBER", "FORMATTED_STRING", "FORMATTED_STRING")
-MimeTypeType = namedtuple(
-    "MimeType",
-    ["google_sheets", "pdf", "excel", "csv", "open_office_sheet", "tsv", "zip"],
-)
-MimeType = MimeTypeType(
-    "application/vnd.google-apps.spreadsheet",
-    "application/pdf",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "text/csv",
-    "application/vnd.oasis.opendocument.spreadsheet",
-    "text/tab-separated-values",
-    "application/zip",
-)
-ExportFormatType = namedtuple(
-    "ExportFormat", ["PDF", "EXCEL", "CSV", "OPEN_OFFICE_SHEET", "TSV", "ZIPPED_HTML"]
-)
-ExportFormat = ExportFormatType(
-    MimeType.pdf,
-    MimeType.excel,
-    MimeType.csv,
-    MimeType.open_office_sheet,
-    MimeType.tsv,
-    MimeType.zip,
-)
 
-PasteType = namedtuple(
-    "PasteType",
-    [
-        "normal",
-        "values",
-        "format",
-        "no_borders",
-        "formula",
-        "data_validation",
-        "conditional_formating",
-    ],
-)(
-    "PASTE_NORMAL",
-    "PASTE_VALUES",
-    "PASTE_FORMAT",
-    "PASTE_NO_BORDERS",
-    "PASTE_FORMULA",
-    "PASTE_DATA_VALIDATION",
-    "PASTE_CONDITIONAL_FORMATTING",
-)
+class Dimension(Enum):
+    rows = "ROWS"
+    cols = "COLUMNS"
 
-PasteOrientation = namedtuple("PasteOrientation", ["normal", "transpose"])(
-    "NORMAL", "TRANSPOSE"
-)
 
-DEPRECATION_WARNING_TEMPLATE = (
-    "[Deprecated][in version {v_deprecated}]: {msg_deprecated}"
-)
+class ValueRenderOption(Enum):
+    formatted = "FORMATTED_VALUE"
+    unformatted = "UNFORMATTED_VALUE"
+    formula = "FORMULA"
+
+
+class ValueInputOption(Enum):
+    raw = "RAW"
+    user_entered = "USER_ENTERED"
+
+
+class DateTimeOption(Enum):
+    serial_number = "SERIAL_NUMBER"
+    formatted_string = "FORMATTED_STRING"
+
+
+class MimeType(Enum):
+    google_sheets = "application/vnd.google-apps.spreadsheet"
+    pdf = "application/pdf"
+    excel = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    csv = "text/csv"
+    open_office_sheet = "application/vnd.oasis.opendocument.spreadsheet"
+    tsv = "text/tab-separated-values"
+    zip = "application/zip"
+
+
+class ExportFormat(Enum):
+    PDF = MimeType.pdf.value
+    EXCEL = MimeType.excel.value
+    CSV = MimeType.csv.value
+    OPEN_OFFICE_SHEET = MimeType.open_office_sheet.value
+    TSV = MimeType.tsv.value
+    ZIPPED_HTML = MimeType.zip.value
+
+
+class PasteType(Enum):
+    normal = "PASTE_NORMAL"
+    values = "PASTE_VALUES"
+    format = "PASTE_FORMAT"
+    no_borders = "PASTE_NO_BORDERS"
+    formula = "PASTE_NO_BORDERS"
+    data_validation = "PASTE_DATA_VALIDATION"
+    conditional_formating = "PASTE_CONDITIONAL_FORMATTING"
+
+
+class PasteOrientation(Enum):
+    normal = "NORMAL"
+    transpose = "TRANSPOSE"
 
 
 def convert_credentials(credentials: Credentials) -> Credentials:
@@ -151,6 +144,12 @@ def _convert_service_account(credentials: Any) -> Credentials:
 
 
 T = TypeVar("T")
+
+
+def extract_enum_values(
+    params: MutableMapping[str, Union[None, Enum]]
+) -> Dict[str, str]:
+    return {k: v.value for k, v in params.items() if v is not None}
 
 
 def finditem(func: Callable[[T], bool], seq: Iterable[T]) -> T:

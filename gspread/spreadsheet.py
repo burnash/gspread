@@ -496,7 +496,7 @@ class Spreadsheet:
 
             See `ExportFormat`_ in the Drive API.
             Default value is ``ExportFormat.PDF``.
-        :type format: :namedtuple:`~gspread.utils.ExportFormat`
+        :type format: :class:`~gspread.utils.ExportFormat`
 
         :returns bytes: The content of the exported file.
 

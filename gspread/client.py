@@ -56,7 +56,7 @@ class Client:
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
 
-        q = 'mimeType="{}"'.format(MimeType.google_sheets)
+        q = 'mimeType="{}"'.format(MimeType.google_sheets.value)
         if title:
             q += ' and name = "{}"'.format(title)
         if folder_id:
@@ -166,7 +166,7 @@ class Client:
         """
         payload = {
             "name": title,
-            "mimeType": MimeType.google_sheets,
+            "mimeType": MimeType.google_sheets.value,
         }
 
         params: ParamsType = {
@@ -199,7 +199,7 @@ class Client:
 
             See `ExportFormat`_ in the Drive API.
 
-        :type format: :namedtuple:`~gspread.utils.ExportFormat`
+        :type format: :class:`~gspread.utils.ExportFormat`
 
         :returns bytes: The content of the exported file.
 
@@ -211,7 +211,7 @@ class Client:
 
         url = "{}/{}/export".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params: ParamsType = {"mimeType": format}
+        params: ParamsType = {"mimeType": format.value}
 
         r = self.http_client.request("get", url, params=params)
         return r.content
@@ -263,7 +263,7 @@ class Client:
 
         payload = {
             "name": title,
-            "mimeType": MimeType.google_sheets,
+            "mimeType": MimeType.google_sheets.value,
         }
 
         if folder_id is not None:
