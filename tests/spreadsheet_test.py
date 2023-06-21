@@ -1,5 +1,7 @@
 import re
 
+import time
+
 import pytest
 
 import gspread
@@ -202,3 +204,16 @@ class SpreadsheetTest(GspreadTest):
         self.assertIn("modifiedTime", self.spreadsheet._properties)
 
         self.assertDictContainsSubset(current_metadata, new_metadata)
+
+    @pytest.mark.vcr()
+    def test_refresh_lastUpdateTime(self):
+        lastUpdateTime_before = self.spreadsheet.lastUpdateTime
+
+        time.sleep(0.01)
+        self.spreadsheet.update_title("🎊 Updated Title #123 🎉")
+
+        self.spreadsheet.refresh_lastUpdateTime()
+
+        lastUpdateTime_after = self.spreadsheet.lastUpdateTime
+
+        self.assertNotEqual(lastUpdateTime_before, lastUpdateTime_after)
