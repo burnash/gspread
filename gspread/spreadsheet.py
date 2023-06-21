@@ -65,8 +65,7 @@ class Spreadsheet:
         try:
             return self._properties["modifiedTime"]
         except KeyError:
-            metadata = self.client._get_file_drive_metadata(self.id)
-            self._properties.update(metadata)
+            self.refresh_lastUpdateTime()
             return self._properties["modifiedTime"]
 
     @property
@@ -743,3 +742,8 @@ class Spreadsheet:
             raise WorksheetNotFound("worksheet id {} not found".format(sheetid))
 
         return sheet.get("protectedRanges", [])
+
+    def refresh_lastUpdateTime(self):
+        """Refresh the lastUpdateTime property of the spreadsheet."""
+        metadata = self.client._get_file_drive_metadata(self.id)
+        self._properties["modifiedTime"] = metadata["modifiedTime"]
