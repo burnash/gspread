@@ -120,6 +120,30 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values_with_merged, expected_merge)
 
     @pytest.mark.vcr()
+    def test_get_values_with_args_or_kwargs(self):
+        # test that get_values accepts args and kwargs
+        self.sheet.resize(4, 4)
+        sheet_data = [
+            ["1", "", "", ""],
+            ["x", "y", "title", ""],
+            ["", "", "2", ""],
+            ["num", "val", "", "0"],
+        ]
+        self.sheet.update("A1:D4", sheet_data)
+
+        data_args = self.sheet.get_values(
+            "A1:D4", False, None, utils.ValueRenderOption.formatted
+        )
+        data_kwargs = self.sheet.get_values(
+            range_name="A1:D4",
+            major_dimension=None,
+            value_render_option=utils.ValueRenderOption.formatted,
+        )
+
+        self.assertEqual(data_args, sheet_data)
+        self.assertEqual(data_kwargs, sheet_data)
+
+    @pytest.mark.vcr()
     def test_update_acell(self):
         sg = self._sequence_generator()
         value = next(sg)
@@ -1004,7 +1028,7 @@ class WorksheetTest(GspreadTest):
         next_row = self.sheet.row_values(3)
         row_count_before = self.sheet.row_count
 
-        self.sheet.delete_row(2)
+        self.sheet.delete_rows(2)
 
         row_count_after = self.sheet.row_count
         self.assertEqual(row_count_before - 1, row_count_after)
@@ -1055,7 +1079,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cells(cell_list)
 
         self.sheet.clear()
-        self.assertEqual(self.sheet.get_all_values(), [])
+        self.assertEqual(self.sheet.get_all_values(), [[]])
 
     @pytest.mark.vcr()
     def test_update_and_get(self):
@@ -1209,24 +1233,24 @@ class WorksheetTest(GspreadTest):
         w = self.spreadsheet.sheet1
 
         # make sure cells are empty
-        self.assertListEqual(w.get_values("A1:B1"), [])
-        self.assertListEqual(w.get_values("C2:E2"), [])
+        self.assertListEqual(w.get_values("A1:B1"), [[]])
+        self.assertListEqual(w.get_values("C2:E2"), [[]])
 
         # fill the cells
         w.update("A1:B1", [["12345", "ThisIsText"]])
         w.update("C2:E2", [["5678", "Second", "Text"]])
 
         # confirm the cells are not empty
-        self.assertNotEqual(w.get_values("A1:B1"), [])
-        self.assertNotEqual(w.get_values("C2:E2"), [])
+        self.assertNotEqual(w.get_values("A1:B1"), [[]])
+        self.assertNotEqual(w.get_values("C2:E2"), [[]])
 
         # empty both cell range at once
         w.batch_clear(["A1:B1", "C2:E2"])
 
         # confirm cells are empty
         # make sure cells are empty
-        self.assertListEqual(w.get_values("A1:B1"), [])
-        self.assertListEqual(w.get_values("C2:E2"), [])
+        self.assertListEqual(w.get_values("A1:B1"), [[]])
+        self.assertListEqual(w.get_values("C2:E2"), [[]])
 
     @pytest.mark.vcr()
     def test_group_columns(self):

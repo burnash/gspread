@@ -8,7 +8,8 @@ from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 
 import gspread
-from gspread.client import BackoffClient
+from gspread.client import Client
+from gspread.http_client import BackOffHTTPClient
 
 CREDS_FILENAME = os.getenv("GS_CREDS_FILENAME")
 RECORD_MODE = os.getenv("GS_RECORD_MODE", "none")
@@ -86,7 +87,7 @@ def client():
     else:
         auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
 
-    gc = BackoffClient(auth_credentials)
+    gc = Client(auth_credentials, BackOffHTTPClient)
     if not isinstance(gc, gspread.client.Client) is True:
         raise AssertionError
 
