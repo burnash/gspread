@@ -2,4 +2,4 @@ bandit==1.7.5
 black==23.3.0
 codespell==2.2.4
 flake8==6.0.0
-isort==5.11.4
+isort==5.12.0
