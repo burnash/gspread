@@ -1018,10 +1018,10 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_delete_row(self):
-        sg = self._sequence_generator()
+        sequence_generator = self._sequence_generator()
 
         for i in range(5):
-            value_list = [next(sg) for i in range(10)]
+            value_list = [next(sequence_generator) for i in range(10)]
             self.sheet.append_row(value_list)
 
         prev_row = self.sheet.row_values(1)

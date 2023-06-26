@@ -1,16 +1,18 @@
-*.pyc
-tests/creds.json
-*.todo
+# vscode
+.vscode/
 
-build/
-dist/
+# python
+**/__pycache__/
+
+# secrets
+tests/creds.json
 
 # virtualenv
 env/
 
-# tox testrunner support
+# tox
 .tox/
-gspread.egg-info/
 
-# vscode
-.vscode/
+# build
+gspread.egg-info/
+dist/
