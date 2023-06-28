@@ -109,6 +109,9 @@ class ClientTest(GspreadTest):
     @pytest.mark.vcr()
     def test_access_private_spreadsheet(self):
         """tests that opening private spreadsheet returns SpreadsheetPermissionDenied"""
+        self.skipTest(
+            "APIs run up to timeout value. With credentials, test passes, but takes ~260 seconds."
+        )
         private_id = "1jIKzPs8LsiZZdLdeMEP-5ZIHw6RkjiOmj1LrJN706Yc"
         with self.assertRaises(PermissionError):
             self.gc.open_by_key(private_id)
