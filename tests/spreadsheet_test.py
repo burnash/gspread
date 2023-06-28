@@ -1,4 +1,5 @@
 import re
+import time
 
 import pytest
 
@@ -191,14 +192,25 @@ class SpreadsheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_get_updated_time(self):
-        current_metadata = self.spreadsheet._properties
-        self.assertNotIn("modifiedTime", self.spreadsheet._properties)
+        metadata_before = self.spreadsheet._properties
+        self.assertNotIn("modifiedTime", metadata_before)
 
-        res = self.spreadsheet.lastUpdateTime
+        lastUpdateTime = self.spreadsheet.lastUpdateTime
+        metadata_after = self.spreadsheet._properties
 
-        self.assertIsNotNone(res)
+        self.assertIsNotNone(lastUpdateTime)
+        self.assertIn("modifiedTime", metadata_after)
+        self.assertEqual(lastUpdateTime, metadata_after["modifiedTime"])
 
-        new_metadata = self.spreadsheet._properties
-        self.assertIn("modifiedTime", self.spreadsheet._properties)
+    @pytest.mark.vcr()
+    def test_refresh_lastUpdateTime(self):
+        lastUpdateTime_before = self.spreadsheet.lastUpdateTime
 
-        self.assertDictContainsSubset(current_metadata, new_metadata)
+        time.sleep(0.01)
+        self.spreadsheet.update_title("🎊 Updated Title #123 🎉")
+
+        self.spreadsheet.refresh_lastUpdateTime()
+
+        lastUpdateTime_after = self.spreadsheet.lastUpdateTime
+
+        self.assertNotEqual(lastUpdateTime_before, lastUpdateTime_after)

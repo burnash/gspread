@@ -1,0 +1,41 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "gspread"
+authors = [{ name = "Anton Burnashev", email = "fuss.here@gmail.com" }]
+maintainers = [
+    { name = "Alexandre Lavigne", email = "lavigne958@gmail.com" },
+    { name = "alifeee", email = "alifeee.web@outlook.com" },
+]
+readme = "README.md"
+keywords = ["spreadsheets", "google-spreadsheets", "google-sheets"]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Science/Research",
+    "Topic :: Office/Business :: Financial :: Spreadsheet",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["google-auth>=1.12.0", "google-auth-oauthlib>=0.4.1"]
+requires-python = ">=3.7"
+dynamic = ["version", "description"]
+
+[project.urls]
+Documentation = "https://gspread.readthedocs.io/en/latest/"
+Source = "https://github.com/burnash/gspread"
+
+[project.license]
+file = "LICENSE.txt"
+
+[tool.flit.sdist]
+include = ["docs/", "HISTORY.rst"]
