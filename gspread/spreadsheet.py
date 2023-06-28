@@ -19,9 +19,6 @@ class Spreadsheet:
         self.client = http_client
         self._properties = properties
 
-        metadata = self.fetch_sheet_metadata()
-        self._properties.update(metadata["properties"])
-
     @property
     def id(self):
         """Spreadsheet ID."""
