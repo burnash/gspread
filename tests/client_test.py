@@ -105,3 +105,10 @@ class ClientTest(GspreadTest):
         # has properties that are not from Drive API (i.e., not title, id, creationTime)
         self.assertTrue(spreadsheet.locale)
         self.assertTrue(spreadsheet.timezone)
+
+    @pytest.mark.vcr()
+    def test_access_private_spreadsheet(self):
+        """tests that opening private spreadsheet returns SpreadsheetPermissionDenied"""
+        private_id = "1jIKzPs8LsiZZdLdeMEP-5ZIHw6RkjiOmj1LrJN706Yc"
+        with self.assertRaises(PermissionError):
+            self.gc.open_by_key(private_id)
