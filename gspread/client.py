@@ -122,6 +122,8 @@ class Client:
         except APIError as ex:
             if ex.response.status_code == 404:
                 raise SpreadsheetNotFound from ex
+            if ex.response.status_code == 403:
+                raise PermissionError from ex
             raise ex
         return spreadsheet
 
