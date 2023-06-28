@@ -79,3 +79,32 @@ class ClientTest(GspreadTest):
             error.exception.args[0]["message"], "Requested entity was not found."
         )
         self.assertEqual(error.exception.args[0]["status"], "NOT_FOUND")
+
+    @pytest.mark.vcr()
+    def test_open_all_has_metadata(self):
+        """tests all spreadsheets are opened
+        and that they all have metadata"""
+        spreadsheets = self.gc.openall()
+        for spreadsheet in spreadsheets:
+            self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+            # has properties that are not from Drive API (i.e., not title, id, creationTime)
+            self.assertTrue(spreadsheet.locale)
+            self.assertTrue(spreadsheet.timezone)
+
+    @pytest.mark.vcr()
+    def test_open_by_key_has_metadata(self):
+        """tests open_by_key has metadata"""
+        spreadsheet = self.gc.open_by_key(self.spreadsheet.id)
+        self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+        # has properties that are not from Drive API (i.e., not title, id, creationTime)
+        self.assertTrue(spreadsheet.locale)
+        self.assertTrue(spreadsheet.timezone)
+
+    @pytest.mark.vcr()
+    def test_open_by_name_has_metadata(self):
+        """tests open has metadata"""
+        spreadsheet = self.gc.open(self.spreadsheet.title)
+        self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+        # has properties that are not from Drive API (i.e., not title, id, creationTime)
+        self.assertTrue(spreadsheet.locale)
+        self.assertTrue(spreadsheet.timezone)
