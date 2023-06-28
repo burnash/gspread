@@ -9,7 +9,7 @@ class ClientTest(GspreadTest):
 
     """Test for gspread.client."""
 
-    @pytest.fixture(scope="class", autouse=True)
+    @pytest.fixture(scope="function", autouse=True)
     def init(self, client, request):
         # must use class attributes, each test function runs in a different instance
         ClientTest.gc = client
