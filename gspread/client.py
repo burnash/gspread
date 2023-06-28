@@ -117,7 +117,13 @@ class Client:
 
         >>> gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
         """
-        return Spreadsheet(self.http_client, {"id": key})
+        try:
+            spreadsheet = Spreadsheet(self.http_client, {"id": key})
+        except APIError as ex:
+            if ex.response.status_code == 404:
+                raise SpreadsheetNotFound from ex
+            raise ex
+        return spreadsheet
 
     def open_by_url(self, url: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `url`.
