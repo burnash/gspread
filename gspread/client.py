@@ -106,8 +106,8 @@ class Client:
             properties["title"] = properties["name"]
 
             return Spreadsheet(self.http_client, properties)
-        except StopIteration:
-            raise SpreadsheetNotFound
+        except StopIteration as ex:
+            raise SpreadsheetNotFound from ex
 
     def open_by_key(self, key: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `key` (a.k.a Spreadsheet ID).
