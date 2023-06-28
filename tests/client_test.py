@@ -72,13 +72,10 @@ class ClientTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_access_non_existing_spreadsheet(self):
-        with self.assertRaises(gspread.exceptions.APIError) as error:
+        with self.assertRaises(gspread.exceptions.SpreadsheetNotFound):
             self.gc.open_by_key("test")
-        self.assertEqual(error.exception.args[0]["code"], 404)
-        self.assertEqual(
-            error.exception.args[0]["message"], "Requested entity was not found."
-        )
-        self.assertEqual(error.exception.args[0]["status"], "NOT_FOUND")
+        with self.assertRaises(gspread.exceptions.SpreadsheetNotFound):
+            self.gc.open_by_url("https://docs.google.com/spreadsheets/d/test")
 
     @pytest.mark.vcr()
     def test_open_all_has_metadata(self):
