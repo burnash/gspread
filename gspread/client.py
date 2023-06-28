@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Union
 from google.auth.credentials import Credentials
 from requests import Response
 
-from .exceptions import SpreadsheetNotFound, UnSupportedExportFormat
+from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
 from .http_client import HTTPClient, HTTPClientType, ParamsType
 from .spreadsheet import Spreadsheet
 from .urls import (
@@ -117,7 +117,13 @@ class Client:
 
         >>> gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
         """
-        metadata = self.http_client.fetch_sheet_metadata(key)
+        try:
+            metadata = self.http_client.fetch_sheet_metadata(key)
+        except APIError as ex:
+            if ex.response.status_code == 404:
+                raise SpreadsheetNotFound from ex
+            raise ex
+
         properties = {"id": metadata["spreadsheetId"], **metadata["properties"]}
 
         return Spreadsheet(self.http_client, properties)
