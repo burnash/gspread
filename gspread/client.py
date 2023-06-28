@@ -101,13 +101,13 @@ class Client:
                 lambda x: x["name"] == title,
                 self.list_spreadsheet_files(title, folder_id),
             )
-        except StopIteration as ex:
-            raise SpreadsheetNotFound from ex
 
-        metadata = self.http_client.fetch_sheet_metadata(properties["id"])
-        properties = {"id": metadata["spreadsheetId"], **metadata["properties"]}
+            # Drive uses different terminology
+            properties["title"] = properties["name"]
 
-        return Spreadsheet(self.http_client, properties)
+            return Spreadsheet(self.http_client, properties)
+        except StopIteration:
+            raise SpreadsheetNotFound
 
     def open_by_key(self, key: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `key` (a.k.a Spreadsheet ID).
@@ -117,16 +117,7 @@ class Client:
 
         >>> gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
         """
-        try:
-            metadata = self.http_client.fetch_sheet_metadata(key)
-        except APIError as ex:
-            if ex.response.status_code == 404:
-                raise SpreadsheetNotFound from ex
-            raise ex
-
-        properties = {"id": metadata["spreadsheetId"], **metadata["properties"]}
-
-        return Spreadsheet(self.http_client, properties)
+        return Spreadsheet(self.http_client, {"id": key})
 
     def open_by_url(self, url: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `url`.
@@ -157,17 +148,9 @@ class Client:
                 spread for spread in spreadsheet_files if title == spread["name"]
             ]
 
-        metadatas = [
-            self.http_client.fetch_sheet_metadata(spread["id"])
-            for spread in spreadsheet_files
-        ]
-        properties_list = [
-            {"id": metadata["spreadsheetId"], **metadata["properties"]}
-            for metadata in metadatas
-        ]
-
         return [
-            Spreadsheet(self.http_client, properties) for properties in properties_list
+            Spreadsheet(self.http_client, dict(title=x["name"], **x))
+            for x in spreadsheet_files
         ]
 
     def create(self, title: str, folder_id: Optional[str] = None) -> Spreadsheet:
