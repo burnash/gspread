@@ -19,9 +19,6 @@
                     "Connection": [
                         "keep-alive"
                     ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
                     "authorization": [
                         "<ACCESS_TOKEN>"
                     ]
@@ -33,41 +30,41 @@
                     "message": "OK"
                 },
                 "headers": {
+                    "Pragma": [
+                        "no-cache"
+                    ],
                     "Expires": [
                         "Mon, 01 Jan 1990 00:00:00 GMT"
                     ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Wed, 28 Jun 2023 13:33:50 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
                     "Transfer-Encoding": [
                         "chunked"
+                    ],
+                    "Server": [
+                        "ESF"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
                     "Vary": [
                         "Origin, X-Origin"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Pragma": [
-                        "no-cache"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Thu, 08 Jun 2023 22:14:57 GMT"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Cache-Control": [
-                        "no-cache, no-store, max-age=0, must-revalidate"
                     ],
                     "content-length": [
                         "46"

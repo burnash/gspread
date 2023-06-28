@@ -10,9 +10,15 @@ class ClientTest(GspreadTest):
     """Test for gspread.client."""
 
     @pytest.fixture(scope="class", autouse=True)
-    def init(self, client):
+    def init(self, client, request):
         # must use class attributes, each test function runs in a different instance
         ClientTest.gc = client
+        name = self.get_temporary_spreadsheet_title(request.node.name)
+        ClientTest.spreadsheet = client.create(name)
+
+        yield
+
+        client.del_spreadsheet(ClientTest.spreadsheet.id)
 
     @pytest.mark.vcr()
     def test_no_found_exeption(self):
@@ -38,7 +44,7 @@ class ClientTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_copy(self):
-        original_spreadsheet = self.gc.create("Original")
+        original_spreadsheet = self.spreadsheet
         spreadsheet_copy = self.gc.copy(original_spreadsheet.id)
         self.assertTrue(isinstance(spreadsheet_copy, gspread.Spreadsheet))
 
@@ -48,8 +54,7 @@ class ClientTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_import_csv(self):
-        title = "TestImportSpreadsheet"
-        new_spreadsheet = self.gc.create(title)
+        spreadsheet = self.spreadsheet
 
         sg = self._sequence_generator()
 
@@ -60,12 +65,10 @@ class ClientTest(GspreadTest):
 
         simple_csv_data = "\n".join([",".join(row) for row in rows])
 
-        self.gc.import_csv(new_spreadsheet.id, simple_csv_data)
+        self.gc.import_csv(spreadsheet.id, simple_csv_data)
 
-        sh = self.gc.open_by_key(new_spreadsheet.id)
+        sh = self.gc.open_by_key(spreadsheet.id)
         self.assertEqual(sh.sheet1.get_all_values(), rows)
-
-        self.gc.del_spreadsheet(new_spreadsheet.id)
 
     @pytest.mark.vcr()
     def test_access_non_existing_spreadsheet(self):
