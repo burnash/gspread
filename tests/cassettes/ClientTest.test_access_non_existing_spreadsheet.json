@@ -30,20 +30,17 @@
                     "message": "Not Found"
                 },
                 "headers": {
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Date": [
-                        "Wed, 28 Jun 2023 13:33:36 GMT"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
+                    "Server": [
+                        "ESF"
                     ],
                     "Cache-Control": [
                         "private"
+                    ],
+                    "Date": [
+                        "Wed, 28 Jun 2023 13:47:04 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
@@ -51,11 +48,14 @@
                     "Transfer-Encoding": [
                         "chunked"
                     ],
-                    "Server": [
-                        "ESF"
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
                     ],
                     "Vary": [
                         "Origin",
@@ -100,20 +100,17 @@
                     "message": "Not Found"
                 },
                 "headers": {
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Date": [
-                        "Wed, 28 Jun 2023 13:33:36 GMT"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
+                    "Server": [
+                        "ESF"
                     ],
                     "Cache-Control": [
                         "private"
+                    ],
+                    "Date": [
+                        "Wed, 28 Jun 2023 13:47:04 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
@@ -121,11 +118,14 @@
                     "Transfer-Encoding": [
                         "chunked"
                     ],
-                    "Server": [
-                        "ESF"
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
                     ],
                     "Vary": [
                         "Origin",

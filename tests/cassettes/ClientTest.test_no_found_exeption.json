@@ -30,26 +30,17 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "Pragma": [
-                        "no-cache"
-                    ],
-                    "Expires": [
-                        "Mon, 01 Jan 1990 00:00:00 GMT"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Date": [
-                        "Wed, 28 Jun 2023 13:33:50 GMT"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
                     "Cache-Control": [
                         "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Date": [
+                        "Wed, 28 Jun 2023 13:47:15 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
@@ -57,11 +48,20 @@
                     "Transfer-Encoding": [
                         "chunked"
                     ],
-                    "Server": [
-                        "ESF"
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Pragma": [
+                        "no-cache"
                     ],
                     "Vary": [
                         "Origin, X-Origin"
