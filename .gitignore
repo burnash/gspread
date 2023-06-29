@@ -16,3 +16,4 @@ env/
 # build
 gspread.egg-info/
 dist/
+docs/build/
