@@ -1260,7 +1260,7 @@ class WorksheetTest(GspreadTest):
         col_groups = self.sheet.list_dimension_group_columns()
 
         range = col_groups[0]["range"]
-        self.assertEqual(range["dimension"], utils.Dimension.cols.value)
+        self.assertEqual(range["dimension"], utils.Dimension.cols)
         self.assertEqual(range["startIndex"], 0)
         self.assertEqual(range["endIndex"], 2)
 
@@ -1277,7 +1277,7 @@ class WorksheetTest(GspreadTest):
         row_groups = self.sheet.list_dimension_group_rows()
 
         range = row_groups[0]["range"]
-        self.assertEqual(range["dimension"], utils.Dimension.rows.value)
+        self.assertEqual(range["dimension"], utils.Dimension.rows)
         self.assertEqual(range["startIndex"], 0)
         self.assertEqual(range["endIndex"], 2)
 
