@@ -56,7 +56,7 @@ class Client:
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
 
-        q = 'mimeType="{}"'.format(MimeType.google_sheets.value)
+        q = 'mimeType="{}"'.format(MimeType.google_sheets)
         if title:
             q += ' and name = "{}"'.format(title)
         if folder_id:
@@ -166,7 +166,7 @@ class Client:
         """
         payload = {
             "name": title,
-            "mimeType": MimeType.google_sheets.value,
+            "mimeType": MimeType.google_sheets,
         }
 
         params: ParamsType = {
@@ -211,7 +211,7 @@ class Client:
 
         url = "{}/{}/export".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params: ParamsType = {"mimeType": format.value}
+        params: ParamsType = {"mimeType": format}
 
         r = self.http_client.request("get", url, params=params)
         return r.content
@@ -263,7 +263,7 @@ class Client:
 
         payload = {
             "name": title,
-            "mimeType": MimeType.google_sheets.value,
+            "mimeType": MimeType.google_sheets,
         }
 
         if folder_id is not None:

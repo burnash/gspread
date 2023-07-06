@@ -21,7 +21,6 @@ from .utils import (
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
-    extract_enum_values,
     fill_gaps,
     finditem,
     is_scalar,
@@ -669,8 +668,8 @@ class Worksheet:
             self.spreadsheet_id,
             range_name,
             params={
-                "valueRenderOption": value_render_option.value,
-                "majorDimension": Dimension.cols.value,
+                "valueRenderOption": value_render_option,
+                "majorDimension": Dimension.cols,
             },
         )
 
@@ -707,7 +706,7 @@ class Worksheet:
         data = self.client.values_update(
             self.spreadsheet_id,
             range_name,
-            params={"valueInputOption": ValueInputOption.user_entered.value},
+            params={"valueInputOption": ValueInputOption.user_entered},
             body={"values": [[value]]},
         )
 
@@ -760,7 +759,7 @@ class Worksheet:
         data = self.client.values_update(
             self.spreadsheet_id,
             range_name,
-            params={"valueInputOption": value_input_option.value},
+            params={"valueInputOption": value_input_option},
             body={"values": values_rect},
         )
 
@@ -850,13 +849,11 @@ class Worksheet:
         """
         range_name = absolute_range_name(self.title, range_name)
 
-        params = extract_enum_values(
-            {
-                "majorDimension": major_dimension,
-                "valueRenderOption": value_render_option,
-                "dateTimeRenderOption": date_time_render_option,
-            }
-        )
+        params = {
+            "majorDimension": major_dimension,
+            "valueRenderOption": value_render_option,
+            "dateTimeRenderOption": date_time_render_option,
+        }
 
         response = self.client.values_get(
             self.spreadsheet_id, range_name, params=params
@@ -937,13 +934,11 @@ class Worksheet:
         """
         ranges = [absolute_range_name(self.title, r) for r in ranges if r]
 
-        params = extract_enum_values(
-            {
-                "majorDimension": major_dimension,
-                "valueRenderOption": value_render_option,
-                "dateTimeRenderOption": date_time_render_option,
-            }
-        )
+        params = {
+            "majorDimension": major_dimension,
+            "valueRenderOption": value_render_option,
+            "dateTimeRenderOption": date_time_render_option,
+        }
 
         response = self.client.values_batch_get(
             self.spreadsheet_id, ranges=ranges, params=params
@@ -1079,25 +1074,18 @@ class Worksheet:
                 ValueInputOption.raw if raw is True else ValueInputOption.user_entered
             )
 
-        params = extract_enum_values(
-            {
-                "valueInputOption": value_input_option,
-                "includeValuesInResponse": include_values_in_response,
-                "responseValueRenderOption": response_value_render_option,
-                "responseDateTimeRenderOption": response_date_time_render_option,
-            }
-        )
-
-        # get actual value only if not None
-        major_dimension_value = (
-            major_dimension.value if major_dimension is not None else None
-        )
+        params = {
+            "valueInputOption": value_input_option,
+            "includeValuesInResponse": include_values_in_response,
+            "responseValueRenderOption": response_value_render_option,
+            "responseDateTimeRenderOption": response_date_time_render_option,
+        }
 
         response = self.client.values_update(
             self.spreadsheet_id,
             range_name,
             params=params,
-            body={"values": values, "majorDimension": major_dimension_value},
+            body={"values": values, "majorDimension": major_dimension},
         )
 
         return response
@@ -1208,13 +1196,11 @@ class Worksheet:
             dict(vr, range=absolute_range_name(self.title, vr["range"])) for vr in data
         ]
 
-        body = extract_enum_values(
-            {
-                "valueInputOption": value_input_option,
-                "responseValueRenderOption": response_value_render_option,
-                "responseDateTimeRenderOption": response_date_time_render_option,
-            }
-        )
+        body = {
+            "valueInputOption": value_input_option,
+            "responseValueRenderOption": response_value_render_option,
+            "responseDateTimeRenderOption": response_date_time_render_option,
+        }
 
         body["includeValuesInResponse"] = include_values_in_response
         body["data"] = data
@@ -1577,7 +1563,7 @@ class Worksheet:
                     "autoResizeDimensions": {
                         "dimensions": {
                             "sheetId": self.id,
-                            "dimension": dimension.value,
+                            "dimension": dimension,
                             "startIndex": int(start_index),
                             "endIndex": int(end_index),
                         }
@@ -1706,12 +1692,10 @@ class Worksheet:
         """
         range_label = absolute_range_name(self.title, table_range)
 
-        params = extract_enum_values(
-            {
-                "valueInputOption": value_input_option,
-                "insertDataOption": insert_data_option,
-            }
-        )
+        params = {
+            "valueInputOption": value_input_option,
+            "insertDataOption": insert_data_option,
+        }
 
         # Not an Enum, does not pass `extract_enum_values`
         params["includeValuesInResponse"] = include_values_in_response
@@ -1811,7 +1795,7 @@ class Worksheet:
                     "insertDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": Dimension.rows.value,
+                            "dimension": Dimension.rows,
                             "startIndex": row - 1,
                             "endIndex": len(values) + row - 1,
                         },
@@ -1825,9 +1809,9 @@ class Worksheet:
 
         range_label = absolute_range_name(self.title, "A%s" % row)
 
-        params = {"valueInputOption": value_input_option.value}
+        params = {"valueInputOption": value_input_option}
 
-        body = {"majorDimension": Dimension.rows.value, "values": values}
+        body = {"majorDimension": Dimension.rows, "values": values}
 
         res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
         num_new_rows = len(values)
@@ -1876,7 +1860,7 @@ class Worksheet:
                     "insertDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": Dimension.cols.value,
+                            "dimension": Dimension.cols,
                             "startIndex": col - 1,
                             "endIndex": len(values) + col - 1,
                         },
@@ -1890,9 +1874,9 @@ class Worksheet:
 
         range_label = absolute_range_name(self.title, rowcol_to_a1(1, col))
 
-        params = {"valueInputOption": value_input_option.value}
+        params = {"valueInputOption": value_input_option}
 
-        body = {"majorDimension": Dimension.cols.value, "values": values}
+        body = {"majorDimension": Dimension.cols, "values": values}
 
         res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
         num_new_cols = len(values)
@@ -2007,7 +1991,7 @@ class Worksheet:
                     "deleteDimension": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension.value,
+                            "dimension": dimension,
                             "startIndex": start_index - 1,
                             "endIndex": end_index,
                         }
@@ -2636,7 +2620,7 @@ class Worksheet:
                     "addDimensionGroup": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension.value,
+                            "dimension": dimension,
                             "startIndex": start,
                             "endIndex": end,
                         },
@@ -2685,7 +2669,7 @@ class Worksheet:
                     "deleteDimensionGroup": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension.value,
+                            "dimension": dimension,
                             "startIndex": start,
                             "endIndex": end,
                         }
@@ -2761,7 +2745,7 @@ class Worksheet:
                     "updateDimensionProperties": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension.value,
+                            "dimension": dimension,
                             "startIndex": start,
                             "endIndex": end,
                         },
@@ -2816,7 +2800,7 @@ class Worksheet:
                     "updateDimensionProperties": {
                         "range": {
                             "sheetId": self.id,
-                            "dimension": dimension.value,
+                            "dimension": dimension,
                             "startIndex": start,
                             "endIndex": end,
                         },
@@ -2949,8 +2933,8 @@ class Worksheet:
                     "copyPaste": {
                         "source": a1_range_to_grid_range(source, self.id),
                         "destination": a1_range_to_grid_range(dest, self.id),
-                        "pasteType": paste_type.value,
-                        "pasteOrientation": paste_orientation.value,
+                        "pasteType": paste_type,
+                        "pasteOrientation": paste_orientation,
                     }
                 }
             ]
@@ -2996,7 +2980,7 @@ class Worksheet:
                             "rowIndex": grid_dest["startRowIndex"],
                             "columnIndex": grid_dest["startColumnIndex"],
                         },
-                        "pasteType": paste_type.value,
+                        "pasteType": paste_type,
                     }
                 }
             ]

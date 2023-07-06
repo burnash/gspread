@@ -9,7 +9,6 @@ This module contains utility functions.
 import re
 from collections import defaultdict
 from collections.abc import Sequence
-from enum import Enum
 from functools import wraps
 from itertools import chain
 from typing import (
@@ -20,7 +19,6 @@ from typing import (
     Dict,
     Iterable,
     List,
-    MutableMapping,
     Optional,
     Tuple,
     TypeVar,
@@ -31,6 +29,7 @@ from urllib.parse import quote as uquote
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
+from strenum import StrEnum
 
 from .exceptions import IncorrectCellLabel, InvalidInputValue, NoValidUrlKeyFound
 
@@ -46,28 +45,28 @@ URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
 
 
-class Dimension(Enum):
+class Dimension(StrEnum):
     rows = "ROWS"
     cols = "COLUMNS"
 
 
-class ValueRenderOption(Enum):
+class ValueRenderOption(StrEnum):
     formatted = "FORMATTED_VALUE"
     unformatted = "UNFORMATTED_VALUE"
     formula = "FORMULA"
 
 
-class ValueInputOption(Enum):
+class ValueInputOption(StrEnum):
     raw = "RAW"
     user_entered = "USER_ENTERED"
 
 
-class DateTimeOption(Enum):
+class DateTimeOption(StrEnum):
     serial_number = "SERIAL_NUMBER"
     formatted_string = "FORMATTED_STRING"
 
 
-class MimeType(Enum):
+class MimeType(StrEnum):
     google_sheets = "application/vnd.google-apps.spreadsheet"
     pdf = "application/pdf"
     excel = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -77,16 +76,16 @@ class MimeType(Enum):
     zip = "application/zip"
 
 
-class ExportFormat(Enum):
-    PDF = MimeType.pdf.value
-    EXCEL = MimeType.excel.value
-    CSV = MimeType.csv.value
-    OPEN_OFFICE_SHEET = MimeType.open_office_sheet.value
-    TSV = MimeType.tsv.value
-    ZIPPED_HTML = MimeType.zip.value
+class ExportFormat(StrEnum):
+    PDF = MimeType.pdf
+    EXCEL = MimeType.excel
+    CSV = MimeType.csv
+    OPEN_OFFICE_SHEET = MimeType.open_office_sheet
+    TSV = MimeType.tsv
+    ZIPPED_HTML = MimeType.zip
 
 
-class PasteType(Enum):
+class PasteType(StrEnum):
     normal = "PASTE_NORMAL"
     values = "PASTE_VALUES"
     format = "PASTE_FORMAT"
@@ -96,7 +95,7 @@ class PasteType(Enum):
     conditional_formating = "PASTE_CONDITIONAL_FORMATTING"
 
 
-class PasteOrientation(Enum):
+class PasteOrientation(StrEnum):
     normal = "NORMAL"
     transpose = "TRANSPOSE"
 
@@ -144,12 +143,6 @@ def _convert_service_account(credentials: Any) -> Credentials:
 
 
 T = TypeVar("T")
-
-
-def extract_enum_values(
-    params: MutableMapping[str, Union[None, Enum]]
-) -> Dict[str, str]:
-    return {k: v.value for k, v in params.items() if v is not None}
 
 
 def finditem(func: Callable[[T], bool], seq: Iterable[T]) -> T:
