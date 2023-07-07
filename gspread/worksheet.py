@@ -1198,12 +1198,11 @@ class Worksheet:
 
         body = {
             "valueInputOption": value_input_option,
+            "includeValuesInResponse": include_values_in_response,
             "responseValueRenderOption": response_value_render_option,
             "responseDateTimeRenderOption": response_date_time_render_option,
+            "data": data,
         }
-
-        body["includeValuesInResponse"] = include_values_in_response
-        body["data"] = data
 
         response = self.client.values_batch_update(self.spreadsheet_id, body=body)
 
@@ -1695,10 +1694,8 @@ class Worksheet:
         params = {
             "valueInputOption": value_input_option,
             "insertDataOption": insert_data_option,
+            "includeValuesInResponse": include_values_in_response,
         }
-
-        # Not an Enum, does not pass `extract_enum_values`
-        params["includeValuesInResponse"] = include_values_in_response
 
         body = {"values": values}
 
