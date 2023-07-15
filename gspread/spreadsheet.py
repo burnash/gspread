@@ -6,6 +6,7 @@ This module contains common spreadsheets' models.
 
 """
 
+import warnings
 from .exceptions import WorksheetNotFound
 from .urls import (
     DRIVE_FILES_API_V3_URL,
@@ -74,8 +75,6 @@ class Spreadsheet:
 
         This feature is not supported in Sheets API v4.
         """
-        import warnings
-
         warnings.warn(
             "Spreadsheet.updated() is deprecated, "
             "this feature is not supported in Sheets API v4",
