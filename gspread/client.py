@@ -121,7 +121,7 @@ class Client:
             spreadsheet = Spreadsheet(self.http_client, {"id": key})
         except APIError as ex:
             if ex.response.status_code == 404:
-                raise SpreadsheetNotFound from ex
+                raise SpreadsheetNotFound(ex.response) from ex
             if ex.response.status_code == 403:
                 raise PermissionError from ex
             raise ex

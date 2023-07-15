@@ -19,10 +19,6 @@ class GSpreadException(Exception):
     """A base class for gspread's exceptions."""
 
 
-class SpreadsheetNotFound(GSpreadException):
-    """Trying to open non-existent or inaccessible spreadsheet."""
-
-
 class WorksheetNotFound(GSpreadException):
     """Trying to open non-existent or inaccessible worksheet."""
 
@@ -61,3 +57,11 @@ class APIError(GSpreadException):
             return dict(errors["error"])
         except (AttributeError, KeyError, ValueError):
             return None
+
+
+class SpreadsheetNotFound(APIError):
+    """Trying to open non-existent or inaccessible spreadsheet."""
+
+    def __init__(self, response: Response):
+        super().__init__(response)
+        self.response: Response = response
