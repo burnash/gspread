@@ -34,6 +34,9 @@ class Spreadsheet:
         metadata = self.fetch_sheet_metadata()
         self._properties.update(metadata["properties"])
 
+        drive_metadata = self.client._get_file_drive_metadata()
+        self._properties.update(drive_metadata)
+
     @property
     def id(self):
         """Spreadsheet ID."""
