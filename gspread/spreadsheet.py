@@ -35,7 +35,7 @@ class Spreadsheet:
         metadata = self.fetch_sheet_metadata()
         self._properties.update(metadata["properties"])
 
-        drive_metadata = self.client._get_file_drive_metadata()
+        drive_metadata = self.client.get_file_drive_metadata()
         self._properties.update(drive_metadata)
 
     @property
@@ -744,5 +744,5 @@ class Spreadsheet:
 
     def get_lastUpdateTime(self):
         """Get the lastUpdateTime metadata from the Drive API."""
-        metadata = self.client._get_file_drive_metadata(self.id)
+        metadata = self.client.get_file_drive_metadata(self.id)
         return metadata["modifiedTime"]
