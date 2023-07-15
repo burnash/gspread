@@ -55,21 +55,12 @@ class Spreadsheet:
     @property
     def creationTime(self):
         """Spreadsheet Creation time."""
-        try:
-            return self._properties["createdTime"]
-        except KeyError:
-            metadata = self.client._get_file_drive_metadata(self.id)
-            self._properties.update(metadata)
-            return self._properties["createdTime"]
+        return self._properties["createdTime"]
 
     @property
     def lastUpdateTime(self):
-        """Spreadsheet last updated time."""
-        try:
-            return self._properties["modifiedTime"]
-        except KeyError:
-            self.refresh_lastUpdateTime()
-            return self._properties["modifiedTime"]
+        """Spreadsheet last updated time. Only updated on initialisation. For actual last updated time, use get_lastUpdateTime()."""
+        return self._properties["modifiedTime"]
 
     @property
     def updated(self):
@@ -746,7 +737,7 @@ class Spreadsheet:
 
         return sheet.get("protectedRanges", [])
 
-    def refresh_lastUpdateTime(self):
-        """Refresh the lastUpdateTime property of the spreadsheet."""
+    def get_lastUpdateTime(self):
+        """Get the lastUpdateTime metadata from the Drive API."""
         metadata = self.client._get_file_drive_metadata(self.id)
-        self._properties["modifiedTime"] = metadata["modifiedTime"]
+        return metadata["modifiedTime"]
