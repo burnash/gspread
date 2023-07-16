@@ -536,6 +536,25 @@ def rightpad(row, max_len):
 
 
 def fill_gaps(L, rows=None, cols=None):
+    """Fill gaps in a list of lists.
+    e.g.,
+    L = [
+        [1, 2, 3],
+    ]
+    --> fill_gaps(L, 2, 4)
+    [
+        [1, 2, 3, ""],
+        ["", "", "", ""]
+    ]
+
+    Args:
+        L (list[list[T]]): List of lists to fill gaps in.
+        rows (int, optional): Number of rows to fill. Defaults to None.
+        cols (int, optional): Number of columns to fill. Defaults to None.
+
+    Returns:
+        list[list[T]]: List of lists with gaps filled.
+    """
     try:
         max_cols = max(len(row) for row in L) if cols is None else cols
         max_rows = len(L) if rows is None else rows
