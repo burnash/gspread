@@ -3021,8 +3021,8 @@ class Worksheet:
         self,
         source: str,
         dest: str,
-        paste_type:PasteType=PasteType.normal,
-        paste_orientation:PasteOrientation=PasteOrientation.normal,
+        paste_type: PasteType = PasteType.normal,
+        paste_orientation: PasteOrientation = PasteOrientation.normal,
     ) -> JSONAnyType:
         """Copies a range of data from source to dest
 
@@ -3066,7 +3066,7 @@ class Worksheet:
         self,
         source: str,
         dest: str,
-        paste_type:PasteType=PasteType.normal,
+        paste_type: PasteType = PasteType.normal,
     ) -> JSONAnyType:
         """Moves a range of data form source to dest
 
