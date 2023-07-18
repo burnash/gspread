@@ -149,7 +149,7 @@ class Worksheet:
     def __init__(
         self,
         spreadsheet_id: str,
-        client: "HTTPClient",
+        client: HTTPClient,
         properties: MutableMapping[str, Any],
     ):
         self.spreadsheet_id = spreadsheet_id
@@ -179,12 +179,12 @@ class Worksheet:
         return WORKSHEET_DRIVE_URL % (self.spreadsheet_id, self.id)
 
     @property
-    def index(self) -> str:
+    def index(self) -> int:
         """Worksheet index."""
         return self._properties["index"]
 
     @property
-    def isSheetHidden(self) -> str:
+    def isSheetHidden(self) -> bool:
         """Worksheet hidden status."""
         # if the property is not set then hidden=False
         return self._properties.get("hidden", False)
@@ -239,7 +239,9 @@ class Worksheet:
         return sheet.get(property, default_value)
 
     def acell(
-        self, label: str, value_render_option=ValueRenderOption.formatted
+        self,
+        label: str,
+        value_render_option: ValueRenderOption = ValueRenderOption.formatted,
     ) -> Cell:
         """Returns an instance of a :class:`gspread.cell.Cell`.
 
@@ -263,7 +265,10 @@ class Worksheet:
         )
 
     def cell(
-        self, row: int, col: int, value_render_option=ValueRenderOption.formatted
+        self,
+        row: int,
+        col: int,
+        value_render_option: ValueRenderOption = ValueRenderOption.formatted,
     ) -> Cell:
         """Returns an instance of a :class:`gspread.cell.Cell` located at
         `row` and `col` column.
@@ -1679,7 +1684,7 @@ class Worksheet:
     def append_row(
         self,
         values: Sequence[Union[str, int, float]],
-        value_input_option=ValueInputOption.raw,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
         insert_data_option: Optional[InsertDataOption] = None,
         table_range: Optional[str] = None,
         include_values_in_response: bool = False,
@@ -1718,7 +1723,7 @@ class Worksheet:
     def append_rows(
         self,
         values: Sequence[Sequence[Union[str, int, float]]],
-        value_input_option=ValueInputOption.raw,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
         insert_data_option: Optional[InsertDataOption] = None,
         table_range: Optional[str] = None,
         include_values_in_response: Optional[bool] = None,
@@ -1766,7 +1771,7 @@ class Worksheet:
         self,
         values: Sequence[Union[str, int, float]],
         index: int = 1,
-        value_input_option=ValueInputOption.raw,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
         inherit_from_before: bool = False,
     ) -> JSONAnyType:
         """Adds a row to the worksheet at the specified index and populates it
@@ -1805,7 +1810,7 @@ class Worksheet:
         self,
         values: Sequence[Sequence[Union[str, int, float]]],
         row: int = 1,
-        value_input_option=ValueInputOption.raw,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
         inherit_from_before: bool = False,
     ) -> JSONAnyType:
         """Adds multiple rows to the worksheet at the specified index and
@@ -1877,7 +1882,7 @@ class Worksheet:
         self,
         values: Sequence[Sequence[Union[str, int, float]]],
         col: int = 1,
-        value_input_option=ValueInputOption.raw,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
         inherit_from_before: bool = False,
     ) -> JSONAnyType:
         """Adds multiple new cols to the worksheet at specified index and
@@ -1942,7 +1947,7 @@ class Worksheet:
     def add_protected_range(
         self,
         name: str,
-        editor_users_emails: str,
+        editor_users_emails: Sequence[str],
         editor_groups_emails: Sequence[str] = [],
         description: Optional[str] = None,
         warning_only: bool = False,
@@ -3016,8 +3021,8 @@ class Worksheet:
         self,
         source: str,
         dest: str,
-        paste_type=PasteType.normal,
-        paste_orientation=PasteOrientation.normal,
+        paste_type:PasteType=PasteType.normal,
+        paste_orientation:PasteOrientation=PasteOrientation.normal,
     ) -> JSONAnyType:
         """Copies a range of data from source to dest
 
@@ -3061,7 +3066,7 @@ class Worksheet:
         self,
         source: str,
         dest: str,
-        paste_type=PasteType.normal,
+        paste_type:PasteType=PasteType.normal,
     ) -> JSONAnyType:
         """Moves a range of data form source to dest
 
