@@ -759,6 +759,875 @@
                     "string": ""
                 }
             }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "body": "{\"name\": \"Test WorksheetTest test_update_cells_noncontiguous\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "Content-Length": [
+                        "117"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:52 GMT"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "content-length": [
+                        "204"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"kind\": \"drive#file\",\n  \"id\": \"15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs\",\n  \"name\": \"Test WorksheetTest test_update_cells_noncontiguous\",\n  \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:52 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "3348"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_update_cells_noncontiguous\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs/edit\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://www.googleapis.com/drive/v3/files/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:53 GMT"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "content-length": [
+                        "214"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"id\": \"15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs\",\n  \"name\": \"Test WorksheetTest test_update_cells_noncontiguous\",\n  \"createdTime\": \"2023-07-20T09:01:49.771Z\",\n  \"modifiedTime\": \"2023-07-20T09:01:49.790Z\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:53 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "3348"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_update_cells_noncontiguous\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs/edit\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs/values/%27Sheet1%27:clear",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:53 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "107"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs\",\n  \"clearedRange\": \"Sheet1!A1:Z1000\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs/values/%27Sheet1%27%21A1%3AD6",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:54 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "58"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "PUT",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW",
+                "body": "{\"values\": [[\"test_update_cells_noncontiguous 1\", \"test_update_cells_noncontiguous 2\", \"test_update_cells_noncontiguous 3\", \"test_update_cells_noncontiguous 4\"], [\"test_update_cells_noncontiguous 5\", \"test_update_cells_noncontiguous 6\", \"test_update_cells_noncontiguous 7\", \"test_update_cells_noncontiguous 8\"], [\"test_update_cells_noncontiguous 9\", \"test_update_cells_noncontiguous 10\", \"test_update_cells_noncontiguous 11\", \"test_update_cells_noncontiguous 12\"], [\"test_update_cells_noncontiguous 13\", \"test_update_cells_noncontiguous 14\", \"test_update_cells_noncontiguous 15\", \"test_update_cells_noncontiguous 16\"], [\"test_update_cells_noncontiguous 17\", \"test_update_cells_noncontiguous 18\", \"test_update_cells_noncontiguous 19\", \"test_update_cells_noncontiguous 20\"], [\"test_update_cells_noncontiguous 21\", \"test_update_cells_noncontiguous 22\", \"test_update_cells_noncontiguous 23\", \"test_update_cells_noncontiguous 24\"]]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "Content-Length": [
+                        "927"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:54 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "169"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs\",\n  \"updatedRange\": \"Sheet1!A1:D6\",\n  \"updatedRows\": 6,\n  \"updatedColumns\": 4,\n  \"updatedCells\": 24\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs/values/%27Sheet1%27%21A1%3AD6",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:54 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "1195"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_update_cells_noncontiguous 1\",\n      \"test_update_cells_noncontiguous 2\",\n      \"test_update_cells_noncontiguous 3\",\n      \"test_update_cells_noncontiguous 4\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 5\",\n      \"test_update_cells_noncontiguous 6\",\n      \"test_update_cells_noncontiguous 7\",\n      \"test_update_cells_noncontiguous 8\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 9\",\n      \"test_update_cells_noncontiguous 10\",\n      \"test_update_cells_noncontiguous 11\",\n      \"test_update_cells_noncontiguous 12\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 13\",\n      \"test_update_cells_noncontiguous 14\",\n      \"test_update_cells_noncontiguous 15\",\n      \"test_update_cells_noncontiguous 16\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 17\",\n      \"test_update_cells_noncontiguous 18\",\n      \"test_update_cells_noncontiguous 19\",\n      \"test_update_cells_noncontiguous 20\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 21\",\n      \"test_update_cells_noncontiguous 22\",\n      \"test_update_cells_noncontiguous 23\",\n      \"test_update_cells_noncontiguous 24\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "PUT",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW",
+                "body": "{\"values\": [[\"test_update_cells_noncontiguous 25 top_left\", null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, \"test_update_cells_noncontiguous 26 bottom_right\"]]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "Content-Length": [
+                        "254"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:54 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "168"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs\",\n  \"updatedRange\": \"Sheet1!A1:D6\",\n  \"updatedRows\": 2,\n  \"updatedColumns\": 2,\n  \"updatedCells\": 2\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs/values/%27Sheet1%27%21A1%3AD6",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:55 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "1218"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_update_cells_noncontiguous 25 top_left\",\n      \"test_update_cells_noncontiguous 2\",\n      \"test_update_cells_noncontiguous 3\",\n      \"test_update_cells_noncontiguous 4\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 5\",\n      \"test_update_cells_noncontiguous 6\",\n      \"test_update_cells_noncontiguous 7\",\n      \"test_update_cells_noncontiguous 8\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 9\",\n      \"test_update_cells_noncontiguous 10\",\n      \"test_update_cells_noncontiguous 11\",\n      \"test_update_cells_noncontiguous 12\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 13\",\n      \"test_update_cells_noncontiguous 14\",\n      \"test_update_cells_noncontiguous 15\",\n      \"test_update_cells_noncontiguous 16\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 17\",\n      \"test_update_cells_noncontiguous 18\",\n      \"test_update_cells_noncontiguous 19\",\n      \"test_update_cells_noncontiguous 20\"\n    ],\n    [\n      \"test_update_cells_noncontiguous 21\",\n      \"test_update_cells_noncontiguous 22\",\n      \"test_update_cells_noncontiguous 23\",\n      \"test_update_cells_noncontiguous 26 bottom_right\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "DELETE",
+                "uri": "https://www.googleapis.com/drive/v3/files/15VbX8SxymCcqsReC9y4SIyvb3uVywhVLbZrph0MsEYs?supportsAllDrives=True",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 204,
+                    "message": "No Content"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Content-Type": [
+                        "text/html"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 09:01:55 GMT"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ]
+                },
+                "body": {
+                    "string": ""
+                }
+            }
         }
     ]
 }
