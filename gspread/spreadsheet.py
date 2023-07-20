@@ -60,7 +60,9 @@ class Spreadsheet:
 
     @property
     def lastUpdateTime(self):
-        """Spreadsheet last updated time. Only updated on initialisation. For actual last updated time, use get_lastUpdateTime()."""
+        """Spreadsheet last updated time.
+        Only updated on initialisation.
+        For actual last updated time, use get_lastUpdateTime()."""
         warnings.warn(
             """
             This is only updated on initialisation and is probably outdated by the time you use it.
