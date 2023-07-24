@@ -61,7 +61,7 @@ CellFormat = TypedDict(
 
 BatchData = TypedDict("BatchData", {"range": str, "values": List[List[Any]]})
 
-JSONAnyType = Mapping[str, Any]
+JSONResponse = MutableMapping[str, Any]
 ValueRangeType = TypeVar("ValueRangeType", bound="ValueRange")
 
 
@@ -734,7 +734,7 @@ class Worksheet:
         except KeyError:
             return []
 
-    def update_acell(self, label: str, value: Union[int, float, str]) -> JSONAnyType:
+    def update_acell(self, label: str, value: Union[int, float, str]) -> JSONResponse:
         """Updates the value of a cell.
 
         :param str label: Cell label in A1 notation.
@@ -748,7 +748,7 @@ class Worksheet:
 
     def update_cell(
         self, row: int, col: int, value: Union[int, float, str]
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Updates the value of a cell.
 
         :param int row: Row number.
@@ -1018,7 +1018,7 @@ class Worksheet:
         include_values_in_response: Optional[bool] = None,
         response_value_render_option: Optional[ValueRenderOption] = None,
         response_date_time_render_option: Optional[DateTimeOption] = None,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Sets values in a cell range of the sheet.
 
         :param list values: The data to be written in a matrix format.
@@ -1153,7 +1153,7 @@ class Worksheet:
         include_values_in_response: Optional[bool] = None,
         response_value_render_option: Optional[ValueRenderOption] = None,
         response_date_time_render_option: Optional[DateTimeOption] = None,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Sets values in one or more cell ranges of the sheet at once.
 
         :param list data: List of dictionaries in the form of
@@ -1262,7 +1262,7 @@ class Worksheet:
 
         return response
 
-    def batch_format(self, formats: List[CellFormat]) -> JSONAnyType:
+    def batch_format(self, formats: List[CellFormat]) -> JSONResponse:
         """Formats cells in batch.
 
         :param list formats: List of ranges to format and the new format to apply
@@ -1329,7 +1329,9 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def format(self, ranges: Union[List[str], str], format: JSONAnyType) -> JSONAnyType:
+    def format(
+        self, ranges: Union[List[str], str], format: JSONResponse
+    ) -> JSONResponse:
         """Format a list of ranges with the given format.
 
         :param str|list ranges: Target ranges in the A1 notation.
@@ -1378,7 +1380,7 @@ class Worksheet:
 
     def resize(
         self, rows: Optional[int] = None, cols: Optional[int] = None
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Resizes the worksheet. Specify one of ``rows`` or ``cols``.
 
         :param int rows: (optional) New number of rows.
@@ -1420,7 +1422,7 @@ class Worksheet:
 
     # TODO(post Python 2): replace the method signature with
     # def sort(self, *specs, range=None):
-    def sort(self, *specs: Tuple[int, str], **kwargs) -> JSONAnyType:
+    def sort(self, *specs: Tuple[int, str], **kwargs) -> JSONResponse:
         """Sorts worksheet using given sort orders.
 
         :param list specs: The sort order per column. Each sort order
@@ -1494,7 +1496,7 @@ class Worksheet:
         response = self.client.batch_update(self.spreadsheet_id, body)
         return response
 
-    def update_title(self, title: str) -> JSONAnyType:
+    def update_title(self, title: str) -> JSONResponse:
         """Renames the worksheet.
 
         :param str title: A new title.
@@ -1514,7 +1516,7 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color: Mapping[str, float]) -> JSONAnyType:
+    def update_tab_color(self, color: Mapping[str, float]) -> JSONResponse:
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
@@ -1552,7 +1554,7 @@ class Worksheet:
         self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
         return response
 
-    def clear_tab_color(self) -> JSONAnyType:
+    def clear_tab_color(self) -> JSONResponse:
         """Clears the worksheet's tab color.
         Use update_tab_color() to set the color.
         """
@@ -1575,7 +1577,7 @@ class Worksheet:
         self._properties.pop("tabColorStyle")
         return response
 
-    def update_index(self, index: int) -> JSONAnyType:
+    def update_index(self, index: int) -> JSONResponse:
         """Updates the ``index`` property for the worksheet.
 
         See the `Sheets API documentation
@@ -1604,7 +1606,7 @@ class Worksheet:
 
     def _auto_resize(
         self, start_index: int, end_index: int, dimension: Dimension
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Updates the size of rows or columns in the  worksheet.
 
         Index start from 0
@@ -1636,7 +1638,7 @@ class Worksheet:
 
     def columns_auto_resize(
         self, start_column_index: int, end_column_index: int
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Updates the size of rows or columns in the  worksheet.
 
         Index start from 0
@@ -1650,7 +1652,9 @@ class Worksheet:
         """
         return self._auto_resize(start_column_index, end_column_index, Dimension.cols)
 
-    def rows_auto_resize(self, start_row_index: int, end_row_index: int) -> JSONAnyType:
+    def rows_auto_resize(
+        self, start_row_index: int, end_row_index: int
+    ) -> JSONResponse:
         """Updates the size of rows or columns in the  worksheet.
 
         Index start from 0
@@ -1688,7 +1692,7 @@ class Worksheet:
         insert_data_option: Optional[InsertDataOption] = None,
         table_range: Optional[str] = None,
         include_values_in_response: bool = False,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Adds a row to the worksheet and populates it with values.
 
         Widens the worksheet if there are more values than columns.
@@ -1727,7 +1731,7 @@ class Worksheet:
         insert_data_option: Optional[InsertDataOption] = None,
         table_range: Optional[str] = None,
         include_values_in_response: Optional[bool] = None,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Adds multiple rows to the worksheet and populates them with values.
 
         Widens the worksheet if there are more values than columns.
@@ -1773,7 +1777,7 @@ class Worksheet:
         index: int = 1,
         value_input_option: ValueInputOption = ValueInputOption.raw,
         inherit_from_before: bool = False,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Adds a row to the worksheet at the specified index and populates it
         with values.
 
@@ -1812,7 +1816,7 @@ class Worksheet:
         row: int = 1,
         value_input_option: ValueInputOption = ValueInputOption.raw,
         inherit_from_before: bool = False,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Adds multiple rows to the worksheet at the specified index and
         populates them with values.
 
@@ -1884,7 +1888,7 @@ class Worksheet:
         col: int = 1,
         value_input_option: ValueInputOption = ValueInputOption.raw,
         inherit_from_before: bool = False,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Adds multiple new cols to the worksheet at specified index and
         populates them with values.
 
@@ -1952,7 +1956,7 @@ class Worksheet:
         description: Optional[str] = None,
         warning_only: bool = False,
         requesting_user_can_edit: bool = False,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Add protected range to the sheet. Only the editors can edit
         the protected range.
 
@@ -2013,7 +2017,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_protected_range(self, id: str) -> JSONAnyType:
+    def delete_protected_range(self, id: str) -> JSONResponse:
         """Delete protected range identified by the ID ``id``.
 
         To retrieve the ID of a protected range use the following method
@@ -2034,7 +2038,7 @@ class Worksheet:
 
     def delete_dimension(
         self, dimension: Dimension, start_index: int, end_index: Optional[int] = None
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Deletes multi rows from the worksheet at the specified index.
 
         :param dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
@@ -2074,7 +2078,7 @@ class Worksheet:
 
     def delete_rows(
         self, start_index: int, end_index: Optional[int] = None
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Deletes multiple rows from the worksheet at the specified index.
 
         :param int start_index: Index of a first row for deletion.
@@ -2095,7 +2099,7 @@ class Worksheet:
 
     def delete_columns(
         self, start_index: int, end_index: Optional[int] = None
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Deletes multiple columns from the worksheet at the specified index.
 
         :param int start_index: Index of a first column for deletion.
@@ -2105,13 +2109,13 @@ class Worksheet:
         """
         return self.delete_dimension(Dimension.cols, start_index, end_index)
 
-    def clear(self) -> JSONAnyType:
+    def clear(self) -> JSONResponse:
         """Clears all cells in the worksheet."""
         return self.client.values_clear(
             self.spreadsheet_id, absolute_range_name(self.title)
         )
 
-    def batch_clear(self, ranges: Sequence[str]) -> JSONAnyType:
+    def batch_clear(self, ranges: Sequence[str]) -> JSONResponse:
         """Clears multiple ranges of cells with 1 API call.
 
         `Batch Clear`_
@@ -2262,7 +2266,7 @@ class Worksheet:
 
     def freeze(
         self, rows: Optional[int] = None, cols: Optional[int] = None
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Freeze rows and/or columns on the worksheet.
 
         :param rows: Number of rows to freeze.
@@ -2330,7 +2334,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def clear_basic_filter(self) -> JSONAnyType:
+    def clear_basic_filter(self) -> JSONResponse:
         """Remove the basic filter from a worksheet.
 
         .. versionadded:: 3.4
@@ -2430,7 +2434,7 @@ class Worksheet:
     def copy_to(
         self,
         destination_spreadsheet_id: str,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Copies this sheet to another spreadsheet.
 
         :param str spreadsheet_id: The ID of the spreadsheet to copy
@@ -2444,7 +2448,7 @@ class Worksheet:
         )
 
     @cast_to_a1_notation
-    def merge_cells(self, name: str, merge_type: str = "MERGE_ALL") -> JSONAnyType:
+    def merge_cells(self, name: str, merge_type: str = "MERGE_ALL") -> JSONResponse:
         """Merge cells. There are 3 merge types: ``MERGE_ALL``, ``MERGE_COLUMNS``,
         and ``MERGE_ROWS``.
 
@@ -2476,7 +2480,7 @@ class Worksheet:
         return self.client.batch_update(self.spreadsheet_id, body)
 
     @cast_to_a1_notation
-    def unmerge_cells(self, name: str) -> JSONAnyType:
+    def unmerge_cells(self, name: str) -> JSONResponse:
         """Unmerge cells.
 
         Unmerge previously merged cells.
@@ -2665,7 +2669,7 @@ class Worksheet:
         self.update_notes({cell: ""})
 
     @cast_to_a1_notation
-    def define_named_range(self, name: str, range_name: str) -> JSONAnyType:
+    def define_named_range(self, name: str, range_name: str) -> JSONResponse:
         """
         :param str name: A string with range value in A1 notation,
             e.g. 'A1:A5'.
@@ -2697,7 +2701,7 @@ class Worksheet:
         }
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_named_range(self, named_range_id: str) -> JSONAnyType:
+    def delete_named_range(self, named_range_id: str) -> JSONResponse:
         """
         :param str named_range_id: The ID of the named range to delete.
             Can be obtained with Spreadsheet.list_named_ranges()
@@ -2718,7 +2722,7 @@ class Worksheet:
 
     def _add_dimension_group(
         self, start: int, end: int, dimension: Dimension
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """
         update this sheet by grouping 'dimension'
 
@@ -2745,7 +2749,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def add_dimension_group_columns(self, start: int, end: int) -> JSONAnyType:
+    def add_dimension_group_columns(self, start: int, end: int) -> JSONResponse:
         """
         Group columns in order to hide them in the UI.
 
@@ -2761,7 +2765,7 @@ class Worksheet:
         """
         return self._add_dimension_group(start, end, Dimension.cols)
 
-    def add_dimension_group_rows(self, start: int, end: int) -> JSONAnyType:
+    def add_dimension_group_rows(self, start: int, end: int) -> JSONResponse:
         """
         Group rows in order to hide them in the UI.
 
@@ -2777,7 +2781,7 @@ class Worksheet:
 
     def _delete_dimension_group(
         self, start: int, end: int, dimension: Dimension
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """delete a dimension group in this sheet"""
         body = {
             "requests": [
@@ -2796,7 +2800,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_dimension_group_columns(self, start: int, end: int) -> JSONAnyType:
+    def delete_dimension_group_columns(self, start: int, end: int) -> JSONResponse:
         """
         Remove the grouping of a set of columns.
 
@@ -2812,7 +2816,7 @@ class Worksheet:
         """
         return self._delete_dimension_group(start, end, Dimension.cols)
 
-    def delete_dimension_group_rows(self, start: int, end: int) -> JSONAnyType:
+    def delete_dimension_group_rows(self, start: int, end: int) -> JSONResponse:
         """
         Remove the grouping of a set of rows.
 
@@ -2825,7 +2829,7 @@ class Worksheet:
         """
         return self._delete_dimension_group(start, end, Dimension.rows)
 
-    def list_dimension_group_columns(self) -> List[JSONAnyType]:
+    def list_dimension_group_columns(self) -> List[JSONResponse]:
         """
         List all the grouped columns in this worksheet.
 
@@ -2834,7 +2838,7 @@ class Worksheet:
         """
         return self._get_sheet_property("columnGroups", [])
 
-    def list_dimension_group_rows(self) -> List[JSONAnyType]:
+    def list_dimension_group_rows(self) -> List[JSONResponse]:
         """
         List all the grouped rows in this worksheet.
 
@@ -2845,7 +2849,7 @@ class Worksheet:
 
     def _hide_dimension(
         self, start: int, end: int, dimension: Dimension
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """
         Update this sheet by hiding the given 'dimension'
 
@@ -2878,7 +2882,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def hide_columns(self, start: int, end: int) -> JSONAnyType:
+    def hide_columns(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly hide the given column index range.
 
@@ -2889,7 +2893,7 @@ class Worksheet:
         """
         return self._hide_dimension(start, end, Dimension.cols)
 
-    def hide_rows(self, start: int, end: int) -> JSONAnyType:
+    def hide_rows(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly hide the given row index range.
 
@@ -2902,7 +2906,7 @@ class Worksheet:
 
     def _unhide_dimension(
         self, start: int, end: int, dimension: Dimension
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """
         Update this sheet by unhiding the given 'dimension'
 
@@ -2935,7 +2939,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def unhide_columns(self, start: int, end: int) -> JSONAnyType:
+    def unhide_columns(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly unhide the given column index range.
 
@@ -2946,7 +2950,7 @@ class Worksheet:
         """
         return self._unhide_dimension(start, end, Dimension.cols)
 
-    def unhide_rows(self, start: int, end: int) -> JSONAnyType:
+    def unhide_rows(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly unhide the given row index range.
 
@@ -2957,7 +2961,7 @@ class Worksheet:
         """
         return self._unhide_dimension(start, end, Dimension.rows)
 
-    def _set_hidden_flag(self, hidden: bool) -> JSONAnyType:
+    def _set_hidden_flag(self, hidden: bool) -> JSONResponse:
         """Send the appropriate request to hide/show the current worksheet"""
 
         body = {
@@ -2978,15 +2982,15 @@ class Worksheet:
         self._properties["hidden"] = hidden
         return res
 
-    def hide(self) -> JSONAnyType:
+    def hide(self) -> JSONResponse:
         """Hides the current worksheet from the UI."""
         return self._set_hidden_flag(True)
 
-    def show(self) -> JSONAnyType:
+    def show(self) -> JSONResponse:
         """Show the current worksheet in the UI."""
         return self._set_hidden_flag(False)
 
-    def _set_gridlines_hidden_flag(self, hidden: bool) -> JSONAnyType:
+    def _set_gridlines_hidden_flag(self, hidden: bool) -> JSONResponse:
         """Hide/show gridlines on the current worksheet"""
 
         body = {
@@ -3009,11 +3013,11 @@ class Worksheet:
         self._properties["gridProperties"]["hideGridlines"] = hidden
         return res
 
-    def hide_gridlines(self) -> JSONAnyType:
+    def hide_gridlines(self) -> JSONResponse:
         """Hide gridlines on the current worksheet"""
         return self._set_gridlines_hidden_flag(True)
 
-    def show_gridlines(self) -> JSONAnyType:
+    def show_gridlines(self) -> JSONResponse:
         """Show gridlines on the current worksheet"""
         return self._set_gridlines_hidden_flag(False)
 
@@ -3023,7 +3027,7 @@ class Worksheet:
         dest: str,
         paste_type: PasteType = PasteType.normal,
         paste_orientation: PasteOrientation = PasteOrientation.normal,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Copies a range of data from source to dest
 
         .. note::
@@ -3067,7 +3071,7 @@ class Worksheet:
         source: str,
         dest: str,
         paste_type: PasteType = PasteType.normal,
-    ) -> JSONAnyType:
+    ) -> JSONResponse:
         """Moves a range of data form source to dest
 
         .. note::
