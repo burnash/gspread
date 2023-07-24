@@ -296,7 +296,7 @@ class Worksheet:
                 rowcol_to_a1(row, col), value_render_option=value_render_option
             )
 
-            value = data.first() or ""
+            value = str(data.first())
         except KeyError:
             value = ""
 
