@@ -745,11 +745,16 @@ class Spreadsheet:
 
         return sheet.get("protectedRanges", [])
 
-    def get_lastUpdateTime(self):
+    def refresh_lastUpdateTime(self) -> None:
+        """Updates the cached value of lastUpdateTime."""
+        # remove this and the below upon deprecation of lastUpdateTime @property
+        self._properties["modifiedTime"] = self.get_lastUpdateTime()
+
+    def get_lastUpdateTime(self) -> str:
         """Get the lastUpdateTime metadata from the Drive API.
         Also updates the cached value in the _properties dict.
         """
         metadata = self.client.get_file_drive_metadata(self.id)
-        # remove this upon deprecation of lastUpdateTime @property
+        # remove next line and the above upon deprecation of lastUpdateTime @property
         self._properties["modifiedTime"] = metadata["modifiedTime"]
         return metadata["modifiedTime"]
