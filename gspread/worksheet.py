@@ -6,13 +6,36 @@ This module contains common worksheets' models.
 
 """
 
+import re
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    TypedDict,
+    TypeVar,
+    Union,
+)
+
 from .cell import Cell
 from .exceptions import GSpreadException
+from .http_client import HTTPClient, ParamsType
 from .urls import WORKSHEET_DRIVE_URL
 from .utils import (
+    DateTimeOption,
     Dimension,
+    InsertDataOption,
     PasteOrientation,
     PasteType,
+    T,
     ValueInputOption,
     ValueRenderOption,
     a1_range_to_grid_range,
@@ -23,10 +46,23 @@ from .utils import (
     combined_merge_values,
     fill_gaps,
     finditem,
-    is_scalar,
     numericise_all,
     rowcol_to_a1,
 )
+
+CellFormat = TypedDict(
+    "CellFormat",
+    {
+        "range": str,
+        "format": Mapping[str, Any],
+    },
+)
+
+
+BatchData = TypedDict("BatchData", {"range": str, "values": List[List[Any]]})
+
+JSONResponse = MutableMapping[str, Any]
+ValueRangeType = TypeVar("ValueRangeType", bound="ValueRange")
 
 
 class ValueRange(list):
@@ -65,8 +101,10 @@ class ValueRange(list):
        It will be instantiated using the response from the sheet API.
     """
 
+    _json: MutableMapping[str, Any] = {}
+
     @classmethod
-    def from_json(cls, json):
+    def from_json(cls: Type[ValueRangeType], json: Mapping[str, Any]) -> ValueRangeType:
         values = json.get("values", [])
         new_obj = cls(values)
         new_obj._json = {
@@ -77,12 +115,12 @@ class ValueRange(list):
         return new_obj
 
     @property
-    def range(self):
+    def range(self) -> str:
         """The range of the values"""
         return self._json["range"]
 
     @property
-    def major_dimension(self):
+    def major_dimension(self) -> str:
         """The major dimension of this range
 
         Can be one of:
@@ -92,7 +130,7 @@ class ValueRange(list):
         """
         return self._json["majorDimension"]
 
-    def first(self, default=None):
+    def first(self, default: Optional[str] = None) -> Optional[str]:
         """Returns the value of a first cell in a range.
 
         If the range is empty, return the default value.
@@ -108,12 +146,17 @@ class Worksheet:
     (aka "worksheet").
     """
 
-    def __init__(self, spreadsheet_id, client, properties):
+    def __init__(
+        self,
+        spreadsheet_id: str,
+        client: HTTPClient,
+        properties: MutableMapping[str, Any],
+    ):
         self.spreadsheet_id = spreadsheet_id
         self.client = client
         self._properties = properties
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<{} {} id:{}>".format(
             self.__class__.__name__,
             repr(self.title),
@@ -121,38 +164,38 @@ class Worksheet:
         )
 
     @property
-    def id(self):
+    def id(self) -> int:
         """Worksheet ID."""
         return self._properties["sheetId"]
 
     @property
-    def title(self):
+    def title(self) -> str:
         """Worksheet title."""
         return self._properties["title"]
 
     @property
-    def url(self):
+    def url(self) -> str:
         """Worksheet URL."""
         return WORKSHEET_DRIVE_URL % (self.spreadsheet_id, self.id)
 
     @property
-    def index(self):
+    def index(self) -> int:
         """Worksheet index."""
         return self._properties["index"]
 
     @property
-    def isSheetHidden(self):
+    def isSheetHidden(self) -> bool:
         """Worksheet hidden status."""
         # if the property is not set then hidden=False
         return self._properties.get("hidden", False)
 
     @property
-    def row_count(self):
+    def row_count(self) -> int:
         """Number of rows."""
         return self._properties["gridProperties"]["rowCount"]
 
     @property
-    def col_count(self):
+    def col_count(self) -> int:
         """Number of columns.
 
         .. warning::
@@ -163,30 +206,30 @@ class Worksheet:
         return self._properties["gridProperties"]["columnCount"]
 
     @property
-    def frozen_row_count(self):
+    def frozen_row_count(self) -> int:
         """Number of frozen rows."""
         return self._properties["gridProperties"].get("frozenRowCount", 0)
 
     @property
-    def frozen_col_count(self):
+    def frozen_col_count(self) -> int:
         """Number of frozen columns."""
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
     @property
-    def is_gridlines_hidden(self):
+    def is_gridlines_hidden(self) -> bool:
         """Whether or not gridlines hidden. Boolean.
         True if hidden. False if shown.
         """
         return self._properties["gridProperties"].get("hideGridlines", False)
 
     @property
-    def tab_color(self):
+    def tab_color(self) -> Optional[Dict[str, float]]:
         """Tab color style. Dict with RGB color values.
         If any of R, G, B are 0, they will not be present in the dict.
         """
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
 
-    def _get_sheet_property(self, property, default_value):
+    def _get_sheet_property(self, property: str, default_value: Optional[T]) -> T:
         """return a property of this worksheet or default value if not found"""
         meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
         sheet = finditem(
@@ -195,7 +238,11 @@ class Worksheet:
 
         return sheet.get(property, default_value)
 
-    def acell(self, label, value_render_option=ValueRenderOption.formatted):
+    def acell(
+        self,
+        label: str,
+        value_render_option: ValueRenderOption = ValueRenderOption.formatted,
+    ) -> Cell:
         """Returns an instance of a :class:`gspread.cell.Cell`.
 
         :param label: Cell label in A1 notation
@@ -217,7 +264,12 @@ class Worksheet:
             *(a1_to_rowcol(label)), value_render_option=value_render_option
         )
 
-    def cell(self, row, col, value_render_option=ValueRenderOption.formatted):
+    def cell(
+        self,
+        row: int,
+        col: int,
+        value_render_option: ValueRenderOption = ValueRenderOption.formatted,
+    ) -> Cell:
         """Returns an instance of a :class:`gspread.cell.Cell` located at
         `row` and `col` column.
 
@@ -244,14 +296,14 @@ class Worksheet:
                 rowcol_to_a1(row, col), value_render_option=value_render_option
             )
 
-            value = data.first()
+            value = str(data.first())
         except KeyError:
             value = ""
 
         return Cell(row, col, value)
 
     @cast_to_a1_notation
-    def range(self, name=""):
+    def range(self, name: str = "") -> List[Cell]:
         """Returns a list of :class:`gspread.cell.Cell` objects from a specified range.
 
         :param name: A string with range value in A1 notation (e.g. 'A1:A5')
@@ -325,12 +377,12 @@ class Worksheet:
 
     def get_values(
         self,
-        range_name=None,
-        combine_merged_cells=False,
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-    ):
+        range_name: Optional[str] = None,
+        combine_merged_cells: bool = False,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> List[List[Any]]:
         """Returns a list of lists containing all values from specified range.
 
         By default values are returned as strings. See ``value_render_option``
@@ -444,14 +496,14 @@ class Worksheet:
                 return combined_merge_values(worksheet_meta, vals)
             return vals
         except KeyError:
-            return []
+            return [[]]
 
     def get_all_values(
         self,
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-    ):
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> List[List[Any]]:
         """Returns a list of lists containing all cells' values as strings.
 
         This is an alias to :meth:`~gspread.worksheet.Worksheet.get_values`
@@ -477,14 +529,14 @@ class Worksheet:
 
     def get_all_records(
         self,
-        empty2zero=False,
-        head=1,
-        default_blank="",
-        allow_underscores_in_numeric_literals=False,
-        numericise_ignore=[],
-        value_render_option=None,
-        expected_headers=None,
-    ):
+        empty2zero: bool = False,
+        head: int = 1,
+        default_blank: str = "",
+        allow_underscores_in_numeric_literals: bool = False,
+        numericise_ignore: List[int] = [],
+        value_render_option: Optional[ValueRenderOption] = None,
+        expected_headers: Optional[List[Union[str, int, float]]] = None,
+    ) -> List[Dict[str, Union[int, float, str]]]:
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
         dictionaries holding the contents of subsequent rows of cells as
@@ -564,18 +616,18 @@ class Worksheet:
 
         return [dict(zip(keys, row)) for row in values]
 
-    def get_all_cells(self):
+    def get_all_cells(self) -> List[Cell]:
         """Returns a list of all `Cell` of the current sheet."""
 
         return self.range()
 
     def row_values(
         self,
-        row,
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-    ):
+        row: int,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> List[Optional[Union[int, float, str]]]:
         """Returns a list of all values in a `row`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -645,7 +697,11 @@ class Worksheet:
         except KeyError:
             return []
 
-    def col_values(self, col, value_render_option=ValueRenderOption.formatted):
+    def col_values(
+        self,
+        col: int,
+        value_render_option: ValueRenderOption = ValueRenderOption.formatted,
+    ) -> List[Optional[Union[int, float, str]]]:
         """Returns a list of all values in column `col`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -678,7 +734,7 @@ class Worksheet:
         except KeyError:
             return []
 
-    def update_acell(self, label, value):
+    def update_acell(self, label: str, value: Union[int, float, str]) -> JSONResponse:
         """Updates the value of a cell.
 
         :param str label: Cell label in A1 notation.
@@ -690,7 +746,9 @@ class Worksheet:
         """
         return self.update_cell(*(a1_to_rowcol(label)), value=value)
 
-    def update_cell(self, row, col, value):
+    def update_cell(
+        self, row: int, col: int, value: Union[int, float, str]
+    ) -> JSONResponse:
         """Updates the value of a cell.
 
         :param int row: Row number.
@@ -712,7 +770,11 @@ class Worksheet:
 
         return data
 
-    def update_cells(self, cell_list, value_input_option=ValueInputOption.raw):
+    def update_cells(
+        self,
+        cell_list: List[Cell],
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+    ) -> Mapping[str, Any]:
         """Updates many cells at once.
 
         :param list cell_list: List of :class:`gspread.cell.Cell` objects to update.
@@ -767,11 +829,11 @@ class Worksheet:
 
     def get(
         self,
-        range_name=None,
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-    ):
+        range_name: Optional[str] = None,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> ValueRange:
         """Reads values of a single range or a cell of a sheet.
 
         :param str range_name: (optional) Cell range in the A1 notation or
@@ -849,7 +911,7 @@ class Worksheet:
         """
         range_name = absolute_range_name(self.title, range_name)
 
-        params = {
+        params: ParamsType = {
             "majorDimension": major_dimension,
             "valueRenderOption": value_render_option,
             "dateTimeRenderOption": date_time_render_option,
@@ -863,11 +925,11 @@ class Worksheet:
 
     def batch_get(
         self,
-        ranges,
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-    ):
+        ranges: Iterable[str],
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> List[ValueRange]:
         """Returns one or more ranges of values from the sheet.
 
         :param list ranges: List of cell ranges in the A1 notation or named
@@ -934,7 +996,7 @@ class Worksheet:
         """
         ranges = [absolute_range_name(self.title, r) for r in ranges if r]
 
-        params = {
+        params: ParamsType = {
             "majorDimension": major_dimension,
             "valueRenderOption": value_render_option,
             "dateTimeRenderOption": date_time_render_option,
@@ -948,20 +1010,20 @@ class Worksheet:
 
     def update(
         self,
-        range_name,
-        values=None,
-        raw=True,
-        major_dimension=None,
-        value_input_option=None,
-        include_values_in_response=None,
-        response_value_render_option=None,
-        response_date_time_render_option=None,
-    ):
+        values: Iterable[Iterable[Any]],
+        range_name: Optional[str] = None,
+        raw: bool = True,
+        major_dimension: Optional[Dimension] = None,
+        value_input_option: Optional[ValueInputOption] = None,
+        include_values_in_response: Optional[bool] = None,
+        response_value_render_option: Optional[ValueRenderOption] = None,
+        response_date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> JSONResponse:
         """Sets values in a cell range of the sheet.
 
-        :param str range_name: The A1 notation of the values
+        :param list values: The data to be written in a matrix format.
+        :param str range_name: (optional) The A1 notation of the values
             to update.
-        :param list values: The data to be written.
 
         :param bool raw: The values will not be parsed by Sheets API and will
             be stored as-is. For example, formulas will be rendered as plain
@@ -1039,20 +1101,20 @@ class Worksheet:
         Examples::
 
             # Sets 'Hello world' in 'A2' cell
-            worksheet.update('A2', 'Hello world')
+            worksheet.update([['Hello world']], 'A2')
 
             # Updates cells A1, B1, C1 with values 42, 43, 44 respectively
-            worksheet.update([42, 43, 44])
+            worksheet.update([[42, 43, 44]])
 
             # Updates A2 and A3 with values 42 and 43
             # Note that update range can be bigger than values array
-            worksheet.update('A2:B4', [[42], [43]])
+            worksheet.update([[42], [43]], 'A2:B4')
 
             # Add a formula
-            worksheet.update('A5', '=SUM(A1:A4)', raw=False)
+            worksheet.update([['=SUM(A1:A4)']], 'A5', raw=False)
 
             # Update 'my_range' named range with values 42 and 43
-            worksheet.update('my_range', [[42], [43]])
+            worksheet.update([[42], [43]], 'my_range')
 
             # Note: named ranges are defined in the scope of
             # a spreadsheet, so even if `my_range` does not belong to
@@ -1060,21 +1122,14 @@ class Worksheet:
 
         .. versionadded:: 3.3
         """
-        if is_scalar(range_name):
-            range_name = absolute_range_name(self.title, range_name)
-        else:
-            values = range_name
-            range_name = absolute_range_name(self.title)
-
-        if is_scalar(values):
-            values = [[values]]
+        full_range_name = absolute_range_name(self.title, range_name)
 
         if not value_input_option:
             value_input_option = (
                 ValueInputOption.raw if raw is True else ValueInputOption.user_entered
             )
 
-        params = {
+        params: ParamsType = {
             "valueInputOption": value_input_option,
             "includeValuesInResponse": include_values_in_response,
             "responseValueRenderOption": response_value_render_option,
@@ -1083,7 +1138,7 @@ class Worksheet:
 
         response = self.client.values_update(
             self.spreadsheet_id,
-            range_name,
+            full_range_name,
             params=params,
             body={"values": values, "majorDimension": major_dimension},
         )
@@ -1092,13 +1147,13 @@ class Worksheet:
 
     def batch_update(
         self,
-        data,
-        raw=True,
-        value_input_option=None,
-        include_values_in_response=None,
-        response_value_render_option=None,
-        response_date_time_render_option=None,
-    ):
+        data: Iterable[MutableMapping[str, Any]],
+        raw: bool = True,
+        value_input_option: Optional[ValueInputOption] = None,
+        include_values_in_response: Optional[bool] = None,
+        response_value_render_option: Optional[ValueRenderOption] = None,
+        response_date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> JSONResponse:
         """Sets values in one or more cell ranges of the sheet at once.
 
         :param list data: List of dictionaries in the form of
@@ -1192,11 +1247,10 @@ class Worksheet:
                 ValueInputOption.raw if raw is True else ValueInputOption.user_entered
             )
 
-        data = [
-            dict(vr, range=absolute_range_name(self.title, vr["range"])) for vr in data
-        ]
+        for values in data:
+            values["range"] = absolute_range_name(self.title, values["range"])
 
-        body = {
+        body: MutableMapping[str, Any] = {
             "valueInputOption": value_input_option,
             "includeValuesInResponse": include_values_in_response,
             "responseValueRenderOption": response_value_render_option,
@@ -1208,7 +1262,7 @@ class Worksheet:
 
         return response
 
-    def batch_format(self, formats):
+    def batch_format(self, formats: List[CellFormat]) -> JSONResponse:
         """Formats cells in batch.
 
         :param list formats: List of ranges to format and the new format to apply
@@ -1250,7 +1304,8 @@ class Worksheet:
         .. versionadded:: 5.4
         """
 
-        body = {
+        # No need to type more than that it's only internal to that method
+        body: Dict[str, Any] = {
             "requests": [],
         }
 
@@ -1274,7 +1329,9 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def format(self, ranges, format):
+    def format(
+        self, ranges: Union[List[str], str], format: JSONResponse
+    ) -> JSONResponse:
         """Format a list of ranges with the given format.
 
         :param str|list ranges: Target ranges in the A1 notation.
@@ -1312,14 +1369,18 @@ class Worksheet:
         .. versionadded:: 3.3
         """
 
-        if is_scalar(ranges):
-            ranges = [ranges]
+        if isinstance(ranges, list):
+            range_list = ranges
+        else:
+            range_list = [ranges]
 
-        formats = [{"range": range, "format": format} for range in ranges]
+        formats = [CellFormat(range=range, format=format) for range in range_list]
 
         return self.batch_format(formats)
 
-    def resize(self, rows=None, cols=None):
+    def resize(
+        self, rows: Optional[int] = None, cols: Optional[int] = None
+    ) -> JSONResponse:
         """Resizes the worksheet. Specify one of ``rows`` or ``cols``.
 
         :param int rows: (optional) New number of rows.
@@ -1361,7 +1422,7 @@ class Worksheet:
 
     # TODO(post Python 2): replace the method signature with
     # def sort(self, *specs, range=None):
-    def sort(self, *specs, **kwargs):
+    def sort(self, *specs: Tuple[int, str], **kwargs) -> JSONResponse:
         """Sorts worksheet using given sort orders.
 
         :param list specs: The sort order per column. Each sort order
@@ -1435,7 +1496,7 @@ class Worksheet:
         response = self.client.batch_update(self.spreadsheet_id, body)
         return response
 
-    def update_title(self, title):
+    def update_title(self, title: str) -> JSONResponse:
         """Renames the worksheet.
 
         :param str title: A new title.
@@ -1455,7 +1516,7 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color: dict):
+    def update_tab_color(self, color: Mapping[str, float]) -> JSONResponse:
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
@@ -1493,7 +1554,7 @@ class Worksheet:
         self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
         return response
 
-    def clear_tab_color(self):
+    def clear_tab_color(self) -> JSONResponse:
         """Clears the worksheet's tab color.
         Use update_tab_color() to set the color.
         """
@@ -1516,7 +1577,7 @@ class Worksheet:
         self._properties.pop("tabColorStyle")
         return response
 
-    def update_index(self, index):
+    def update_index(self, index: int) -> JSONResponse:
         """Updates the ``index`` property for the worksheet.
 
         See the `Sheets API documentation
@@ -1543,7 +1604,9 @@ class Worksheet:
         self._properties["index"] = index
         return res
 
-    def _auto_resize(self, start_index, end_index, dimension):
+    def _auto_resize(
+        self, start_index: int, end_index: int, dimension: Dimension
+    ) -> JSONResponse:
         """Updates the size of rows or columns in the  worksheet.
 
         Index start from 0
@@ -1563,8 +1626,8 @@ class Worksheet:
                         "dimensions": {
                             "sheetId": self.id,
                             "dimension": dimension,
-                            "startIndex": int(start_index),
-                            "endIndex": int(end_index),
+                            "startIndex": start_index,
+                            "endIndex": end_index,
                         }
                     }
                 }
@@ -1573,7 +1636,9 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def columns_auto_resize(self, start_column_index, end_column_index):
+    def columns_auto_resize(
+        self, start_column_index: int, end_column_index: int
+    ) -> JSONResponse:
         """Updates the size of rows or columns in the  worksheet.
 
         Index start from 0
@@ -1587,7 +1652,9 @@ class Worksheet:
         """
         return self._auto_resize(start_column_index, end_column_index, Dimension.cols)
 
-    def rows_auto_resize(self, start_row_index, end_row_index):
+    def rows_auto_resize(
+        self, start_row_index: int, end_row_index: int
+    ) -> JSONResponse:
         """Updates the size of rows or columns in the  worksheet.
 
         Index start from 0
@@ -1600,7 +1667,7 @@ class Worksheet:
         """
         return self._auto_resize(start_row_index, end_row_index, Dimension.rows)
 
-    def add_rows(self, rows):
+    def add_rows(self, rows: int) -> None:
         """Adds rows to worksheet.
 
         :param rows: Number of new rows to add.
@@ -1609,7 +1676,7 @@ class Worksheet:
         """
         self.resize(rows=self.row_count + rows)
 
-    def add_cols(self, cols):
+    def add_cols(self, cols: int) -> None:
         """Adds columns to worksheet.
 
         :param cols: Number of new columns to add.
@@ -1620,12 +1687,12 @@ class Worksheet:
 
     def append_row(
         self,
-        values,
-        value_input_option=ValueInputOption.raw,
-        insert_data_option=None,
-        table_range=None,
-        include_values_in_response=False,
-    ):
+        values: Sequence[Union[str, int, float]],
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        insert_data_option: Optional[InsertDataOption] = None,
+        table_range: Optional[str] = None,
+        include_values_in_response: bool = False,
+    ) -> JSONResponse:
         """Adds a row to the worksheet and populates it with values.
 
         Widens the worksheet if there are more values than columns.
@@ -1659,12 +1726,12 @@ class Worksheet:
 
     def append_rows(
         self,
-        values,
-        value_input_option=ValueInputOption.raw,
-        insert_data_option=None,
-        table_range=None,
-        include_values_in_response=False,
-    ):
+        values: Sequence[Sequence[Union[str, int, float]]],
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        insert_data_option: Optional[InsertDataOption] = None,
+        table_range: Optional[str] = None,
+        include_values_in_response: Optional[bool] = None,
+    ) -> JSONResponse:
         """Adds multiple rows to the worksheet and populates them with values.
 
         Widens the worksheet if there are more values than columns.
@@ -1706,11 +1773,11 @@ class Worksheet:
 
     def insert_row(
         self,
-        values,
-        index=1,
-        value_input_option=ValueInputOption.raw,
-        inherit_from_before=False,
-    ):
+        values: Sequence[Union[str, int, float]],
+        index: int = 1,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        inherit_from_before: bool = False,
+    ) -> JSONResponse:
         """Adds a row to the worksheet at the specified index and populates it
         with values.
 
@@ -1745,11 +1812,11 @@ class Worksheet:
 
     def insert_rows(
         self,
-        values,
-        row=1,
-        value_input_option=ValueInputOption.raw,
-        inherit_from_before=False,
-    ):
+        values: Sequence[Sequence[Union[str, int, float]]],
+        row: int = 1,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        inherit_from_before: bool = False,
+    ) -> JSONResponse:
         """Adds multiple rows to the worksheet at the specified index and
         populates them with values.
 
@@ -1786,7 +1853,7 @@ class Worksheet:
                 "inherit_from_before cannot be used when inserting row(s) at the top of a spreadsheet"
             )
 
-        body = {
+        insert_dimension_body = {
             "requests": [
                 {
                     "insertDimension": {
@@ -1802,7 +1869,7 @@ class Worksheet:
             ]
         }
 
-        self.client.batch_update(self.spreadsheet_id, body)
+        self.client.batch_update(self.spreadsheet_id, insert_dimension_body)
 
         range_label = absolute_range_name(self.title, "A%s" % row)
 
@@ -1817,11 +1884,11 @@ class Worksheet:
 
     def insert_cols(
         self,
-        values,
-        col=1,
-        value_input_option=ValueInputOption.raw,
-        inherit_from_before=False,
-    ):
+        values: Sequence[Sequence[Union[str, int, float]]],
+        col: int = 1,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        inherit_from_before: bool = False,
+    ) -> JSONResponse:
         """Adds multiple new cols to the worksheet at specified index and
         populates them with values.
 
@@ -1851,7 +1918,7 @@ class Worksheet:
                 "inherit_from_before cannot be used when inserting column(s) at the left edge of a spreadsheet"
             )
 
-        body = {
+        insert_dimension_body = {
             "requests": [
                 {
                     "insertDimension": {
@@ -1867,7 +1934,7 @@ class Worksheet:
             ]
         }
 
-        self.client.batch_update(self.spreadsheet_id, body)
+        self.client.batch_update(self.spreadsheet_id, insert_dimension_body)
 
         range_label = absolute_range_name(self.title, rowcol_to_a1(1, col))
 
@@ -1883,13 +1950,13 @@ class Worksheet:
     @cast_to_a1_notation
     def add_protected_range(
         self,
-        name,
-        editor_users_emails,
-        editor_groups_emails=[],
-        description=None,
-        warning_only=False,
-        requesting_user_can_edit=False,
-    ):
+        name: str,
+        editor_users_emails: Sequence[str],
+        editor_groups_emails: Sequence[str] = [],
+        description: Optional[str] = None,
+        warning_only: bool = False,
+        requesting_user_can_edit: bool = False,
+    ) -> JSONResponse:
         """Add protected range to the sheet. Only the editors can edit
         the protected range.
 
@@ -1950,7 +2017,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_protected_range(self, id):
+    def delete_protected_range(self, id: str) -> JSONResponse:
         """Delete protected range identified by the ID ``id``.
 
         To retrieve the ID of a protected range use the following method
@@ -1969,7 +2036,9 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_dimension(self, dimension, start_index, end_index=None):
+    def delete_dimension(
+        self, dimension: Dimension, start_index: int, end_index: Optional[int] = None
+    ) -> JSONResponse:
         """Deletes multi rows from the worksheet at the specified index.
 
         :param dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
@@ -2007,7 +2076,9 @@ class Worksheet:
             self._properties["gridProperties"]["columnCount"] -= num_deleted
         return res
 
-    def delete_rows(self, start_index, end_index=None):
+    def delete_rows(
+        self, start_index: int, end_index: Optional[int] = None
+    ) -> JSONResponse:
         """Deletes multiple rows from the worksheet at the specified index.
 
         :param int start_index: Index of a first row for deletion.
@@ -2026,7 +2097,9 @@ class Worksheet:
         """
         return self.delete_dimension(Dimension.rows, start_index, end_index)
 
-    def delete_columns(self, start_index, end_index=None):
+    def delete_columns(
+        self, start_index: int, end_index: Optional[int] = None
+    ) -> JSONResponse:
         """Deletes multiple columns from the worksheet at the specified index.
 
         :param int start_index: Index of a first column for deletion.
@@ -2036,13 +2109,13 @@ class Worksheet:
         """
         return self.delete_dimension(Dimension.cols, start_index, end_index)
 
-    def clear(self):
+    def clear(self) -> JSONResponse:
         """Clears all cells in the worksheet."""
         return self.client.values_clear(
             self.spreadsheet_id, absolute_range_name(self.title)
         )
 
-    def batch_clear(self, ranges):
+    def batch_clear(self, ranges: Sequence[str]) -> JSONResponse:
         """Clears multiple ranges of cells with 1 API call.
 
         `Batch Clear`_
@@ -2068,7 +2141,14 @@ class Worksheet:
 
         return response
 
-    def _finder(self, func, query, case_sensitive, in_row=None, in_column=None):
+    def _finder(
+        self,
+        func: Callable[[Callable[[Cell], bool], Iterable[Cell]], Iterator[Cell]],
+        query: Union[str, re.Pattern],
+        case_sensitive: bool,
+        in_row: Optional[int] = None,
+        in_column: Optional[int] = None,
+    ) -> Iterator[Cell]:
         data = self.client.values_get(
             self.spreadsheet_id, absolute_range_name(self.title)
         )
@@ -2081,45 +2161,63 @@ class Worksheet:
         cells = self._list_cells(values, in_row, in_column)
 
         if isinstance(query, str):
+            str_query = query
 
-            def match(x):
+            def match(x: Cell) -> bool:
                 if case_sensitive:
-                    return x.value == query
+                    return x.value == str_query
                 else:
-                    return x.value.casefold() == query.casefold()
+                    return x.value.casefold() == str_query.casefold()
+
+        elif isinstance(query, re.Pattern):
+            re_query = query
+
+            def match(x: Cell) -> bool:
+                return re_query.search(x.value) is not None
 
         else:
-
-            def match(x):
-                return query.search(x.value)
+            raise TypeError(
+                "query must be of type: 'str' or 're.Pattern' (obtained from re.compile())"
+            )
 
         return func(match, cells)
 
-    def _list_cells(self, values, in_row=None, in_column=None):
+    def _list_cells(
+        self,
+        values: Sequence[Sequence[Union[str, int, float]]],
+        in_row: Optional[int] = None,
+        in_column: Optional[int] = None,
+    ) -> List[Cell]:
         """Returns a list of ``Cell`` instances scoped by optional
         ``in_row``` or ``in_column`` values (both one-based).
         """
-        if in_row and in_column:
+        if in_row is not None and in_column is not None:
             raise TypeError("Either 'in_row' or 'in_column' should be specified.")
 
-        if in_column:
+        if in_column is not None:
             return [
-                Cell(row=i + 1, col=in_column, value=row[in_column - 1])
+                Cell(row=i + 1, col=in_column, value=str(row[in_column - 1]))
                 for i, row in enumerate(values)
             ]
-        elif in_row:
+        elif in_row is not None:
             return [
-                Cell(row=in_row, col=j + 1, value=value)
+                Cell(row=in_row, col=j + 1, value=str(value))
                 for j, value in enumerate(values[in_row - 1])
             ]
         else:
             return [
-                Cell(row=i + 1, col=j + 1, value=value)
+                Cell(row=i + 1, col=j + 1, value=str(value))
                 for i, row in enumerate(values)
                 for j, value in enumerate(row)
             ]
 
-    def find(self, query, in_row=None, in_column=None, case_sensitive=True):
+    def find(
+        self,
+        query: Union[str, re.Pattern],
+        in_row: Optional[bool] = None,
+        in_column: Optional[bool] = None,
+        case_sensitive: bool = True,
+    ) -> Optional[Cell]:
         """Finds the first cell matching the query.
 
         :param query: A literal string to match or compiled regular expression.
@@ -2134,11 +2232,17 @@ class Worksheet:
         :rtype: :class:`gspread.cell.Cell`
         """
         try:
-            return self._finder(finditem, query, case_sensitive, in_row, in_column)
+            return next(self._finder(filter, query, case_sensitive, in_row, in_column))
         except StopIteration:
             return None
 
-    def findall(self, query, in_row=None, in_column=None, case_sensitive=True):
+    def findall(
+        self,
+        query: Union[str, re.Pattern],
+        in_row: Optional[int] = None,
+        in_column: Optional[int] = None,
+        case_sensitive: bool = True,
+    ) -> List[Cell]:
         """Finds all cells matching the query.
 
         Returns a list of :class:`gspread.cell.Cell`.
@@ -2154,9 +2258,15 @@ class Worksheet:
         :returns: the list of all matching cells or empty list otherwise
         :rtype: list
         """
-        return list(self._finder(filter, query, case_sensitive, in_row, in_column))
 
-    def freeze(self, rows=None, cols=None):
+        return [
+            elem
+            for elem in self._finder(filter, query, case_sensitive, in_row, in_column)
+        ]
+
+    def freeze(
+        self, rows: Optional[int] = None, cols: Optional[int] = None
+    ) -> JSONResponse:
         """Freeze rows and/or columns on the worksheet.
 
         :param rows: Number of rows to freeze.
@@ -2197,7 +2307,7 @@ class Worksheet:
         return res
 
     @cast_to_a1_notation
-    def set_basic_filter(self, name=None):
+    def set_basic_filter(self, name: Optional[str] = None):
         """Add a basic filter to the worksheet. If a range or boundaries
         are passed, the filter will be limited to the given range.
 
@@ -2224,7 +2334,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def clear_basic_filter(self):
+    def clear_basic_filter(self) -> JSONResponse:
         """Remove the basic filter from a worksheet.
 
         .. versionadded:: 3.4
@@ -2244,13 +2354,13 @@ class Worksheet:
     @classmethod
     def _duplicate(
         cls,
-        client,
-        spreadsheet_id,
-        sheet_id,
-        insert_sheet_index=None,
-        new_sheet_id=None,
-        new_sheet_name=None,
-    ):
+        client: HTTPClient,
+        spreadsheet_id: str,
+        sheet_id: int,
+        insert_sheet_index: Optional[int] = None,
+        new_sheet_id: Optional[int] = None,
+        new_sheet_name: Optional[str] = None,
+    ) -> "Worksheet":
         """Class method to duplicate a :class:`gspread.worksheet.Worksheet`.
 
         :param Session client: The HTTP client used for the HTTP request
@@ -2285,15 +2395,18 @@ class Worksheet:
             ]
         }
 
-        data = cls.client.batch_update(spreadsheet_id, body)
+        data = client.batch_update(spreadsheet_id, body)
 
         properties = data["replies"][0]["duplicateSheet"]["properties"]
 
-        return Worksheet(spreadsheet_id, properties)
+        return Worksheet(spreadsheet_id, client, properties)
 
     def duplicate(
-        self, insert_sheet_index=None, new_sheet_id=None, new_sheet_name=None
-    ):
+        self,
+        insert_sheet_index: Optional[int] = None,
+        new_sheet_id: Optional[int] = None,
+        new_sheet_name: Optional[str] = None,
+    ) -> "Worksheet":
         """Duplicate the sheet.
 
         :param int insert_sheet_index: (optional) The zero-based index
@@ -2320,8 +2433,8 @@ class Worksheet:
 
     def copy_to(
         self,
-        spreadsheet_id,
-    ):
+        destination_spreadsheet_id: str,
+    ) -> JSONResponse:
         """Copies this sheet to another spreadsheet.
 
         :param str spreadsheet_id: The ID of the spreadsheet to copy
@@ -2330,10 +2443,12 @@ class Worksheet:
             the newly created sheet.
         :rtype: dict
         """
-        return self.client.spreadsheets_sheets_copy_to(spreadsheet_id, self.id)
+        return self.client.spreadsheets_sheets_copy_to(
+            self.spreadsheet_id, self.id, destination_spreadsheet_id
+        )
 
     @cast_to_a1_notation
-    def merge_cells(self, name, merge_type="MERGE_ALL"):
+    def merge_cells(self, name: str, merge_type: str = "MERGE_ALL") -> JSONResponse:
         """Merge cells. There are 3 merge types: ``MERGE_ALL``, ``MERGE_COLUMNS``,
         and ``MERGE_ROWS``.
 
@@ -2365,7 +2480,7 @@ class Worksheet:
         return self.client.batch_update(self.spreadsheet_id, body)
 
     @cast_to_a1_notation
-    def unmerge_cells(self, name):
+    def unmerge_cells(self, name: str) -> JSONResponse:
         """Unmerge cells.
 
         Unmerge previously merged cells.
@@ -2398,7 +2513,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def get_note(self, cell):
+    def get_note(self, cell: str) -> str:
         """Get the content of the note located at `cell`, or the empty string if the
         cell does not have a note.
 
@@ -2406,7 +2521,10 @@ class Worksheet:
             e.g. 'D7'.
         """
         absolute_cell = absolute_range_name(self.title, cell)
-        params = {"ranges": absolute_cell, "fields": "sheets/data/rowData/values/note"}
+        params: ParamsType = {
+            "ranges": absolute_cell,
+            "fields": "sheets/data/rowData/values/note",
+        }
         res = self.client.spreadsheets_get(self.spreadsheet_id, params)
 
         try:
@@ -2416,7 +2534,7 @@ class Worksheet:
 
         return note
 
-    def update_notes(self, notes):
+    def update_notes(self, notes: Mapping[str, str]) -> None:
         """update multiple notes. The notes are attached to a certain cell.
 
         :param notes dict: A dict of notes with their cells coordinates and respective content
@@ -2436,7 +2554,8 @@ class Worksheet:
         .. versionadded:: 5.9
         """
 
-        body = {"requests": []}
+        # No need to type lower than the sequence, it's internal only
+        body: MutableMapping[str, List[Any]] = {"requests": []}
 
         for range, content in notes.items():
             if not isinstance(content, str):
@@ -2467,7 +2586,7 @@ class Worksheet:
         self.client.batch_update(self.spreadsheet_id, body)
 
     @cast_to_a1_notation
-    def update_note(self, cell, content):
+    def update_note(self, cell: str, content: str) -> None:
         """Update the content of the note located at `cell`.
 
         :param str cell: A string with cell coordinates in A1 notation,
@@ -2479,7 +2598,7 @@ class Worksheet:
         self.update_notes({cell: content})
 
     @cast_to_a1_notation
-    def insert_note(self, cell, content):
+    def insert_note(self, cell: str, content: str) -> None:
         """Insert a note. The note is attached to a certain cell.
 
         :param str cell: A string with cell coordinates in A1 notation,
@@ -2498,7 +2617,7 @@ class Worksheet:
         """
         self.update_notes({cell: content})
 
-    def insert_notes(self, notes):
+    def insert_notes(self, notes: Mapping[str, str]) -> None:
         """insert multiple notes. The notes are attached to a certain cell.
 
         :param notes dict: A dict of notes with their cells coordinates and respective content
@@ -2519,7 +2638,7 @@ class Worksheet:
         """
         self.update_notes(notes)
 
-    def clear_notes(self, ranges):
+    def clear_notes(self, ranges: Iterable[str]) -> None:
         """Clear all notes located at the at the coordinates
         pointed to by ``ranges``.
 
@@ -2530,7 +2649,7 @@ class Worksheet:
         self.update_notes(notes)
 
     @cast_to_a1_notation
-    def clear_note(self, cell):
+    def clear_note(self, cell: str) -> None:
         """Clear a note. The note is attached to a certain cell.
 
         :param str cell: A string with cell coordinates in A1 notation,
@@ -2550,7 +2669,7 @@ class Worksheet:
         self.update_notes({cell: ""})
 
     @cast_to_a1_notation
-    def define_named_range(self, name, range_name):
+    def define_named_range(self, name: str, range_name: str) -> JSONResponse:
         """
         :param str name: A string with range value in A1 notation,
             e.g. 'A1:A5'.
@@ -2582,7 +2701,7 @@ class Worksheet:
         }
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_named_range(self, named_range_id):
+    def delete_named_range(self, named_range_id: str) -> JSONResponse:
         """
         :param str named_range_id: The ID of the named range to delete.
             Can be obtained with Spreadsheet.list_named_ranges()
@@ -2601,7 +2720,9 @@ class Worksheet:
         }
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def _add_dimension_group(self, start, end, dimension):
+    def _add_dimension_group(
+        self, start: int, end: int, dimension: Dimension
+    ) -> JSONResponse:
         """
         update this sheet by grouping 'dimension'
 
@@ -2628,7 +2749,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def add_dimension_group_columns(self, start, end):
+    def add_dimension_group_columns(self, start: int, end: int) -> JSONResponse:
         """
         Group columns in order to hide them in the UI.
 
@@ -2644,7 +2765,7 @@ class Worksheet:
         """
         return self._add_dimension_group(start, end, Dimension.cols)
 
-    def add_dimension_group_rows(self, start, end):
+    def add_dimension_group_rows(self, start: int, end: int) -> JSONResponse:
         """
         Group rows in order to hide them in the UI.
 
@@ -2658,7 +2779,9 @@ class Worksheet:
         """
         return self._add_dimension_group(start, end, Dimension.rows)
 
-    def _delete_dimension_group(self, start, end, dimension):
+    def _delete_dimension_group(
+        self, start: int, end: int, dimension: Dimension
+    ) -> JSONResponse:
         """delete a dimension group in this sheet"""
         body = {
             "requests": [
@@ -2677,7 +2800,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_dimension_group_columns(self, start, end):
+    def delete_dimension_group_columns(self, start: int, end: int) -> JSONResponse:
         """
         Remove the grouping of a set of columns.
 
@@ -2693,7 +2816,7 @@ class Worksheet:
         """
         return self._delete_dimension_group(start, end, Dimension.cols)
 
-    def delete_dimension_group_rows(self, start, end):
+    def delete_dimension_group_rows(self, start: int, end: int) -> JSONResponse:
         """
         Remove the grouping of a set of rows.
 
@@ -2706,7 +2829,7 @@ class Worksheet:
         """
         return self._delete_dimension_group(start, end, Dimension.rows)
 
-    def list_dimension_group_columns(self):
+    def list_dimension_group_columns(self) -> List[JSONResponse]:
         """
         List all the grouped columns in this worksheet.
 
@@ -2715,7 +2838,7 @@ class Worksheet:
         """
         return self._get_sheet_property("columnGroups", [])
 
-    def list_dimension_group_rows(self):
+    def list_dimension_group_rows(self) -> List[JSONResponse]:
         """
         List all the grouped rows in this worksheet.
 
@@ -2724,7 +2847,9 @@ class Worksheet:
         """
         return self._get_sheet_property("rowGroups", [])
 
-    def _hide_dimension(self, start, end, dimension):
+    def _hide_dimension(
+        self, start: int, end: int, dimension: Dimension
+    ) -> JSONResponse:
         """
         Update this sheet by hiding the given 'dimension'
 
@@ -2757,7 +2882,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def hide_columns(self, start, end):
+    def hide_columns(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly hide the given column index range.
 
@@ -2768,7 +2893,7 @@ class Worksheet:
         """
         return self._hide_dimension(start, end, Dimension.cols)
 
-    def hide_rows(self, start, end):
+    def hide_rows(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly hide the given row index range.
 
@@ -2779,7 +2904,9 @@ class Worksheet:
         """
         return self._hide_dimension(start, end, Dimension.rows)
 
-    def _unhide_dimension(self, start, end, dimension):
+    def _unhide_dimension(
+        self, start: int, end: int, dimension: Dimension
+    ) -> JSONResponse:
         """
         Update this sheet by unhiding the given 'dimension'
 
@@ -2812,7 +2939,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def unhide_columns(self, start, end):
+    def unhide_columns(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly unhide the given column index range.
 
@@ -2823,7 +2950,7 @@ class Worksheet:
         """
         return self._unhide_dimension(start, end, Dimension.cols)
 
-    def unhide_rows(self, start, end):
+    def unhide_rows(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly unhide the given row index range.
 
@@ -2834,7 +2961,7 @@ class Worksheet:
         """
         return self._unhide_dimension(start, end, Dimension.rows)
 
-    def _set_hidden_flag(self, hidden):
+    def _set_hidden_flag(self, hidden: bool) -> JSONResponse:
         """Send the appropriate request to hide/show the current worksheet"""
 
         body = {
@@ -2855,15 +2982,15 @@ class Worksheet:
         self._properties["hidden"] = hidden
         return res
 
-    def hide(self):
+    def hide(self) -> JSONResponse:
         """Hides the current worksheet from the UI."""
         return self._set_hidden_flag(True)
 
-    def show(self):
+    def show(self) -> JSONResponse:
         """Show the current worksheet in the UI."""
         return self._set_hidden_flag(False)
 
-    def _set_gridlines_hidden_flag(self, hidden):
+    def _set_gridlines_hidden_flag(self, hidden: bool) -> JSONResponse:
         """Hide/show gridlines on the current worksheet"""
 
         body = {
@@ -2886,21 +3013,21 @@ class Worksheet:
         self._properties["gridProperties"]["hideGridlines"] = hidden
         return res
 
-    def hide_gridlines(self):
+    def hide_gridlines(self) -> JSONResponse:
         """Hide gridlines on the current worksheet"""
         return self._set_gridlines_hidden_flag(True)
 
-    def show_gridlines(self):
+    def show_gridlines(self) -> JSONResponse:
         """Show gridlines on the current worksheet"""
         return self._set_gridlines_hidden_flag(False)
 
     def copy_range(
         self,
-        source,
-        dest,
-        paste_type=PasteType.normal,
-        paste_orientation=PasteOrientation.normal,
-    ):
+        source: str,
+        dest: str,
+        paste_type: PasteType = PasteType.normal,
+        paste_orientation: PasteOrientation = PasteOrientation.normal,
+    ) -> JSONResponse:
         """Copies a range of data from source to dest
 
         .. note::
@@ -2941,10 +3068,10 @@ class Worksheet:
 
     def cut_range(
         self,
-        source,
-        dest,
-        paste_type=PasteType.normal,
-    ):
+        source: str,
+        dest: str,
+        paste_type: PasteType = PasteType.normal,
+    ) -> JSONResponse:
         """Moves a range of data form source to dest
 
         .. note::
