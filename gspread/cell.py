@@ -75,10 +75,10 @@ class Cell:
         numeric_value = numericise(self.value, default_blank=None)
 
         # if could not convert, return None
-        if type(numeric_value) == int or type(numeric_value) == float:
-            return numeric_value
-        else:
+        if not isinstance(numeric_value, (int, float)):
             return None
+
+        return numeric_value
 
     @property
     def address(self):
