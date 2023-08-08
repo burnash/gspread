@@ -56,14 +56,14 @@ class Client:
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
 
-        q = 'mimeType="{}"'.format(MimeType.google_sheets)
+        query = f'mimeType="{MimeType.google_sheets}"'
         if title:
-            q += ' and name = "{}"'.format(title)
+            query += f' and name = "{title}"'
         if folder_id:
-            q += ' and parents in "{}"'.format(folder_id)
+            query += f' and parents in "{folder_id}"'
 
         params: ParamsType = {
-            "q": q,
+            "q": query,
             "pageSize": 1000,
             "supportsAllDrives": True,
             "includeItemsFromAllDrives": True,
