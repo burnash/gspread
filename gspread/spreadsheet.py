@@ -268,11 +268,11 @@ class Spreadsheet:
         except (KeyError, IndexError):
             raise WorksheetNotFound("index {} not found".format(index))
 
-    def get_worksheet_by_id(self, id):
+    def get_worksheet_by_id(self, id: str | int):
         """Returns a worksheet with specified `worksheet id`.
 
         :param id: The id of a worksheet. it can be seen in the url as the value of the parameter 'gid'.
-        :type id: int
+        :type id: str | int
 
         :returns: an instance of :class:`gspread.worksheet.Worksheet`.
         :raises:
@@ -287,11 +287,11 @@ class Spreadsheet:
 
         try:
             item = finditem(
-                lambda x: x["properties"]["sheetId"] == id,
+                lambda x: x["properties"]["sheetId"] == int(id),
                 sheet_data["sheets"],
             )
             return Worksheet(self, item["properties"])
-        except (StopIteration, KeyError):
+        except (StopIteration, KeyError, ValueError):
             raise WorksheetNotFound("id {} not found".format(id))
 
     def worksheets(self, exclude_hidden: bool = False):
@@ -437,12 +437,12 @@ class Spreadsheet:
 
         return self.batch_update(body)
 
-    def del_worksheet_by_id(self, worksheet_id: str):
+    def del_worksheet_by_id(self, worksheet_id: int | str):
         """
         Deletes a Worksheet by id
         """
 
-        body = {"requests": [{"deleteSheet": {"sheetId": worksheet_id}}]}
+        body = {"requests": [{"deleteSheet": {"sheetId": str(worksheet_id)}}]}
 
         return self.batch_update(body)
 

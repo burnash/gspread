@@ -36,10 +36,12 @@ class SpreadsheetTest(GspreadTest):
         sheet1 = self.spreadsheet.get_worksheet(0)
         self.assertTrue(isinstance(sheet1, gspread.Worksheet))
 
-    @pytest.mark.vcr()
+    @pytest.mark.vcr(allow_playback_repeats=True)
     def test_get_worksheet_by_id(self):
-        sheet1 = self.spreadsheet.get_worksheet_by_id(0)
-        self.assertTrue(isinstance(sheet1, gspread.Worksheet))
+        sheet1_by_int = self.spreadsheet.get_worksheet_by_id(0)
+        sheet1_by_str = self.spreadsheet.get_worksheet_by_id(0)
+        self.assertTrue(isinstance(sheet1_by_int, gspread.Worksheet))
+        self.assertTrue(isinstance(sheet1_by_str, gspread.Worksheet))
 
     @pytest.mark.vcr()
     def test_worksheet(self):
