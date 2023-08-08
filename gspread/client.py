@@ -6,7 +6,7 @@ This module contains Client class responsible for managing spreadsheet files
 
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, MutableMapping, Optional, Tuple, Union
 
 from google.auth.credentials import Credentials
 from requests import Response
@@ -41,7 +41,7 @@ class Client:
 
     def list_spreadsheet_files(
         self, title: Optional[str] = None, folder_id: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> Tuple[List[Dict[str, Any]], Response]:
         """List all the spreadsheet files
 
         Will list all spreadsheet files owned by/shared with this user account.
@@ -70,7 +70,7 @@ class Client:
             "fields": "kind,nextPageToken,files(id,name,createdTime,modifiedTime)",
         }
 
-        while page_token is not None:
+        while True:
             if page_token:
                 params["pageToken"] = page_token
 
@@ -78,7 +78,10 @@ class Client:
             files.extend(res["files"])
             page_token = res.get("nextPageToken", None)
 
-        return files
+            if page_token is None:
+                break
+
+        return files, res
 
     def open(self, title: str, folder_id: Optional[str] = None) -> Spreadsheet:
         """Opens a spreadsheet.
@@ -96,18 +99,20 @@ class Client:
 
         >>> gc.open('My fancy spreadsheet')
         """
+        spreadsheet_files, response = self.list_spreadsheet_files(title, folder_id)
         try:
             properties = finditem(
                 lambda x: x["name"] == title,
-                self.list_spreadsheet_files(title, folder_id),
+                spreadsheet_files,
             )
 
-            # Drive uses different terminology
-            properties["title"] = properties["name"]
-
-            return Spreadsheet(self.http_client, properties)
         except StopIteration as ex:
-            raise SpreadsheetNotFound from ex
+            raise SpreadsheetNotFound(response) from ex
+
+        # Drive uses different terminology
+        properties["title"] = properties["name"]
+
+        return Spreadsheet(self.http_client, properties)
 
     def open_by_key(self, key: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `key` (a.k.a Spreadsheet ID).
@@ -149,7 +154,7 @@ class Client:
 
         :returns: a list of :class:`~gspread.models.Spreadsheet` instances.
         """
-        spreadsheet_files = self.list_spreadsheet_files(title)
+        spreadsheet_files, _ = self.list_spreadsheet_files(title)
 
         if title:
             spreadsheet_files = [
