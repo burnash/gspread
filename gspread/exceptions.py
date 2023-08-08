@@ -36,6 +36,8 @@ class InvalidInputValue(GSpreadException):
 
 
 class APIError(GSpreadException):
+    """Errors coming from the API itself, such as when we attempt to retrieve things that don't exist."""
+
     def __init__(self, response: Response):
         super().__init__(self._extract_text(response))
         self.response: Response = response
