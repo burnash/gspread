@@ -6,7 +6,7 @@ This module contains Client class responsible for managing spreadsheet files
 
 """
 
-from typing import Any, Dict, List, MutableMapping, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from google.auth.credentials import Credentials
 from requests import Response
