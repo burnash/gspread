@@ -82,7 +82,7 @@ class CellTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_merge_cells(self):
-        self.sheet.update("A1:B2", [[42, 43], [43, 44]])
+        self.sheet.update([[42, 43], [43, 44]], "A1:B2")
 
         # test merge rows
         self.sheet.merge_cells(1, 1, 2, 2, merge_type="MERGE_ROWS")
