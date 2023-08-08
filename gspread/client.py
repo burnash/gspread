@@ -74,14 +74,15 @@ class Client:
             if page_token:
                 params["pageToken"] = page_token
 
-            res = self.http_client.request("get", url, params=params).json()
-            files.extend(res["files"])
-            page_token = res.get("nextPageToken", None)
+            response = self.http_client.request("get", url, params=params)
+            response_json = response.json()
+            files.extend(response_json["files"])
+            page_token = response_json.get("nextPageToken", None)
 
             if page_token is None:
                 break
 
-        return files, res
+        return files, response
 
     def open(self, title: str, folder_id: Optional[str] = None) -> Spreadsheet:
         """Opens a spreadsheet.
