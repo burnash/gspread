@@ -203,20 +203,7 @@ class SpreadsheetTest(GspreadTest):
         self.assertNotEqual(lastUpdateTime_before, lastUpdateTime_after)
 
     @pytest.mark.vcr()
-    def test_lastUpdateTime_prop(self):
+    def test_creationTime_prop(self):
         """test lastUpdateTime property behaviour"""
-        lastUpdateTime_before_prop = self.spreadsheet.lastUpdateTime
-
-        time.sleep(0.01)
-        self.spreadsheet.update_title("🎊 Updated Title #123 🎉")
-
-        lastUpdateTime_after_prop_initial = self.spreadsheet.lastUpdateTime
-        lastUpdateTime_after = self.spreadsheet.get_lastUpdateTime()
-        lastUpdateTime_after_prop_final = self.spreadsheet.lastUpdateTime
-
-        # lastUpdateTime prop should be immediately available
-        self.assertIsNotNone(lastUpdateTime_before_prop)
-
-        # prop is updated by function (side effect)
-        self.assertNotEqual(lastUpdateTime_after_prop_initial, lastUpdateTime_after)
-        self.assertEqual(lastUpdateTime_after_prop_final, lastUpdateTime_after)
+        creationTime = self.spreadsheet.creationTime
+        self.assertIsNotNone(creationTime)
