@@ -105,6 +105,7 @@ class SpreadsheetTest(GspreadTest):
         sg = self._sequence_generator()
         worksheet1_name = next(sg)
         worksheet2_name = next(sg)
+        worksheet3_name = next(sg)
 
         worksheet_list = self.spreadsheet.worksheets()
         self.assertEqual(len(worksheet_list), 1)
@@ -113,14 +114,16 @@ class SpreadsheetTest(GspreadTest):
         # Add
         worksheet1 = self.spreadsheet.add_worksheet(worksheet1_name, 1, 1)
         worksheet2 = self.spreadsheet.add_worksheet(worksheet2_name, 1, 1)
+        worksheet3 = self.spreadsheet.add_worksheet(worksheet3_name, 1, 1)
 
         # Re-read, check again
         worksheet_list = self.spreadsheet.worksheets()
-        self.assertEqual(len(worksheet_list), 3)
+        self.assertEqual(len(worksheet_list), 4)
 
         # Delete
         self.spreadsheet.del_worksheet(worksheet1)
-        self.spreadsheet.del_worksheet_by_id(worksheet2.id)
+        self.spreadsheet.del_worksheet_by_id(int(worksheet2.id))
+        self.spreadsheet.del_worksheet_by_id(str(worksheet3.id))
 
         worksheet_list = self.spreadsheet.worksheets()
         self.assertEqual(len(worksheet_list), 1)
