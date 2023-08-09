@@ -5,6 +5,7 @@ gspread.spreadsheet
 This module contains common spreadsheets' models.
 
 """
+from typing import Union
 
 from .exceptions import WorksheetNotFound
 from .urls import (
@@ -268,7 +269,7 @@ class Spreadsheet:
         except (KeyError, IndexError):
             raise WorksheetNotFound("index {} not found".format(index))
 
-    def get_worksheet_by_id(self, id: str | int):
+    def get_worksheet_by_id(self, id: Union[str, int]):
         """Returns a worksheet with specified `worksheet id`.
 
         :param id: The id of a worksheet. it can be seen in the url as the value of the parameter 'gid'.
@@ -286,13 +287,18 @@ class Spreadsheet:
         sheet_data = self.fetch_sheet_metadata()
 
         try:
+            worksheet_id_int = int(id)
+        except ValueError as ex:
+            raise ValueError("id should be int") from ex
+
+        try:
             item = finditem(
-                lambda x: x["properties"]["sheetId"] == int(id),
+                lambda x: x["properties"]["sheetId"] == worksheet_id_int,
                 sheet_data["sheets"],
             )
             return Worksheet(self, item["properties"])
-        except (StopIteration, KeyError, ValueError):
-            raise WorksheetNotFound("id {} not found".format(id))
+        except (StopIteration, KeyError):
+            raise WorksheetNotFound("id {} not found".format(worksheet_id_int))
 
     def worksheets(self, exclude_hidden: bool = False):
         """Returns a list of all :class:`worksheets <gspread.worksheet.Worksheet>`
@@ -437,12 +443,16 @@ class Spreadsheet:
 
         return self.batch_update(body)
 
-    def del_worksheet_by_id(self, worksheet_id: int | str):
+    def del_worksheet_by_id(self, worksheet_id: Union[str, int]):
         """
         Deletes a Worksheet by id
         """
+        try:
+            worksheet_id_int = int(worksheet_id)
+        except ValueError as ex:
+            raise ValueError("id should be int") from ex
 
-        body = {"requests": [{"deleteSheet": {"sheetId": str(worksheet_id)}}]}
+        body = {"requests": [{"deleteSheet": {"sheetId": worksheet_id_int}}]}
 
         return self.batch_update(body)
 
