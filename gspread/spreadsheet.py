@@ -5,9 +5,9 @@ gspread.spreadsheet
 This module contains common spreadsheets' models.
 
 """
-from typing import Union
 
 import warnings
+from typing import Union
 
 from .exceptions import WorksheetNotFound
 from .urls import (
