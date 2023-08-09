@@ -92,7 +92,7 @@ class Client:
         else:
             raise APIError(response)
 
-    def _get_file_drive_metadata(self, id):
+    def get_file_drive_metadata(self, id):
         """Get the metadata from the Drive API for a specific file
         This method is mainly here to retrieve the create/update time
         of a file (these metadata are only accessible from the Drive API).

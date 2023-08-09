@@ -193,26 +193,19 @@ class SpreadsheetTest(GspreadTest):
         self.assertEqual(new_title, properties["title"])
 
     @pytest.mark.vcr()
-    def test_get_updated_time(self):
-        metadata_before = self.spreadsheet._properties
-        self.assertNotIn("modifiedTime", metadata_before)
-
-        lastUpdateTime = self.spreadsheet.lastUpdateTime
-        metadata_after = self.spreadsheet._properties
-
-        self.assertIsNotNone(lastUpdateTime)
-        self.assertIn("modifiedTime", metadata_after)
-        self.assertEqual(lastUpdateTime, metadata_after["modifiedTime"])
-
-    @pytest.mark.vcr()
-    def test_refresh_lastUpdateTime(self):
-        lastUpdateTime_before = self.spreadsheet.lastUpdateTime
+    def test_get_lastUpdateTime(self):
+        """Test get_lastUpdateTime method works"""
+        lastUpdateTime_before = self.spreadsheet.get_lastUpdateTime()
 
         time.sleep(0.01)
         self.spreadsheet.update_title("🎊 Updated Title #123 🎉")
 
-        self.spreadsheet.refresh_lastUpdateTime()
-
-        lastUpdateTime_after = self.spreadsheet.lastUpdateTime
+        lastUpdateTime_after = self.spreadsheet.get_lastUpdateTime()
 
         self.assertNotEqual(lastUpdateTime_before, lastUpdateTime_after)
+
+    @pytest.mark.vcr()
+    def test_creationTime_prop(self):
+        """test lastUpdateTime property behaviour"""
+        creationTime = self.spreadsheet.creationTime
+        self.assertIsNotNone(creationTime)

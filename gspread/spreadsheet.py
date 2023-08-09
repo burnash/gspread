@@ -7,6 +7,8 @@ This module contains common spreadsheets' models.
 """
 from typing import Union
 
+import warnings
+
 from .exceptions import WorksheetNotFound
 from .urls import (
     DRIVE_FILES_API_V3_URL,
@@ -35,6 +37,9 @@ class Spreadsheet:
         metadata = self.fetch_sheet_metadata()
         self._properties.update(metadata["properties"])
 
+        drive_metadata = self.client.get_file_drive_metadata(self._properties["id"])
+        self._properties.update(drive_metadata)
+
     @property
     def id(self):
         """Spreadsheet ID."""
@@ -53,21 +58,20 @@ class Spreadsheet:
     @property
     def creationTime(self):
         """Spreadsheet Creation time."""
-        try:
-            return self._properties["createdTime"]
-        except KeyError:
-            metadata = self.client._get_file_drive_metadata(self.id)
-            self._properties.update(metadata)
-            return self._properties["createdTime"]
+        return self._properties["createdTime"]
 
     @property
     def lastUpdateTime(self):
-        """Spreadsheet last updated time."""
-        try:
-            return self._properties["modifiedTime"]
-        except KeyError:
-            self.refresh_lastUpdateTime()
-            return self._properties["modifiedTime"]
+        """Spreadsheet last updated time.
+        Only updated on initialisation.
+        For actual last updated time, use get_lastUpdateTime()."""
+        warnings.warn(
+            """
+            This is only updated on initialisation and is probably outdated by the time you use it.
+            For an up to date last updated time, use get_lastUpdateTime().
+            """
+        )
+        return self._properties["modifiedTime"]
 
     @property
     def updated(self):
@@ -75,8 +79,6 @@ class Spreadsheet:
 
         This feature is not supported in Sheets API v4.
         """
-        import warnings
-
         warnings.warn(
             "Spreadsheet.updated() is deprecated, "
             "this feature is not supported in Sheets API v4",
@@ -753,7 +755,16 @@ class Spreadsheet:
 
         return sheet.get("protectedRanges", [])
 
-    def refresh_lastUpdateTime(self):
-        """Refresh the lastUpdateTime property of the spreadsheet."""
-        metadata = self.client._get_file_drive_metadata(self.id)
+    def refresh_lastUpdateTime(self) -> None:
+        """Updates the cached value of lastUpdateTime."""
+        # remove this and the below upon deprecation of lastUpdateTime @property
+        self._properties["modifiedTime"] = self.get_lastUpdateTime()
+
+    def get_lastUpdateTime(self) -> str:
+        """Get the lastUpdateTime metadata from the Drive API.
+        Also updates the cached value in the _properties dict.
+        """
+        metadata = self.client.get_file_drive_metadata(self.id)
+        # remove next line and the above upon deprecation of lastUpdateTime @property
         self._properties["modifiedTime"] = metadata["modifiedTime"]
+        return metadata["modifiedTime"]

@@ -22,6 +22,9 @@
                     "x-goog-api-client": [
                         "cred-type/sa"
                     ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
                     "authorization": [
                         "<ACCESS_TOKEN>"
                     ]
@@ -33,23 +36,8 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "Expires": [
-                        "Mon, 01 Jan 1990 00:00:00 GMT"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Vary": [
-                        "Origin, X-Origin"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
                     ],
                     "Pragma": [
                         "no-cache"
@@ -57,17 +45,112 @@
                     "X-Content-Type-Options": [
                         "nosniff"
                     ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
                     ],
                     "Date": [
-                        "Thu, 08 Jun 2023 22:14:57 GMT"
+                        "Thu, 20 Jul 2023 08:51:48 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
                     ],
                     "Alt-Svc": [
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
                     ],
+                    "content-length": [
+                        "46"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"kind\": \"drive#fileList\",\n  \"files\": []\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Please+don%27t+use+this+phrase+as+a+name+of+a+sheet.%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
                     "Cache-Control": [
                         "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 08:55:06 GMT"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
                     ],
                     "content-length": [
                         "46"
