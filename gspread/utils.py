@@ -695,6 +695,84 @@ def combined_merge_values(worksheet_metadata, values):
     return new_values
 
 
+def convert_hex_to_colors_dict(hex_color: str):
+    """Convert a hex color code to RGB color values.
+
+    :param str hex_color: Hex color code in the format "#RRGGBB".
+
+    :returns: Dict containing the color's red, green and blue values between 0 and 1.
+    :rtype: dict
+
+    :raises:
+        ValueError: If the input hex string is not in the correct format or length.
+
+    Examples:
+        >>> convert_hex_to_color("#3300CC")
+        {'red': 0.2, 'green': 0.0, 'blue': 0.8}
+
+    """
+    hex_color = hex_color.lstrip("#")
+
+    # Google API ColorStyle Reference:
+    # "The alpha value in the Color object isn't generally supported."
+    # https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#colorstyle
+    if len(hex_color) == 8:
+        hex_color = hex_color[:-2]
+
+    if len(hex_color) != 6:
+        raise ValueError("Hex color code must be in the format '#RRGGBB'.")
+
+    try:
+        rgb_color = {
+            "red": int(hex_color[0:2], 16) / 255,
+            "green": int(hex_color[2:4], 16) / 255,
+            "blue": int(hex_color[4:6], 16) / 255,
+        }
+
+        return rgb_color
+    except ValueError:
+        raise ValueError(f"Invalid character in hex color string: #{hex_color}")
+
+
+def convert_colors_to_hex_value(red=0, green=0, blue=0):
+    """Convert RGB color values to a hex color code.
+
+    :param int red: Red color value (0-255).
+    :param int green: Green color value (0-255).
+    :param int blue: Blue color value (0-255).
+
+    :returns: Hex color code in the format "#RRGGBB".
+    :rtype: str
+
+    :raises:
+        ValueError: If any color value is out of the accepted range (0-255).
+
+    Example:
+
+        >>> convert_colors_to_hex_value(51, 0, 204)
+        '#3300CC'
+
+        >>> convert_colors_to_hex_value(green=128)
+        '#008000'
+    """
+
+    def to_hex(value):
+        """
+        Convert an integer to a 2-digit uppercase hex string.
+        """
+        hex_value = hex(value)[2:]
+        return hex_value.upper().zfill(2)
+
+    if any(value not in range(256) for value in (red, green, blue)):
+        raise ValueError("Color value out of accepted range 0-255.")
+
+    r_hex = to_hex(red)
+    g_hex = to_hex(green)
+    b_hex = to_hex(blue)
+    hex_color = f"#{r_hex}{g_hex}{b_hex}"
+    return hex_color
+
+
 if __name__ == "__main__":
     import doctest
 

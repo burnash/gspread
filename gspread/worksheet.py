@@ -44,6 +44,7 @@ from .utils import (
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
+    convert_hex_to_colors_dict,
     fill_gaps,
     finditem,
     numericise_all,
@@ -1576,6 +1577,15 @@ class Worksheet:
         response = self.client.batch_update(self.spreadsheet_id, body)
         self._properties.pop("tabColorStyle")
         return response
+
+    def set_tab_color(self, hex_color: str):
+        """Changes the worksheet's tab color.
+        Use clear_tab_color() to remove the color.
+
+        :param str hex_color: Hex color code in the format "#RRGGBB".
+        """
+        rgb_color = convert_hex_to_colors_dict(hex_color)
+        return self.update_tab_color(rgb_color)
 
     def update_index(self, index: int) -> JSONResponse:
         """Updates the ``index`` property for the worksheet.

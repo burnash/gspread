@@ -283,6 +283,52 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(color_param_after, pink_color)
 
     @pytest.mark.vcr()
+    def test_set_tab_color(self):
+        # Set the color.
+        # Get the color.
+        # Assert the color is the set and changed by google.
+
+        # Returned as param from google.
+        pink_color = {
+            "red": 1.0,
+            "green": 0.0,
+            "blue": 127 / 255,
+        }
+
+        pink_color_hex = "#FF007F"
+
+        pink_color_from_google = {
+            "red": 1,
+            "blue": 0.49803922,  # 127/255
+        }
+
+        params = {"fields": "sheets.properties.tabColorStyle"}
+        res = self.spreadsheet.fetch_sheet_metadata(params=params)
+        color_before = (
+            res["sheets"][0]["properties"]
+            .get("tabColorStyle", {})
+            .get("rgbColor", None)
+        )
+        color_param_before = self.sheet.tab_color
+
+        self.sheet.set_tab_color(pink_color_hex)
+
+        res = self.spreadsheet.fetch_sheet_metadata(params=params)
+        color_after = (
+            res["sheets"][0]["properties"]
+            .get("tabColorStyle", {})
+            .get("rgbColor", None)
+        )
+        color_param_after = self.sheet.tab_color
+
+        # params are set to whatever the user sets them to
+        # google returns up to 8 digits after the decimal point.
+        self.assertEqual(color_before, None)
+        self.assertEqual(color_param_before, None)
+        self.assertEqual(color_after, pink_color_from_google)
+        self.assertEqual(color_param_after, pink_color)
+
+    @pytest.mark.vcr()
     def test_clear_tab_color(self):
         # Set the color.
         # Clear the color.
