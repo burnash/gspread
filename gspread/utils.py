@@ -89,6 +89,8 @@ DEPRECATION_WARNING_TEMPLATE = (
     "[Deprecated][in version {v_deprecated}]: {msg_deprecated}"
 )
 
+REQUIRED_KWARGS = "required"
+
 
 def convert_credentials(credentials):
     module = credentials.__module__
@@ -723,7 +725,8 @@ def accepted_kwargs(**default_kwargs):
                 raise TypeError(err % (f.__name__, list(unexpected_kwargs)))
 
             for k, v in default_kwargs.items():
-                kwargs.setdefault(k, v)
+                if v != REQUIRED_KWARGS:
+                    kwargs.setdefault(k, v)
 
             return f(*args, **kwargs)
 
