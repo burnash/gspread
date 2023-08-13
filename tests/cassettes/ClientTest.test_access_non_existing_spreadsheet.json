@@ -22,6 +22,9 @@
                     "x-goog-api-client": [
                         "cred-type/sa"
                     ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
                     "authorization": [
                         "<ACCESS_TOKEN>"
                     ]
@@ -33,8 +36,87 @@
                     "message": "Not Found"
                 },
                 "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Date": [
+                        "Thu, 20 Jul 2023 08:51:29 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
                     "Transfer-Encoding": [
                         "chunked"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "114"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"Requested entity was not found.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/test?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 404,
+                    "message": "Not Found"
+                },
+                "headers": {
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "private"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
@@ -44,26 +126,23 @@
                         "X-Origin",
                         "Referer"
                     ],
-                    "Server": [
-                        "ESF"
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
                     ],
                     "X-XSS-Protection": [
                         "0"
                     ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
                     "X-Frame-Options": [
                         "SAMEORIGIN"
                     ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
                     "Date": [
-                        "Thu, 08 Jun 2023 22:14:38 GMT"
+                        "Thu, 20 Jul 2023 08:54:49 GMT"
                     ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Cache-Control": [
-                        "private"
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
                     "content-length": [
                         "114"

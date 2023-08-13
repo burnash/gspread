@@ -288,7 +288,7 @@ class HTTPClient:
 
         return r.json()
 
-    def _get_file_drive_metadata(self, id: str) -> Any:
+    def get_file_drive_metadata(self, id: str) -> Any:
         """Get the metadata from the Drive API for a specific file
         This method is mainly here to retrieve the create/update time
         of a file (these metadata are only accessible from the Drive API).
