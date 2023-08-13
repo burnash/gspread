@@ -295,3 +295,18 @@ class UtilsTest(unittest.TestCase):
         # raise ValueError on invalid hex characters
         with self.assertRaises(ValueError):
             utils.convert_hex_to_colors_dict("axbcde")
+
+    def test_fill_gaps(self):
+        """test fill_gaps function"""
+        matrix = [
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+        ]
+        expected = [
+            [1, 2, 3, 4, "", ""],
+            [5, 6, 7, 8, "", ""],
+            ["", "", "", "", "", ""],
+        ]
+        actual = utils.fill_gaps(matrix, 3, 6)
+
+        self.assertEqual(actual, expected)

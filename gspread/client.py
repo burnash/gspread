@@ -39,6 +39,13 @@ class Client:
     ) -> None:
         self.http_client = http_client(auth)
 
+    def get_file_drive_metadata(self, id: str) -> Any:
+        """Get the metadata from the Drive API for a specific file
+        This method is mainly here to retrieve the create/update time
+        of a file (these metadata are only accessible from the Drive API).
+        """
+        return self.http_client.get_file_drive_metadata(id)
+
     def list_spreadsheet_files(
         self, title: Optional[str] = None, folder_id: Optional[str] = None
     ) -> List[Dict[str, Any]]:

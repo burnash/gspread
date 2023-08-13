@@ -29,7 +29,7 @@ jobs:
         if: ${{ matrix.python >= '3.8' }}
       - run: tox -e lint
       - run: tox -e py
-      - run: mypy --install-types --ignore-missing-imports . || true
+      - run: mypy --install-types --non-interactive --ignore-missing-imports ./gspread || true
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py # --py36-plus
       - run: safety check -i 42559 # pip <= 20.1.1, we upgrade it just above
       - run: tox -e build

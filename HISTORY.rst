@@ -1,6 +1,31 @@
 Release History
 ===============
 
+5.10.0 (2023-06-29)
+------------------
+
+* Fix rows_auto_resize in worksheet.py by removing redundant self by @MagicMc23 in https://github.com/burnash/gspread/pull/1194
+* Add deprecation warning for future release 6.0.x by @lavigne958 in https://github.com/burnash/gspread/pull/1195
+* FEATURE: show/hide gridlines (#1197) by @alifeee in https://github.com/burnash/gspread/pull/1202
+* CLEANUP: cleanup tox.ini, and ignore ./env by @alifeee in https://github.com/burnash/gspread/pull/1200
+* Refactor/update-contributing-guide by @alifeee in https://github.com/burnash/gspread/pull/1206
+* Spelling fix (with legacy option) by @alifeee in https://github.com/burnash/gspread/pull/1210
+* 457-fetch-without-hidden-worksheets by @alifeee in https://github.com/burnash/gspread/pull/1207
+* Add_deprecated_warning_sort_method by @lavigne958 in https://github.com/burnash/gspread/pull/1198
+* Update (and test for) internal properties on change by @alifeee in https://github.com/burnash/gspread/pull/1211
+* Feature: Add "Remove tab colour" method by @alifeee in https://github.com/burnash/gspread/pull/1199
+* Refresh-test-cassettes by @alifeee in https://github.com/burnash/gspread/pull/1217
+* update self._properties after batch_update by @alifeee in https://github.com/burnash/gspread/pull/1221
+* 700-fill-merged-cells by @alifeee in https://github.com/burnash/gspread/pull/1215
+* Fix/update-internal-properties by @alifeee in https://github.com/burnash/gspread/pull/1225
+* Add breaking change warning in Worksheet.update() by @lavigne958 in https://github.com/burnash/gspread/pull/1226
+* Bump codespell from 2.2.4 to 2.2.5 by @dependabot in https://github.com/burnash/gspread/pull/1232
+* Add/refresh last update time by @alifeee in https://github.com/burnash/gspread/pull/1233
+* Update-build-tools by @alifeee in https://github.com/burnash/gspread/pull/1231
+* add read the doc configuration file by @lavigne958 in https://github.com/burnash/gspread/pull/1235
+* update licence year by @alifeee in https://github.com/burnash/gspread/pull/1237
+* remove deprecated methods from tests by @alifeee in https://github.com/burnash/gspread/pull/1238
+
 5.9.0 (2023-05-11)
 ------------------
 
