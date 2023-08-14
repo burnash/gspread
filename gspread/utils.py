@@ -8,7 +8,7 @@ This module contains utility functions.
 
 import re
 from collections import defaultdict
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from functools import wraps
 from itertools import chain
 from typing import (
@@ -718,7 +718,7 @@ def combined_merge_values(worksheet_metadata, values):
     return new_values
 
 
-def convert_hex_to_colors_dict(hex_color: str):
+def convert_hex_to_colors_dict(hex_color: str) -> Mapping[str, float]:
     """Convert a hex color code to RGB color values.
 
     :param str hex_color: Hex color code in the format "#RRGGBB".
@@ -730,7 +730,10 @@ def convert_hex_to_colors_dict(hex_color: str):
         ValueError: If the input hex string is not in the correct format or length.
 
     Examples:
-        >>> convert_hex_to_color("#3300CC")
+        >>> convert_hex_to_colors_dict("#3300CC")
+        {'red': 0.2, 'green': 0.0, 'blue': 0.8}
+
+        >>> convert_hex_to_colors_dict("#30C")
         {'red': 0.2, 'green': 0.0, 'blue': 0.8}
 
     """
@@ -741,6 +744,10 @@ def convert_hex_to_colors_dict(hex_color: str):
     # https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#colorstyle
     if len(hex_color) == 8:
         hex_color = hex_color[:-2]
+
+    # Expand 3 character hex.
+    if len(hex_color) == 3:
+        hex_color = "".join([char * 2 for char in hex_color])
 
     if len(hex_color) != 6:
         raise ValueError("Hex color code must be in the format '#RRGGBB'.")
@@ -757,43 +764,41 @@ def convert_hex_to_colors_dict(hex_color: str):
         raise ValueError(f"Invalid character in hex color string: #{hex_color}")
 
 
-def convert_colors_to_hex_value(red=0, green=0, blue=0):
+def convert_colors_to_hex_value(
+    red: float = 0.0, green: float = 0.0, blue: float = 0.0
+) -> str:
     """Convert RGB color values to a hex color code.
 
-    :param int red: Red color value (0-255).
-    :param int green: Green color value (0-255).
-    :param int blue: Blue color value (0-255).
+    :param float red: Red color value (0-1).
+    :param float green: Green color value (0-1).
+    :param float blue: Blue color value (0-1).
 
     :returns: Hex color code in the format "#RRGGBB".
     :rtype: str
 
     :raises:
-        ValueError: If any color value is out of the accepted range (0-255).
+        ValueError: If any color value is out of the accepted range (0-1).
 
     Example:
 
-        >>> convert_colors_to_hex_value(51, 0, 204)
+        >>> convert_colors_to_hex_value(0.2, 0, 0.8)
         '#3300CC'
 
-        >>> convert_colors_to_hex_value(green=128)
+        >>> convert_colors_to_hex_value(green=0.5)
         '#008000'
     """
 
-    def to_hex(value):
+    def to_hex(value: float) -> str:
         """
         Convert an integer to a 2-digit uppercase hex string.
         """
-        hex_value = hex(value)[2:]
+        hex_value = hex(round(value * 255))[2:]
         return hex_value.upper().zfill(2)
 
-    if any(value not in range(256) for value in (red, green, blue)):
-        raise ValueError("Color value out of accepted range 0-255.")
+    if any(value < 0 or value > 1 for value in (red, green, blue)):
+        raise ValueError("Color value out of accepted range 0-1.")
 
-    r_hex = to_hex(red)
-    g_hex = to_hex(green)
-    b_hex = to_hex(blue)
-    hex_color = f"#{r_hex}{g_hex}{b_hex}"
-    return hex_color
+    return f"#{to_hex(red)}{to_hex(green)}{to_hex(blue)}"
 
 
 if __name__ == "__main__":

@@ -295,7 +295,8 @@ class WorksheetTest(GspreadTest):
             "blue": 127 / 255,
         }
 
-        pink_color_hex = "#FF007F"
+        pink_color_hex = utils.convert_colors_to_hex_value(**pink_color)
+        self.assertEqual(pink_color_hex, "#FF007F")
 
         pink_color_from_google = {
             "red": 1,
