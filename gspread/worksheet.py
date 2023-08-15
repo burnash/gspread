@@ -1910,6 +1910,7 @@ class Worksheet:
         description=None,
         warning_only=False,
         requesting_user_can_edit=False,
+        domain_users_can_edit=False,
     ):
         """Add protected range to the sheet. Only the editors can edit
         the protected range.
@@ -1962,6 +1963,7 @@ class Worksheet:
                             "editors": {
                                 "users": editor_users_emails,
                                 "groups": editor_groups_emails,
+                                "domainUsersCanEdit": domain_users_can_edit,
                             },
                         }
                     }
@@ -2964,3 +2966,22 @@ class Worksheet:
         }
 
         return self.spreadsheet.batch_update(body)
+
+    def column_count(self):
+        """Full English alias for .col_count"""
+        return self.col_count()
+
+    def list_protected_ranges(self):
+        """List protected ranges in current Worksheet"""
+        return self.spreadsheet.list_protected_ranges(self.id)
+
+    def protect(self):
+        """Protect all ranges in current Worksheet"""
+        email = get_email_from_somewhere_tbd()  # TODO ?
+        last_cell = rowcol_to_a1(self.row_count, self.col_count)
+        self.add_protected_range(f"A1:{last_cell}",email,description=f"LOCKED by {email}",)
+
+    def unprotect(self):
+        """Unprotect all ranges in current Worksheet"""
+        for range in self.list_protected_ranges(self.id):
+            self.delete_protected_range(range)
