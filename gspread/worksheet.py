@@ -2987,5 +2987,5 @@ class Worksheet:
 
     def unprotect(self):
         """Unprotect all ranges in current Worksheet"""
-        for range in self.list_protected_ranges(self.id):
+        for range in self.list_protected_ranges():
             self.delete_protected_range(range)
