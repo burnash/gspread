@@ -2982,7 +2982,7 @@ class Worksheet:
         self.add_protected_range(
             f"A1:{last_cell}",
             email,
-            description=f"LOCKED by {email}",
+            description="LOCKED by gspread user",
         )
 
     def unprotect(self):
