@@ -2979,7 +2979,11 @@ class Worksheet:
         """Protect all ranges in current Worksheet"""
         email = get_email_from_somewhere_tbd()  # TODO ?
         last_cell = rowcol_to_a1(self.row_count, self.col_count)
-        self.add_protected_range(f"A1:{last_cell}",email,description=f"LOCKED by {email}",)
+        self.add_protected_range(
+            f"A1:{last_cell}",
+            email,
+            description=f"LOCKED by {email}",
+        )
 
     def unprotect(self):
         """Unprotect all ranges in current Worksheet"""
