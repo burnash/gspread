@@ -8,7 +8,7 @@ This module contains utility functions.
 
 import re
 from collections import defaultdict
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 from functools import wraps
 from itertools import chain
 from typing import (
@@ -19,6 +19,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Mapping,
     Optional,
     Tuple,
     TypeVar,
