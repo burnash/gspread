@@ -277,8 +277,8 @@ class UtilsTest(unittest.TestCase):
             utils.convert_colors_to_hex_value(1.23, 0, -50)
 
     def test_convert_hex_to_color(self):
-        hex = "#FF8000"
-        expected_color = {"red": 1, "green": 128 / 255, "blue": 0}
+        hex = "#FF7F00"
+        expected_color = {"red": 1, "green": 0.49803922, "blue": 0}
 
         # successful convert from hex to color
         rgbcolor = utils.convert_hex_to_colors_dict(hex)
