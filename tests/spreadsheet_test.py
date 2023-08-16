@@ -38,8 +38,10 @@ class SpreadsheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_get_worksheet_by_id(self):
-        sheet1 = self.spreadsheet.get_worksheet_by_id(0)
-        self.assertTrue(isinstance(sheet1, gspread.Worksheet))
+        sheet1_by_int = self.spreadsheet.get_worksheet_by_id(0)
+        sheet1_by_str = self.spreadsheet.get_worksheet_by_id("0")
+        self.assertTrue(isinstance(sheet1_by_int, gspread.Worksheet))
+        self.assertTrue(isinstance(sheet1_by_str, gspread.Worksheet))
 
     @pytest.mark.vcr()
     def test_worksheet(self):
@@ -103,6 +105,7 @@ class SpreadsheetTest(GspreadTest):
         sg = self._sequence_generator()
         worksheet1_name = next(sg)
         worksheet2_name = next(sg)
+        worksheet3_name = next(sg)
 
         worksheet_list = self.spreadsheet.worksheets()
         self.assertEqual(len(worksheet_list), 1)
@@ -111,14 +114,16 @@ class SpreadsheetTest(GspreadTest):
         # Add
         worksheet1 = self.spreadsheet.add_worksheet(worksheet1_name, 1, 1)
         worksheet2 = self.spreadsheet.add_worksheet(worksheet2_name, 1, 1)
+        worksheet3 = self.spreadsheet.add_worksheet(worksheet3_name, 1, 1)
 
         # Re-read, check again
         worksheet_list = self.spreadsheet.worksheets()
-        self.assertEqual(len(worksheet_list), 3)
+        self.assertEqual(len(worksheet_list), 4)
 
         # Delete
         self.spreadsheet.del_worksheet(worksheet1)
-        self.spreadsheet.del_worksheet(worksheet2)
+        self.spreadsheet.del_worksheet_by_id(int(worksheet2.id))
+        self.spreadsheet.del_worksheet_by_id(str(worksheet3.id))
 
         worksheet_list = self.spreadsheet.worksheets()
         self.assertEqual(len(worksheet_list), 1)
@@ -191,26 +196,19 @@ class SpreadsheetTest(GspreadTest):
         self.assertEqual(new_title, properties["title"])
 
     @pytest.mark.vcr()
-    def test_get_updated_time(self):
-        metadata_before = self.spreadsheet._properties
-        self.assertNotIn("modifiedTime", metadata_before)
-
-        lastUpdateTime = self.spreadsheet.lastUpdateTime
-        metadata_after = self.spreadsheet._properties
-
-        self.assertIsNotNone(lastUpdateTime)
-        self.assertIn("modifiedTime", metadata_after)
-        self.assertEqual(lastUpdateTime, metadata_after["modifiedTime"])
-
-    @pytest.mark.vcr()
-    def test_refresh_lastUpdateTime(self):
-        lastUpdateTime_before = self.spreadsheet.lastUpdateTime
+    def test_get_lastUpdateTime(self):
+        """Test get_lastUpdateTime method works"""
+        lastUpdateTime_before = self.spreadsheet.get_lastUpdateTime()
 
         time.sleep(0.01)
         self.spreadsheet.update_title("🎊 Updated Title #123 🎉")
 
-        self.spreadsheet.refresh_lastUpdateTime()
-
-        lastUpdateTime_after = self.spreadsheet.lastUpdateTime
+        lastUpdateTime_after = self.spreadsheet.get_lastUpdateTime()
 
         self.assertNotEqual(lastUpdateTime_before, lastUpdateTime_after)
+
+    @pytest.mark.vcr()
+    def test_creationTime_prop(self):
+        """test lastUpdateTime property behaviour"""
+        creationTime = self.spreadsheet.creationTime
+        self.assertIsNotNone(creationTime)
