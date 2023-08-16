@@ -1,12 +1,10 @@
 # Google Spreadsheets Python API v4
 
-![main workflow](https://img.shields.io/github/actions/workflow/status/burnash/gspread/main.yaml?logo=github)
-![github license](https://img.shields.io/pypi/l/gspread?logo=github)
-![latest download](https://img.shields.io/github/downloads-pre/burnash/gspread/latest/total?logo=github)
-![documentation](https://img.shields.io/readthedocs/gspread?logo=readthedocs)
-![pypi download](https://img.shields.io/pypi/dm/gspread?logo=pypi)
-![pypi version](https://img.shields.io/pypi/v/gspread?logo=pypi)
-![python version](https://img.shields.io/pypi/pyversions/gspread?style=pypi)
+![latest workflow](https://github.com/burnash/gspread/actions/workflows/main.yaml/badge.svg?branch=master)
+[![GitHub version](https://badge.fury.io/gh/burnash%2Fgspread.svg)](https://badge.fury.io/gh/burnash%2Fgspread)
+![PyPi]( https://badge.fury.io/py/gspread.svg)
+![downloads](https://img.shields.io/pypi/dm/gspread.svg)
+![doc](https://readthedocs.org/projects/gspread/badge/?version=latest)
 
 Simple interface for working with Google Sheets.
 

@@ -259,18 +259,3 @@ class UtilsTest(unittest.TestCase):
         actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data)
 
         self.assertEqual(actual_combine, expected_combine)
-
-    def test_fill_gaps(self):
-        """test fill_gaps function"""
-        matrix = [
-            [1, 2, 3, 4],
-            [5, 6, 7, 8],
-        ]
-        expected = [
-            [1, 2, 3, 4, "", ""],
-            [5, 6, 7, 8, "", ""],
-            ["", "", "", "", "", ""],
-        ]
-        actual = utils.fill_gaps(matrix, 3, 6)
-
-        self.assertEqual(actual, expected)

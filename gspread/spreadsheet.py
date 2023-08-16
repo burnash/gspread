@@ -6,9 +6,6 @@ This module contains common spreadsheets' models.
 
 """
 
-import warnings
-from typing import Union
-
 from .exceptions import WorksheetNotFound
 from .urls import DRIVE_FILES_API_V3_URL, SPREADSHEET_DRIVE_URL
 from .utils import ExportFormat, finditem
@@ -24,9 +21,6 @@ class Spreadsheet:
 
         metadata = self.fetch_sheet_metadata()
         self._properties.update(metadata["properties"])
-
-        drive_metadata = self.client.get_file_drive_metadata(self._properties["id"])
-        self._properties.update(drive_metadata)
 
     @property
     def id(self):
@@ -46,20 +40,21 @@ class Spreadsheet:
     @property
     def creationTime(self):
         """Spreadsheet Creation time."""
-        return self._properties["createdTime"]
+        try:
+            return self._properties["createdTime"]
+        except KeyError:
+            metadata = self.client._get_file_drive_metadata(self.id)
+            self._properties.update(metadata)
+            return self._properties["createdTime"]
 
     @property
     def lastUpdateTime(self):
-        """Spreadsheet last updated time.
-        Only updated on initialisation.
-        For actual last updated time, use get_lastUpdateTime()."""
-        warnings.warn(
-            """
-            This is only updated on initialisation and is probably outdated by the time you use it.
-            For an up to date last updated time, use get_lastUpdateTime().
-            """
-        )
-        return self._properties["modifiedTime"]
+        """Spreadsheet last updated time."""
+        try:
+            return self._properties["modifiedTime"]
+        except KeyError:
+            self.refresh_lastUpdateTime()
+            return self._properties["modifiedTime"]
 
     @property
     def timezone(self):
@@ -233,11 +228,11 @@ class Spreadsheet:
         except (KeyError, IndexError):
             raise WorksheetNotFound("index {} not found".format(index))
 
-    def get_worksheet_by_id(self, id: Union[str, int]):
+    def get_worksheet_by_id(self, id):
         """Returns a worksheet with specified `worksheet id`.
 
         :param id: The id of a worksheet. it can be seen in the url as the value of the parameter 'gid'.
-        :type id: str | int
+        :type id: int
 
         :returns: an instance of :class:`gspread.worksheet.Worksheet`.
         :raises:
@@ -251,18 +246,13 @@ class Spreadsheet:
         sheet_data = self.fetch_sheet_metadata()
 
         try:
-            worksheet_id_int = int(id)
-        except ValueError as ex:
-            raise ValueError("id should be int") from ex
-
-        try:
             item = finditem(
-                lambda x: x["properties"]["sheetId"] == worksheet_id_int,
+                lambda x: x["properties"]["sheetId"] == id,
                 sheet_data["sheets"],
             )
             return Worksheet(self.id, self.client, item["properties"])
         except (StopIteration, KeyError):
-            raise WorksheetNotFound("id {} not found".format(worksheet_id_int))
+            raise WorksheetNotFound("id {} not found".format(id))
 
     def worksheets(self, exclude_hidden: bool = False):
         """Returns a list of all :class:`worksheets <gspread.worksheet.Worksheet>`
@@ -399,16 +389,12 @@ class Spreadsheet:
 
         return self.client.batch_update(self.id, body)
 
-    def del_worksheet_by_id(self, worksheet_id: Union[str, int]):
+    def del_worksheet_by_id(self, worksheet_id: str):
         """
         Deletes a Worksheet by id
         """
-        try:
-            worksheet_id_int = int(worksheet_id)
-        except ValueError as ex:
-            raise ValueError("id should be int") from ex
 
-        body = {"requests": [{"deleteSheet": {"sheetId": worksheet_id_int}}]}
+        body = {"requests": [{"deleteSheet": {"sheetId": worksheet_id}}]}
 
         return self.client.batch_update(self.id, body)
 
@@ -709,16 +695,7 @@ class Spreadsheet:
 
         return sheet.get("protectedRanges", [])
 
-    def refresh_lastUpdateTime(self) -> None:
-        """Updates the cached value of lastUpdateTime."""
-        # remove this and the below upon deprecation of lastUpdateTime @property
-        self._properties["modifiedTime"] = self.get_lastUpdateTime()
-
-    def get_lastUpdateTime(self) -> str:
-        """Get the lastUpdateTime metadata from the Drive API.
-        Also updates the cached value in the _properties dict.
-        """
-        metadata = self.client.get_file_drive_metadata(self.id)
-        # remove next line and the above upon deprecation of lastUpdateTime @property
+    def refresh_lastUpdateTime(self):
+        """Refresh the lastUpdateTime property of the spreadsheet."""
+        metadata = self.client._get_file_drive_metadata(self.id)
         self._properties["modifiedTime"] = metadata["modifiedTime"]
-        return metadata["modifiedTime"]

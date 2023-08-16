@@ -118,18 +118,3 @@ This will mostly result in a lot of updated files in `tests/cassettes/`. Don't f
 Please add them in a dedicated commit, in order to make the review process easier.
 
 Afterwards, remember to [run the tests in offline mode](#run-tests-offline) to make sure you have recorded everything correctly.
-
-## Release
-
-Old release notes are [here](https://gist.github.com/burnash/335f977a74b8bfdc7968).
-
-New release system:
-
-- Update version number in [`gspread/__init__.py`](../gspread/__init__.py).
-- Get changelog from drafting a new [GitHub release](https://github.com/burnash/gspread/releases/new) (do not publish, instead cancel.)
-- Add changelog to [`HISTORY.rst`](../HISTORY.rst).
-- Commit the changes as `Release vX.Y.Z` (do not push yet.)
-- Run `tox -e lint,py,build,doc` to check build/etc.
-- Push the commit. Wait for the CI to pass.
-- Add a tag `vX.Y.Z` to the commit locally. This will trigger a new release on PyPi, and make a release on GitHub.
-- View the release on [GitHub](https://github.com/burnash/gspread/releases) and [PyPi](https://pypi.org/project/gspread/)!

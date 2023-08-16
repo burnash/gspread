@@ -39,67 +39,6 @@ class Client:
     ) -> None:
         self.http_client = http_client(auth)
 
-        self.timeout = None
-
-    def login(self):
-        from google.auth.transport.requests import Request
-
-        self.auth.refresh(Request(self.session))
-
-        self.session.headers.update({"Authorization": "Bearer %s" % self.auth.token})
-
-    def set_timeout(self, timeout):
-        """How long to wait for the server to send
-        data before giving up, as a float, or a ``(connect timeout,
-        read timeout)`` tuple.
-
-        Value for ``timeout`` is in seconds (s).
-        """
-        self.timeout = timeout
-
-    def request(
-        self,
-        method,
-        endpoint,
-        params=None,
-        data=None,
-        json=None,
-        files=None,
-        headers=None,
-    ):
-        response = getattr(self.session, method)(
-            endpoint,
-            json=json,
-            params=params,
-            data=data,
-            files=files,
-            headers=headers,
-            timeout=self.timeout,
-        )
-
-        if response.ok:
-            return response
-        else:
-            raise APIError(response)
-
-    def get_file_drive_metadata(self, id):
-        """Get the metadata from the Drive API for a specific file
-        This method is mainly here to retrieve the create/update time
-        of a file (these metadata are only accessible from the Drive API).
-        """
-
-        url = DRIVE_FILES_API_V3_URL + "/{}".format(id)
-
-        params = {
-            "supportsAllDrives": True,
-            "includeItemsFromAllDrives": True,
-            "fields": "id,name,createdTime,modifiedTime",
-        }
-
-        res = self.request("get", url, params=params)
-
-        return res.json()
-
     def list_spreadsheet_files(
         self, title: Optional[str] = None, folder_id: Optional[str] = None
     ) -> Tuple[List[Dict[str, Any]], Response]:
