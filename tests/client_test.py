@@ -106,22 +106,33 @@ class ClientTest(GspreadTest):
         self.assertTrue(spreadsheet.locale)
         self.assertTrue(spreadsheet.timezone)
 
+
+class ClientTestWithoutBackoff(GspreadTest):
+
+    """Test for gspread.client without backoff client. For specific tests relying on 403 errors."""
+
+    @pytest.fixture(scope="function", autouse=True)
+    def init(self, nonbackoffclient):
+        ClientTestWithoutBackoff.gc = nonbackoffclient
+
     @pytest.mark.vcr()
     def test_access_private_spreadsheet(self):
         """tests that opening private spreadsheet returns SpreadsheetPermissionDenied"""
-        self.skipTest(
-            """
-            APIs run up to timeout value.
-            With credentials, test passes, but takes ~260 seconds.
-            This is an issue with the back-off client.
-            See BackOffHTTPClient docstring in
-                `gspread/http_client.py`
-            > "will retry exponentially even when the error should
-            > raise instantly. Due to the Drive API that raises
-            > 403 (Forbidden) errors for forbidden access and
-            > for api rate limit exceeded."
-            """
-        )
+        # self.skipTest(
+        #     """
+        #     APIs run up to timeout value.
+        #     With credentials, test passes, but takes ~260 seconds.
+        #     This is an issue with the back-off client.
+        #     See BackOffHTTPClient docstring in
+        #         `gspread/http_client.py`
+        #     > "will retry exponentially even when the error should
+        #     > raise instantly. Due to the Drive API that raises
+        #     > 403 (Forbidden) errors for forbidden access and
+        #     > for api rate limit exceeded."
+        #     """
+        # )
         private_id = "1jIKzPs8LsiZZdLdeMEP-5ZIHw6RkjiOmj1LrJN706Yc"
+        # self.gc.http_client.set_timeout(1)
+        print(self.gc.http_client)
         with self.assertRaises(PermissionError):
             self.gc.open_by_key(private_id)

@@ -1,0 +1,85 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "body": "{\"name\": \"Test ClientTestWithoutBackoff test_access_private_spreadsheet\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "128"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Date": [
+                        "Wed, 16 Aug 2023 08:57:00 GMT"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "215"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"kind\": \"drive#file\",\n  \"id\": \"1_fYxgn5fuZXLd0Q8ZQLPuqWQYNwszImSWIWltaLQNFE\",\n  \"name\": \"Test ClientTestWithoutBackoff test_access_private_spreadsheet\",\n  \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
+                }
+            }
+        }
+    ]
+}
