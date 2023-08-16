@@ -9,7 +9,7 @@ from google.oauth2.service_account import Credentials as ServiceAccountCredentia
 
 import gspread
 from gspread.client import Client
-from gspread.http_client import BackOffHTTPClient
+from gspread.http_client import BackOffHTTPClient, HTTPClient
 
 CREDS_FILENAME = os.getenv("GS_CREDS_FILENAME")
 RECORD_MODE = os.getenv("GS_RECORD_MODE", "none")
@@ -88,6 +88,21 @@ def client():
         auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
 
     gc = Client(auth_credentials, BackOffHTTPClient)
+    if not isinstance(gc, gspread.client.Client) is True:
+        raise AssertionError
+
+    return gc
+
+
+@pytest.fixture(scope="module")
+def nonbackoffclient():
+    """The test uses a backoff client `client()`. This doesn't work for tests which test for a 403 error as it loads forever (260 secs). see https://github.com/burnash/gspread/issues/1268"""
+    if CREDS_FILENAME:
+        auth_credentials = read_credentials(CREDS_FILENAME)
+    else:
+        auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
+
+    gc = Client(auth_credentials, HTTPClient)
     if not isinstance(gc, gspread.client.Client) is True:
         raise AssertionError
 
