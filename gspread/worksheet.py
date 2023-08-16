@@ -173,14 +173,13 @@ class Worksheet:
 
     @property
     def col_count(self):
-        """Number of columns.
-
-        .. warning::
-
-           This value is fetched when opening the worksheet.
-           This is not dynamically updated when adding columns, yet.
-        """
+        """Number of columns."""
         return self._properties["gridProperties"]["columnCount"]
+
+    @property
+    def column_count(self):
+        """Number of columns"""
+        return self.col_count
 
     @property
     def frozen_row_count(self):
