@@ -60,7 +60,3 @@ class APIError(GSpreadException):
 
 class SpreadsheetNotFound(APIError):
     """Trying to open non-existent or inaccessible spreadsheet."""
-
-    def __init__(self, response: Response):
-        super().__init__(response)
-        self.response: Response = response
