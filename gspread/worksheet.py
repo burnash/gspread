@@ -6,6 +6,7 @@ This module contains common worksheets' models.
 
 """
 
+from typing import Union
 import warnings
 
 from .cell import Cell
@@ -25,6 +26,7 @@ from .utils import (
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
+    convert_hex_to_colors_dict,
     fill_gaps,
     filter_dict_values,
     finditem,
@@ -1465,19 +1467,22 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color: dict):
+    def update_tab_color(self, color: Union[dict, str]):
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
         :param dict color: The red, green and blue values of the color, between 0 and 1.
         """
 
-        warnings.warn(
-            DEPRECATION_WARNING_TEMPLATE.format(
-                v_deprecated="6.0.0",
-                msg_deprecated='color format with change to hex format "#RRGGBB". To convert a dict into hex, use the function "gspread.utils.convert_colors_to_hex_value(color)"',
+        if isinstance(color, str):
+            color = convert_hex_to_colors_dict(color)
+        else:
+            warnings.warn(
+                message=DEPRECATION_WARNING_TEMPLATE.format(
+                    v_deprecated="6.0.0",
+                    msg_deprecated='color format will change to hex format "#RRGGBB". To suppress this warning, convert color to hex with "gspread.utils.convert_colors_to_hex_value(color)"',
+                )
             )
-        )
 
         red, green, blue = color["red"], color["green"], color["blue"]
         body = {
