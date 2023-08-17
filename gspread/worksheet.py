@@ -26,6 +26,7 @@ from .utils import (
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
+    convert_colors_to_hex_value,
     convert_hex_to_colors_dict,
     fill_gaps,
     filter_dict_values,
@@ -208,10 +209,16 @@ class Worksheet:
         warnings.warn(
             DEPRECATION_WARNING_TEMPLATE.format(
                 v_deprecated="6.0.0",
-                msg_deprecated='color format with change to hex format "#RRGGBB". To convert back to dict format, use gspread.utils.convert_hex_to_colors_dict.',
+                msg_deprecated='color format will change to hex format "#RRGGBB". To suppress warning, use "get_tab_color()" and convert back to dict format, use gspread.utils.convert_hex_to_colors_dict. However, we recommend changing your code to use hex format.',
             )
         )
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
+
+    def get_tab_color(self) -> str:
+        """Tab color style in hex format. String."""
+        return convert_colors_to_hex_value(
+            self._properties.get("tabColorStyle", {}).get("rgbColor", None)
+        )
 
     def _get_sheet_property(self, property, default_value):
         """return a property of this worksheet or default value if not found"""
@@ -1480,7 +1487,7 @@ class Worksheet:
             warnings.warn(
                 message=DEPRECATION_WARNING_TEMPLATE.format(
                     v_deprecated="6.0.0",
-                    msg_deprecated='color format will change to hex format "#RRGGBB". To suppress this warning, convert color to hex with "gspread.utils.convert_colors_to_hex_value(color)"',
+                    msg_deprecated='color format will change to hex format "#RRGGBB". To suppress this warning, first convert color to hex with "gspread.utils.convert_colors_to_hex_value(color)"',
                 )
             )
 
