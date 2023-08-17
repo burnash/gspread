@@ -6,8 +6,8 @@ This module contains common worksheets' models.
 
 """
 
-from typing import Union
 import warnings
+from typing import Union
 
 from .cell import Cell
 from .exceptions import GSpreadException
