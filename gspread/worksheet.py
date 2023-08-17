@@ -203,6 +203,12 @@ class Worksheet:
         """Tab color style. Dict with RGB color values.
         If any of R, G, B are 0, they will not be present in the dict.
         """
+        warnings.warn(
+            DEPRECATION_WARNING_TEMPLATE.format(
+                v_deprecated="6.0.0",
+                msg_deprecated='color format with change to hex format "#RRGGBB". To convert back to dict format, use gspread.utils.convert_hex_to_colors_dict.',
+            )
+        )
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
 
     def _get_sheet_property(self, property, default_value):
@@ -1465,6 +1471,14 @@ class Worksheet:
 
         :param dict color: The red, green and blue values of the color, between 0 and 1.
         """
+
+        warnings.warn(
+            DEPRECATION_WARNING_TEMPLATE.format(
+                v_deprecated="6.0.0",
+                msg_deprecated='color format with change to hex format "#RRGGBB". To convert a dict into hex, use the function "gspread.utils.convert_colors_to_hex_value(color)"',
+            )
+        )
+
         red, green, blue = color["red"], color["green"], color["blue"]
         body = {
             "requests": [
