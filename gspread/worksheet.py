@@ -214,11 +214,12 @@ class Worksheet:
         )
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
 
-    def get_tab_color(self) -> str:
+    def get_tab_color(self) -> Union[str, None]:
         """Tab color style in hex format. String."""
-        return convert_colors_to_hex_value(
-            self._properties.get("tabColorStyle", {}).get("rgbColor", None)
-        )
+        tab_color = self._properties.get("tabColorStyle", {}).get("rgbColor", None)
+        if tab_color is None:
+            return None
+        return convert_colors_to_hex_value(**tab_color)
 
     def _get_sheet_property(self, property, default_value):
         """return a property of this worksheet or default value if not found"""
