@@ -3,7 +3,6 @@ Exceptions
 
 
 .. autoexception:: gspread.exceptions.APIError
-.. autoexception:: gspread.exceptions.CellNotFound
 .. autoexception:: gspread.exceptions.GSpreadException
 .. autoexception:: gspread.exceptions.IncorrectCellLabel
 .. autoexception:: gspread.exceptions.InvalidInputValue

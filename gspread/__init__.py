@@ -14,7 +14,6 @@ from .auth import (
 from .cell import Cell
 from .client import BackoffClient, Client, ClientFactory
 from .exceptions import (
-    CellNotFound,
     GSpreadException,
     IncorrectCellLabel,
     NoValidUrlKeyFound,

@@ -9,10 +9,15 @@ class ClientTest(GspreadTest):
 
     """Test for gspread.client."""
 
-    @pytest.fixture(scope="class", autouse=True)
-    def init(self, client):
-        # must use class attributes, each test function runs in a different instance
+    @pytest.fixture(scope="function", autouse=True)
+    def init(self, client, request):
         ClientTest.gc = client
+        name = self.get_temporary_spreadsheet_title(request.node.name)
+        ClientTest.spreadsheet = client.create(name)
+
+        yield
+
+        client.del_spreadsheet(ClientTest.spreadsheet.id)
 
     @pytest.mark.vcr()
     def test_no_found_exeption(self):
@@ -38,7 +43,7 @@ class ClientTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_copy(self):
-        original_spreadsheet = self.gc.create("Original")
+        original_spreadsheet = self.spreadsheet
         spreadsheet_copy = self.gc.copy(original_spreadsheet.id)
         self.assertTrue(isinstance(spreadsheet_copy, gspread.Spreadsheet))
 
@@ -48,8 +53,7 @@ class ClientTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_import_csv(self):
-        title = "TestImportSpreadsheet"
-        new_spreadsheet = self.gc.create(title)
+        spreadsheet = self.spreadsheet
 
         sg = self._sequence_generator()
 
@@ -60,19 +64,63 @@ class ClientTest(GspreadTest):
 
         simple_csv_data = "\n".join([",".join(row) for row in rows])
 
-        self.gc.import_csv(new_spreadsheet.id, simple_csv_data)
+        self.gc.import_csv(spreadsheet.id, simple_csv_data)
 
-        sh = self.gc.open_by_key(new_spreadsheet.id)
+        sh = self.gc.open_by_key(spreadsheet.id)
         self.assertEqual(sh.sheet1.get_all_values(), rows)
-
-        self.gc.del_spreadsheet(new_spreadsheet.id)
 
     @pytest.mark.vcr()
     def test_access_non_existing_spreadsheet(self):
-        with self.assertRaises(gspread.exceptions.APIError) as error:
+        with self.assertRaises(gspread.exceptions.SpreadsheetNotFound):
             self.gc.open_by_key("test")
-        self.assertEqual(error.exception.args[0]["code"], 404)
-        self.assertEqual(
-            error.exception.args[0]["message"], "Requested entity was not found."
+        with self.assertRaises(gspread.exceptions.SpreadsheetNotFound):
+            self.gc.open_by_url("https://docs.google.com/spreadsheets/d/test")
+
+    @pytest.mark.vcr()
+    def test_open_all_has_metadata(self):
+        """tests all spreadsheets are opened
+        and that they all have metadata"""
+        spreadsheets = self.gc.openall()
+        for spreadsheet in spreadsheets:
+            self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+            # has properties that are not from Drive API (i.e., not title, id, creationTime)
+            self.assertTrue(spreadsheet.locale)
+            self.assertTrue(spreadsheet.timezone)
+
+    @pytest.mark.vcr()
+    def test_open_by_key_has_metadata(self):
+        """tests open_by_key has metadata"""
+        spreadsheet = self.gc.open_by_key(self.spreadsheet.id)
+        self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+        # has properties that are not from Drive API (i.e., not title, id, creationTime)
+        self.assertTrue(spreadsheet.locale)
+        self.assertTrue(spreadsheet.timezone)
+
+    @pytest.mark.vcr()
+    def test_open_by_name_has_metadata(self):
+        """tests open has metadata"""
+        spreadsheet = self.gc.open(self.spreadsheet.title)
+        self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+        # has properties that are not from Drive API (i.e., not title, id, creationTime)
+        self.assertTrue(spreadsheet.locale)
+        self.assertTrue(spreadsheet.timezone)
+
+    @pytest.mark.vcr()
+    def test_access_private_spreadsheet(self):
+        """tests that opening private spreadsheet returns SpreadsheetPermissionDenied"""
+        self.skipTest(
+            """
+            APIs run up to timeout value.
+            With credentials, test passes, but takes ~260 seconds.
+            This is an issue with the back-off client.
+            See BackOffHTTPClient docstring in
+                `gspread/http_client.py`
+            > "will retry exponentially even when the error should
+            > raise instantly. Due to the Drive API that raises
+            > 403 (Forbidden) errors for forbidden access and
+            > for api rate limit exceeded."
+            """
         )
-        self.assertEqual(error.exception.args[0]["status"], "NOT_FOUND")
+        private_id = "1jIKzPs8LsiZZdLdeMEP-5ZIHw6RkjiOmj1LrJN706Yc"
+        with self.assertRaises(PermissionError):
+            self.gc.open_by_key(private_id)

@@ -15,16 +15,8 @@ class GSpreadException(Exception):
     """A base class for gspread's exceptions."""
 
 
-class SpreadsheetNotFound(GSpreadException):
-    """Trying to open non-existent or inaccessible spreadsheet."""
-
-
 class WorksheetNotFound(GSpreadException):
     """Trying to open non-existent or inaccessible worksheet."""
-
-
-class CellNotFound(GSpreadException):
-    """Cell lookup exception."""
 
 
 class NoValidUrlKeyFound(GSpreadException):
@@ -40,6 +32,9 @@ class InvalidInputValue(GSpreadException):
 
 
 class APIError(GSpreadException):
+    """Errors coming from the API itself,
+    such as when we attempt to retrieve things that don't exist."""
+
     def __init__(self, response):
         super().__init__(self._extract_text(response))
         self.response = response
@@ -53,3 +48,7 @@ class APIError(GSpreadException):
             return errors["error"]
         except (AttributeError, KeyError, ValueError):
             return None
+
+
+class SpreadsheetNotFound(GSpreadException):
+    """Trying to open non-existent or inaccessible spreadsheet."""
