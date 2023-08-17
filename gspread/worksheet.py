@@ -209,7 +209,9 @@ class Worksheet:
         warnings.warn(
             DEPRECATION_WARNING_TEMPLATE.format(
                 v_deprecated="6.0.0",
-                msg_deprecated='color format will change to hex format "#RRGGBB". To suppress warning, use "get_tab_color()" and convert back to dict format, use gspread.utils.convert_hex_to_colors_dict. However, we recommend changing your code to use hex format.',
+                msg_deprecated="""color format will change to hex format "#RRGGBB".
+                To suppress warning, use "get_tab_color()" and convert back to dict format, use gspread.utils.convert_hex_to_colors_dict.
+                However, we recommend changing your code to use hex format.""",
             )
         )
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
@@ -1488,7 +1490,8 @@ class Worksheet:
             warnings.warn(
                 message=DEPRECATION_WARNING_TEMPLATE.format(
                     v_deprecated="6.0.0",
-                    msg_deprecated='color format will change to hex format "#RRGGBB". To suppress this warning, first convert color to hex with "gspread.utils.convert_colors_to_hex_value(color)"',
+                    msg_deprecated="""color format will change to hex format "#RRGGBB".
+                    To suppress this warning, first convert color to hex with "gspread.utils.convert_colors_to_hex_value(color)""",
                 )
             )
 
