@@ -8,9 +8,10 @@ Google API.
 """
 import warnings
 from http import HTTPStatus
-from typing import Type
+from typing import Any, Dict, List, Tuple, Type
 
 from google.auth.transport.requests import AuthorizedSession
+from requests import Response
 
 from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
 from .spreadsheet import Spreadsheet
@@ -110,7 +111,9 @@ class Client:
 
         return res.json()
 
-    def list_spreadsheet_files(self, title=None, folder_id=None):
+    def list_spreadsheet_files(
+        self, title=None, folder_id=None
+    ) -> Tuple[List[Dict[str, Any]], Response]:
         """List all the spreadsheet files
 
         Will list all spreadsheet files owned by/shared with this user account.
@@ -125,29 +128,34 @@ class Client:
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
 
-        q = 'mimeType="{}"'.format(MimeType.google_sheets)
+        query = f'mimeType="{MimeType.google_sheets}"'
         if title:
-            q += ' and name = "{}"'.format(title)
+            query += f' and name = "{title}"'
         if folder_id:
-            q += ' and parents in "{}"'.format(folder_id)
+            query += f' and parents in "{folder_id}"'
 
         params = {
-            "q": q,
+            "q": query,
             "pageSize": 1000,
             "supportsAllDrives": True,
             "includeItemsFromAllDrives": True,
             "fields": "kind,nextPageToken,files(id,name,createdTime,modifiedTime)",
         }
 
-        while page_token is not None:
+        while True:
             if page_token:
                 params["pageToken"] = page_token
 
-            res = self.request("get", url, params=params).json()
-            files.extend(res["files"])
-            page_token = res.get("nextPageToken", None)
+            response = self.request("get", url, params=params)
+            response_json = response.json()
+            files.extend(response_json["files"])
 
-        return files
+            page_token = response_json.get("nextPageToken", None)
+
+            if page_token is None:
+                break
+
+        return files, response
 
     def open(self, title, folder_id=None):
         """Opens a spreadsheet.
@@ -165,18 +173,19 @@ class Client:
 
         >>> gc.open('My fancy spreadsheet')
         """
+        spreadsheet_files, response = self.list_spreadsheet_files(title, folder_id)
         try:
             properties = finditem(
                 lambda x: x["name"] == title,
-                self.list_spreadsheet_files(title, folder_id),
+                spreadsheet_files,
             )
+        except StopIteration as ex:
+            raise SpreadsheetNotFound(response) from ex
 
-            # Drive uses different terminology
-            properties["title"] = properties["name"]
+        # Drive uses different terminology
+        properties["title"] = properties["name"]
 
-            return Spreadsheet(self, properties)
-        except StopIteration:
-            raise SpreadsheetNotFound
+        return Spreadsheet(self, properties)
 
     def open_by_key(self, key):
         """Opens a spreadsheet specified by `key` (a.k.a Spreadsheet ID).
@@ -186,7 +195,15 @@ class Client:
 
         >>> gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
         """
-        return Spreadsheet(self, {"id": key})
+        try:
+            spreadsheet = Spreadsheet(self, {"id": key})
+        except APIError as ex:
+            if ex.response.status_code == HTTPStatus.NOT_FOUND:
+                raise SpreadsheetNotFound(ex.response) from ex
+            if ex.response.status_code == HTTPStatus.FORBIDDEN:
+                raise PermissionError from ex
+            raise ex
+        return spreadsheet
 
     def open_by_url(self, url):
         """Opens a spreadsheet specified by `url`.
@@ -210,7 +227,7 @@ class Client:
 
         :returns: a list of :class:`~gspread.models.Spreadsheet` instances.
         """
-        spreadsheet_files = self.list_spreadsheet_files(title)
+        spreadsheet_files, _ = self.list_spreadsheet_files(title)
 
         if title:
             spreadsheet_files = [
