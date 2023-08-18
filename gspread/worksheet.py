@@ -7,6 +7,7 @@ This module contains common worksheets' models.
 """
 
 import warnings
+from typing import Union
 
 from .cell import Cell
 from .exceptions import GSpreadException
@@ -26,6 +27,8 @@ from .utils import (
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
+    convert_colors_to_hex_value,
+    convert_hex_to_colors_dict,
     fill_gaps,
     filter_dict_values,
     finditem,
@@ -204,7 +207,22 @@ class Worksheet:
         """Tab color style. Dict with RGB color values.
         If any of R, G, B are 0, they will not be present in the dict.
         """
+        warnings.warn(
+            DEPRECATION_WARNING_TEMPLATE.format(
+                v_deprecated="6.0.0",
+                msg_deprecated="""color format will change to hex format "#RRGGBB".
+                To suppress warning, use "get_tab_color()" and convert back to dict format, use gspread.utils.convert_hex_to_colors_dict.
+                However, we recommend changing your code to use hex format.""",
+            )
+        )
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
+
+    def get_tab_color(self) -> Union[str, None]:
+        """Tab color style in hex format. String."""
+        tab_color = self._properties.get("tabColorStyle", {}).get("rgbColor", None)
+        if tab_color is None:
+            return None
+        return convert_colors_to_hex_value(**tab_color)
 
     def _get_sheet_property(self, property, default_value):
         """return a property of this worksheet or default value if not found"""
@@ -1465,12 +1483,24 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color: dict):
+    def update_tab_color(self, color: Union[dict, str]):
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
         :param dict color: The red, green and blue values of the color, between 0 and 1.
         """
+
+        if isinstance(color, str):
+            color = convert_hex_to_colors_dict(color)
+        else:
+            warnings.warn(
+                message=DEPRECATION_WARNING_TEMPLATE.format(
+                    v_deprecated="6.0.0",
+                    msg_deprecated="""color format will change to hex format "#RRGGBB".
+                    To suppress this warning, first convert color to hex with "gspread.utils.convert_colors_to_hex_value(color)""",
+                )
+            )
+
         red, green, blue = color["red"], color["green"], color["blue"]
         body = {
             "requests": [

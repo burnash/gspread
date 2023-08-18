@@ -239,6 +239,7 @@ class WorksheetTest(GspreadTest):
             .get("rgbColor", None)
         )
         color_param_before = self.sheet.tab_color
+        color_hex_before = self.sheet.get_tab_color()
 
         self.sheet.update_tab_color(pink_color)
 
@@ -249,14 +250,17 @@ class WorksheetTest(GspreadTest):
             .get("rgbColor", None)
         )
         color_param_after = self.sheet.tab_color
+        color_hex_after = self.sheet.get_tab_color()
 
         # params are set to whatever the user sets them to
         # google returns the closest 8-bit value
         # so these are different
         self.assertEqual(color_before, None)
         self.assertEqual(color_param_before, None)
+        self.assertEqual(color_hex_before, None)
         self.assertEqual(color_after, pink_color_from_google)
         self.assertEqual(color_param_after, pink_color)
+        self.assertEqual(color_hex_after, "#FF0080")
 
     @pytest.mark.vcr()
     def test_clear_tab_color(self):
