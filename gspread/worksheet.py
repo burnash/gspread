@@ -13,6 +13,7 @@ from .exceptions import GSpreadException
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
     DEPRECATION_WARNING_TEMPLATE,
+    REQUIRED_KWARGS,
     Dimension,
     PasteOrientation,
     PasteType,
@@ -932,7 +933,12 @@ class Worksheet:
 
         return [ValueRange.from_json(x) for x in response["valueRanges"]]
 
+    # required kwargs is a special value just to allow users to use kwargs
+    # and regular args mixed in order to transit to version 6.0.0
+    # This will be be entirely removed in version 6.0.0
     @accepted_kwargs(
+        range_name=REQUIRED_KWARGS,
+        values=REQUIRED_KWARGS,
         raw=True,
         major_dimension=None,
         value_input_option=None,

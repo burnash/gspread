@@ -274,3 +274,28 @@ class UtilsTest(unittest.TestCase):
         actual = utils.fill_gaps(matrix, 3, 6)
 
         self.assertEqual(actual, expected)
+
+    def test_accepted_kwargs(self):
+        """test accepted_kwargs function.
+        Test the temporary special value: REQUIRED_KWARGS
+        """
+
+        expected_arg0 = 0
+        expected_arg1 = 1
+
+        @utils.accepted_kwargs(arg1=1)
+        def sample_arg1(arg0, **kwargs):
+            self.assertEqual(arg0, expected_arg0)
+            self.assertEqual(kwargs["arg1"], expected_arg1)
+
+        sample_arg1(0)
+
+        expected_arg2 = 2
+
+        @utils.accepted_kwargs(arg1=utils.REQUIRED_KWARGS, arg2=2)
+        def sample_arg2(arg0, arg1=None, **kwargs):
+            self.assertEqual(arg0, expected_arg0)
+            self.assertEqual(arg1, expected_arg1)
+            self.assertEqual(kwargs["arg2"], expected_arg2)
+
+        sample_arg2(0, arg1=1, arg2=2)
