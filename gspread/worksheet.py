@@ -206,6 +206,11 @@ class Worksheet:
         return self._properties["gridProperties"]["columnCount"]
 
     @property
+    def column_count(self) -> int:
+        """Number of columns"""
+        return self.col_count
+
+    @property
     def frozen_row_count(self) -> int:
         """Number of frozen rows."""
         return self._properties["gridProperties"].get("frozenRowCount", 0)
