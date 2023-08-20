@@ -755,9 +755,9 @@ def convert_hex_to_colors_dict(hex_color: str) -> Mapping[str, float]:
 
     try:
         rgb_color = {
-            "red": round(int(hex_color[0:2], 16) / 255, 8),
-            "green": round(int(hex_color[2:4], 16) / 255, 8),
-            "blue": round(int(hex_color[4:6], 16) / 255, 8),
+            "red": int(hex_color[0:2], 16) / 255,
+            "green": int(hex_color[2:4], 16) / 255,
+            "blue": int(hex_color[4:6], 16) / 255,
         }
 
         return rgb_color

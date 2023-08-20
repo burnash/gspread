@@ -261,8 +261,8 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(actual_combine, expected_combine)
 
     def test_convert_colors_to_hex_value(self):
-        color = {"red": 1, "green": 0.5, "blue": 0}
-        expected_hex = "#FF8000"
+        color = {"red": 1, "green": 0.49803922, "blue": 0}
+        expected_hex = "#FF7F00"
 
         # successful convert from colors
         hex = utils.convert_colors_to_hex_value(**color)
@@ -278,7 +278,7 @@ class UtilsTest(unittest.TestCase):
 
     def test_convert_hex_to_color(self):
         hex = "#FF7F00"
-        expected_color = {"red": 1, "green": 0.49803922, "blue": 0}
+        expected_color = {"red": 1, "green": 127 / 255, "blue": 0}
 
         # successful convert from hex to color
         rgbcolor = utils.convert_hex_to_colors_dict(hex)
