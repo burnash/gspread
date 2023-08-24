@@ -6,6 +6,7 @@ This module contains common worksheets' models.
 
 """
 
+import re
 import warnings
 from typing import Union
 
@@ -361,13 +362,49 @@ class Worksheet:
             for j, value in enumerate(row)
         ]
 
+    def _get_size_from_range(self, range_name):
+        """
+        GSHEET API returns a list of lists but it strips empty TRAILING cells
+        and strips empty TRAILING rows
+        """
+
+        # find out the width and height of the range from `data_range`
+        start_cell, end_cell = range_name.split(':')
+        start_col, start_row = re.findall(r'\d+|\D+', start_cell)
+        end_col, end_row = re.findall(r'\d+|\D+', end_cell)
+        # the columns can be A-Z or AA-ZZ or AAA-ZZZ
+        # so we need to convert the column letters to numbers
+        # and then calculate the number of columns
+        if len(start_col) == 1:
+            # e.g ord("A") = 65, ord("B") = 66, ord("C") = 67
+            num_cols = ord(end_col) - ord(start_col) + 1
+        else:
+            # In the case of multiple letters,
+            # we use the letters at each position as "digits"
+            # in a base-26 representation
+            start_col_int = 0
+            for i, col in enumerate(start_col[::-1]):
+                start_col_int += (ord(col) - 64) * (26 ** i)
+            
+            end_col_int = 0
+            for i, col in enumerate(end_col[::-1]):
+                end_col_int += (ord(col) - 64) * (26 ** i)
+
+            num_cols = end_col_int - start_col_int + 1
+            
+        # calculate the number of rows
+        num_rows = int(end_row) - int(start_row) + 1
+
+        return num_rows, num_cols
+
+
     @accepted_kwargs(
         major_dimension=None,
         combine_merged_cells=False,
         value_render_option=None,
         date_time_render_option=None,
     )
-    def get_values(self, range_name=None, combine_merged_cells=False, **kwargs):
+    def get_values(self, range_name=None, combine_merged_cells=False, maintain_size=True, **kwargs):
         """Returns a list of lists containing all values from specified range.
 
         By default values are returned as strings. See ``value_render_option``
@@ -391,7 +428,9 @@ class Worksheet:
                 Setting this to True will cause an additional API request to be
                 made to retrieve the values of all merged cells.
 
-
+        :param bool maintain_size: (optional) If True, then the returned values
+            will be padded with empty strings to match the size of the range
+                
         :param str value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
@@ -464,7 +503,13 @@ class Worksheet:
             worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.formula)
         """
         try:
-            vals = fill_gaps(self.get(range_name, **kwargs))
+            if maintain_size:
+                vals = fill_gaps(self.get(range_name, **kwargs))
+            else:
+                num_rows, num_cols = self._get_size_from_range(range_name)
+                vals = self.get(range_name, **kwargs)
+                vals = fill_gaps(vals, rows=num_rows, cols=num_cols)
+
             if combine_merged_cells is True:
                 spreadsheet_meta = self.spreadsheet.fetch_sheet_metadata()
                 worksheet_meta = finditem(

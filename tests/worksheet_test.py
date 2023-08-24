@@ -71,6 +71,36 @@ class WorksheetTest(GspreadTest):
         self.assertSequenceEqual(tuples1, tuples2)
 
     @pytest.mark.vcr()
+    def test_maintain_size(self):
+        self.sheet.resize(4, 4)
+        rows = [
+            ["", "Hi", "Mom", ""],
+            ["My", "Name", "is", "bon"],
+            ["", "2", "", ""],
+            ["", "", "", ""],
+        ]
+        self.sheet.update("A1:D4", rows)
+
+        # The last row is empty, so it would be stripped.
+        stripped_num_row = 3 
+        
+        # The stripping happens row-first, trailing (right-side) only
+        stripped_num_cols = [3, 4, 2, 0]
+        
+        # Test if the stripping happens correctly
+        stripped_values = self.sheet.get_values(range_name="A1:D4")
+        self.assertEqual(len(stripped_values), stripped_num_row)
+        for row, num_cols in zip(stripped_values, stripped_num_cols):
+            self.assertEqual(len(row), num_cols)
+        
+        # Test if the maintain_size=True works
+        values = self.sheet.get_values(range_name="A1:D4", maintain_size=True)
+        self.assertEqual(len(values), 4)
+        for row, num_cols in zip(values, [4, 4, 4, 4]):
+            self.assertEqual(len(row), num_cols)
+
+
+    @pytest.mark.vcr()
     def test_range_get_all_values(self):
         self.sheet.resize(4, 4)
         rows = [
