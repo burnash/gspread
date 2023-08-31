@@ -1517,26 +1517,20 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color: Mapping[str, float]) -> JSONResponse:
+    def update_tab_color(self, color: str) -> JSONResponse:
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
-        :param dict color: The red, green and blue values of the color, between 0 and 1.
+        :param str color:  Hex color value.
         """
-        red, green, blue = color["red"], color["green"], color["blue"]
+        rgb_color = convert_hex_to_colors_dict(color)
         body = {
             "requests": [
                 {
                     "updateSheetProperties": {
                         "properties": {
                             "sheetId": self.id,
-                            "tabColorStyle": {
-                                "rgbColor": {
-                                    "red": red,
-                                    "green": green,
-                                    "blue": blue,
-                                }
-                            },
+                            "tabColorStyle": {"rgbColor": rgb_color},
                         },
                         "fields": "tabColorStyle",
                     }
@@ -1546,13 +1540,7 @@ class Worksheet:
 
         response = self.client.batch_update(self.spreadsheet_id, body)
 
-        sheet_color = {
-            "red": red,
-            "green": green,
-            "blue": blue,
-        }
-
-        self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
+        self._properties["tabColorStyle"] = {"rgbColor": rgb_color}
         return response
 
     def clear_tab_color(self) -> JSONResponse:
@@ -1577,15 +1565,6 @@ class Worksheet:
         response = self.client.batch_update(self.spreadsheet_id, body)
         self._properties.pop("tabColorStyle")
         return response
-
-    def set_tab_color(self, hex_color: str):
-        """Changes the worksheet's tab color.
-        Use clear_tab_color() to remove the color.
-
-        :param str hex_color: Hex color code in the format "#RRGGBB".
-        """
-        rgb_color = convert_hex_to_colors_dict(hex_color)
-        return self.update_tab_color(rgb_color)
 
     def update_index(self, index: int) -> JSONResponse:
         """Updates the ``index`` property for the worksheet.
