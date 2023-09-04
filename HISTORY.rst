@@ -1,8 +1,22 @@
 Release History
 ===============
 
+5.11.0 (2023-09-04)
+-------------------
+
+* add docs/build to .gitignore by @alifeee in https://github.com/burnash/gspread/pull/1246
+* add release process to CONTRIBUTING.md by @alifeee in https://github.com/burnash/gspread/pull/1247
+* Update/clean readme badges by @lavigne958 in https://github.com/burnash/gspread/pull/1251
+* add test_fill_gaps and docstring for fill_gaps by @alifeee in https://github.com/burnash/gspread/pull/1256
+* Remove API calls from `creationTime`/`lastUpdateTime` by @alifeee in https://github.com/burnash/gspread/pull/1255
+* Fix Worksheet ID Type Inconsistencies by @FlantasticDan in https://github.com/burnash/gspread/pull/1269
+* Add `column_count` prop as well as `col_count` by @alifeee in https://github.com/burnash/gspread/pull/1274
+* Add required kwargs with no default value by @lavigne958 in https://github.com/burnash/gspread/pull/1271
+* Add deprecation warnings for colors by @alifeee in https://github.com/burnash/gspread/pull/1278
+* Add better Exceptions on opening spreadsheets by @alifeee in https://github.com/burnash/gspread/pull/1277
+
 5.10.0 (2023-06-29)
-------------------
+-------------------
 
 * Fix rows_auto_resize in worksheet.py by removing redundant self by @MagicMc23 in https://github.com/burnash/gspread/pull/1194
 * Add deprecation warning for future release 6.0.x by @lavigne958 in https://github.com/burnash/gspread/pull/1195
