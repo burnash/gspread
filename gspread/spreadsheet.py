@@ -37,9 +37,6 @@ class Spreadsheet:
         metadata = self.fetch_sheet_metadata()
         self._properties.update(metadata["properties"])
 
-        drive_metadata = self.client.get_file_drive_metadata(self._properties["id"])
-        self._properties.update(drive_metadata)
-
     @property
     def id(self):
         """Spreadsheet ID."""
@@ -58,6 +55,8 @@ class Spreadsheet:
     @property
     def creationTime(self):
         """Spreadsheet Creation time."""
+        if "createdTime" not in self._properties:
+            self.update_drive_metadata()
         return self._properties["createdTime"]
 
     @property
@@ -71,6 +70,8 @@ class Spreadsheet:
             For an up to date last updated time, use get_lastUpdateTime().
             """
         )
+        if "modifiedTime" not in self._properties:
+            self.update_drive_metadata()
         return self._properties["modifiedTime"]
 
     @property
@@ -768,3 +769,9 @@ class Spreadsheet:
         # remove next line and the above upon deprecation of lastUpdateTime @property
         self._properties["modifiedTime"] = metadata["modifiedTime"]
         return metadata["modifiedTime"]
+
+    def update_drive_metadata(self) -> None:
+        """Fetches the drive metadata from the Drive API
+        and updates the cached values in _properties dict."""
+        drive_metadata = self.client.get_file_drive_metadata(self._properties["id"])
+        self._properties.update(drive_metadata)
