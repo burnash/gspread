@@ -677,6 +677,529 @@
                     "string": ""
                 }
             }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "body": "{\"name\": \"Test ClientTest test_import_csv\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "98"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Date": [
+                        "Wed, 06 Sep 2023 21:14:23 GMT"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ],
+                    "content-length": [
+                        "185"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"kind\": \"drive#file\",\n  \"id\": \"1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s\",\n  \"name\": \"Test ClientTest test_import_csv\",\n  \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Wed, 06 Sep 2023 21:14:24 GMT"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "content-length": [
+                        "3329"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s\",\n  \"properties\": {\n    \"title\": \"Test ClientTest test_import_csv\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s/edit\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "PUT",
+                "uri": "https://www.googleapis.com/upload/drive/v2/files/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s?uploadType=media&convert=True&supportsAllDrives=True",
+                "body": "test_import_csv 1,test_import_csv 2,test_import_csv 3,test_import_csv 4\ntest_import_csv 5,test_import_csv 6,test_import_csv 7,test_import_csv 8\ntest_import_csv 9,test_import_csv 10,test_import_csv 11,test_import_csv 12\ntest_import_csv 13,test_import_csv 14,test_import_csv 15,test_import_csv 16",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "text/csv"
+                    ],
+                    "Content-Length": [
+                        "294"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Access-Control-Allow-Credentials": [
+                        "true"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Date": [
+                        "Wed, 06 Sep 2023 21:14:26 GMT"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "X-GUploader-UploadID": [
+                        "ADPycduyeA5fnsbv-UI4tdXW4dtIP9H1VzA7gWu6SFQ-412UW5NGSgFslxhfvASLOtR3bNERGWCrtnCl27aU2C7N4ZMHUA"
+                    ],
+                    "Content-Length": [
+                        "4314"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ],
+                    "ETag": [
+                        "\"MTY5NDAzNDg2NTc3Ng\""
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"kind\": \"drive#file\",\n  \"userPermission\": {\n    \"id\": \"me\",\n    \"type\": \"user\",\n    \"role\": \"owner\",\n    \"kind\": \"drive#permission\",\n    \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s/permissions/me\",\n    \"etag\": \"\\\"HOm56htFDY3fWHfHPwqhP16QdYk\\\"\",\n    \"pendingOwner\": false\n  },\n  \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s\",\n  \"ownerNames\": [\n    \"telegram-budgeter@telegram-budgeter.iam.gserviceaccount.com\"\n  ],\n  \"lastModifyingUserName\": \"telegram-budgeter@telegram-budgeter.iam.gserviceaccount.com\",\n  \"editable\": true,\n  \"writersCanShare\": true,\n  \"mimeType\": \"application/vnd.google-apps.spreadsheet\",\n  \"exportLinks\": {\n    \"application/x-vnd.oasis.opendocument.spreadsheet\": \"https://docs.google.com/spreadsheets/export?id=1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s&exportFormat=ods\",\n    \"text/tab-separated-values\": \"https://docs.google.com/spreadsheets/export?id=1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s&exportFormat=tsv\",\n    \"application/pdf\": \"https://docs.google.com/spreadsheets/export?id=1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s&exportFormat=pdf\",\n    \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\": \"https://docs.google.com/spreadsheets/export?id=1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s&exportFormat=xlsx\",\n    \"text/csv\": \"https://docs.google.com/spreadsheets/export?id=1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s&exportFormat=csv\",\n    \"application/zip\": \"https://docs.google.com/spreadsheets/export?id=1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s&exportFormat=zip\",\n    \"application/vnd.oasis.opendocument.spreadsheet\": \"https://docs.google.com/spreadsheets/export?id=1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s&exportFormat=ods\"\n  },\n  \"parents\": [\n    {\n      \"selfLink\": \"https://www.googleapis.com/drive/v2/files/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s/parents/0AGIJ7XFn4BojUk9PVA\",\n      \"id\": \"0AGIJ7XFn4BojUk9PVA\",\n      \"isRoot\": true,\n      \"kind\": \"drive#parentReference\",\n      \"parentLink\": \"https://www.googleapis.com/drive/v2/files/0AGIJ7XFn4BojUk9PVA\"\n    }\n  ],\n  \"thumbnailLink\": \"https://docs.google.com/feeds/vt?gd=true&id=1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s&v=1&s=AMedNnoAAAAAZPkH0izPoTzBjXdtB_UhakfZyyPflGgm&sz=s220\",\n  \"appDataContents\": false,\n  \"iconLink\": \"https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.spreadsheet\",\n  \"shared\": false,\n  \"lastModifyingUser\": {\n    \"displayName\": \"telegram-budgeter@telegram-budgeter.iam.gserviceaccount.com\",\n    \"kind\": \"drive#user\",\n    \"isAuthenticatedUser\": true,\n    \"permissionId\": \"05027979280415927516\",\n    \"emailAddress\": \"telegram-budgeter@telegram-budgeter.iam.gserviceaccount.com\",\n    \"picture\": {\n      \"url\": \"https://lh3.googleusercontent.com/a/default-user=s64\"\n    }\n  },\n  \"owners\": [\n    {\n      \"displayName\": \"telegram-budgeter@telegram-budgeter.iam.gserviceaccount.com\",\n      \"kind\": \"drive#user\",\n      \"isAuthenticatedUser\": true,\n      \"permissionId\": \"05027979280415927516\",\n      \"emailAddress\": \"telegram-budgeter@telegram-budgeter.iam.gserviceaccount.com\",\n      \"picture\": {\n        \"url\": \"https://lh3.googleusercontent.com/a/default-user=s64\"\n      }\n    }\n  ],\n  \"copyable\": true,\n  \"etag\": \"\\\"MTY5NDAzNDg2NTc3Ng\\\"\",\n  \"alternateLink\": \"https://docs.google.com/spreadsheets/d/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s/edit?usp=drivesdk\",\n  \"embedLink\": \"https://docs.google.com/spreadsheets/d/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s/htmlembed?ouid=101377741449911561961\",\n  \"fileSize\": \"1024\",\n  \"copyRequiresWriterPermission\": false,\n  \"spaces\": [\n    \"drive\"\n  ],\n  \"id\": \"1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s\",\n  \"title\": \"Test ClientTest test_import_csv\",\n  \"labels\": {\n    \"viewed\": true,\n    \"restricted\": false,\n    \"starred\": false,\n    \"hidden\": false,\n    \"trashed\": false\n  },\n  \"explicitlyTrashed\": false,\n  \"createdDate\": \"2023-09-06T21:14:21.525Z\",\n  \"modifiedDate\": \"2023-09-06T21:14:25.776Z\",\n  \"modifiedByMeDate\": \"2023-09-06T21:14:25.776Z\",\n  \"lastViewedByMeDate\": \"2023-09-06T21:14:25.776Z\",\n  \"markedViewedByMeDate\": \"1970-01-01T00:00:00.000Z\",\n  \"quotaBytesUsed\": \"1024\",\n  \"version\": \"5\",\n  \"capabilities\": {\n    \"canEdit\": true,\n    \"canCopy\": true\n  }\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Wed, 06 Sep 2023 21:14:27 GMT"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "content-length": [
+                        "3374"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s\",\n  \"properties\": {\n    \"title\": \"Test ClientTest test_import_csv\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"America/Los_Angeles\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 163586385,\n        \"title\": \"Test ClientTest test_import_csv\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s/edit\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Wed, 06 Sep 2023 21:14:27 GMT"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "content-length": [
+                        "3374"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s\",\n  \"properties\": {\n    \"title\": \"Test ClientTest test_import_csv\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"America/Los_Angeles\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 163586385,\n        \"title\": \"Test ClientTest test_import_csv\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s/edit\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s/values/%27Test%20ClientTest%20test_import_csv%27",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Wed, 06 Sep 2023 21:14:28 GMT"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "content-length": [
+                        "593"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"'Test ClientTest test_import_csv'!A1:Z1000\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"test_import_csv 1\",\n      \"test_import_csv 2\",\n      \"test_import_csv 3\",\n      \"test_import_csv 4\"\n    ],\n    [\n      \"test_import_csv 5\",\n      \"test_import_csv 6\",\n      \"test_import_csv 7\",\n      \"test_import_csv 8\"\n    ],\n    [\n      \"test_import_csv 9\",\n      \"test_import_csv 10\",\n      \"test_import_csv 11\",\n      \"test_import_csv 12\"\n    ],\n    [\n      \"test_import_csv 13\",\n      \"test_import_csv 14\",\n      \"test_import_csv 15\",\n      \"test_import_csv 16\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "DELETE",
+                "uri": "https://www.googleapis.com/drive/v3/files/1BjngYXIfdn1ku6KJ6mw6LKb7fD9_eqJM-4qrAZTxT0s?supportsAllDrives=True",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 204,
+                    "message": "No Content"
+                },
+                "headers": {
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Content-Type": [
+                        "text/html"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Date": [
+                        "Wed, 06 Sep 2023 21:14:28 GMT"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ]
+                },
+                "body": {
+                    "string": ""
+                }
+            }
         }
     ]
 }
