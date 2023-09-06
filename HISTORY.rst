@@ -1,6 +1,12 @@
 Release History
 ===============
 
+5.11.1 (2023-09-06)
+-------------------
+
+* Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/burnash/gspread/pull/1288
+* remove Drive API access on Spreadsheet init (FIX - VERSION 5.11.1) by @alifeee in https://github.com/burnash/gspread/pull/1291
+
 5.11.0 (2023-09-04)
 -------------------
 
