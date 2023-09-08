@@ -17,6 +17,18 @@
 
 - Please follow [Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/).
 
+## Tests
+
+To run tests, add your credentials to `tests/creds.json` and run
+
+```bash
+GS_CREDS_FILENAME="tests/creds.json"
+GS_RECORD_MODE="all"
+tox -e py -- -k "<specific test to run>" -v -s
+```
+
+For more information on tests, see below.
+
 ## CI checks
 
 If the [test](#run-tests-offline) or [lint](#lint) commands fail, the CI will fail, and you won't be able to merge your changes into gspread.
