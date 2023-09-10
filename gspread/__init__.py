@@ -23,4 +23,4 @@ from .exceptions import (
 )
 from .http_client import BackOffHTTPClient, HTTPClient
 from .spreadsheet import Spreadsheet
-from .worksheet import Worksheet
+from .worksheet import ValueRange, Worksheet
