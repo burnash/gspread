@@ -5,7 +5,7 @@ import re
 import pytest
 
 import gspread
-import gspread.utils as utils
+from gspread import utils
 from gspread.exceptions import APIError, GSpreadException
 
 from .conftest import I18N_STR, GspreadTest
@@ -89,6 +89,18 @@ class WorksheetTest(GspreadTest):
         tuples2 = [(c.row, c.col, c.value) for c in cell_range2]
 
         self.assertSequenceEqual(tuples1, tuples2)
+
+    @pytest.mark.vcr()
+    def test_get_returns_ValueRange_with_metadata(self):
+        self.sheet.resize(4, 4)
+        rows = [[1]]
+
+        self.sheet.update(rows, "A1")
+
+        value_range = self.sheet.get("A1")
+        self.assertTrue(isinstance(value_range, gspread.ValueRange))
+        self.assertEqual(value_range.range, "Sheet1!A1")
+        self.assertEqual(value_range.major_dimension, "ROWS")
 
     @pytest.mark.vcr()
     def test_get_values_and_combine_merged_cells(self):
