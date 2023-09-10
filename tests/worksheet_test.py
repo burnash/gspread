@@ -132,7 +132,7 @@ class WorksheetTest(GspreadTest):
         self.sheet.update(sheet_data, "A1:D4")
 
         data_args = self.sheet.get_values(
-            "A1:D4", False, None, utils.ValueRenderOption.formatted
+            "A1:D4", None, utils.ValueRenderOption.formatted, None, False
         )
         data_kwargs = self.sheet.get_values(
             range_name="A1:D4",
