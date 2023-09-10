@@ -380,157 +380,13 @@ class Worksheet:
             for j, value in enumerate(row)
         ]
 
-    def get_values(
-        self,
-        range_name: Optional[str] = None,
-        combine_merged_cells: bool = False,
-        major_dimension: Optional[Dimension] = None,
-        value_render_option: Optional[ValueRenderOption] = None,
-        date_time_render_option: Optional[DateTimeOption] = None,
-    ) -> List[List[Any]]:
-        """Returns a list of lists containing all values from specified range.
+    def get_values(self, *args, **kwargs) -> ValueRange:
+        """Alias for :meth:`~gspread.worksheet.Worksheet.get`"""
+        return self.get(*args, **kwargs)
 
-        By default values are returned as strings. See ``value_render_option``
-        to change the default format.
-
-        :param str range_name: (optional) Cell range in the A1 notation or
-            a named range. If not specified the method returns values from all
-            non empty cells.
-
-        :param str major_dimension: (optional) The major dimension of the
-            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
-            Defaults to Dimension.rows
-        :type major_dimension: :class:`~gspread.utils.Dimension`
-
-        :param bool combine_merged_cells: (optional) If True, then all cells that
-            are part of a merged cell will have the same value as the top-left
-            cell of the merged cell. Defaults to False.
-
-            .. warning::
-
-                Setting this to True will cause an additional API request to be
-                made to retrieve the values of all merged cells.
-
-
-        :param str value_render_option: (optional) Determines how values should
-            be rendered in the output. See `ValueRenderOption`_ in
-            the Sheets API.
-
-            Possible values are:
-
-            ``ValueRenderOption.formatted``
-                (default) Values will be calculated and formatted according
-                to the cell's formatting. Formatting is based on the
-                spreadsheet's locale, not the requesting user's locale.
-
-            ``ValueRenderOption.unformatted``
-                Values will be calculated, but not formatted in the reply.
-                For example, if A1 is 1.23 and A2 is =A1 and formatted as
-                currency, then A2 would return the number 1.23.
-
-            ``ValueRenderOption.formula``
-                Values will not be calculated. The reply will include
-                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
-                formatted as currency, then A2 would return "=A1".
-
-            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
-        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
-
-
-        :param str date_time_render_option: (optional) How dates, times, and
-            durations should be represented in the output.
-
-            Possible values are:
-
-            ``DateTimeOption.serial_number``
-                (default) Instructs date, time, datetime, and duration fields
-                to be output as doubles in "serial number" format,
-                as popularized by Lotus 1-2-3.
-
-            ``DateTimeOption.formatted_string``
-                Instructs date, time, datetime, and duration fields to be output
-                as strings in their given number format
-                (which depends on the spreadsheet locale).
-
-            .. note::
-
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
-
-            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
-
-        .. note::
-
-            Empty trailing rows and columns will not be included.
-
-        Examples::
-
-            # Return all values from the sheet
-            worksheet.get_values()
-
-            # Return all values from columns "A" and "B"
-            worksheet.get_values('A:B')
-
-            # Return values from range "A2:C10"
-            worksheet.get_values('A2:C10')
-
-            # Return values from named range "my_range"
-            worksheet.get_values('my_range')
-
-            # Return unformatted values (e.g. numbers as numbers)
-            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.unformatted)
-
-            # Return cell values without calculating formulas
-            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.formula)
-        """
-        try:
-            vals = fill_gaps(
-                self.get(
-                    range_name=range_name,
-                    major_dimension=major_dimension,
-                    value_render_option=value_render_option,
-                    date_time_render_option=date_time_render_option,
-                )
-            )
-            if combine_merged_cells is True:
-                spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
-                worksheet_meta = finditem(
-                    lambda x: x["properties"]["title"] == self.title,
-                    spreadsheet_meta["sheets"],
-                )
-                return combined_merge_values(worksheet_meta, vals)
-            return vals
-        except KeyError:
-            return [[]]
-
-    def get_all_values(
-        self,
-        major_dimension: Optional[Dimension] = None,
-        value_render_option: Optional[ValueRenderOption] = None,
-        date_time_render_option: Optional[DateTimeOption] = None,
-    ) -> List[List[Any]]:
-        """Returns a list of lists containing all cells' values as strings.
-
-        This is an alias to :meth:`~gspread.worksheet.Worksheet.get_values`
-
-        .. note::
-
-            This is a legacy method.
-            Use :meth:`~gspread.worksheet.Worksheet.get_values` instead.
-
-        Examples::
-
-            # Return all values from the sheet
-            worksheet.get_all_values()
-
-            # Is equivalent to
-            worksheet.get_values()
-        """
-        return self.get_values(
-            major_dimension=major_dimension,
-            value_render_option=value_render_option,
-            date_time_render_option=date_time_render_option,
-        )
+    def get_all_values(self, *args, **kwargs) -> ValueRange:
+        """Alias to :meth:`~gspread.worksheet.Worksheet.get_values`"""
+        return self.get_values(*args, **kwargs)
 
     def get_all_records(
         self,
@@ -838,11 +694,15 @@ class Worksheet:
         major_dimension: Optional[Dimension] = None,
         value_render_option: Optional[ValueRenderOption] = None,
         date_time_render_option: Optional[DateTimeOption] = None,
+        combine_merged_cells: bool = False,
     ) -> ValueRange:
-        """Reads values of a single range or a cell of a sheet.
+        """Returns a ValueRange (list of lists) containing all values from a specified range or cell
+
+        By default values are returned as strings. See ``value_render_option``
+        to change the default format.
 
         :param str range_name: (optional) Cell range in the A1 notation or
-            a named range.
+            a named range. If not specified the method returns values from all non empty cells.
 
         :param str major_dimension: (optional) The major dimension of the
             values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
@@ -896,7 +756,18 @@ class Worksheet:
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
+        :param bool combine_merged_cells: (optional) If True, then all cells that
+            are part of a merged cell will have the same value as the top-left
+            cell of the merged cell. Defaults to False.
+
+            .. warning::
+
+                Setting this to True will cause an additional API request to be
+                made to retrieve the values of all merged cells.
+
         :rtype: :class:`gspread.worksheet.ValueRange`
+
+        .. versionadded:: 3.3
 
         Examples::
 
@@ -909,10 +780,17 @@ class Worksheet:
             # Return values of 'A1:B2' range
             worksheet.get('A1:B2')
 
+            # Return all values from columns "A" and "B"
+            worksheet.get('A:B')
+
             # Return values of 'my_range' named range
             worksheet.get('my_range')
 
-         .. versionadded:: 3.3
+            # Return unformatted values (e.g. numbers as numbers)
+            worksheet.get('A2:B4', value_render_option=ValueRenderOption.unformatted)
+
+            # Return cell values without calculating formulas
+            worksheet.get('A2:B4', value_render_option=ValueRenderOption.formula)
         """
         range_name = absolute_range_name(self.title, range_name)
 
@@ -926,7 +804,20 @@ class Worksheet:
             self.spreadsheet_id, range_name, params=params
         )
 
-        return ValueRange.from_json(response)
+        vals_unfilled = ValueRange.from_json(response)
+        try:
+            vals = fill_gaps(vals_unfilled)
+        except KeyError:
+            return ValueRange([[]])
+
+        if combine_merged_cells is True:
+            spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
+            worksheet_meta = finditem(
+                lambda x: x["properties"]["title"] == self.title,
+                spreadsheet_meta["sheets"],
+            )
+            return ValueRange(combined_merge_values(worksheet_meta, vals))
+        return ValueRange(vals)
 
     def batch_get(
         self,
