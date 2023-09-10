@@ -816,7 +816,7 @@ class Worksheet:
         try:
             vals = fill_gaps(vals_unfilled)
         except KeyError:
-            return ValueRange([[]])
+            vals = [[]]
 
         if combine_merged_cells is True:
             spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
@@ -824,8 +824,9 @@ class Worksheet:
                 lambda x: x["properties"]["title"] == self.title,
                 spreadsheet_meta["sheets"],
             )
-            return ValueRange(combined_merge_values(worksheet_meta, vals))
-        return ValueRange(vals)
+            vals = combined_merge_values(worksheet_meta, vals)
+
+        return ValueRange.from_json(response, vals)
 
     def batch_get(
         self,
