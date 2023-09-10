@@ -260,6 +260,42 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual_combine, expected_combine)
 
+    def test_convert_colors_to_hex_value(self):
+        color = {"red": 1, "green": 0.49803922, "blue": 0}
+        expected_hex = "#FF7F00"
+
+        # successful convert from colors
+        hex = utils.convert_colors_to_hex_value(**color)
+        self.assertEqual(hex, expected_hex)
+
+        # successful convert from partial input
+        hex = utils.convert_colors_to_hex_value(green=1)
+        self.assertEqual(hex, "#00FF00")
+
+        # throw ValueError on color values out of range (0-1)
+        with self.assertRaises(ValueError):
+            utils.convert_colors_to_hex_value(1.23, 0, -50)
+
+    def test_convert_hex_to_color(self):
+        hex = "#FF7F00"
+        expected_color = {"red": 1, "green": 127 / 255, "blue": 0}
+
+        # successful convert from hex to color
+        rgbcolor = utils.convert_hex_to_colors_dict(hex)
+        self.assertEqual(rgbcolor, expected_color)
+
+        # successful ignore alpha
+        rgbcolor = utils.convert_hex_to_colors_dict(f"{hex}42")
+        self.assertEqual(rgbcolor, expected_color)
+
+        # raise ValueError on invalid hex length
+        with self.assertRaises(ValueError):
+            utils.convert_hex_to_colors_dict("123456abcdef")
+
+        # raise ValueError on invalid hex characters
+        with self.assertRaises(ValueError):
+            utils.convert_hex_to_colors_dict("axbcde")
+
     def test_fill_gaps(self):
         """test fill_gaps function"""
         matrix = [
