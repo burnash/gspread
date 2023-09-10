@@ -1095,7 +1095,13 @@ class WorksheetTest(GspreadTest):
         read_data = self.sheet.get("A1:D4")
 
         self.assertEqual(
-            read_data, [["A1", "B1", "", "D1"], ["", "b2"], [], ["A4", "B4", "", "D4"]]
+            read_data,
+            [
+                ["A1", "B1", "", "D1"],
+                ["", "b2", "", ""],
+                ["", "", "", ""],
+                ["A4", "B4", "", "D4"],
+            ],
         )
 
     @pytest.mark.vcr()
@@ -1133,7 +1139,15 @@ class WorksheetTest(GspreadTest):
 
         data = self.sheet.get("A1:D4")
 
-        self.assertEqual(data, [["A1", "B1", "", "D1"], [], [], ["A4", "B4", "", "D4"]])
+        self.assertEqual(
+            data,
+            [
+                ["A1", "B1", "", "D1"],
+                ["", "", "", ""],
+                ["", "", "", ""],
+                ["A4", "B4", "", "D4"],
+            ],
+        )
 
     @pytest.mark.vcr()
     def test_format(self):
