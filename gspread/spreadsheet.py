@@ -6,7 +6,6 @@ This module contains common spreadsheets' models.
 
 """
 
-import warnings
 from typing import Union
 
 from .exceptions import WorksheetNotFound
