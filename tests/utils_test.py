@@ -260,6 +260,44 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual_combine, expected_combine)
 
+    def test_combine_merge_values_outside_range(self):
+        """Make sure that merges outside the range of the sheet are ignored or partially ignored
+        see issue #1298
+        """
+        sheet_data = [
+            [1, None, None, None],
+            [None, None, "title", None],
+            [None, None, 2, None],
+            ["num", "val", None, 0],
+        ]
+        sheet_metadata = {
+            "properties": {"sheetId": 0},
+            "merges": [
+                {
+                    "startRowIndex": 7,
+                    "endRowIndex": 9,
+                    "startColumnIndex": 7,
+                    "endColumnIndex": 9,
+                },
+                {
+                    "startRowIndex": 3,
+                    "endRowIndex": 5,
+                    "startColumnIndex": 1,
+                    "endColumnIndex": 2,
+                },
+            ],
+        }
+        expected_combine = [
+            [1, None, None, None],
+            [None, None, "title", None],
+            [None, None, 2, None],
+            ["num", "val", None, 0],
+        ]
+
+        actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data)
+
+        self.assertEqual(actual_combine, expected_combine)
+
     def test_convert_colors_to_hex_value(self):
         color = {"red": 1, "green": 0.5, "blue": 0}
         expected_hex = "#FF8000"
