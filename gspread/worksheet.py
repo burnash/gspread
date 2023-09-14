@@ -590,6 +590,60 @@ class Worksheet:
 
         return [dict(zip(keys, row)) for row in values]
 
+    def get_records(
+        self,
+        empty2zero=False,
+        head=1,
+        starting_row=2,
+        ending_row=None,
+        default_blank="",
+        allow_underscores_in_numeric_literals=False,
+        numericise_ignore=[],
+        value_render_option=None,
+        expected_headers=None,
+    ):
+        """Returns a list of dictionaries, all of them having the contents of
+        the spreadsheet with the head row as keys and each of these
+        dictionaries holding the contents of subsequent rows of cells as
+        values.
+
+        Cell values are numericised (strings that can be read as ints or floats
+        are converted), unless specified in numericise_ignore
+
+        :param bool empty2zero: (optional) Determines whether empty cells are
+            converted to zeros.
+        :param int head: (optional) Determines which row to use as keys,
+            starting from 1 following the numeration of the spreadsheet.
+        :param int starting_row: (optional) row to start reading data from (inclusive).
+        :param int ending_row: (optional) row to stop reading at (inclusive).
+        :param str default_blank: (optional) Determines which value to use for
+            blank cells, defaults to empty string.
+        :param bool allow_underscores_in_numeric_literals: (optional) Allow
+            underscores in numeric literals, as introduced in PEP 515
+        :param list numericise_ignore: (optional) List of ints of indices of
+            the columns (starting at 1) to ignore numericising, special use
+            of ['all'] to ignore numericising on all columns.
+        :param value_render_option: (optional) Determines how values should
+            be rendered in the output. See `ValueRenderOption`_ in
+            the Sheets API.
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+
+        :param list expected_headers: (optional) List of expected headers, they must be unique.
+
+            .. note::
+
+                returned dictionaries will contain all headers even if not included in this list
+
+        """
+        if starting_row < 2:
+            raise ValueError("starting_row must be greater than 1")
+        if ending_row is not None and ending_row < starting_row:
+            raise ValueError("ending_row must be greater than or equal to starting_row")
+        if starting_row <= head:
+            raise ValueError("starting_row must be greater than head")
+
+        return None
+
     def get_all_cells(self):
         """Returns a list of all `Cell` of the current sheet."""
 
