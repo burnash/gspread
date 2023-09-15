@@ -594,8 +594,8 @@ class Worksheet:
         self,
         empty2zero=False,
         head=1,
-        starting_row=2,
-        ending_row=None,
+        first_row=2,
+        last_row=None,
         default_blank="",
         allow_underscores_in_numeric_literals=False,
         numericise_ignore=[],
@@ -614,8 +614,8 @@ class Worksheet:
             converted to zeros.
         :param int head: (optional) Determines which row to use as keys,
             starting from 1 following the numeration of the spreadsheet.
-        :param int starting_row: (optional) row to start reading data from (inclusive).
-        :param int ending_row: (optional) row to stop reading at (inclusive).
+        :param int first_row: (optional) row to start reading data from (inclusive).
+        :param int last_row: (optional) row to stop reading at (inclusive).
         :param str default_blank: (optional) Determines which value to use for
             blank cells, defaults to empty string.
         :param bool allow_underscores_in_numeric_literals: (optional) Allow
@@ -635,11 +635,18 @@ class Worksheet:
                 returned dictionaries will contain all headers even if not included in this list
 
         """
-        if starting_row < 2:
+        # some sanity checks
+        if not isinstance(first_row, int):
+            raise ValueError("starting_row must be an integer")
+        if last_row is not None and not isinstance(last_row, int):
+            raise ValueError("ending_row must be an integer or None")
+        if not isinstance(head, int):
+            raise ValueError("head must be an integer")
+        if first_row < 2:
             raise ValueError("starting_row must be greater than 1")
-        if ending_row is not None and ending_row < starting_row:
+        if last_row is not None and last_row < first_row:
             raise ValueError("ending_row must be greater than or equal to starting_row")
-        if starting_row <= head:
+        if first_row <= head:
             raise ValueError("starting_row must be greater than head")
 
         return None
