@@ -661,7 +661,7 @@ class Worksheet:
             if not expected_headers_are_unique:
                 raise ValueError("expected_headers must be unique")
 
-        keys = self.get_values(range_name=f"{head}:{head}")
+        keys = self.get_values(f"{head}:{head}")[0]
         header_row_is_unique = len(keys) == len(set(keys))
         if not header_row_is_unique:
             raise GSpreadException("the header row must be unique")
@@ -674,11 +674,19 @@ class Worksheet:
                 "the header row does not match the expected headers provided"
             )
 
-        # FIXME: what if the header row had n cells and the data rows had n+-m cells?
+        if last_row is None:
+            last_row = self.row_count
         values = self.get_values(
-            range_name=f"{first_row}:{last_row}",
+            f"{first_row}:{last_row}",
             value_render_option=value_render_option,
         )
+
+        values_row_len = len(values[0])
+        keys_row_len = len(keys)
+        if values_row_len > keys_row_len:
+            values = [row[:keys_row_len] for row in values]
+        elif values_row_len < keys_row_len:
+            values = [row + [""] * (keys_row_len - values_row_len) for row in values]
 
         if numericise_ignore == ["all"]:
             pass
