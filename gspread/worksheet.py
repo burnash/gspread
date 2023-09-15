@@ -590,6 +590,7 @@ class Worksheet:
 
         return [dict(zip(keys, row)) for row in values]
 
+    # TODO: add support for first and last column as well?
     def get_records(
         self,
         empty2zero=False,
@@ -602,6 +603,7 @@ class Worksheet:
         value_render_option=None,
         expected_headers=None,
     ):
+        # TODO: update docstring
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
         dictionaries holding the contents of subsequent rows of cells as
@@ -648,8 +650,53 @@ class Worksheet:
             raise ValueError("ending_row must be greater than or equal to starting_row")
         if first_row <= head:
             raise ValueError("starting_row must be greater than head")
+        if expected_headers is not None:
+            if not isinstance(expected_headers, list):
+                raise ValueError("expected_headers must be a list")
+            if not all(isinstance(x, str) for x in expected_headers):
+                raise ValueError("expected_headers must be a list of strings")
+            expected_headers_are_unique = len(expected_headers) == len(
+                set(expected_headers)
+            )
+            if not expected_headers_are_unique:
+                raise ValueError("expected_headers must be unique")
 
-        return None
+        keys = self.get_values(range_name=f"{head}:{head}")
+        header_row_is_unique = len(keys) == len(set(keys))
+        if not header_row_is_unique:
+            raise GSpreadException("the header row must be unique")
+
+        if expected_headers is None:
+            expected_headers = keys
+        obtained_headers_same_as_expected = set(keys) == set(expected_headers)
+        if not obtained_headers_same_as_expected:
+            raise GSpreadException(
+                "the header row does not match the expected headers provided"
+            )
+
+        # FIXME: what if the header row had n cells and the data rows had n+-m cells?
+        values = self.get_values(
+            range_name=f"{first_row}:{last_row}",
+            value_render_option=value_render_option,
+        )
+
+        if numericise_ignore == ["all"]:
+            pass
+        else:
+            values = [
+                numericise_all(
+                    row,
+                    empty2zero,
+                    default_blank,
+                    allow_underscores_in_numeric_literals,
+                    numericise_ignore,
+                )
+                for row in values
+            ]
+
+        formatted_records = [dict(zip(keys, row)) for row in values]
+
+        return formatted_records
 
     def get_all_cells(self):
         """Returns a list of all `Cell` of the current sheet."""
