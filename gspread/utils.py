@@ -750,22 +750,33 @@ def combined_merge_values(worksheet_metadata, values):
     ]
     if the top-left four cells are merged.
 
-    :param worksheet_metadata: The metadata returned by the Google API for the worksheet. Should have a "merges" key.
+    :param worksheet_metadata: The metadata returned by the Google API for the worksheet.
+        Should have a "merges" key.
 
     :param values: The values returned by the Google API for the worksheet. 2D array.
     """
     merges = worksheet_metadata.get("merges", [])
     # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex
-    new_values = [[v for v in row] for row in values]
+    new_values = [list(row) for row in values]
+
+    # max row and column indices
+    max_row_index = len(values) - 1
+    max_col_index = len(values[0]) - 1
 
     for merge in merges:
         start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
         start_col, end_col = merge["startColumnIndex"], merge["endColumnIndex"]
+        # if out of bounds, ignore
+        if start_row > max_row_index or start_col > max_col_index:
+            continue
         top_left_value = values[start_row][start_col]
         row_indices = range(start_row, end_row)
         col_indices = range(start_col, end_col)
         for row_index in row_indices:
             for col_index in col_indices:
+                # if out of bounds, ignore
+                if row_index > max_row_index or col_index > max_col_index:
+                    continue
                 new_values[row_index][col_index] = top_left_value
 
     return new_values
