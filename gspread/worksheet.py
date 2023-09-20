@@ -107,13 +107,8 @@ class ValueRange(list):
     def from_json(
         cls: Type[ValueRangeType],
         json: Mapping[str, Any],
-        values: Optional[List[List]] = None,
     ) -> ValueRangeType:
-        if values is None:
-            list_values: List[List] = json.get("values", [])
-        else:
-            list_values = values
-
+        values: List[List] = json.get("values", [])
         new_obj = cls(list_values)
         new_obj._json = {
             "range": json["range"],
@@ -812,7 +807,7 @@ class Worksheet:
             self.spreadsheet_id, range_name, params=params
         )
 
-        vals_unfilled = ValueRange.from_json(response)
+        vals_unfilled = response.get("values", [[]])
         try:
             vals = fill_gaps(vals_unfilled)
         except KeyError:
@@ -826,7 +821,8 @@ class Worksheet:
             )
             vals = combined_merge_values(worksheet_meta, vals)
 
-        return ValueRange.from_json(response, vals)
+        response["values"] = vals
+        return ValueRange.from_json(response)
 
     def batch_get(
         self,
