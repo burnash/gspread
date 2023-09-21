@@ -1,6 +1,11 @@
 Release History
 ===============
 
+5.11.2 (2023-09-18)
+-------------------
+
+* Fix merge_combined_cells in get_values (AND 5.11.2 RELEASE) by @alifeee in https://github.com/burnash/gspread/pull/1299
+
 5.11.1 (2023-09-06)
 -------------------
 

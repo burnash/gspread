@@ -122,6 +122,32 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values_with_merged, expected_merge)
 
     @pytest.mark.vcr()
+    def test_get_values_merge_cells_outside_of_range(self):
+        self.sheet.resize(4, 4)
+        sheet_data = [
+            ["1", "2", "4", ""],
+            ["down", "", "", ""],
+            ["", "", "2", ""],
+            ["num", "val", "", "0"],
+        ]
+
+        self.sheet.update("A1:D4", sheet_data)
+
+        self.sheet.merge_cells("A2:A3")
+        self.sheet.merge_cells("C1:D2")
+
+        REQUEST_RANGE = "A1:B2"
+        expected_values = [
+            ["1", "2"],
+            ["down", ""],
+        ]
+
+        values_with_merged = self.sheet.get_values(
+            REQUEST_RANGE, combine_merged_cells=True
+        )
+        self.assertEqual(values_with_merged, expected_values)
+
+    @pytest.mark.vcr()
     def test_update_acell(self):
         sg = self._sequence_generator()
         value = next(sg)
