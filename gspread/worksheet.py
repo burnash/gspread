@@ -104,12 +104,9 @@ class ValueRange(list):
     _json: MutableMapping[str, Any] = {}
 
     @classmethod
-    def from_json(
-        cls: Type[ValueRangeType],
-        json: Mapping[str, Any],
-    ) -> ValueRangeType:
-        values: List[List] = json.get("values", [])
-        new_obj = cls(list_values)
+    def from_json(cls: Type[ValueRangeType], json: Mapping[str, Any]) -> ValueRangeType:
+        values = json.get("values", [])
+        new_obj = cls(values)
         new_obj._json = {
             "range": json["range"],
             "majorDimension": json["majorDimension"],
