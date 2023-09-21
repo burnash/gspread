@@ -542,60 +542,103 @@ class Worksheet:
                 returned dictionaries will contain all headers even if not included in this list
 
         """
-        idx = head - 1
+        return self.get_records_subset(
+            empty2zero=empty2zero,
+            head=head,
+            first_row=head + 1,
+            default_blank=default_blank,
+            allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals,
+            numericise_ignore=numericise_ignore,
+            value_render_option=value_render_option,
+            expected_headers=expected_headers,
+        )
 
-        data = self.get_all_values(value_render_option=value_render_option)
+    def _validate_rows_ranges_for_get_records_subset(
+        self,
+        head,
+        first_row,
+        last_row,
+    ):
+        """Validates the given head, first_row and last_row for `get_records_subset`"""
+        if first_row is None:
+            first_row = head + 1
+        elif not (isinstance(first_row, int) and first_row >= head):
+            raise ValueError(
+                "first_row must be an integer greater than or equal to head"
+            )
+        elif first_row > self.row_count:
+            raise ValueError(
+                "first_row must be an integer less than or equal to the number of rows in the worksheet"
+            )
 
-        # Return an empty list if the sheet doesn't have enough rows
-        if len(data) <= idx:
-            return []
+        if last_row is None:
+            last_row = self.row_count
+        elif not (isinstance(last_row, int) and last_row >= first_row):
+            raise ValueError(
+                "last_row must be an integer greater than or equal to first_row"
+            )
+        elif last_row > self.row_count:
+            raise ValueError(
+                "last_row must be an integer less than or equal to the number of rows in the worksheet"
+            )
 
-        keys = data[idx]
+        return head, first_row, last_row
 
-        # if no given expected headers, expect all of them
+    def _validate_headers_and_keys_for_get_records_subset(self, keys, expected_headers):
+        """Validates the returned keys and the given expected headers for `get_records_subset`"""
         if expected_headers is None:
             expected_headers = keys
+        else:
+            # validating the given expected headers
+            if not isinstance(expected_headers, list):
+                raise ValueError("expected_headers must be a list")
+            expected_headers_are_unique = len(expected_headers) == len(
+                set(expected_headers)
+            )
+            if not expected_headers_are_unique:
+                raise GSpreadException("the given 'expected_headers' are not uniques")
 
-        # keys must:
-        # - be uniques
-        # - be part of the complete header list
-        # - not contain extra headers
-        expected = set(expected_headers)
-        headers = set(keys)
+        # validating the headers in the worksheet
+        header_row_is_unique = len(keys) == len(set(keys))
+        if not header_row_is_unique:
+            raise GSpreadException("the header row in the worksheet is not unique")
 
-        # make sure they are uniques
-        if len(expected) != len(expected_headers):
-            raise GSpreadException("the given 'expected_headers' are not uniques")
-
-        if not expected & headers == expected:
+        # validating that the expected headers are part of the headers in the worksheet
+        expected_headers_are_in_obtained_headers = all(
+            header in keys for header in expected_headers
+        )
+        if not expected_headers_are_in_obtained_headers:
             raise GSpreadException(
                 "the given 'expected_headers' contains unknown headers: {}".format(
-                    expected - headers
+                    set(expected_headers) - set(keys)
                 )
             )
 
-        if numericise_ignore == ["all"]:
-            values = data[idx + 1 :]
-        else:
-            values = [
-                numericise_all(
-                    row,
-                    empty2zero,
-                    default_blank,
-                    allow_underscores_in_numeric_literals,
-                    numericise_ignore,
-                )
-                for row in data[idx + 1 :]
-            ]
+    def _pad_values_and_keys_for_get_records_subset(self, values, keys, default_blank):
+        """Pads the given values and keys for `get_records_subset` if needed"""
+        values_len = len(values[0])
+        keys_len = len(keys)
+        values_wider_than_keys_by = values_len - keys_len
+        default_blank_in_keys = default_blank in keys
 
-        return [dict(zip(keys, row)) for row in values]
+        if ((values_wider_than_keys_by > 0) and default_blank_in_keys) or (
+            values_wider_than_keys_by > 1
+        ):
+            raise GSpreadException(
+                "the header row in the worksheet contains multiple empty cells"
+            )
+        elif values_wider_than_keys_by == 1:
+            keys.append(default_blank)
+        elif values_wider_than_keys_by < 0:
+            values = [row + [""] * (-values_wider_than_keys_by) for row in values]
 
-    # TODO: add support for first and last column as well?
-    def get_records(
+        return values, keys
+
+    def get_records_subset(
         self,
         empty2zero=False,
         head=1,
-        first_row=2,
+        first_row=None,
         last_row=None,
         default_blank="",
         allow_underscores_in_numeric_literals=False,
@@ -603,10 +646,9 @@ class Worksheet:
         value_render_option=None,
         expected_headers=None,
     ):
-        # TODO: update docstring
         """Returns a list of dictionaries, all of them having the contents of
-        the spreadsheet with the head row as keys and each of these
-        dictionaries holding the contents of subsequent rows of cells as
+        the spreadsheet range selected with the head row as keys and each of these
+        dictionaries holding the contents of subsequent selected rows of cells as
         values.
 
         Cell values are numericised (strings that can be read as ints or floats
@@ -616,8 +658,8 @@ class Worksheet:
             converted to zeros.
         :param int head: (optional) Determines which row to use as keys,
             starting from 1 following the numeration of the spreadsheet.
-        :param int first_row: (optional) row to start reading data from (inclusive).
-        :param int last_row: (optional) row to stop reading at (inclusive).
+        :param int first_row: (optional) row to start reading data from (inclusive) (1-based).
+        :param int last_row: (optional) row to stop reading at (inclusive) (1-based).
         :param str default_blank: (optional) Determines which value to use for
             blank cells, defaults to empty string.
         :param bool allow_underscores_in_numeric_literals: (optional) Allow
@@ -638,55 +680,24 @@ class Worksheet:
 
         """
         # some sanity checks
-        if not isinstance(first_row, int):
-            raise ValueError("starting_row must be an integer")
-        if last_row is not None and not isinstance(last_row, int):
-            raise ValueError("ending_row must be an integer or None")
-        if not isinstance(head, int):
-            raise ValueError("head must be an integer")
-        if first_row < 2:
-            raise ValueError("starting_row must be greater than 1")
-        if last_row is not None and last_row < first_row:
-            raise ValueError("ending_row must be greater than or equal to starting_row")
-        if first_row <= head:
-            raise ValueError("starting_row must be greater than head")
-        if expected_headers is not None:
-            if not isinstance(expected_headers, list):
-                raise ValueError("expected_headers must be a list")
-            if not all(isinstance(x, str) for x in expected_headers):
-                raise ValueError("expected_headers must be a list of strings")
-            expected_headers_are_unique = len(expected_headers) == len(
-                set(expected_headers)
-            )
-            if not expected_headers_are_unique:
-                raise ValueError("expected_headers must be unique")
+        head, first_row, last_row = self._validate_rows_ranges_for_get_records_subset(
+            head, first_row, last_row
+        )
 
-        keys = self.get_values(f"{head}:{head}")[0]
-        header_row_is_unique = len(keys) == len(set(keys))
-        if not header_row_is_unique:
-            raise GSpreadException("the header row must be unique")
+        keys = self.get_values(
+            f"{head}:{head}", value_render_option=value_render_option
+        )[0]
 
-        if expected_headers is None:
-            expected_headers = keys
-        obtained_headers_same_as_expected = set(keys) == set(expected_headers)
-        if not obtained_headers_same_as_expected:
-            raise GSpreadException(
-                "the header row does not match the expected headers provided"
-            )
+        self._validate_headers_and_keys_for_get_records_subset(keys, expected_headers)
 
-        if last_row is None:
-            last_row = self.row_count
         values = self.get_values(
             f"{first_row}:{last_row}",
             value_render_option=value_render_option,
         )
 
-        values_row_len = len(values[0])
-        keys_row_len = len(keys)
-        if values_row_len > keys_row_len:
-            values = [row[:keys_row_len] for row in values]
-        elif values_row_len < keys_row_len:
-            values = [row + [""] * (keys_row_len - values_row_len) for row in values]
+        values, keys = self._pad_values_and_keys_for_get_records_subset(
+            values, keys, default_blank
+        )
 
         if numericise_ignore == ["all"]:
             pass
