@@ -956,7 +956,7 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_records, records_list)
 
     @pytest.mark.vcr()
-    def test_get_records_subset_padding_values(self):
+    def test_get_records_subset_pad_values(self):
         self.sheet.resize(2, 4)
         rows = [
             ["A1", "B1", "C1"],
@@ -1003,7 +1003,7 @@ class WorksheetTest(GspreadTest):
             self.sheet.get_records_subset()
 
     @pytest.mark.vcr()
-    def test_get_records_subset_rows_choice_error(self):
+    def test_get_records_subset_wrong_rows_input(self):
         self.sheet.resize(5, 3)
 
         # set first_row to a value greater than last_row
