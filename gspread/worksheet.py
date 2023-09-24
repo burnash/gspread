@@ -562,21 +562,17 @@ class Worksheet:
         """Validates the given head, first_row and last_row for `get_records_subset`"""
         if first_row is None:
             first_row = head + 1
-        elif not (isinstance(first_row, int) and first_row >= head):
-            raise ValueError(
-                "first_row must be an integer greater than or equal to head"
-            )
+        elif first_row <= head:
+            raise ValueError("first_row must be greater than the head row")
         elif first_row > self.row_count:
             raise ValueError(
-                "first_row must be an integer less than or equal to the number of rows in the worksheet"
+                "first_row must be less than or equal to the number of rows in the worksheet"
             )
 
         if last_row is None:
             last_row = self.row_count
-        elif not (isinstance(last_row, int) and last_row >= first_row):
-            raise ValueError(
-                "last_row must be an integer greater than or equal to first_row"
-            )
+        elif last_row < first_row:
+            raise ValueError("last_row must be greater than or equal to first_row")
         elif last_row > self.row_count:
             raise ValueError(
                 "last_row must be an integer less than or equal to the number of rows in the worksheet"
@@ -589,9 +585,6 @@ class Worksheet:
         if expected_headers is None:
             expected_headers = keys
         else:
-            # validating the given expected headers
-            if not isinstance(expected_headers, list):
-                raise ValueError("expected_headers must be a list")
             expected_headers_are_unique = len(expected_headers) == len(
                 set(expected_headers)
             )
