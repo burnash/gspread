@@ -620,7 +620,9 @@ class Worksheet:
         elif values_wider_than_keys_by == 1:
             keys.append(default_blank)
         elif values_wider_than_keys_by < 0:
-            values = [row + [""] * (-values_wider_than_keys_by) for row in values]
+            values = [
+                row + [default_blank] * (-values_wider_than_keys_by) for row in values
+            ]
 
         return values, keys
 
