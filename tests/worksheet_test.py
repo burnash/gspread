@@ -917,7 +917,7 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_records[0], d0)
 
     @pytest.mark.vcr()
-    def test_get_records_subset(self):
+    def test_get_records(self):
         self.sheet.resize(5, 3)
         rows = [
             ["A1", "B1", "C1"],
@@ -932,14 +932,14 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cells(cell_list)
 
         # test1 - set max_row only
-        read_records = self.sheet.get_records_subset(last_row=3)
+        read_records = self.sheet.get_records(head=1, first_row=2, last_row=3)
         d0 = dict(zip(rows[0], rows[1]))
         d1 = dict(zip(rows[0], rows[2]))
         records_list = [d0, d1]
         self.assertEqual(read_records, records_list)
 
         # test2 - set first_row only
-        read_records = self.sheet.get_records_subset(first_row=3)
+        read_records = self.sheet.get_records(head=1, first_row=3, last_row=5)
         d0 = dict(zip(rows[0], rows[2]))
         d1 = dict(zip(rows[0], rows[3]))
         d2 = dict(zip(rows[0], rows[4]))
@@ -947,20 +947,20 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_records, records_list)
 
         # test3 - set both max_row and first_row unequal to each other
-        read_records = self.sheet.get_records_subset(first_row=3, last_row=4)
+        read_records = self.sheet.get_records(head=1, first_row=3, last_row=4)
         d0 = dict(zip(rows[0], rows[2]))
         d1 = dict(zip(rows[0], rows[3]))
         records_list = [d0, d1]
         self.assertEqual(read_records, records_list)
 
         # test4 - set max_row and first_row equal to each other
-        read_records = self.sheet.get_records_subset(first_row=3, last_row=3)
+        read_records = self.sheet.get_records(head=1, first_row=3, last_row=3)
         d0 = dict(zip(rows[0], rows[2]))
         records_list = [d0]
         self.assertEqual(read_records, records_list)
 
     @pytest.mark.vcr()
-    def test_get_records_subset_pad_one_key(self):
+    def test_get_records_pad_one_key(self):
         self.sheet.resize(2, 4)
         rows = [
             ["A1", "B1", "C1"],
@@ -975,14 +975,14 @@ class WorksheetTest(GspreadTest):
             cell.value = rows[1][cell.col - 1]
         self.sheet.update_cells(cell_list)
 
-        read_records = self.sheet.get_records_subset()
+        read_records = self.sheet.get_records(head=1, first_row=2, last_row=2)
         rows[0].append("")
         d0 = dict(zip(rows[0], rows[1]))
         records_list = [d0]
         self.assertEqual(read_records, records_list)
 
     @pytest.mark.vcr()
-    def test_get_records_subset_pad_values(self):
+    def test_get_records_pad_values(self):
         self.sheet.resize(2, 4)
         rows = [
             ["A1", "B1", "C1"],
@@ -1000,14 +1000,14 @@ class WorksheetTest(GspreadTest):
             cell.value = rows[1][cell.col - 1]
         self.sheet.update_cells(cell_list)
 
-        read_records = self.sheet.get_records_subset()
+        read_records = self.sheet.get_records(head=1, first_row=2, last_row=2)
         rows[1].append("")
         d0 = dict(zip(rows[0], rows[1]))
         records_list = [d0]
         self.assertEqual(read_records, records_list)
 
     @pytest.mark.vcr()
-    def test_get_records_subset_pad_more_than_one_key(self):
+    def test_get_records_pad_more_than_one_key(self):
         self.sheet.resize(2, 4)
         rows = [
             [
@@ -1026,23 +1026,19 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cells(cell_list)
 
         with pytest.raises(GSpreadException):
-            self.sheet.get_records_subset()
+            self.sheet.get_records(head=1, first_row=2, last_row=2)
 
     @pytest.mark.vcr()
-    def test_get_records_subset_wrong_rows_input(self):
+    def test_get_records_wrong_rows_input(self):
         self.sheet.resize(5, 3)
 
         # set first_row to a value greater than last_row
         with pytest.raises(ValueError):
-            self.sheet.get_records_subset(first_row=4, last_row=3)
+            self.sheet.get_records(head=1, first_row=4, last_row=3)
 
         # set first_row to a value less than head
         with pytest.raises(ValueError):
-            self.sheet.get_records_subset(first_row=2, head=3)
-
-        # set last_row to a value less than head
-        with pytest.raises(ValueError):
-            self.sheet.get_records_subset(last_row=2, head=3)
+            self.sheet.get_records(head=3, first_row=2, last_row=4)
 
     @pytest.mark.vcr()
     def test_append_row(self):
