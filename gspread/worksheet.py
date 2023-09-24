@@ -501,8 +501,7 @@ class Worksheet:
         """
         return self.get_values(**kwargs)
 
-    def get_all_records(
-        self,
+    @accepted_kwargs(
         empty2zero=False,
         head=1,
         default_blank="",
@@ -510,6 +509,10 @@ class Worksheet:
         numericise_ignore=[],
         value_render_option=None,
         expected_headers=None,
+    )
+    def get_all_records(
+        self,
+        **kwargs,
     ):
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
@@ -542,16 +545,7 @@ class Worksheet:
                 returned dictionaries will contain all headers even if not included in this list
 
         """
-        return self.get_records(
-            empty2zero=empty2zero,
-            head=head,
-            first_row=head + 1,
-            default_blank=default_blank,
-            allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals,
-            numericise_ignore=numericise_ignore,
-            value_render_option=value_render_option,
-            expected_headers=expected_headers,
-        )
+        return self.get_records(**kwargs)
 
     def _validate_rows_ranges_for_get_records(
         self,
