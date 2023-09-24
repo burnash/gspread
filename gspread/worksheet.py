@@ -542,7 +542,7 @@ class Worksheet:
                 returned dictionaries will contain all headers even if not included in this list
 
         """
-        return self.get_records_subset(
+        return self.get_records(
             empty2zero=empty2zero,
             head=head,
             first_row=head + 1,
@@ -553,13 +553,13 @@ class Worksheet:
             expected_headers=expected_headers,
         )
 
-    def _validate_rows_ranges_for_get_records_subset(
+    def _validate_rows_ranges_for_get_records(
         self,
         head,
         first_row,
         last_row,
     ):
-        """Validates the given head, first_row and last_row for `get_records_subset`"""
+        """Validates the given head, first_row and last_row for `get_records`"""
         if first_row is None:
             first_row = head + 1
         elif first_row <= head:
@@ -580,8 +580,8 @@ class Worksheet:
 
         return head, first_row, last_row
 
-    def _validate_headers_and_keys_for_get_records_subset(self, keys, expected_headers):
-        """Validates the returned keys and the given expected headers for `get_records_subset`"""
+    def _validate_headers_and_keys_for_get_records(self, keys, expected_headers):
+        """Validates the returned keys and the given expected headers for `get_records`"""
         if expected_headers is None:
             expected_headers = keys
         else:
@@ -604,8 +604,8 @@ class Worksheet:
                 )
             )
 
-    def _pad_values_and_keys_for_get_records_subset(self, values, keys, default_blank):
-        """Pads the given values and keys for `get_records_subset` if needed"""
+    def _pad_values_and_keys_for_get_records(self, values, keys, default_blank):
+        """Pads the given values and keys for `get_records` if needed"""
         values_len = len(values[0])
         keys_len = len(keys)
         values_wider_than_keys_by = values_len - keys_len
@@ -626,7 +626,7 @@ class Worksheet:
 
         return values, keys
 
-    def get_records_subset(
+    def get_records(
         self,
         head,
         first_row,
@@ -672,7 +672,7 @@ class Worksheet:
 
         """
         # some sanity checks
-        head, first_row, last_row = self._validate_rows_ranges_for_get_records_subset(
+        head, first_row, last_row = self._validate_rows_ranges_for_get_records(
             head, first_row, last_row
         )
 
@@ -680,14 +680,14 @@ class Worksheet:
             f"{head}:{head}", value_render_option=value_render_option
         )[0]
 
-        self._validate_headers_and_keys_for_get_records_subset(keys, expected_headers)
+        self._validate_headers_and_keys_for_get_records(keys, expected_headers)
 
         values = self.get_values(
             f"{first_row}:{last_row}",
             value_render_option=value_render_option,
         )
 
-        values, keys = self._pad_values_and_keys_for_get_records_subset(
+        values, keys = self._pad_values_and_keys_for_get_records(
             values, keys, default_blank
         )
 
