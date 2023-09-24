@@ -628,10 +628,10 @@ class Worksheet:
 
     def get_records(
         self,
-        head,
-        first_row,
-        last_row,
         empty2zero=False,
+        head=1,
+        first_row=None,
+        last_row=None,
         default_blank="",
         allow_underscores_in_numeric_literals=False,
         numericise_ignore=[],
@@ -646,12 +646,12 @@ class Worksheet:
         Cell values are numericised (strings that can be read as ints or floats
         are converted), unless specified in numericise_ignore
 
-        :param int head: Determines which row to use as keys,
-            starting from 1 following the numeration of the spreadsheet.
-        :param int first_row: row to start reading data from (inclusive) (1-based).
-        :param int last_row: row to stop reading at (inclusive) (1-based).
         :param bool empty2zero: (optional) Determines whether empty cells are
             converted to zeros.
+        :param int head: (optional) Determines which row to use as keys,
+            starting from 1 following the numeration of the spreadsheet.
+        :param int first_row: (optional) row to start reading data from (inclusive) (1-based).
+        :param int last_row: (optional) row to stop reading at (inclusive) (1-based).
         :param str default_blank: (optional) Determines which value to use for
             blank cells, defaults to empty string.
         :param bool allow_underscores_in_numeric_literals: (optional) Allow
