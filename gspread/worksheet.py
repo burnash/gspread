@@ -597,10 +597,7 @@ class Worksheet:
             raise GSpreadException("the header row in the worksheet is not unique")
 
         # validating that the expected headers are part of the headers in the worksheet
-        expected_headers_are_in_obtained_headers = all(
-            header in keys for header in expected_headers
-        )
-        if not expected_headers_are_in_obtained_headers:
+        if not all(header in keys for header in expected_headers):
             raise GSpreadException(
                 "the given 'expected_headers' contains unknown headers: {}".format(
                     set(expected_headers) - set(keys)
