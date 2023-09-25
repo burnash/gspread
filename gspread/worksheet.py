@@ -547,57 +547,6 @@ class Worksheet:
         """
         return self.get_records(**kwargs)
 
-    def _validate_rows_ranges_for_get_records(
-        self,
-        head,
-        first_row,
-        last_row,
-    ):
-        """Validates the given head, first_row and last_row for `get_records`"""
-        if first_row is None:
-            first_row = head + 1
-        elif first_row <= head:
-            raise ValueError("first_row must be greater than the head row")
-        elif first_row > self.row_count:
-            raise ValueError(
-                "first_row must be less than or equal to the number of rows in the worksheet"
-            )
-
-        if last_row is None:
-            last_row = self.row_count
-        elif last_row < first_row:
-            raise ValueError("last_row must be greater than or equal to first_row")
-        elif last_row > self.row_count:
-            raise ValueError(
-                "last_row must be an integer less than or equal to the number of rows in the worksheet"
-            )
-
-        return head, first_row, last_row
-
-    def _validate_headers_and_keys_for_get_records(self, keys, expected_headers):
-        """Validates the returned keys and the given expected headers for `get_records`"""
-        if expected_headers is None:
-            expected_headers = keys
-        else:
-            expected_headers_are_unique = len(expected_headers) == len(
-                set(expected_headers)
-            )
-            if not expected_headers_are_unique:
-                raise GSpreadException("the given 'expected_headers' are not uniques")
-
-        # validating the headers in the worksheet
-        header_row_is_unique = len(keys) == len(set(keys))
-        if not header_row_is_unique:
-            raise GSpreadException("the header row in the worksheet is not unique")
-
-        # validating that the expected headers are part of the headers in the worksheet
-        if not all(header in keys for header in expected_headers):
-            raise GSpreadException(
-                "the given 'expected_headers' contains unknown headers: {}".format(
-                    set(expected_headers) - set(keys)
-                )
-            )
-
     def _pad_values_and_keys_for_get_records(self, values, keys, default_blank):
         """Pads the given values and keys for `get_records` if needed"""
         values_len = len(values[0])
@@ -666,15 +615,49 @@ class Worksheet:
 
         """
         # some sanity checks
-        head, first_row, last_row = self._validate_rows_ranges_for_get_records(
-            head, first_row, last_row
-        )
+        if first_row is None:
+            first_row = head + 1
+        elif first_row <= head:
+            raise ValueError("first_row must be greater than the head row")
+        elif first_row > self.row_count:
+            raise ValueError(
+                "first_row must be less than or equal to the number of rows in the worksheet"
+            )
+
+        if last_row is None:
+            last_row = self.row_count
+        elif last_row < first_row:
+            raise ValueError("last_row must be greater than or equal to first_row")
+        elif last_row > self.row_count:
+            raise ValueError(
+                "last_row must be an integer less than or equal to the number of rows in the worksheet"
+            )
 
         keys = self.get_values(
             f"{head}:{head}", value_render_option=value_render_option
         )[0]
 
-        self._validate_headers_and_keys_for_get_records(keys, expected_headers)
+        if expected_headers is None:
+            expected_headers = keys
+        else:
+            expected_headers_are_unique = len(expected_headers) == len(
+                set(expected_headers)
+            )
+            if not expected_headers_are_unique:
+                raise GSpreadException("the given 'expected_headers' are not uniques")
+
+        # validating the headers in the worksheet
+        header_row_is_unique = len(keys) == len(set(keys))
+        if not header_row_is_unique:
+            raise GSpreadException("the header row in the worksheet is not unique")
+
+        # validating that the expected headers are part of the headers in the worksheet
+        if not all(header in keys for header in expected_headers):
+            raise GSpreadException(
+                "the given 'expected_headers' contains unknown headers: {}".format(
+                    set(expected_headers) - set(keys)
+                )
+            )
 
         values = self.get_values(
             f"{first_row}:{last_row}",
