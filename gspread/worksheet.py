@@ -547,7 +547,7 @@ class Worksheet:
         """
         return self.get_records(**kwargs)
 
-    def get_records(
+    def get_records(  # noqa: C901 # this comment disables the complexity check for this function
         self,
         empty2zero=False,
         head=1,
