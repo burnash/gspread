@@ -547,28 +547,6 @@ class Worksheet:
         """
         return self.get_records(**kwargs)
 
-    def _pad_values_and_keys_for_get_records(self, values, keys, default_blank):
-        """Pads the given values and keys for `get_records` if needed"""
-        values_len = len(values[0])
-        keys_len = len(keys)
-        values_wider_than_keys_by = values_len - keys_len
-        default_blank_in_keys = default_blank in keys
-
-        if ((values_wider_than_keys_by > 0) and default_blank_in_keys) or (
-            values_wider_than_keys_by > 1
-        ):
-            raise GSpreadException(
-                "the header row in the worksheet contains multiple empty cells"
-            )
-        elif values_wider_than_keys_by == 1:
-            keys.append(default_blank)
-        elif values_wider_than_keys_by < 0:
-            values = [
-                row + [default_blank] * (-values_wider_than_keys_by) for row in values
-            ]
-
-        return values, keys
-
     def get_records(
         self,
         empty2zero=False,
@@ -664,9 +642,23 @@ class Worksheet:
             value_render_option=value_render_option,
         )
 
-        values, keys = self._pad_values_and_keys_for_get_records(
-            values, keys, default_blank
-        )
+        values_len = len(values[0])
+        keys_len = len(keys)
+        values_wider_than_keys_by = values_len - keys_len
+        default_blank_in_keys = default_blank in keys
+
+        if ((values_wider_than_keys_by > 0) and default_blank_in_keys) or (
+            values_wider_than_keys_by > 1
+        ):
+            raise GSpreadException(
+                "the header row in the worksheet contains multiple empty cells"
+            )
+        elif values_wider_than_keys_by == 1:
+            keys.append(default_blank)
+        elif values_wider_than_keys_by < 0:
+            values = [
+                row + [default_blank] * (-values_wider_than_keys_by) for row in values
+            ]
 
         if numericise_ignore == ["all"]:
             pass
