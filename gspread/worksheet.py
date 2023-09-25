@@ -656,9 +656,7 @@ class Worksheet:
         elif values_wider_than_keys_by == 1:
             keys.append(default_blank)
         elif values_wider_than_keys_by < 0:
-            values = [
-                row + [default_blank] * (-values_wider_than_keys_by) for row in values
-            ]
+            values = fill_gaps(values, cols=keys_len, padding_value=default_blank)
 
         if numericise_ignore == ["all"]:
             pass
