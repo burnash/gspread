@@ -932,14 +932,14 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_cells(cell_list)
 
         # test1 - set max_row only
-        read_records = self.sheet.get_records(head=1, first_row=2, last_row=3)
+        read_records = self.sheet.get_records(last_row=3)
         d0 = dict(zip(rows[0], rows[1]))
         d1 = dict(zip(rows[0], rows[2]))
         records_list = [d0, d1]
         self.assertEqual(read_records, records_list)
 
         # test2 - set first_row only
-        read_records = self.sheet.get_records(head=1, first_row=3, last_row=5)
+        read_records = self.sheet.get_records(first_row=3)
         d0 = dict(zip(rows[0], rows[2]))
         d1 = dict(zip(rows[0], rows[3]))
         d2 = dict(zip(rows[0], rows[4]))
@@ -947,16 +947,26 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(read_records, records_list)
 
         # test3 - set both max_row and first_row unequal to each other
-        read_records = self.sheet.get_records(head=1, first_row=3, last_row=4)
+        read_records = self.sheet.get_records(first_row=3, last_row=4)
         d0 = dict(zip(rows[0], rows[2]))
         d1 = dict(zip(rows[0], rows[3]))
         records_list = [d0, d1]
         self.assertEqual(read_records, records_list)
 
         # test4 - set max_row and first_row equal to each other
-        read_records = self.sheet.get_records(head=1, first_row=3, last_row=3)
+        read_records = self.sheet.get_records(first_row=3, last_row=3)
         d0 = dict(zip(rows[0], rows[2]))
         records_list = [d0]
+        self.assertEqual(read_records, records_list)
+
+        # test5 - set head only
+        read_records = self.sheet.get_records(
+            head=2, value_render_option="UNFORMATTED_VALUE"
+        )
+        d0 = dict(zip(rows[1], rows[2]))
+        d1 = dict(zip(rows[1], rows[3]))
+        d2 = dict(zip(rows[1], rows[4]))
+        records_list = [d0, d1, d2]
         self.assertEqual(read_records, records_list)
 
     @pytest.mark.vcr()
