@@ -533,12 +533,12 @@ def wid_to_gid(wid):
     return str(int(widval, 36) ^ xorval)
 
 
-def rightpad(row, max_len):
+def rightpad(row, max_len, padding_value=""):
     pad_len = max_len - len(row)
-    return row + ([""] * pad_len) if pad_len != 0 else row
+    return row + ([padding_value] * pad_len) if pad_len != 0 else row
 
 
-def fill_gaps(L, rows=None, cols=None):
+def fill_gaps(L, rows=None, cols=None, padding_value=""):
     """Fill gaps in a list of lists.
     e.g.,::
 
@@ -554,10 +554,12 @@ def fill_gaps(L, rows=None, cols=None):
     :param L: List of lists to fill gaps in.
     :param rows: Number of rows to fill.
     :param cols: Number of columns to fill.
+    :param padding_value: Default value to fill gaps with.
 
     :type L: list[list[T]]
     :type rows: int
     :type cols: int
+    :type padding_value: T
 
     :return: List of lists with gaps filled.
     :rtype: list[list[T]]:
@@ -571,7 +573,7 @@ def fill_gaps(L, rows=None, cols=None):
         if pad_rows:
             L = L + ([[]] * pad_rows)
 
-        return [rightpad(row, max_cols) for row in L]
+        return [rightpad(row, max_cols, padding_value=padding_value) for row in L]
     except ValueError:
         return []
 
