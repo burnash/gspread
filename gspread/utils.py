@@ -868,6 +868,29 @@ def convert_colors_to_hex_value(
     return f"#{to_hex(red)}{to_hex(green)}{to_hex(blue)}"
 
 
+def is_full_a1_notation(range_name: str) -> bool:
+    """Check if the range name is a full A1 notation.
+    "A1:B2", "Sheet1!A1:B2" are full A1 notations
+    "A1:B", "A1" are not
+
+    Args:
+        range_name (str): The range name to check.
+
+    Returns:
+        bool: True if the range name is a full A1 notation, False otherwise.
+
+    Examples:
+
+        >>> is_full_a1_notation("A1:B2")
+        True
+
+        >>> is_full_a1_notation("A1:B")
+        False
+    """
+    if A1_ADDR_FULL_RE.search(range_name):
+        return True
+    return False
+
 if __name__ == "__main__":
     import doctest
 
