@@ -32,6 +32,8 @@ from .utils import (
     fill_gaps,
     filter_dict_values,
     finditem,
+    get_a1_from_absolute_range,
+    is_full_a1_notation,
     is_scalar,
     numericise_all,
     rowcol_to_a1,
@@ -366,6 +368,7 @@ class Worksheet:
         combine_merged_cells=False,
         value_render_option=None,
         date_time_render_option=None,
+        maintain_size=False,
     )
     def get_values(self, range_name=None, combine_merged_cells=False, **kwargs):
         """Returns a list of lists containing all values from specified range.
@@ -898,6 +901,7 @@ class Worksheet:
         major_dimension=None,
         value_render_option=None,
         date_time_render_option=None,
+        maintain_size=False,
     )
     def get(self, range_name=None, **kwargs):
         """Reads values of a single range or a cell of a sheet.
@@ -984,6 +988,21 @@ class Worksheet:
         )
 
         response = self.spreadsheet.values_get(range_name, params=params)
+
+        values = response.get("values", [])
+
+        if kwargs["maintain_size"] is True and is_full_a1_notation(range_name):
+            a1_range = get_a1_from_absolute_range(range_name)
+            grid_range = a1_range_to_grid_range(a1_range)
+            rows = grid_range.get("endRowIndex", self.row_count) - grid_range.get(
+                "startRowIndex", 0
+            )
+            cols = grid_range.get("endColumnIndex", self.col_count) - grid_range.get(
+                "startColumnIndex", 0
+            )
+            values = fill_gaps(values, rows=rows, cols=cols)
+
+        response["values"] = values
 
         return ValueRange.from_json(response)
 
