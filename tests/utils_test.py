@@ -415,3 +415,12 @@ class UtilsTest(unittest.TestCase):
         self.assertFalse(utils.is_full_a1_notation("A"))
         self.assertFalse(utils.is_full_a1_notation("1"))
         self.assertFalse(utils.is_full_a1_notation(""))
+
+    def test_get_a1_from_absolute_range(self):
+        """test get_a1_from_absolute_range function"""
+        self.assertEqual(utils.get_a1_from_absolute_range("'Sheet1'!A1:B2"), "A1:B2")
+        self.assertEqual(utils.get_a1_from_absolute_range("'Sheet1'!A1:B"), "A1:B")
+        self.assertEqual(utils.get_a1_from_absolute_range("Sheet1!A1:B2"), "A1:B2")
+        self.assertEqual(utils.get_a1_from_absolute_range("A1:B2"), "A1:B2")
+        self.assertEqual(utils.get_a1_from_absolute_range("A1:B"), "A1:B")
+        self.assertEqual(utils.get_a1_from_absolute_range("2"), "2")

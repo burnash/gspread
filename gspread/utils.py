@@ -891,6 +891,23 @@ def is_full_a1_notation(range_name: str) -> bool:
         return True
     return False
 
+
+def get_a1_from_absolute_range(range_name: str) -> str:
+    """Get the A1 notation from an absolute range name.
+    "Sheet1!A1:B2" -> "A1:B2"
+    "A1:B2" -> "A1:B2"
+
+    Args:
+        range_name (str): The range name to check.
+
+    Returns:
+        str: The A1 notation of the range name stripped of the sheet.
+    """
+    if "!" in range_name:
+        return range_name.split("!")[1]
+    return range_name
+
+
 if __name__ == "__main__":
     import doctest
 
