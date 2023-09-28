@@ -19,12 +19,6 @@
                     "Connection": [
                         "keep-alive"
                     ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
                     "Content-Length": [
                         "123"
                     ],
@@ -42,11 +36,26 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "Cache-Control": [
-                        "no-cache, no-store, max-age=0, must-revalidate"
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
                     ],
-                    "Vary": [
-                        "Origin, X-Origin"
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:20:59 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
@@ -54,1058 +63,28 @@
                     "Server": [
                         "ESF"
                     ],
-                    "Pragma": [
-                        "no-cache"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
+                    "Vary": [
+                        "Origin, X-Origin"
                     ],
                     "Expires": [
                         "Mon, 01 Jan 1990 00:00:00 GMT"
                     ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:01 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
                     ],
                     "content-length": [
                         "210"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"kind\": \"drive#file\",\n  \"id\": \"1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU\",\n  \"name\": \"Test WorksheetTest test_get_all_records_different_header\",\n  \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
+                    "string": "{\n  \"kind\": \"drive#file\",\n  \"id\": \"13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo\",\n  \"name\": \"Test WorksheetTest test_get_all_records_different_header\",\n  \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU?includeGridData=false",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:02 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "3354"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_get_all_records_different_header\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU/edit\"\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Cache-Control": [
-                        "no-cache, no-store, max-age=0, must-revalidate"
-                    ],
-                    "Vary": [
-                        "Origin, X-Origin"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "Pragma": [
-                        "no-cache"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Expires": [
-                        "Mon, 01 Jan 1990 00:00:00 GMT"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:02 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "220"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"id\": \"1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU\",\n  \"name\": \"Test WorksheetTest test_get_all_records_different_header\",\n  \"createdTime\": \"2023-07-25T15:42:59.782Z\",\n  \"modifiedTime\": \"2023-07-25T15:43:00.698Z\"\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU?includeGridData=false",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:03 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "3354"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_get_all_records_different_header\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU/edit\"\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU/values/%27Sheet1%27:clear",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "Content-Length": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:03 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "107"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU\",\n  \"clearedRange\": \"Sheet1!A1:Z1000\"\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU:batchUpdate",
-                "body": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 0, \"gridProperties\": {\"rowCount\": 6, \"columnCount\": 4}}, \"fields\": \"gridProperties/rowCount,gridProperties/columnCount\"}}]}",
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "Content-Length": [
-                        "190"
-                    ],
-                    "Content-Type": [
-                        "application/json"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:03 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "97"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU\",\n  \"replies\": [\n    {}\n  ]\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU/values/%27Sheet1%27%21A1%3AD6",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:03 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "58"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\"\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW",
-                "body": "{\"values\": [[\"\", \"\", \"\", \"\"], [\"\", \"\", \"\", \"\"], [\"A1\", \"B1\", \"\", \"D1\"], [1, \"b2\", 1.45, \"\"], [\"\", \"\", \"\", \"\"], [\"A4\", 0.4, \"\", 4]]}",
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "Content-Length": [
-                        "131"
-                    ],
-                    "Content-Type": [
-                        "application/json"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:04 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "169"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU\",\n  \"updatedRange\": \"Sheet1!A1:D6\",\n  \"updatedRows\": 6,\n  \"updatedColumns\": 4,\n  \"updatedCells\": 24\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU/values/%27Sheet1%27",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:04 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "265"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [],\n    [],\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU/values/%27Sheet1%27",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:04 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "265"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [],\n    [],\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU/values/%27Sheet1%27",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:05 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "265"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [],\n    [],\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU/values/%27Sheet1%27",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:05 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "content-length": [
-                        "265"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [],\n    [],\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1PnZOEs5_fdygDXK8rlFJKqUPIhQ_Zd-ZLietotPrlFU?supportsAllDrives=True",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "x-goog-api-client": [
-                        "cred-type/sa"
-                    ],
-                    "x-identity-trust-boundary": [
-                        "0"
-                    ],
-                    "Content-Length": [
-                        "0"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 204,
-                    "message": "No Content"
-                },
-                "headers": {
-                    "Cache-Control": [
-                        "no-cache, no-store, max-age=0, must-revalidate"
-                    ],
-                    "Vary": [
-                        "Origin, X-Origin"
-                    ],
-                    "Content-Type": [
-                        "text/html"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "Pragma": [
-                        "no-cache"
-                    ],
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "Expires": [
-                        "Mon, 01 Jan 1990 00:00:00 GMT"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Content-Length": [
-                        "0"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "Date": [
-                        "Tue, 25 Jul 2023 15:43:06 GMT"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ]
-                },
-                "body": {
-                    "string": ""
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
-                "body": "{\"name\": \"Test WorksheetTest test_get_all_records_different_header\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "Content-Length": [
-                        "123"
-                    ],
-                    "Content-Type": [
-                        "application/json"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "no-cache, no-store, max-age=0, must-revalidate"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Pragma": [
-                        "no-cache"
-                    ],
-                    "Date": [
-                        "Wed, 06 Sep 2023 21:18:52 GMT"
-                    ],
-                    "Expires": [
-                        "Mon, 01 Jan 1990 00:00:00 GMT"
-                    ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "Vary": [
-                        "Origin, X-Origin"
-                    ],
-                    "content-length": [
-                        "210"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"kind\": \"drive#file\",\n  \"id\": \"1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0\",\n  \"name\": \"Test WorksheetTest test_get_all_records_different_header\",\n  \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo?includeGridData=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1131,32 +110,29 @@
                     "message": "OK"
                 },
                 "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:20:59 GMT"
+                    ],
                     "X-XSS-Protection": [
                         "0"
                     ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
                     "x-l2-request-path": [
                         "l2-managed-6"
                     ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Date": [
-                        "Wed, 06 Sep 2023 21:18:53 GMT"
                     ],
                     "Server": [
                         "ESF"
@@ -1166,19 +142,22 @@
                         "X-Origin",
                         "Referer"
                     ],
+                    "Cache-Control": [
+                        "private"
+                    ],
                     "content-length": [
                         "3354"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_get_all_records_different_header\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0/edit\"\n}\n"
+                    "string": "{\n  \"spreadsheetId\": \"13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_get_all_records_different_header\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/edit\"\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo?includeGridData=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1204,20 +183,8 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
                     "X-Frame-Options": [
                         "SAMEORIGIN"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
                     ],
                     "Transfer-Encoding": [
                         "chunked"
@@ -1226,7 +193,19 @@
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
                     ],
                     "Date": [
-                        "Wed, 06 Sep 2023 21:18:53 GMT"
+                        "Mon, 25 Sep 2023 12:21:00 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "Server": [
                         "ESF"
@@ -1236,19 +215,22 @@
                         "X-Origin",
                         "Referer"
                     ],
+                    "Cache-Control": [
+                        "private"
+                    ],
                     "content-length": [
                         "3354"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_get_all_records_different_header\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0/edit\"\n}\n"
+                    "string": "{\n  \"spreadsheetId\": \"13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_get_all_records_different_header\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/edit\"\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0/values/%27Sheet1%27:clear",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27:clear",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1277,20 +259,8 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
                     "X-Frame-Options": [
                         "SAMEORIGIN"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
                     ],
                     "Transfer-Encoding": [
                         "chunked"
@@ -1299,7 +269,19 @@
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
                     ],
                     "Date": [
-                        "Wed, 06 Sep 2023 21:18:54 GMT"
+                        "Mon, 25 Sep 2023 12:21:00 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "Server": [
                         "ESF"
@@ -1309,19 +291,22 @@
                         "X-Origin",
                         "Referer"
                     ],
+                    "Cache-Control": [
+                        "private"
+                    ],
                     "content-length": [
                         "107"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0\",\n  \"clearedRange\": \"Sheet1!A1:Z1000\"\n}\n"
+                    "string": "{\n  \"spreadsheetId\": \"13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo\",\n  \"clearedRange\": \"Sheet1!A1:Z1000\"\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo:batchUpdate",
                 "body": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 0, \"gridProperties\": {\"rowCount\": 6, \"columnCount\": 4}}, \"fields\": \"gridProperties/rowCount,gridProperties/columnCount\"}}]}",
                 "headers": {
                     "User-Agent": [
@@ -1353,23 +338,8 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
                     "X-Frame-Options": [
                         "SAMEORIGIN"
-                    ],
-                    "x-l2-request-path": [
-                        "l2-managed-6"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
                     ],
                     "Transfer-Encoding": [
                         "chunked"
@@ -1378,7 +348,19 @@
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
                     ],
                     "Date": [
-                        "Wed, 06 Sep 2023 21:18:54 GMT"
+                        "Mon, 25 Sep 2023 12:21:00 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "Server": [
                         "ESF"
@@ -1388,19 +370,22 @@
                         "X-Origin",
                         "Referer"
                     ],
+                    "Cache-Control": [
+                        "private"
+                    ],
                     "content-length": [
                         "97"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0\",\n  \"replies\": [\n    {}\n  ]\n}\n"
+                    "string": "{\n  \"spreadsheetId\": \"13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo\",\n  \"replies\": [\n    {}\n  ]\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0/values/%27Sheet1%27%21A1%3AD6",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%21A1%3AD6",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1426,23 +411,8 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
                     "X-Frame-Options": [
                         "SAMEORIGIN"
-                    ],
-                    "x-l2-request-path": [
-                        "l2-managed-6"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
                     ],
                     "Transfer-Encoding": [
                         "chunked"
@@ -1451,7 +421,19 @@
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
                     ],
                     "Date": [
-                        "Wed, 06 Sep 2023 21:18:54 GMT"
+                        "Mon, 25 Sep 2023 12:21:01 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "Server": [
                         "ESF"
@@ -1460,6 +442,9 @@
                         "Origin",
                         "X-Origin",
                         "Referer"
+                    ],
+                    "Cache-Control": [
+                        "private"
                     ],
                     "content-length": [
                         "58"
@@ -1473,7 +458,7 @@
         {
             "request": {
                 "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW",
                 "body": "{\"values\": [[\"\", \"\", \"\", \"\"], [\"\", \"\", \"\", \"\"], [\"A1\", \"B1\", \"\", \"D1\"], [1, \"b2\", 1.45, \"\"], [\"\", \"\", \"\", \"\"], [\"A4\", 0.4, \"\", 4]]}",
                 "headers": {
                     "User-Agent": [
@@ -1505,23 +490,8 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
                     "X-Frame-Options": [
                         "SAMEORIGIN"
-                    ],
-                    "x-l2-request-path": [
-                        "l2-managed-6"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
                     ],
                     "Transfer-Encoding": [
                         "chunked"
@@ -1530,7 +500,19 @@
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
                     ],
                     "Date": [
-                        "Wed, 06 Sep 2023 21:18:55 GMT"
+                        "Mon, 25 Sep 2023 12:21:01 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "Server": [
                         "ESF"
@@ -1539,20 +521,23 @@
                         "Origin",
                         "X-Origin",
                         "Referer"
+                    ],
+                    "Cache-Control": [
+                        "private"
                     ],
                     "content-length": [
                         "169"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"spreadsheetId\": \"1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0\",\n  \"updatedRange\": \"Sheet1!A1:D6\",\n  \"updatedRows\": 6,\n  \"updatedColumns\": 4,\n  \"updatedCells\": 24\n}\n"
+                    "string": "{\n  \"spreadsheetId\": \"13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo\",\n  \"updatedRange\": \"Sheet1!A1:D6\",\n  \"updatedRows\": 6,\n  \"updatedColumns\": 4,\n  \"updatedCells\": 24\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0/values/%27Sheet1%27",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%213%3A3",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1578,32 +563,29 @@
                     "message": "OK"
                 },
                 "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:21:01 GMT"
+                    ],
                     "X-XSS-Protection": [
                         "0"
                     ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
                     "x-l2-request-path": [
                         "l2-managed-6"
                     ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Date": [
-                        "Wed, 06 Sep 2023 21:18:55 GMT"
                     ],
                     "Server": [
                         "ESF"
@@ -1613,19 +595,22 @@
                         "X-Origin",
                         "Referer"
                     ],
+                    "Cache-Control": [
+                        "private"
+                    ],
                     "content-length": [
-                        "265"
+                        "134"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [],\n    [],\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
+                    "string": "{\n  \"range\": \"Sheet1!A3:D3\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ]\n  ]\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0/values/%27Sheet1%27",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%214%3A6",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1651,32 +636,29 @@
                     "message": "OK"
                 },
                 "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:21:01 GMT"
+                    ],
                     "X-XSS-Protection": [
                         "0"
                     ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
                     "x-l2-request-path": [
                         "l2-managed-6"
                     ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Date": [
-                        "Wed, 06 Sep 2023 21:18:56 GMT"
                     ],
                     "Server": [
                         "ESF"
@@ -1686,19 +668,22 @@
                         "X-Origin",
                         "Referer"
                     ],
+                    "Cache-Control": [
+                        "private"
+                    ],
                     "content-length": [
-                        "265"
+                        "191"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [],\n    [],\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
+                    "string": "{\n  \"range\": \"Sheet1!A4:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0/values/%27Sheet1%27",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%213%3A3",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1724,20 +709,8 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "X-XSS-Protection": [
-                        "0"
-                    ],
                     "X-Frame-Options": [
                         "SAMEORIGIN"
-                    ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
                     ],
                     "Transfer-Encoding": [
                         "chunked"
@@ -1746,80 +719,19 @@
                         "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
                     ],
                     "Date": [
-                        "Wed, 06 Sep 2023 21:18:56 GMT"
+                        "Mon, 25 Sep 2023 12:21:01 GMT"
                     ],
-                    "Server": [
-                        "ESF"
-                    ],
-                    "Vary": [
-                        "Origin",
-                        "X-Origin",
-                        "Referer"
-                    ],
-                    "content-length": [
-                        "265"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [],\n    [],\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
-                }
-            }
-        },
-        {
-            "request": {
-                "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0/values/%27Sheet1%27",
-                "body": null,
-                "headers": {
-                    "User-Agent": [
-                        "python-requests/2.31.0"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "Accept": [
-                        "*/*"
-                    ],
-                    "Connection": [
-                        "keep-alive"
-                    ],
-                    "authorization": [
-                        "<ACCESS_TOKEN>"
-                    ]
-                }
-            },
-            "response": {
-                "status": {
-                    "code": 200,
-                    "message": "OK"
-                },
-                "headers": {
                     "X-XSS-Protection": [
                         "0"
                     ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
+                    "X-Content-Type-Options": [
+                        "nosniff"
                     ],
                     "x-l2-request-path": [
                         "l2-managed-6"
                     ],
-                    "X-Content-Type-Options": [
-                        "nosniff"
-                    ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
-                    ],
-                    "Cache-Control": [
-                        "private"
-                    ],
-                    "Transfer-Encoding": [
-                        "chunked"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Date": [
-                        "Wed, 06 Sep 2023 21:18:56 GMT"
                     ],
                     "Server": [
                         "ESF"
@@ -1829,19 +741,387 @@
                         "X-Origin",
                         "Referer"
                     ],
+                    "Cache-Control": [
+                        "private"
+                    ],
                     "content-length": [
-                        "265"
+                        "134"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [],\n    [],\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ],\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
+                    "string": "{\n  \"range\": \"Sheet1!A3:D3\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%214%3A6",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:21:02 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "content-length": [
+                        "191"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A4:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%213%3A3",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:21:02 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "content-length": [
+                        "134"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A3:D3\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%214%3A6",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:21:02 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "content-length": [
+                        "191"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A4:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%213%3A3",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:21:02 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "content-length": [
+                        "134"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A3:D3\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"A1\",\n      \"B1\",\n      \"\",\n      \"D1\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo/values/%27Sheet1%27%214%3A6",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:21:02 GMT"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "content-length": [
+                        "191"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A4:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"1\",\n      \"b2\",\n      \"1.45\"\n    ],\n    [],\n    [\n      \"A4\",\n      \"0.4\",\n      \"\",\n      \"4\"\n    ]\n  ]\n}\n"
                 }
             }
         },
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1kLhujQUYaWSiFf8TK5OnMchTUM3esLz1v3skDF8j8N0?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/13OiN8IIRA-9pqzhnWDwwAI6-XLJjpyb8JcCMBrr6EXo?supportsAllDrives=True",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1870,11 +1150,23 @@
                     "message": "No Content"
                 },
                 "headers": {
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Date": [
+                        "Mon, 25 Sep 2023 12:21:03 GMT"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
                     "X-XSS-Protection": [
                         "0"
                     ],
-                    "X-Frame-Options": [
-                        "SAMEORIGIN"
+                    "Content-Length": [
+                        "0"
                     ],
                     "X-Content-Type-Options": [
                         "nosniff"
@@ -1882,29 +1174,17 @@
                     "Content-Type": [
                         "text/html"
                     ],
-                    "Cache-Control": [
-                        "no-cache, no-store, max-age=0, must-revalidate"
-                    ],
-                    "Alt-Svc": [
-                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-                    ],
-                    "Pragma": [
-                        "no-cache"
-                    ],
-                    "Date": [
-                        "Wed, 06 Sep 2023 21:18:57 GMT"
-                    ],
-                    "Expires": [
-                        "Mon, 01 Jan 1990 00:00:00 GMT"
-                    ],
-                    "Content-Length": [
-                        "0"
-                    ],
                     "Server": [
                         "ESF"
                     ],
                     "Vary": [
                         "Origin, X-Origin"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
                     ]
                 },
                 "body": {

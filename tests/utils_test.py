@@ -351,6 +351,30 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+    def test_fill_gaps_with_value(self):
+        """test fill_gaps function"""
+        matrix = [
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+        ]
+        expected = [
+            [1, 2, 3, 4, "a", "a"],
+            [5, 6, 7, 8, "a", "a"],
+            ["a", "a", "a", "a", "a", "a"],
+        ]
+        actual = utils.fill_gaps(matrix, 3, 6, "a")
+
+        self.assertEqual(actual, expected)
+
+        expected = [
+            [1, 2, 3, 4, 3, 3],
+            [5, 6, 7, 8, 3, 3],
+            [3, 3, 3, 3, 3, 3],
+        ]
+        actual = utils.fill_gaps(matrix, 3, 6, 3)
+
+        self.assertEqual(actual, expected)
+
     def test_accepted_kwargs(self):
         """test accepted_kwargs function.
         Test the temporary special value: REQUIRED_KWARGS

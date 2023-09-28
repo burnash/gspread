@@ -19,7 +19,9 @@ class WorksheetTest(GspreadTest):
     def init(self, client, request):
         name = self.get_temporary_spreadsheet_title(request.node.name)
         WorksheetTest.spreadsheet = client.create(name)
-        WorksheetTest.sheet = WorksheetTest.spreadsheet.sheet1
+        WorksheetTest.sheet: gspread.worksheet.Worksheet = (
+            WorksheetTest.spreadsheet.sheet1
+        )
 
         yield
 
@@ -913,6 +915,140 @@ class WorksheetTest(GspreadTest):
         expected_values = [3 / 2, 0.12, "empty", 321]
         d0 = dict(zip(rows[0], expected_values))
         self.assertEqual(read_records[0], d0)
+
+    @pytest.mark.vcr()
+    def test_get_records(self):
+        self.sheet.resize(5, 3)
+        rows = [
+            ["A1", "B1", "C1"],
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+            [10, 11, 12],
+        ]
+        cell_list = self.sheet.range("A1:C5")
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        # test1 - set last_index only
+        read_records = self.sheet.get_records(last_index=3)
+        d0 = dict(zip(rows[0], rows[1]))
+        d1 = dict(zip(rows[0], rows[2]))
+        records_list = [d0, d1]
+        self.assertEqual(read_records, records_list)
+
+        # test2 - set first_index only
+        read_records = self.sheet.get_records(first_index=3)
+        d0 = dict(zip(rows[0], rows[2]))
+        d1 = dict(zip(rows[0], rows[3]))
+        d2 = dict(zip(rows[0], rows[4]))
+        records_list = [d0, d1, d2]
+        self.assertEqual(read_records, records_list)
+
+        # test3 - set both last_index and first_index unequal to each other
+        read_records = self.sheet.get_records(first_index=3, last_index=4)
+        d0 = dict(zip(rows[0], rows[2]))
+        d1 = dict(zip(rows[0], rows[3]))
+        records_list = [d0, d1]
+        self.assertEqual(read_records, records_list)
+
+        # test4 - set last_index and first_index equal to each other
+        read_records = self.sheet.get_records(first_index=3, last_index=3)
+        d0 = dict(zip(rows[0], rows[2]))
+        records_list = [d0]
+        self.assertEqual(read_records, records_list)
+
+        # test5 - set head only
+        read_records = self.sheet.get_records(
+            head=2, value_render_option="UNFORMATTED_VALUE"
+        )
+        d0 = dict(zip(rows[1], rows[2]))
+        d1 = dict(zip(rows[1], rows[3]))
+        d2 = dict(zip(rows[1], rows[4]))
+        records_list = [d0, d1, d2]
+        self.assertEqual(read_records, records_list)
+
+    @pytest.mark.vcr()
+    def test_get_records_pad_one_key(self):
+        self.sheet.resize(2, 4)
+        rows = [
+            ["A1", "B1", "C1"],
+            [1, 2, 3, 4],
+        ]
+        cell_list = self.sheet.range("A1:C1")
+        for cell in cell_list:
+            cell.value = rows[0][cell.col - 1]
+        self.sheet.update_cells(cell_list)
+        cell_list = self.sheet.range("A2:D2")
+        for cell in cell_list:
+            cell.value = rows[1][cell.col - 1]
+        self.sheet.update_cells(cell_list)
+
+        read_records = self.sheet.get_records(head=1, first_index=2, last_index=2)
+        rows[0].append("")
+        d0 = dict(zip(rows[0], rows[1]))
+        records_list = [d0]
+        self.assertEqual(read_records, records_list)
+
+    @pytest.mark.vcr()
+    def test_get_records_pad_values(self):
+        self.sheet.resize(2, 4)
+        rows = [
+            ["A1", "B1", "C1"],
+            [
+                1,
+                2,
+            ],
+        ]
+        cell_list = self.sheet.range("A1:C1")
+        for cell in cell_list:
+            cell.value = rows[0][cell.col - 1]
+        self.sheet.update_cells(cell_list)
+        cell_list = self.sheet.range("A2:B2")
+        for cell in cell_list:
+            cell.value = rows[1][cell.col - 1]
+        self.sheet.update_cells(cell_list)
+
+        read_records = self.sheet.get_records(head=1, first_index=2, last_index=2)
+        rows[1].append("")
+        d0 = dict(zip(rows[0], rows[1]))
+        records_list = [d0]
+        self.assertEqual(read_records, records_list)
+
+    @pytest.mark.vcr()
+    def test_get_records_pad_more_than_one_key(self):
+        self.sheet.resize(2, 4)
+        rows = [
+            [
+                "A1",
+                "B1",
+            ],
+            [1, 2, 3, 4],
+        ]
+        cell_list = self.sheet.range("A1:B1")
+        for cell in cell_list:
+            cell.value = rows[0][cell.col - 1]
+        self.sheet.update_cells(cell_list)
+        cell_list = self.sheet.range("A2:D2")
+        for cell in cell_list:
+            cell.value = rows[1][cell.col - 1]
+        self.sheet.update_cells(cell_list)
+
+        with pytest.raises(GSpreadException):
+            self.sheet.get_records(head=1, first_index=2, last_index=2)
+
+    @pytest.mark.vcr()
+    def test_get_records_wrong_rows_input(self):
+        self.sheet.resize(5, 3)
+
+        # set first_index to a value greater than last_index
+        with pytest.raises(ValueError):
+            self.sheet.get_records(head=1, first_index=4, last_index=3)
+
+        # set first_index to a value less than head
+        with pytest.raises(ValueError):
+            self.sheet.get_records(head=3, first_index=2, last_index=4)
 
     @pytest.mark.vcr()
     def test_append_row(self):
