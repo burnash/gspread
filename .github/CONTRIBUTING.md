@@ -22,9 +22,7 @@
 To run tests, add your credentials to `tests/creds.json` and run
 
 ```bash
-GS_CREDS_FILENAME="tests/creds.json"
-GS_RECORD_MODE="all"
-tox -e py -- -k "<specific test to run>" -v -s
+GS_CREDS_FILENAME="tests/creds.json" GS_RECORD_MODE="all" tox -e py -- -k "<specific test to run>" -v -s
 ```
 
 For more information on tests, see below.
