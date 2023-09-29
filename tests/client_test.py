@@ -25,6 +25,17 @@ class ClientTest(GspreadTest):
         self.assertRaises(gspread.SpreadsheetNotFound, self.gc.open, noexistent_title)
 
     @pytest.mark.vcr()
+    def test_list_spreadsheet_files(self):
+        res = self.gc.list_spreadsheet_files()
+        self.assertIsInstance(res, list)
+        for f in res:
+            self.assertIsInstance(f, dict)
+            self.assertIn("id", f)
+            self.assertIn("name", f)
+            self.assertIn("createdTime", f)
+            self.assertIn("modifiedTime", f)
+
+    @pytest.mark.vcr()
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
         spreadsheet_list2 = self.gc.openall(spreadsheet_list[0].title)
