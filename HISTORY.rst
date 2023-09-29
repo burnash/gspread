@@ -1,6 +1,11 @@
 Release History
 ===============
 
+5.11.3 (2023-09-29)
+-------------------
+
+* Fix list_spreadsheet_files return value by @mephinet in https://github.com/burnash/gspread/pull/1308
+
 5.11.2 (2023-09-18)
 -------------------
 
