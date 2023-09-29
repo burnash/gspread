@@ -35,12 +35,12 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_acell(self):
         cell = self.sheet.acell("A1")
-        self.assertTrue(isinstance(cell, gspread.cell.Cell))
+        self.assertIsInstance(cell, gspread.cell.Cell)
 
     @pytest.mark.vcr()
     def test_cell(self):
         cell = self.sheet.cell(1, 1)
-        self.assertTrue(isinstance(cell, gspread.cell.Cell))
+        self.assertIsInstance(cell, gspread.cell.Cell)
 
     @pytest.mark.vcr()
     def test_range(self):
@@ -50,8 +50,8 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(len(cell_range1), 5)
 
         for c1, c2 in zip(cell_range1, cell_range2):
-            self.assertTrue(isinstance(c1, gspread.cell.Cell))
-            self.assertTrue(isinstance(c2, gspread.cell.Cell))
+            self.assertIsInstance(c1, gspread.cell.Cell)
+            self.assertIsInstance(c2, gspread.cell.Cell)
             self.assertTrue(c1.col == c2.col)
             self.assertTrue(c1.row == c2.row)
             self.assertTrue(c1.value == c2.value)
