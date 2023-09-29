@@ -113,7 +113,7 @@ class Client:
 
     def list_spreadsheet_files(
         self, title=None, folder_id=None
-    ) -> Tuple[List[Dict[str, Any]], Response]:
+    ) -> List[Dict[str, Any]]:
         """List all the spreadsheet files
 
         Will list all spreadsheet files owned by/shared with this user account.
@@ -123,7 +123,15 @@ class Client:
             The parameter ``folder_id`` can be obtained from the URL when looking at
             a folder in a web browser as follow:
             ``https://drive.google.com/drive/u/0/folders/<folder_id>``
+
+        :returns: a list of dicts containing the keys id, name, createdTime and modifiedTime.
         """
+        files, _ = self._list_spreadsheet_files(title=title, folder_id=folder_id)
+        return files
+
+    def _list_spreadsheet_files(
+        self, title=None, folder_id=None
+    ) -> Tuple[List[Dict[str, Any]], Response]:
         files = []
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
@@ -173,7 +181,7 @@ class Client:
 
         >>> gc.open('My fancy spreadsheet')
         """
-        spreadsheet_files, response = self.list_spreadsheet_files(title, folder_id)
+        spreadsheet_files, response = self._list_spreadsheet_files(title, folder_id)
         try:
             properties = finditem(
                 lambda x: x["name"] == title,
@@ -227,7 +235,7 @@ class Client:
 
         :returns: a list of :class:`~gspread.models.Spreadsheet` instances.
         """
-        spreadsheet_files, _ = self.list_spreadsheet_files(title)
+        spreadsheet_files = self.list_spreadsheet_files(title)
 
         if title:
             spreadsheet_files = [
