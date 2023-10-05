@@ -1187,8 +1187,9 @@ class Worksheet:
         warnings.warn(
             DEPRECATION_WARNING_TEMPLATE.format(
                 v_deprecated="6.0.0",
-                msg_deprecated="method signature will change to: 'Worksheet.update(value = [[]], range_name=)'"
-                " arguments 'range_name' and 'values' will swap, values will be mandatory of type: 'list(list(...))'",
+                msg_deprecated="Method signature's arguments 'range_name' and 'values' will change their order."
+                " We recommend using named arguments for minimal impact. In addition, the argument 'values' will be mandatory of type: 'List[List]'."
+                " (ex) Worksheet.update(values = [[]], range_name=) ",
             )
         )
         if is_scalar(range_name):
