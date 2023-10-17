@@ -991,15 +991,13 @@ class Worksheet:
 
         values = response.get("values", [])
 
+        # range_name must be a full grid range so that we can guarantee
+        #  startRowIndex and endRowIndex properties
         if kwargs["maintain_size"] is True and is_full_a1_notation(range_name):
             a1_range = get_a1_from_absolute_range(range_name)
             grid_range = a1_range_to_grid_range(a1_range)
-            rows = grid_range.get("endRowIndex", self.row_count) - grid_range.get(
-                "startRowIndex", 0
-            )
-            cols = grid_range.get("endColumnIndex", self.col_count) - grid_range.get(
-                "startColumnIndex", 0
-            )
+            rows = grid_range["endRowIndex"] - grid_range["startRowIndex"]
+            cols = grid_range["endColumnIndex"] - grid_range["startColumnIndex"]
             values = fill_gaps(values, rows=rows, cols=cols)
 
         response["values"] = values
