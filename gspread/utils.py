@@ -887,9 +887,7 @@ def is_full_a1_notation(range_name: str) -> bool:
         >>> is_full_a1_notation("A1:B")
         False
     """
-    if A1_ADDR_FULL_RE.search(range_name):
-        return True
-    return False
+    return A1_ADDR_FULL_RE.search(range_name) is not None
 
 
 def get_a1_from_absolute_range(range_name: str) -> str:
