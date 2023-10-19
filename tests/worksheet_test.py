@@ -144,7 +144,7 @@ class WorksheetTest(GspreadTest):
 
         self.assertEqual(data_args, sheet_data)
         self.assertEqual(data_kwargs, sheet_data)
-    
+
     @pytest.mark.vcr()
     def test_get_values_merge_cells_outside_of_range(self):
         self.sheet.resize(4, 4)

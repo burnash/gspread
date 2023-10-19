@@ -233,8 +233,7 @@ class Worksheet:
 
     @property
     def tab_color(self) -> Optional[str]:
-        """Tab color style. Hex with RGB color values.
-        """
+        """Tab color style. Hex with RGB color values."""
         return self.get_tab_color()
 
     def get_tab_color(self) -> Optional[str]:
@@ -1640,7 +1639,7 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color: str)-> JSONResponse:
+    def update_tab_color(self, color: str) -> JSONResponse:
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
