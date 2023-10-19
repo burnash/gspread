@@ -232,21 +232,12 @@ class Worksheet:
         return self._properties["gridProperties"].get("hideGridlines", False)
 
     @property
-    def tab_color(self) -> Optional[Dict[str, float]]:
-        """Tab color style. Dict with RGB color values.
-        If any of R, G, B are 0, they will not be present in the dict.
+    def tab_color(self) -> Optional[str]:
+        """Tab color style. Hex with RGB color values.
         """
-        warnings.warn(
-            DEPRECATION_WARNING_TEMPLATE.format(
-                v_deprecated="6.0.0",
-                msg_deprecated="""color format will change to hex format "#RRGGBB".
-                To suppress warning, use "get_tab_color()" and convert back to dict format, use gspread.utils.convert_hex_to_colors_dict.
-                However, we recommend changing your code to use hex format.""",
-            )
-        )
-        return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
+        return self.get_tab_color()
 
-    def get_tab_color(self) -> Union[str, None]:
+    def get_tab_color(self) -> Optional[str]:
         """Tab color style in hex format. String."""
         tab_color = self._properties.get("tabColorStyle", {}).get("rgbColor", None)
         if tab_color is None:
