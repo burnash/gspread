@@ -1,3 +1,4 @@
+from inspect import signature
 import itertools
 import random
 import re
@@ -1714,3 +1715,10 @@ class WorksheetTest(GspreadTest):
             list(itertools.chain(*values)),
             [cell.value for cell in cells],
         )
+
+    @pytest.mark.vcr()
+    def test_get_and_get_values_have_same_signature(self):
+        sig_get = signature(self.sheet.get)
+        sig_get_values = signature(self.sheet.get_values)
+
+        self.assertEqual(sig_get, sig_get_values)
