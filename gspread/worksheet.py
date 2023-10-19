@@ -696,7 +696,9 @@ class Worksheet:
         value_render_option: Optional[ValueRenderOption] = None,
         date_time_render_option: Optional[DateTimeOption] = None,
         combine_merged_cells: bool = False,
-    ) -> ValueRange:
+        pad_values: bool = False,
+        return_type: GridRangeType = GridRangeType.ValueRange,
+    ) -> Union[ValueRange, List[List[Any]]]:
         """Returns a ValueRange (list of lists) containing all values from a specified range or cell
 
         By default values are returned as strings. See ``value_render_option``
@@ -766,6 +768,13 @@ class Worksheet:
                 Setting this to True will cause an additional API request to be
                 made to retrieve the values of all merged cells.
 
+        :param bool pad_values: (optional) If True, then empty cells will be
+            filled with empty strings. Defaults to False.
+
+        :param GridRangeType return_type: (optional) The type of object to return.
+            Defaults to :class:`gspread.utils.GridRangeType.ValueRange`.
+            The other option is `gspread.utils.GridRangeType.ListOfLists`.
+
         :rtype: :class:`gspread.worksheet.ValueRange`
 
         .. versionadded:: 3.3
@@ -806,10 +815,14 @@ class Worksheet:
         )
 
         vals_unfilled = response.get("values", [[]])
-        try:
-            vals = fill_gaps(vals_unfilled)
-        except KeyError:
-            vals = [[]]
+
+        if pad_values is True:
+            try:
+                vals = fill_gaps(vals_unfilled)
+            except KeyError:
+                vals = [[]]
+        else:
+            vals = vals_unfilled
 
         if combine_merged_cells is True:
             spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
@@ -820,7 +833,11 @@ class Worksheet:
             vals = combined_merge_values(worksheet_meta, vals)
 
         response["values"] = vals
-        return ValueRange.from_json(response)
+        if return_type is GridRangeType.ValueRange:
+            return ValueRange.from_json(response)
+        if return_type is GridRangeType.ListOfLists:
+            return vals
+        raise ValueError("return_type must be either ValueRange or ListOfLists")
 
     def batch_get(
         self,
