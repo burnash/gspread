@@ -17,20 +17,11 @@ Features:
 - Sharing and access control.
 - Batching updates.
 
-# v6.0.0 migration
+## v6.0.0 migration
 
-## Silence the warnings
-We have many warnings to mark deprecated feature/functions/methods.
-They can be silenced by setting the following environment variable:
-
-- name: `GSPREAD_SILENCE_WARNING`
-- value: `1`
-
-Example:
-```sh
-export GSPREAD_SILENCE_WARNING=1
-python get_sheet.py
-```
+### Silence the warnings
+In version 5 there are many warnings to mark deprecated feature/functions/methods.
+They can be silenced by setting the `GSPREAD_SILENCE_WARNINGS` environment variable to `1`
 
 ## Installation
 

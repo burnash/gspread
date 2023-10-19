@@ -94,7 +94,7 @@ DEPRECATION_WARNING_TEMPLATE = (
 
 REQUIRED_KWARGS = "required"
 
-SILENCE_WARNING_ENV_KEY = "GSPREAD_SILENCE_WARNING"
+SILENCE_WARNINGS_ENV_KEY = "GSPREAD_SILENCE_WARNINGS"
 
 
 def convert_credentials(credentials):
@@ -877,11 +877,11 @@ def deprecation_warning(version: str, msg: str) -> None:
     ..note::
 
         This warning can be silenced by setting the environment variable:
-        GSPREAD_SILENCE_WARNING=1
+        GSPREAD_SILENCE_WARNINGS=1
     """
 
     # do not emit warning if env variable is set specifically to 1
-    if os.getenv(SILENCE_WARNING_ENV_KEY, "0") == "1":
+    if os.getenv(SILENCE_WARNINGS_ENV_KEY, "0") == "1":
         return
 
     warnings.warn(
