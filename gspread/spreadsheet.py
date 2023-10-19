@@ -53,10 +53,8 @@ class Spreadsheet:
         Only updated on initialisation.
         For actual last updated time, use get_lastUpdateTime()."""
         warnings.warn(
-            """
-            This is only updated on initialisation and is probably outdated by the time you use it.
-            For an up to date last updated time, use get_lastUpdateTime().
-            """
+            "worksheet.lastUpdateTime is deprecated, please use worksheet.get_lastUpdateTime()",
+            category=DeprecationWarning,
         )
         if "modifiedTime" not in self._properties:
             self.update_drive_metadata()
