@@ -32,13 +32,13 @@ from .urls import WORKSHEET_DRIVE_URL
 from .utils import (
     DateTimeOption,
     Dimension,
+    GridRangeType,
     InsertDataOption,
     PasteOrientation,
     PasteType,
     T,
     ValueInputOption,
     ValueRenderOption,
-    GridRangeType,
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
@@ -389,7 +389,9 @@ class Worksheet:
         and ``pad_values`` set to ``True``
         (legacy method)
         """
-        return self.get(*args, pad_values=True, return_type=GridRangeType.ListOfLists, **kwargs)
+        return self.get(
+            *args, pad_values=True, return_type=GridRangeType.ListOfLists, **kwargs
+        )
 
     def get_all_values(self, *args, **kwargs) -> ValueRange:
         """Alias to :meth:`~gspread.worksheet.Worksheet.get_values`"""
