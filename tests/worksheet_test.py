@@ -93,14 +93,26 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_returns_ValueRange_with_metadata(self):
         self.sheet.resize(4, 4)
-        rows = [[1]]
+        rows = [
+            ["1", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", "2"],
+        ]
+        expected_rows = [
+            ["1"],
+            [],
+            [],
+            ["", "", "", "2"],
+        ]
 
-        self.sheet.update(rows, "A1")
+        self.sheet.update(rows, "A1:D4")
 
-        value_range = self.sheet.get("A1")
+        value_range = self.sheet.get("A1:D4")
         self.assertTrue(isinstance(value_range, gspread.ValueRange))
-        self.assertEqual(value_range.range, "Sheet1!A1")
+        self.assertEqual(value_range.range, "Sheet1!A1:D4")
         self.assertEqual(value_range.major_dimension, "ROWS")
+        self.assertEqual(value_range, expected_rows)
 
     @pytest.mark.vcr()
     def test_get_values_and_combine_merged_cells(self):
