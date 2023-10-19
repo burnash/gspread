@@ -155,7 +155,7 @@ class WorksheetTest(GspreadTest):
             ["num", "val", "", "0"],
         ]
 
-        self.sheet.update("A1:D4", sheet_data)
+        self.sheet.update(sheet_data, "A1:D4")
 
         self.sheet.merge_cells("A2:A3")
         self.sheet.merge_cells("C1:D2")
