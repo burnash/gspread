@@ -7,6 +7,7 @@ This module contains common spreadsheets' models.
 """
 
 from typing import Union
+import warnings
 
 from .exceptions import WorksheetNotFound
 from .urls import DRIVE_FILES_API_V3_URL, SPREADSHEET_DRIVE_URL
@@ -23,9 +24,6 @@ class Spreadsheet:
 
         metadata = self.fetch_sheet_metadata()
         self._properties.update(metadata["properties"])
-
-        drive_metadata = self.client.get_file_drive_metadata(self._properties["id"])
-        self._properties.update(drive_metadata)
 
     @property
     def id(self):
@@ -45,7 +43,37 @@ class Spreadsheet:
     @property
     def creationTime(self):
         """Spreadsheet Creation time."""
+        if "createdTime" not in self._properties:
+            self.update_drive_metadata()
         return self._properties["createdTime"]
+
+    @property
+    def lastUpdateTime(self):
+        """Spreadsheet last updated time.
+        Only updated on initialisation.
+        For actual last updated time, use get_lastUpdateTime()."""
+        warnings.warn(
+            """
+            This is only updated on initialisation and is probably outdated by the time you use it.
+            For an up to date last updated time, use get_lastUpdateTime().
+            """
+        )
+        if "modifiedTime" not in self._properties:
+            self.update_drive_metadata()
+        return self._properties["modifiedTime"]
+
+    @property
+    def updated(self):
+        """.. deprecated:: 2.0
+
+        This feature is not supported in Sheets API v4.
+        """
+        warnings.warn(
+            "Spreadsheet.updated() is deprecated, "
+            "this feature is not supported in Sheets API v4",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
     @property
     def timezone(self):
@@ -699,3 +727,9 @@ class Spreadsheet:
         """Get the lastUpdateTime metadata from the Drive API."""
         metadata = self.client.get_file_drive_metadata(self.id)
         return metadata["modifiedTime"]
+
+    def update_drive_metadata(self) -> None:
+        """Fetches the drive metadata from the Drive API
+        and updates the cached values in _properties dict."""
+        drive_metadata = self.client.get_file_drive_metadata(self._properties["id"])
+        self._properties.update(drive_metadata)

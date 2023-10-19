@@ -6,8 +6,11 @@ This module contains Client class responsible for managing spreadsheet files
 
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, Tuple, Type
+import warnings
+from http import HTTPStatus
 
+from google.auth.transport.requests import AuthorizedSession
 from google.auth.credentials import Credentials
 from requests import Response
 
@@ -58,34 +61,47 @@ class Client:
             The parameter ``folder_id`` can be obtained from the URL when looking at
             a folder in a web browser as follow:
             ``https://drive.google.com/drive/u/0/folders/<folder_id>``
+
+        :returns: a list of dicts containing the keys id, name, createdTime and modifiedTime.
         """
+        files, _ = self._list_spreadsheet_files(title=title, folder_id=folder_id)
+        return files
+
+    def _list_spreadsheet_files(
+        self, title=None, folder_id=None
+    ) -> Tuple[List[Dict[str, Any]], Response]:
         files = []
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
 
-        q = 'mimeType="{}"'.format(MimeType.google_sheets)
+        query = f'mimeType="{MimeType.google_sheets}"'
         if title:
-            q += ' and name = "{}"'.format(title)
+            query += f' and name = "{title}"'
         if folder_id:
-            q += ' and parents in "{}"'.format(folder_id)
+            query += f' and parents in "{folder_id}"'
 
         params: ParamsType = {
-            "q": q,
+            "q": query,
             "pageSize": 1000,
             "supportsAllDrives": True,
             "includeItemsFromAllDrives": True,
             "fields": "kind,nextPageToken,files(id,name,createdTime,modifiedTime)",
         }
 
-        while page_token is not None:
+        while True:
             if page_token:
                 params["pageToken"] = page_token
 
-            res = self.http_client.request("get", url, params=params).json()
-            files.extend(res["files"])
-            page_token = res.get("nextPageToken", None)
+            response = self.request("get", url, params=params)
+            response_json = response.json()
+            files.extend(response_json["files"])
 
-        return files
+            page_token = response_json.get("nextPageToken", None)
+
+            if page_token is None:
+                break
+
+        return files, response
 
     def open(self, title: str, folder_id: Optional[str] = None) -> Spreadsheet:
         """Opens a spreadsheet.
@@ -103,18 +119,19 @@ class Client:
 
         >>> gc.open('My fancy spreadsheet')
         """
+        spreadsheet_files, response = self._list_spreadsheet_files(title, folder_id)
         try:
             properties = finditem(
                 lambda x: x["name"] == title,
-                self.list_spreadsheet_files(title, folder_id),
+                spreadsheet_files,
             )
+        except StopIteration as ex:
+            raise SpreadsheetNotFound(response) from ex
 
-            # Drive uses different terminology
-            properties["title"] = properties["name"]
+        # Drive uses different terminology
+        properties["title"] = properties["name"]
 
-            return Spreadsheet(self.http_client, properties)
-        except StopIteration:
-            raise SpreadsheetNotFound
+        return Spreadsheet(self.http_client, properties)
 
     def open_by_key(self, key: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `key` (a.k.a Spreadsheet ID).
@@ -124,7 +141,15 @@ class Client:
 
         >>> gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
         """
-        return Spreadsheet(self.http_client, {"id": key})
+        try:
+            spreadsheet = Spreadsheet(self.http_client, {"id": key})
+        except APIError as ex:
+            if ex.response.status_code == HTTPStatus.NOT_FOUND:
+                raise SpreadsheetNotFound(ex.response) from ex
+            if ex.response.status_code == HTTPStatus.FORBIDDEN:
+                raise PermissionError from ex
+            raise ex
+        return spreadsheet
 
     def open_by_url(self, url: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `url`.

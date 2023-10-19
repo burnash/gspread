@@ -24,6 +24,8 @@ from typing import (
     TypeVar,
     Union,
 )
+import warnings
+from typing import Union
 
 from .cell import Cell
 from .exceptions import GSpreadException
@@ -44,6 +46,7 @@ from .utils import (
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
+    convert_colors_to_hex_value,
     convert_hex_to_colors_dict,
     fill_gaps,
     finditem,
@@ -233,7 +236,22 @@ class Worksheet:
         """Tab color style. Dict with RGB color values.
         If any of R, G, B are 0, they will not be present in the dict.
         """
+        warnings.warn(
+            DEPRECATION_WARNING_TEMPLATE.format(
+                v_deprecated="6.0.0",
+                msg_deprecated="""color format will change to hex format "#RRGGBB".
+                To suppress warning, use "get_tab_color()" and convert back to dict format, use gspread.utils.convert_hex_to_colors_dict.
+                However, we recommend changing your code to use hex format.""",
+            )
+        )
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
+
+    def get_tab_color(self) -> Union[str, None]:
+        """Tab color style in hex format. String."""
+        tab_color = self._properties.get("tabColorStyle", {}).get("rgbColor", None)
+        if tab_color is None:
+            return None
+        return convert_colors_to_hex_value(**tab_color)
 
     def _get_sheet_property(self, property: str, default_value: Optional[T]) -> T:
         """return a property of this worksheet or default value if not found"""
@@ -535,14 +553,8 @@ class Worksheet:
 
     def get_all_records(
         self,
-        empty2zero: bool = False,
-        head: int = 1,
-        default_blank: str = "",
-        allow_underscores_in_numeric_literals: bool = False,
-        numericise_ignore: List[int] = [],
-        value_render_option: Optional[ValueRenderOption] = None,
-        expected_headers: Optional[List[Union[str, int, float]]] = None,
-    ) -> List[Dict[str, Union[int, float, str]]]:
+        **kwargs,
+    ):
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
         dictionaries holding the contents of subsequent rows of cells as
@@ -574,40 +586,153 @@ class Worksheet:
                 returned dictionaries will contain all headers even if not included in this list
 
         """
-        idx = head - 1
+        return self.get_records(**kwargs)
 
-        data = self.get_all_values(value_render_option=value_render_option)
+    def get_records(  # noqa: C901 # this comment disables the complexity check for this function
+        self,
+        empty2zero=False,
+        head=1,
+        use_index=0,
+        first_index=None,
+        last_index=None,
+        default_blank="",
+        allow_underscores_in_numeric_literals=False,
+        numericise_ignore=[],
+        value_render_option=None,
+        expected_headers=None,
+    ):
+        """Returns a list of dictionaries, all of them having the contents of
+        the spreadsheet range selected with the head row/col as keys and each of these
+        dictionaries holding the contents of subsequent selected rows/cols of cells as
+        values.
 
-        # Return an empty list if the sheet doesn't have enough rows
-        if len(data) <= idx:
-            return []
+        Cell values are numericised (strings that can be read as ints or floats
+        are converted), unless specified in numericise_ignore
 
-        keys = data[idx]
+        Can be used to read data from rows (use_index=0) or columns (use_index=1) (default is 0),
+            check the examples below for more details.
 
-        # if no given expected headers, expect all of them
+        :param bool empty2zero: (optional) Determines whether empty cells are
+            converted to zeros.
+        :param int head: (optional) Determines which index to use as keys,
+            starting from 1 following the numeration of the spreadsheet.
+        :param int use_index: (optional) Determines whether to read records and headers from rows or columns.
+            0 for rows, 1 for columns.
+        :param int first_index: (optional) row/col (depends on `use_index`) to start reading data from (inclusive) (1-based).
+        :param int last_index: (optional) row/col (depends on `use_index`) to stop reading at (inclusive) (1-based).
+        :param str default_blank: (optional) Determines which value to use for
+            blank cells, defaults to empty string.
+        :param bool allow_underscores_in_numeric_literals: (optional) Allow
+            underscores in numeric literals, as introduced in PEP 515
+        :param list numericise_ignore: (optional) List of ints of indices of
+            the columns (starting at 1) to ignore numericising, special use
+            of ['all'] to ignore numericising on all columns.
+        :param value_render_option: (optional) Determines how values should
+            be rendered in the output. See `ValueRenderOption`_ in
+            the Sheets API.
+        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+
+        :param list expected_headers: (optional) List of expected headers, they must be unique.
+
+            .. note::
+
+                returned dictionaries will contain all headers even if not included in this list
+
+        Examples::
+
+            # Sheet data:
+            #      A    B    C
+            #
+            # 1    A1   B2   C3
+            # 2    A6   B7   C8
+            # 3    A11  B12  C13
+
+            # Read all rows from the sheet
+            >>> worksheet.get_records(use_index=0)
+            {
+                {"A1": "A6", "B2": "B7", "C3": "C8"},
+                {"A1": "A11", "B2": "B12", "C3": "C13"}
+            }
+
+            >>> worksheet.get_records(use_index=1)
+            {
+                {"A1": "B2", "A6": "B7", "A11": "B12"},
+                {"A1": "C3", "A6": "C8", "A11": "C13"}
+            }
+        """
+        # some sanity checks
+        if use_index not in [0, 1]:
+            raise ValueError("use_index must be either 0 or 1")
+        if use_index == 1:  # TODO: implement use_index=1
+            raise NotImplementedError("use_index=1 is not implemented yet")
+
+        if first_index is None:
+            first_index = head + 1
+        elif first_index <= head:
+            raise ValueError("first_index must be greater than the head row")
+        elif first_index > self.row_count:
+            raise ValueError(
+                "first_index must be less than or equal to the number of rows in the worksheet"
+            )
+
+        if last_index is None:
+            last_index = self.row_count
+        elif last_index < first_index:
+            raise ValueError("last_index must be greater than or equal to first_index")
+        elif last_index > self.row_count:
+            raise ValueError(
+                "last_index must be an integer less than or equal to the number of rows in the worksheet"
+            )
+
+        keys = self.get_values(
+            f"{head}:{head}", value_render_option=value_render_option
+        )[0]
+
         if expected_headers is None:
             expected_headers = keys
+        else:
+            expected_headers_are_unique = len(expected_headers) == len(
+                set(expected_headers)
+            )
+            if not expected_headers_are_unique:
+                raise GSpreadException("the given 'expected_headers' are not uniques")
 
-        # keys must:
-        # - be uniques
-        # - be part of the complete header list
-        # - not contain extra headers
-        expected = set(expected_headers)
-        headers = set(keys)
+        # validating the headers in the worksheet
+        header_row_is_unique = len(keys) == len(set(keys))
+        if not header_row_is_unique:
+            raise GSpreadException("the header row in the worksheet is not unique")
 
-        # make sure they are uniques
-        if len(expected) != len(expected_headers):
-            raise GSpreadException("the given 'expected_headers' are not uniques")
-
-        if not expected & headers == expected:
+        # validating that the expected headers are part of the headers in the worksheet
+        if not all(header in keys for header in expected_headers):
             raise GSpreadException(
                 "the given 'expected_headers' contains unknown headers: {}".format(
-                    expected - headers
+                    set(expected_headers) - set(keys)
                 )
             )
 
+        values = self.get_values(
+            f"{first_index}:{last_index}",
+            value_render_option=value_render_option,
+        )
+
+        values_len = len(values[0])
+        keys_len = len(keys)
+        values_wider_than_keys_by = values_len - keys_len
+        default_blank_in_keys = default_blank in keys
+
+        if ((values_wider_than_keys_by > 0) and default_blank_in_keys) or (
+            values_wider_than_keys_by > 1
+        ):
+            raise GSpreadException(
+                "the header row in the worksheet contains multiple empty cells"
+            )
+        elif values_wider_than_keys_by == 1:
+            keys.append(default_blank)
+        elif values_wider_than_keys_by < 0:
+            values = fill_gaps(values, cols=keys_len, padding_value=default_blank)
+
         if numericise_ignore == ["all"]:
-            values = data[idx + 1 :]
+            pass
         else:
             values = [
                 numericise_all(
@@ -617,10 +742,12 @@ class Worksheet:
                     allow_underscores_in_numeric_literals,
                     numericise_ignore,
                 )
-                for row in data[idx + 1 :]
+                for row in values
             ]
 
-        return [dict(zip(keys, row)) for row in values]
+        formatted_records = [dict(zip(keys, row)) for row in values]
+
+        return formatted_records
 
     def get_all_cells(self) -> List[Cell]:
         """Returns a list of all `Cell` of the current sheet."""
@@ -1522,13 +1649,16 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color: str) -> JSONResponse:
+    def update_tab_color(self, color: str)-> JSONResponse:
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
         :param str color:  Hex color value.
         """
-        rgb_color = convert_hex_to_colors_dict(color)
+
+        color = convert_hex_to_colors_dict(color)
+
+        red, green, blue = color["red"], color["green"], color["blue"]
         body = {
             "requests": [
                 {
