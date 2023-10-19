@@ -11,6 +11,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 from functools import wraps
 from itertools import chain
+from math import inf
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -25,8 +26,6 @@ from typing import (
     TypeVar,
     Union,
 )
-from math import inf
-from typing import Mapping
 from urllib.parse import quote as uquote
 
 from google.auth.credentials import Credentials as Credentials
@@ -555,13 +554,16 @@ def wid_to_gid(wid: str) -> str:
     return str(int(widval, 36) ^ xorval)
 
 
-def rightpad(row: List[Any], max_len: int, padding_value: Any="") -> List[Any]:
+def rightpad(row: List[Any], max_len: int, padding_value: Any = "") -> List[Any]:
     pad_len = max_len - len(row)
     return row + ([padding_value] * pad_len) if pad_len != 0 else row
 
 
 def fill_gaps(
-    L: List[List[Any]], rows: Optional[int] = None, cols: Optional[int] = None, padding_value: Any=""
+    L: List[List[Any]],
+    rows: Optional[int] = None,
+    cols: Optional[int] = None,
+    padding_value: Any = "",
 ) -> List[List[Any]]:
     """Fill gaps in a list of lists.
     e.g.,::

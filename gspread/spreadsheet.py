@@ -6,8 +6,8 @@ This module contains common spreadsheets' models.
 
 """
 
-from typing import Union
 import warnings
+from typing import Union
 
 from .exceptions import WorksheetNotFound
 from .urls import DRIVE_FILES_API_V3_URL, SPREADSHEET_DRIVE_URL
