@@ -6,7 +6,9 @@ This module contains utility functions.
 
 """
 
+import os
 import re
+import warnings
 from collections import defaultdict, namedtuple
 from collections.abc import Sequence
 from functools import wraps
@@ -91,6 +93,8 @@ DEPRECATION_WARNING_TEMPLATE = (
 )
 
 REQUIRED_KWARGS = "required"
+
+SILENCE_WARNING_ENV_KEY = "GSPREAD_SILENCE_WARNING"
 
 
 def convert_credentials(credentials):
@@ -865,6 +869,26 @@ def convert_colors_to_hex_value(
         raise ValueError("Color value out of accepted range 0-1.")
 
     return f"#{to_hex(red)}{to_hex(green)}{to_hex(blue)}"
+
+
+def deprecation_warning(version: str, msg: str) -> None:
+    """Emit a deprecation warning.
+
+    ..note::
+
+        This warning can be silenced by setting the environment variable:
+        GSPREAD_SILENCE_WARNING=1
+    """
+
+    # do not emit warning if env variable is set specifically to 1
+    if os.getenv(SILENCE_WARNING_ENV_KEY, "0") == "1":
+        return
+
+    warnings.warn(
+        DEPRECATION_WARNING_TEMPLATE.format(v_deprecated=version, msg_deprecated=msg),
+        DeprecationWarning,
+        4,  # showd the 4th stack: [1]:current->[2]:deprecation_warning->[3]:<gspread method/function>->[4]:<user's code>
+    )
 
 
 if __name__ == "__main__":
