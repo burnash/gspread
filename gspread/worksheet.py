@@ -542,7 +542,7 @@ class Worksheet:
     def get_all_records(
         self,
         **kwargs,
-    ):
+    ) -> List[Dict[str, Union[int, float, str]]]:
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
         dictionaries holding the contents of subsequent rows of cells as
