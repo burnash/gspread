@@ -115,6 +115,22 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(value_range, expected_rows)
 
     @pytest.mark.vcr()
+    def test_get_values_returns_padded_get_as_listoflists(self):
+        self.sheet.resize(4, 4)
+        rows = [
+            ["1", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", "2"],
+        ]
+
+        self.sheet.update(rows, "A1:D4")
+
+        values = self.sheet.get_values("A1:D4")
+        self.assertEqual(values, rows)
+        self.assertIsInstance(values, list)
+
+    @pytest.mark.vcr()
     def test_get_values_and_combine_merged_cells(self):
         self.sheet.resize(4, 4)
         sheet_data = [
