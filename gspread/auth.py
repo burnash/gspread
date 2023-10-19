@@ -16,7 +16,7 @@ from google.oauth2.service_account import Credentials as ServiceAccountCredentia
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 from .client import Client
-from .utils import DEPRECATION_WARNING_TEMPLATE
+from .utils import deprecation_warning
 
 DEFAULT_SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -60,12 +60,9 @@ def authorize(credentials, client_factory=Client):
     :returns: An instance of the class produced by `client_factory`.
     :rtype: :class:`gspread.client.Client`
     """
-    warnings.warn(
-        DEPRECATION_WARNING_TEMPLATE.format(
-            v_deprecated="6.0.0",
-            msg_deprecated="client_factory will be replaced by gspread.http_client types",
-        ),
-        DeprecationWarning,
+    deprecation_warning(
+        version="6.0.0",
+        msg="client_factory will be replaced by gspread.http_client types",
     )
 
     return client_factory(auth=credentials)
@@ -192,12 +189,9 @@ def oauth(
 
     :rtype: :class:`gspread.client.Client`
     """
-    warnings.warn(
-        DEPRECATION_WARNING_TEMPLATE.format(
-            v_deprecated="6.0.0",
-            msg_deprecated="client_factory will be replaced by gspread.http_client types",
-        ),
-        DeprecationWarning,
+    deprecation_warning(
+        version="6.0.0",
+        msg="client_factory will be replaced by gspread.http_client types",
     )
 
     authorized_user_filename = Path(authorized_user_filename)
@@ -280,12 +274,9 @@ def oauth_from_dict(
 
     :rtype: (`gspread.client.Client`, str)
     """
-    warnings.warn(
-        DEPRECATION_WARNING_TEMPLATE.format(
-            v_deprecated="6.0.0",
-            msg_deprecated="client_factory will be replaced by gspread.http_client types",
-        ),
-        DeprecationWarning,
+    deprecation_warning(
+        version="6.0.0",
+        msg="client_factory will be replaced by gspread.http_client types",
     )
 
     creds = None
@@ -332,14 +323,10 @@ def service_account(
 
     :rtype: :class:`gspread.client.Client`
     """
-    warnings.warn(
-        DEPRECATION_WARNING_TEMPLATE.format(
-            v_deprecated="6.0.0",
-            msg_deprecated="client_factory will be replaced by gspread.http_client types",
-        ),
-        DeprecationWarning,
+    deprecation_warning(
+        version="6.0.0",
+        msg="client_factory will be replaced by gspread.http_client types",
     )
-
     creds = ServiceAccountCredentials.from_service_account_file(filename, scopes=scopes)
     return client_factory(auth=creds)
 
@@ -369,12 +356,9 @@ def service_account_from_dict(info, scopes=DEFAULT_SCOPES, client_factory=Client
 
     :rtype: :class:`gspread.client.Client`
     """
-    warnings.warn(
-        DEPRECATION_WARNING_TEMPLATE.format(
-            v_deprecated="6.0.0",
-            msg_deprecated="client_factory will be replaced by gspread.http_client types",
-        ),
-        DeprecationWarning,
+    deprecation_warning(
+        version="6.0.0",
+        msg="client_factory will be replaced by gspread.http_client types",
     )
 
     creds = ServiceAccountCredentials.from_service_account_info(

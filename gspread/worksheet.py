@@ -6,14 +6,12 @@ This module contains common worksheets' models.
 
 """
 
-import warnings
 from typing import Union
 
 from .cell import Cell
 from .exceptions import GSpreadException
 from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
-    DEPRECATION_WARNING_TEMPLATE,
     REQUIRED_KWARGS,
     Dimension,
     PasteOrientation,
@@ -29,6 +27,7 @@ from .utils import (
     combined_merge_values,
     convert_colors_to_hex_value,
     convert_hex_to_colors_dict,
+    deprecation_warning,
     fill_gaps,
     filter_dict_values,
     finditem,
@@ -207,14 +206,13 @@ class Worksheet:
         """Tab color style. Dict with RGB color values.
         If any of R, G, B are 0, they will not be present in the dict.
         """
-        warnings.warn(
-            DEPRECATION_WARNING_TEMPLATE.format(
-                v_deprecated="6.0.0",
-                msg_deprecated="""color format will change to hex format "#RRGGBB".
+        deprecation_warning(
+            version="6.0.0",
+            msg="""color format will change to hex format "#RRGGBB".
                 To suppress warning, use "get_tab_color()" and convert back to dict format, use gspread.utils.convert_hex_to_colors_dict.
                 However, we recommend changing your code to use hex format.""",
-            )
         )
+
         return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
 
     def get_tab_color(self) -> Union[str, None]:
@@ -1184,14 +1182,13 @@ class Worksheet:
 
         .. versionadded:: 3.3
         """
-        warnings.warn(
-            DEPRECATION_WARNING_TEMPLATE.format(
-                v_deprecated="6.0.0",
-                msg_deprecated="Method signature's arguments 'range_name' and 'values' will change their order."
-                " We recommend using named arguments for minimal impact. In addition, the argument 'values' will be mandatory of type: 'List[List]'."
-                " (ex) Worksheet.update(values = [[]], range_name=) ",
-            )
+        deprecation_warning(
+            version="6.0.0",
+            msg="Method signature's arguments 'range_name' and 'values' will change their order."
+            " We recommend using named arguments for minimal impact. In addition, the argument 'values' will be mandatory of type: 'List[List]'."
+            " (ex) Worksheet.update(values = [[]], range_name=) ",
         )
+
         if is_scalar(range_name):
             range_name = absolute_range_name(self.title, range_name)
         else:
@@ -1525,12 +1522,9 @@ class Worksheet:
 
         .. versionadded:: 3.4
         """
-        warnings.warn(
-            DEPRECATION_WARNING_TEMPLATE.format(
-                v_deprecated="6.0.0",
-                msg_deprecated="This function signature will change, arguments will swap places:  sort(range, specs)",
-            ),
-            DeprecationWarning,
+        deprecation_warning(
+            version="6.0.0",
+            msg="This function signature will change, arguments will swap places:  sort(range, specs)",
         )
         range_name = kwargs.pop("range", None)
 
@@ -1612,12 +1606,10 @@ class Worksheet:
         if isinstance(color, str):
             color = convert_hex_to_colors_dict(color)
         else:
-            warnings.warn(
-                message=DEPRECATION_WARNING_TEMPLATE.format(
-                    v_deprecated="6.0.0",
-                    msg_deprecated="""color format will change to hex format "#RRGGBB".
+            deprecation_warning(
+                version="6.0.0",
+                msg="""color format will change to hex format "#RRGGBB".
                     To suppress this warning, first convert color to hex with "gspread.utils.convert_colors_to_hex_value(color)""",
-                )
             )
 
         red, green, blue = color["red"], color["green"], color["blue"]
