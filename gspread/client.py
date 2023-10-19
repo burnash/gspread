@@ -92,7 +92,7 @@ class Client:
             if page_token:
                 params["pageToken"] = page_token
 
-            response = self.request("get", url, params=params)
+            response = self.http_client.request("get", url, params=params)
             response_json = response.json()
             files.extend(response_json["files"])
 
