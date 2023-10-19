@@ -6,7 +6,6 @@ This module contains common spreadsheets' models.
 
 """
 
-import warnings
 from typing import Union
 
 from .exceptions import WorksheetNotFound
@@ -47,19 +46,6 @@ class Spreadsheet:
     def creationTime(self):
         """Spreadsheet Creation time."""
         return self._properties["createdTime"]
-
-    @property
-    def lastUpdateTime(self):
-        """Spreadsheet last updated time.
-        Only updated on initialisation.
-        For actual last updated time, use get_lastUpdateTime()."""
-        warnings.warn(
-            """
-            This is only updated on initialisation and is probably outdated by the time you use it.
-            For an up to date last updated time, use get_lastUpdateTime().
-            """
-        )
-        return self._properties["modifiedTime"]
 
     @property
     def timezone(self):
@@ -709,16 +695,7 @@ class Spreadsheet:
 
         return sheet.get("protectedRanges", [])
 
-    def refresh_lastUpdateTime(self) -> None:
-        """Updates the cached value of lastUpdateTime."""
-        # remove this and the below upon deprecation of lastUpdateTime @property
-        self._properties["modifiedTime"] = self.get_lastUpdateTime()
-
     def get_lastUpdateTime(self) -> str:
-        """Get the lastUpdateTime metadata from the Drive API.
-        Also updates the cached value in the _properties dict.
-        """
+        """Get the lastUpdateTime metadata from the Drive API."""
         metadata = self.client.get_file_drive_metadata(self.id)
-        # remove next line and the above upon deprecation of lastUpdateTime @property
-        self._properties["modifiedTime"] = metadata["modifiedTime"]
         return metadata["modifiedTime"]
