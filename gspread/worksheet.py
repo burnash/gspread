@@ -1656,7 +1656,13 @@ class Worksheet:
                     "updateSheetProperties": {
                         "properties": {
                             "sheetId": self.id,
-                            "tabColorStyle": {"rgbColor": rgb_color},
+                            "tabColorStyle": {
+                                "rgbColor": {
+                                    "red": red,
+                                    "green": green,
+                                    "blue": blue,
+                                }
+                            },
                         },
                         "fields": "tabColorStyle",
                     }
@@ -1666,7 +1672,12 @@ class Worksheet:
 
         response = self.client.batch_update(self.spreadsheet_id, body)
 
-        self._properties["tabColorStyle"] = {"rgbColor": rgb_color}
+        sheet_color = {
+            "red": red,
+            "green": green,
+            "blue": blue,
+        }
+        self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
         return response
 
     def clear_tab_color(self) -> JSONResponse:
