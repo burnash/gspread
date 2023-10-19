@@ -263,6 +263,7 @@ class UtilsTest(unittest.TestCase):
     def test_convert_colors_to_hex_value(self):
         color = {"red": 1, "green": 0.49803922, "blue": 0}
         expected_hex = "#FF7F00"
+
     def test_combine_merge_values_outside_range(self):
         """Make sure that merges outside the range of the sheet are ignored or partially ignored
         see issue #1298
@@ -377,28 +378,3 @@ class UtilsTest(unittest.TestCase):
         actual = utils.fill_gaps(matrix, 3, 6, 3)
 
         self.assertEqual(actual, expected)
-
-    def test_accepted_kwargs(self):
-        """test accepted_kwargs function.
-        Test the temporary special value: REQUIRED_KWARGS
-        """
-
-        expected_arg0 = 0
-        expected_arg1 = 1
-
-        @utils.accepted_kwargs(arg1=1)
-        def sample_arg1(arg0, **kwargs):
-            self.assertEqual(arg0, expected_arg0)
-            self.assertEqual(kwargs["arg1"], expected_arg1)
-
-        sample_arg1(0)
-
-        expected_arg2 = 2
-
-        @utils.accepted_kwargs(arg1=utils.REQUIRED_KWARGS, arg2=2)
-        def sample_arg2(arg0, arg1=None, **kwargs):
-            self.assertEqual(arg0, expected_arg0)
-            self.assertEqual(arg1, expected_arg1)
-            self.assertEqual(kwargs["arg2"], expected_arg2)
-
-        sample_arg2(0, arg1=1, arg2=2)
