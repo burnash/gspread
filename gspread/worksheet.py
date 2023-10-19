@@ -822,15 +822,13 @@ class Worksheet:
             self.spreadsheet_id, range_name, params=params
         )
 
-        vals_unfilled = response.get("values", [[]])
+        vals = response.get("values", [[]])
 
         if pad_values is True:
             try:
-                vals = fill_gaps(vals_unfilled)
+                vals = fill_gaps(vals)
             except KeyError:
                 vals = [[]]
-        else:
-            vals = vals_unfilled
 
         if combine_merged_cells is True:
             spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
@@ -840,8 +838,8 @@ class Worksheet:
             )
             vals = combined_merge_values(worksheet_meta, vals)
 
-        response["values"] = vals
         if return_type is GridRangeType.ValueRange:
+            response["values"] = vals
             return ValueRange.from_json(response)
         if return_type is GridRangeType.ListOfLists:
             return vals
