@@ -14,7 +14,7 @@ from google.auth.transport.requests import AuthorizedSession
 from google.auth.credentials import Credentials
 from requests import Response
 
-from .exceptions import SpreadsheetNotFound, UnSupportedExportFormat
+from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
 from .http_client import HTTPClient, HTTPClientType, ParamsType
 from .spreadsheet import Spreadsheet
 from .urls import (
