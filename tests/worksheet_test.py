@@ -293,11 +293,6 @@ class WorksheetTest(GspreadTest):
         self.sheet.update_tab_color(pink_color_hex)
 
         res = self.spreadsheet.fetch_sheet_metadata(params=params)
-        color_after = (
-            res["sheets"][0]["properties"]
-            .get("tabColorStyle", {})
-            .get("rgbColor", None)
-        )
         color_param_after = self.sheet.tab_color
         color_hex_after = self.sheet.get_tab_color()
 

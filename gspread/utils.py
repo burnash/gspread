@@ -11,7 +11,6 @@ from collections import defaultdict
 from collections.abc import Sequence
 from functools import wraps
 from itertools import chain
-from math import inf
 from typing import (
     TYPE_CHECKING,
     Any,

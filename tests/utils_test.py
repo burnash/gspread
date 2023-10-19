@@ -264,6 +264,18 @@ class UtilsTest(unittest.TestCase):
         color = {"red": 1, "green": 0.49803922, "blue": 0}
         expected_hex = "#FF7F00"
 
+        # successful convert from colors
+        hex = utils.convert_colors_to_hex_value(**color)
+        self.assertEqual(hex, expected_hex)
+
+        # successful convert from partial input
+        hex = utils.convert_colors_to_hex_value(green=1)
+        self.assertEqual(hex, "#00FF00")
+
+        # throw ValueError on color values out of range (0-1)
+        with self.assertRaises(ValueError):
+            utils.convert_colors_to_hex_value(1.23, 0, -50)
+
     def test_combine_merge_values_outside_range(self):
         """Make sure that merges outside the range of the sheet are ignored or partially ignored
         see issue #1298
@@ -301,22 +313,6 @@ class UtilsTest(unittest.TestCase):
         actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data)
 
         self.assertEqual(actual_combine, expected_combine)
-
-    def test_convert_colors_to_hex_value(self):
-        color = {"red": 1, "green": 0.5, "blue": 0}
-        expected_hex = "#FF8000"
-
-        # successful convert from colors
-        hex = utils.convert_colors_to_hex_value(**color)
-        self.assertEqual(hex, expected_hex)
-
-        # successful convert from partial input
-        hex = utils.convert_colors_to_hex_value(green=1)
-        self.assertEqual(hex, "#00FF00")
-
-        # throw ValueError on color values out of range (0-1)
-        with self.assertRaises(ValueError):
-            utils.convert_colors_to_hex_value(1.23, 0, -50)
 
     def test_convert_hex_to_color(self):
         hexcolor = "#FF7F00"
