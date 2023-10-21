@@ -446,6 +446,25 @@ class Worksheet:
 
             Empty trailing rows and columns will not be included.
 
+        :param bool maintain_size: (optional) Returns a matrix of values matching the size of the requested range.
+
+            .. warning::
+
+                This can only work if the requested range is a complete bounded A1 notation.
+                Example: ``A1:D4``: OK, ``C3:F``: Not OK, we don't know the end size of the requested range.
+
+                This does not work with ``named_range`` either.
+
+            Examples::
+
+                # Works
+                >>> worksheet.get("A1:B2", maintain_size=True)
+                [['A1', 'B1'], ['A2', '']]
+
+                # Does NOT maintain the requested size
+                >>> worksheet.get("A1:B", maintain_size=True)
+                [['A1', 'B1'], ['A2'], [], ['A4', 'B4'], ['A5']]
+
         Examples::
 
             # Return all values from the sheet
@@ -957,6 +976,26 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
              The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
+
+        :param bool maintain_size: (optional) Returns a matrix of values matching the size of the requested range.
+
+            .. warning::
+
+                This can only work if the requested range is a complete bounded A1 notation.
+                Example: ``A1:D4``: OK, ``C3:F``: Not OK, we don't know the end size of the requested range.
+
+                This does not work with ``named_range`` either.
+
+            Examples::
+
+                # Works
+                >>> worksheet.get("A1:B2", maintain_size=True)
+                [['A1', 'B1'], ['A2', '']]
+
+                # Does NOT maintain the requested size
+                >>> worksheet.get("A1:B", maintain_size=True)
+                [['A1', 'B1'], ['A2'], [], ['A4', 'B4'], ['A5']]
+
         :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
 
          :rtype: :class:`gspread.worksheet.ValueRange`

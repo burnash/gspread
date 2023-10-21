@@ -135,6 +135,22 @@ values_list = worksheet.col_values(1)
 list_of_lists = worksheet.get_values()
 ```
 
+### Getting a range of values
+
+Receive only the cells with a value in them
+```python
+>>> worksheet.get_values("A1:B4")
+[['A1', 'B1'], ['A2']]
+```
+
+Receive a lists of lists matching the requested size
+regardless if values are empty or not
+
+```python
+>>> worksheet.get_values("A1:B4", maintain_size=True)
+[['A1', 'B1'], ['A2', ''], ['', ''], ['', '']]
+```
+
 ### Finding a Cell
 
 ```python
