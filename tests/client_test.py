@@ -25,27 +25,38 @@ class ClientTest(GspreadTest):
         self.assertRaises(gspread.SpreadsheetNotFound, self.gc.open, noexistent_title)
 
     @pytest.mark.vcr()
+    def test_list_spreadsheet_files(self):
+        res = self.gc.list_spreadsheet_files()
+        self.assertIsInstance(res, list)
+        for f in res:
+            self.assertIsInstance(f, dict)
+            self.assertIn("id", f)
+            self.assertIn("name", f)
+            self.assertIn("createdTime", f)
+            self.assertIn("modifiedTime", f)
+
+    @pytest.mark.vcr()
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
         spreadsheet_list2 = self.gc.openall(spreadsheet_list[0].title)
 
         self.assertTrue(len(spreadsheet_list2) < len(spreadsheet_list))
         for s in spreadsheet_list:
-            self.assertTrue(isinstance(s, gspread.Spreadsheet))
+            self.assertIsInstance(s, gspread.Spreadsheet)
         for s in spreadsheet_list2:
-            self.assertTrue(isinstance(s, gspread.Spreadsheet))
+            self.assertIsInstance(s, gspread.Spreadsheet)
 
     @pytest.mark.vcr()
     def test_create(self):
         title = "Test Spreadsheet"
         new_spreadsheet = self.gc.create(title)
-        self.assertTrue(isinstance(new_spreadsheet, gspread.Spreadsheet))
+        self.assertIsInstance(new_spreadsheet, gspread.Spreadsheet)
 
     @pytest.mark.vcr()
     def test_copy(self):
         original_spreadsheet = self.spreadsheet
         spreadsheet_copy = self.gc.copy(original_spreadsheet.id)
-        self.assertTrue(isinstance(spreadsheet_copy, gspread.Spreadsheet))
+        self.assertIsInstance(spreadsheet_copy, gspread.Spreadsheet)
 
         original_metadata = original_spreadsheet.fetch_sheet_metadata()
         copy_metadata = spreadsheet_copy.fetch_sheet_metadata()
@@ -82,7 +93,7 @@ class ClientTest(GspreadTest):
         and that they all have metadata"""
         spreadsheets = self.gc.openall()
         for spreadsheet in spreadsheets:
-            self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+            self.assertIsInstance(spreadsheet, gspread.Spreadsheet)
             # has properties that are not from Drive API (i.e., not title, id, creationTime)
             self.assertTrue(spreadsheet.locale)
             self.assertTrue(spreadsheet.timezone)
@@ -91,7 +102,7 @@ class ClientTest(GspreadTest):
     def test_open_by_key_has_metadata(self):
         """tests open_by_key has metadata"""
         spreadsheet = self.gc.open_by_key(self.spreadsheet.id)
-        self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+        self.assertIsInstance(spreadsheet, gspread.Spreadsheet)
         # has properties that are not from Drive API (i.e., not title, id, creationTime)
         self.assertTrue(spreadsheet.locale)
         self.assertTrue(spreadsheet.timezone)
@@ -100,7 +111,7 @@ class ClientTest(GspreadTest):
     def test_open_by_name_has_metadata(self):
         """tests open has metadata"""
         spreadsheet = self.gc.open(self.spreadsheet.title)
-        self.assertTrue(isinstance(spreadsheet, gspread.Spreadsheet))
+        self.assertIsInstance(spreadsheet, gspread.Spreadsheet)
         # has properties that are not from Drive API (i.e., not title, id, creationTime)
         self.assertTrue(spreadsheet.locale)
         self.assertTrue(spreadsheet.timezone)

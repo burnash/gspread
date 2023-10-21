@@ -6,7 +6,6 @@ This module contains Client class responsible for communicating with
 Google API.
 
 """
-import warnings
 from http import HTTPStatus
 from typing import Any, Dict, List, Tuple, Type
 
@@ -21,10 +20,10 @@ from .urls import (
     DRIVE_FILES_UPLOAD_API_V2_URL,
 )
 from .utils import (
-    DEPRECATION_WARNING_TEMPLATE,
     ExportFormat,
     MimeType,
     convert_credentials,
+    deprecation_warning,
     extract_id_from_url,
     finditem,
 )
@@ -113,7 +112,7 @@ class Client:
 
     def list_spreadsheet_files(
         self, title=None, folder_id=None
-    ) -> Tuple[List[Dict[str, Any]], Response]:
+    ) -> List[Dict[str, Any]]:
         """List all the spreadsheet files
 
         Will list all spreadsheet files owned by/shared with this user account.
@@ -123,7 +122,15 @@ class Client:
             The parameter ``folder_id`` can be obtained from the URL when looking at
             a folder in a web browser as follow:
             ``https://drive.google.com/drive/u/0/folders/<folder_id>``
+
+        :returns: a list of dicts containing the keys id, name, createdTime and modifiedTime.
         """
+        files, _ = self._list_spreadsheet_files(title=title, folder_id=folder_id)
+        return files
+
+    def _list_spreadsheet_files(
+        self, title=None, folder_id=None
+    ) -> Tuple[List[Dict[str, Any]], Response]:
         files = []
         page_token = ""
         url = DRIVE_FILES_API_V3_URL
@@ -173,7 +180,7 @@ class Client:
 
         >>> gc.open('My fancy spreadsheet')
         """
-        spreadsheet_files, response = self.list_spreadsheet_files(title, folder_id)
+        spreadsheet_files, response = self._list_spreadsheet_files(title, folder_id)
         try:
             properties = finditem(
                 lambda x: x["name"] == title,
@@ -227,7 +234,7 @@ class Client:
 
         :returns: a list of :class:`~gspread.models.Spreadsheet` instances.
         """
-        spreadsheet_files, _ = self.list_spreadsheet_files(title)
+        spreadsheet_files = self.list_spreadsheet_files(title)
 
         if title:
             spreadsheet_files = [
@@ -602,12 +609,9 @@ class BackoffClient(Client):
     _MAX_BACKOFF_REACHED = False  # Stop after reaching _MAX_BACKOFF
 
     def __init__(self, auth):
-        warnings.warn(
-            DEPRECATION_WARNING_TEMPLATE.format(
-                v_deprecated="6.0.0",
-                msg_deprecated="this class will be deprecated and moved to gspread.http_client package",
-            ),
-            DeprecationWarning,
+        deprecation_warning(
+            version="6.0.0",
+            msg="this class will be deprecated and moved to gspread.http_client package",
         )
         super().__init__(auth)
 

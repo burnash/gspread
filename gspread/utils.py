@@ -6,7 +6,9 @@ This module contains utility functions.
 
 """
 
+import os
 import re
+import warnings
 from collections import defaultdict, namedtuple
 from collections.abc import Sequence
 from functools import wraps
@@ -92,6 +94,8 @@ DEPRECATION_WARNING_TEMPLATE = (
 )
 
 REQUIRED_KWARGS = "required"
+
+SILENCE_WARNINGS_ENV_KEY = "GSPREAD_SILENCE_WARNINGS"
 
 
 def convert_credentials(credentials):
@@ -904,6 +908,26 @@ def get_a1_from_absolute_range(range_name: str) -> str:
     if "!" in range_name:
         return range_name.split("!")[1]
     return range_name
+
+
+def deprecation_warning(version: str, msg: str) -> None:
+    """Emit a deprecation warning.
+
+    ..note::
+
+        This warning can be silenced by setting the environment variable:
+        GSPREAD_SILENCE_WARNINGS=1
+    """
+
+    # do not emit warning if env variable is set specifically to 1
+    if os.getenv(SILENCE_WARNINGS_ENV_KEY, "0") == "1":
+        return
+
+    warnings.warn(
+        DEPRECATION_WARNING_TEMPLATE.format(v_deprecated=version, msg_deprecated=msg),
+        DeprecationWarning,
+        4,  # showd the 4th stack: [1]:current->[2]:deprecation_warning->[3]:<gspread method/function>->[4]:<user's code>
+    )
 
 
 if __name__ == "__main__":
