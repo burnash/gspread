@@ -1,6 +1,6 @@
 """Google Spreadsheets Python API"""
 
-__version__ = "5.11.3"
+__version__ = "5.12.0"
 __author__ = "Anton Burnashev"
 
 
