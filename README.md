@@ -20,8 +20,25 @@ Features:
 ## v6.0.0 migration
 
 ### Silence the warnings
+
 In version 5 there are many warnings to mark deprecated feature/functions/methods.
 They can be silenced by setting the `GSPREAD_SILENCE_WARNINGS` environment variable to `1`
+
+### HTTP Client
+
+HTTP Clients have moved a dedicated file. GSpread uses by default the `HTTPClient`.
+If you wish to use the new `BackoffHTTPClient` please update your code as follow:
+
+```pythong
+client = gspread.service_account(http_client=gspread.http_client.BackOffHTTPClient)
+```
+
+It works the same wayt for:
+
+- `gspread.service_account`
+- `gspread.oauth`
+- `gspread.service_account_from_dict`
+- `gspread.oauth_from_dict`
 
 ## Installation
 
