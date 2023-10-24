@@ -40,6 +40,12 @@ It works the same wayt for:
 - `gspread.service_account_from_dict`
 - `gspread.oauth_from_dict`
 
+### Stop support for python-3.7
+
+Python-3.7 is now end-of-life, GSpread stopped supporting it.
+
+Lowest supported python version: 3.8
+
 ## Installation
 
 ```sh
