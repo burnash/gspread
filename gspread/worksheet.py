@@ -1654,11 +1654,7 @@ class Worksheet:
                         "properties": {
                             "sheetId": self.id,
                             "tabColorStyle": {
-                                "rgbColor": {
-                                    "red": red,
-                                    "green": green,
-                                    "blue": blue,
-                                }
+                                "rgbColor": color,
                             },
                         },
                         "fields": "tabColorStyle",
