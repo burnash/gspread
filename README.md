@@ -60,6 +60,21 @@ file.sheet1.update(range_name="I7", values=[["54"]])
 
 the argument `values` must be a list of list !
 
+### New tab color usage
+
+GSpread now uses hexadecimal value to color a tab.
+
+You can use the utility function `gspread.utils.convert_colors_to_hex_value` to convert dict values to a single hexadecimal values.
+
+The method ``gspread.Worksheet.update_tab_color()` accepts both dict and string values.
+
+You can update you code as follow:
+
+```python
+tab_color = {"red": 1, "green": 0.1345, "blue": 1}
+file.sheet1.update_tab_color(convert_colors_to_hex_value(**tab_color))
+```
+
 ## Installation
 
 ```sh
