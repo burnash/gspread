@@ -46,6 +46,20 @@ Python-3.7 is now end-of-life, GSpread stopped supporting it.
 
 Lowest supported python version: 3.8
 
+### Method signature changes
+
+The method ``Worksheet.update()`` has changed it's signature. The arguments ``range_name`` and ``values`` have swapped.
+
+Please now use kwargs to assign arguments to be compatible with both v5.X.Y and v6.X.Y version.
+
+```python
+file.sheet1.update(range_name="I7", values=[["54"]])
+```
+
+#### Notice:
+
+the argument `values` must be a list of list !
+
 ## Installation
 
 ```sh
