@@ -23,13 +23,13 @@ Features:
 pip install gspread
 ```
 
-Requires Python 3.8+
+Requires Python 3.7+
 
 ## Basic Usage
 
 1. [Create credentials in Google API Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
 
-2. Start using gspread:
+2. Start using gspread
 
 ```python
 import gspread
