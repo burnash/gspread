@@ -782,6 +782,11 @@ def combined_merge_values(worksheet_metadata, values, start_row_index, start_col
             merge["startColumnIndex"],
             merge["endColumnIndex"],
         )
+        # subtract offset
+        merge_start_row -= start_row_index
+        merge_end_row -= start_row_index
+        merge_start_col -= start_col_index
+        merge_end_col -= start_col_index
         # if out of bounds, ignore
         if merge_start_row > max_row_index or merge_start_col > max_col_index:
             continue
