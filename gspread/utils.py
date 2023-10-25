@@ -743,7 +743,7 @@ def accepted_kwargs(**default_kwargs):
     return decorate
 
 
-def combined_merge_values(worksheet_metadata, values):
+def combined_merge_values(worksheet_metadata, values, start_row_index, start_col_index):
     """For each merged region, replace all values with the value of the top-left cell of the region.
     e.g., replaces
     [
@@ -761,6 +761,12 @@ def combined_merge_values(worksheet_metadata, values):
         Should have a "merges" key.
 
     :param values: The values returned by the Google API for the worksheet. 2D array.
+
+    :param start_row_index: The index of the first row of the values in the worksheet.
+        e.g., if the values are in rows 3-5, this should be 2.
+
+    :param start_col_index: The index of the first column of the values in the worksheet.
+        e.g., if the values are in columns C-E, this should be 2.
     """
     merges = worksheet_metadata.get("merges", [])
     # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex

@@ -485,13 +485,23 @@ class Worksheet:
         """
         try:
             vals = fill_gaps(self.get(range_name, **kwargs))
+
             if combine_merged_cells is True:
                 spreadsheet_meta = self.spreadsheet.fetch_sheet_metadata()
                 worksheet_meta = finditem(
                     lambda x: x["properties"]["title"] == self.title,
                     spreadsheet_meta["sheets"],
                 )
-                return combined_merge_values(worksheet_meta, vals)
+                grid_range = a1_range_to_grid_range(
+                    get_a1_from_absolute_range(range_name),
+                )
+                return combined_merge_values(
+                    worksheet_metadata=worksheet_meta,
+                    values=vals,
+                    start_row_index=grid_range.get(["startRowIndex"], 0),
+                    start_col_index=grid_range.get(["startColIndex"], 0),
+                )
+
             return vals
         except KeyError:
             return []

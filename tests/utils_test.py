@@ -256,7 +256,7 @@ class UtilsTest(unittest.TestCase):
             ["num", "val", 2, 0],
         ]
 
-        actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data)
+        actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data, 0, 0)
 
         self.assertEqual(actual_combine, expected_combine)
 
@@ -294,7 +294,7 @@ class UtilsTest(unittest.TestCase):
             ["num", "val", None, 0],
         ]
 
-        actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data)
+        actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data, 0, 0)
 
         self.assertEqual(actual_combine, expected_combine)
 
