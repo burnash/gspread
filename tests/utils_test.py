@@ -298,6 +298,55 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual_combine, expected_combine)
 
+    def test_combine_merge_values_from_centre_of_sheet(self):
+        """Make sure that merges start from the right index when the sheet is not at the top left
+        see issue #1330
+        """
+        sheet_data = [
+            [1, None, None, None],
+            [None, None, "title", None],
+            [None, None, 2, None],
+            ["num", "val", None, 0],
+        ]
+        sheet_metadata = {
+            "properties": {"sheetId": 0},
+            "merges": [
+                {
+                    "startRowIndex": 0,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 0,
+                    "endColumnIndex": 2,
+                },
+                {
+                    "startRowIndex": 1,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 2,
+                    "endColumnIndex": 4,
+                },
+                {
+                    "startRowIndex": 2,
+                    "endRowIndex": 4,
+                    "startColumnIndex": 2,
+                    "endColumnIndex": 3,
+                },
+            ],
+        }
+        sheet_data_cropped = [sheet_data[1:] for sheet_data in sheet_data][1:]
+        # [None, "title", None],
+        # [None, 2, None],
+        # ["val", None, 0]
+        expected_combined_cropped = [
+            [1, "title", "title"],
+            [None, 2, None],
+            ["val", 2, 0],
+        ]
+
+        actual_combine = utils.combined_merge_values(
+            sheet_metadata, sheet_data_cropped, start_row_index=1, start_col_index=1
+        )
+
+        self.assertEqual(actual_combine, expected_combined_cropped)
+
     def test_convert_colors_to_hex_value(self):
         color = {"red": 1, "green": 0.5, "blue": 0}
         expected_hex = "#FF8000"
