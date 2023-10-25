@@ -790,6 +790,8 @@ def combined_merge_values(worksheet_metadata, values, start_row_index, start_col
         # if out of bounds, ignore
         if merge_start_row > max_row_index or merge_start_col > max_col_index:
             continue
+        if merge_start_row < 0 or merge_start_col < 0:
+            continue
         top_left_value = values[merge_start_row][merge_start_col]
         row_indices = range(merge_start_row, merge_end_row)
         col_indices = range(merge_start_col, merge_end_col)
