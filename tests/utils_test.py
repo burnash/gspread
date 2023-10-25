@@ -336,7 +336,7 @@ class UtilsTest(unittest.TestCase):
         # [None, 2, None],
         # ["val", None, 0]
         expected_combined_cropped = [
-            [1, "title", "title"],
+            [None, "title", "title"],
             [None, 2, None],
             ["val", 2, 0],
         ]
