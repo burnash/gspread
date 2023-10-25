@@ -1644,9 +1644,8 @@ class Worksheet:
         :param str color:  Hex color value.
         """
 
-        color = convert_hex_to_colors_dict(color)
+        color_dict = convert_hex_to_colors_dict(color)
 
-        red, green, blue = color["red"], color["green"], color["blue"]
         body = {
             "requests": [
                 {
@@ -1654,7 +1653,7 @@ class Worksheet:
                         "properties": {
                             "sheetId": self.id,
                             "tabColorStyle": {
-                                "rgbColor": color,
+                                "rgbColor": color_dict,
                             },
                         },
                         "fields": "tabColorStyle",
@@ -1665,12 +1664,7 @@ class Worksheet:
 
         response = self.client.batch_update(self.spreadsheet_id, body)
 
-        sheet_color = {
-            "red": red,
-            "green": green,
-            "blue": blue,
-        }
-        self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
+        self._properties["tabColorStyle"] = {"rgbColor": color_dict}
         return response
 
     def clear_tab_color(self) -> JSONResponse:
