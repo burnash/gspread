@@ -149,18 +149,18 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_get_values_merge_cells_from_centre_of_sheet(self):
-        self.sheet.resize(4, 4)
+        self.sheet.resize(4, 3)
         sheet_data = [
-            ["1", "2", "4", ""],
-            ["down", "up", "", ""],
-            ["", "", "2", ""],
-            ["num", "val", "", "0"],
+            ["1", "2", "4"],
+            ["down", "up", ""],
+            ["", "", "2"],
+            ["num", "val", ""],
         ]
-        self.sheet.update("A1:D4", sheet_data)
+        self.sheet.update("A1:C4", sheet_data)
         self.sheet.merge_cells("A2:A3")
         self.sheet.merge_cells("C1:C2")
 
-        REQUEST_RANGE = "B1:D3"
+        REQUEST_RANGE = "B1:C3"
         expected_values = [
             ["2", "4"],
             ["up", "4"],
