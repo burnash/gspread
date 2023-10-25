@@ -17,64 +17,6 @@ Features:
 - Sharing and access control.
 - Batching updates.
 
-## v6.0.0 migration
-
-### Silence the warnings
-
-In version 5 there are many warnings to mark deprecated feature/functions/methods.
-They can be silenced by setting the `GSPREAD_SILENCE_WARNINGS` environment variable to `1`
-
-### HTTP Client
-
-HTTP Clients have moved a dedicated file. GSpread uses by default the `HTTPClient`.
-If you wish to use the new `BackoffHTTPClient` please update your code as follow:
-
-```pythong
-client = gspread.service_account(http_client=gspread.http_client.BackOffHTTPClient)
-```
-
-It works the same wayt for:
-
-- `gspread.service_account`
-- `gspread.oauth`
-- `gspread.service_account_from_dict`
-- `gspread.oauth_from_dict`
-
-### Stop support for python-3.7
-
-Python-3.7 is now end-of-life, GSpread stopped supporting it.
-
-Lowest supported python version: 3.8
-
-### Method signature changes
-
-The method ``Worksheet.update()`` has changed it's signature. The arguments ``range_name`` and ``values`` have swapped.
-
-Please now use kwargs to assign arguments to be compatible with both v5.X.Y and v6.X.Y version.
-
-```python
-file.sheet1.update(range_name="I7", values=[["54"]])
-```
-
-#### Notice:
-
-the argument `values` must be a list of list !
-
-### New tab color usage
-
-GSpread now uses hexadecimal value to color a tab.
-
-You can use the utility function `gspread.utils.convert_colors_to_hex_value` to convert dict values to a single hexadecimal values.
-
-The method ``gspread.Worksheet.update_tab_color()` accepts both dict and string values.
-
-You can update you code as follow:
-
-```python
-tab_color = {"red": 1, "green": 0.1345, "blue": 1}
-file.sheet1.update_tab_color(convert_colors_to_hex_value(**tab_color))
-```
-
 ## Installation
 
 ```sh
@@ -105,6 +47,60 @@ wks.update('B42', "it's down there somewhere, let me take another look.")
 
 # Format the header
 wks.format('A1:B1', {'textFormat': {'bold': True}})
+```
+
+## v6.0.0 migration
+
+### Silence warnings
+
+In version 5 there are many warnings to mark deprecated feature/functions/methods.
+They can be silenced by setting the `GSPREAD_SILENCE_WARNINGS` environment variable to `1`
+
+### HTTP Client
+
+HTTP Clients have moved to a dedicated file. by default, gspread uses the `HTTPClient`.
+Also provided is a new `BackoffHTTPClient` , which retries failed requests with exponential time delay. It can be used with:
+
+```python
+client = gspread.service_account(http_client=gspread.http_client.BackOffHTTPClient)
+```
+
+It works the same wayt for:
+
+- `gspread.service_account`
+- `gspread.oauth`
+- `gspread.service_account_from_dict`
+- `gspread.oauth_from_dict`
+
+### python-3.7 end-of-life
+
+spread v6 no longer supports Python 3.7. The lowest supported version is Python 3.8.
+
+### `Worksheet.update` arguments have switched
+
+The method ``Worksheet.update()`` has changed it's signature. The arguments ``range_name`` and ``values`` have swapped.
+
+Please now use kwargs to assign arguments to be compatible with both v5.X.Y and v6.X.Y version.
+
+```python
+file.sheet1.update(range_name="I7", values=[["54"]])
+```
+
+the argument `values` must be a 2D list.
+
+### Colors now use hex representation
+
+GSpread now uses hexadecimal value to color a tab.
+
+You can use the utility function `gspread.utils.convert_colors_to_hex_value` to convert dict values to a single hexadecimal values.
+
+The method ``gspread.Worksheet.update_tab_color()` accepts both dict and string values.
+
+You can update you code as follows:
+
+```python
+tab_color = {"red": 1, "green": 0.1345, "blue": 1}
+file.sheet1.update_tab_color(convert_colors_to_hex_value(**tab_color))
 ```
 
 ## More Examples
