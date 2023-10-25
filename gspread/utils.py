@@ -14,7 +14,7 @@ from collections.abc import Sequence
 from functools import wraps
 from itertools import chain
 from math import inf
-from typing import Mapping
+from typing import Mapping, Optional
 from urllib.parse import quote as uquote
 
 from google.auth.credentials import Credentials as Credentials
@@ -910,17 +910,20 @@ def is_full_a1_notation(range_name: str) -> bool:
     return A1_ADDR_FULL_RE.search(range_name) is not None
 
 
-def get_a1_from_absolute_range(range_name: str) -> str:
+def get_a1_from_absolute_range(range_name: Optional[str]) -> str:
     """Get the A1 notation from an absolute range name.
     "Sheet1!A1:B2" -> "A1:B2"
     "A1:B2" -> "A1:B2"
+    None -> ""
 
     Args:
-        range_name (str): The range name to check.
+        range_name (str | None): The range name to check.
 
     Returns:
         str: The A1 notation of the range name stripped of the sheet.
     """
+    if range_name is None:
+        return ""
     if "!" in range_name:
         return range_name.split("!")[1]
     return range_name
