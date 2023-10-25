@@ -498,8 +498,8 @@ class Worksheet:
                 return combined_merge_values(
                     worksheet_metadata=worksheet_meta,
                     values=vals,
-                    start_row_index=grid_range.get(["startRowIndex"], 0),
-                    start_col_index=grid_range.get(["startColIndex"], 0),
+                    start_row_index=grid_range.get("startRowIndex", 0),
+                    start_col_index=grid_range.get("startColumnIndex", 0),
                 )
 
             return vals
