@@ -777,14 +777,17 @@ def combined_merge_values(worksheet_metadata, values, start_row_index, start_col
     max_col_index = len(values[0]) - 1
 
     for merge in merges:
-        start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
-        start_col, end_col = merge["startColumnIndex"], merge["endColumnIndex"]
+        merge_start_row, merge_end_row = merge["startRowIndex"], merge["endRowIndex"]
+        merge_start_col, merge_end_col = (
+            merge["startColumnIndex"],
+            merge["endColumnIndex"],
+        )
         # if out of bounds, ignore
-        if start_row > max_row_index or start_col > max_col_index:
+        if merge_start_row > max_row_index or merge_start_col > max_col_index:
             continue
-        top_left_value = values[start_row][start_col]
-        row_indices = range(start_row, end_row)
-        col_indices = range(start_col, end_col)
+        top_left_value = values[merge_start_row][merge_start_col]
+        row_indices = range(merge_start_row, merge_end_row)
+        col_indices = range(merge_start_col, merge_end_col)
         for row_index in row_indices:
             for col_index in col_indices:
                 # if out of bounds, ignore
