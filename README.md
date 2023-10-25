@@ -49,59 +49,51 @@ wks.update('B42', "it's down there somewhere, let me take another look.")
 wks.format('A1:B1', {'textFormat': {'bold': True}})
 ```
 
-## v6.0.0 migration
+## v5.12 to v6.0 Migration Guide
 
-### Silence warnings
+### Upgrade from Python 3.7
 
-In version 5 there are many warnings to mark deprecated feature/functions/methods.
-They can be silenced by setting the `GSPREAD_SILENCE_WARNINGS` environment variable to `1`
+Python 3.7 is [end-of-life](https://devguide.python.org/versions/). gspread v6 requires a minimum of Python 3.8.
+
+### Change `Worksheet.update` arguments
+
+The first two arguments (`values` & `range_name`) have swapped (to `range_name` & `values`). Either swap them (works in v6 only), or use named arguments (works in v5 & v6).
+
+As well, `values` can no longer be a list, and must be a 2D array.
+
+```diff
+- file.sheet1.update(["54"], "B2")
++ file.sheet1.update(range_name="I7", values=[["54"]])
+```
+
+### Change colours from dictionary to text
+
+v6 uses hexadecimal color representation. Change all colors to hex. You can use the compatibility function `gspread.utils.convert_colors_to_hex_value()` to convert a dictionary to a hex string.
+
+```diff
+- tab_color = {"red": 1, "green": 0.5, "blue": 1}
++ tab_color = "#FF7FFF"
+file.sheet1.update_tab_color(tab_color)
+```
 
 ### HTTP Client
 
-HTTP Clients have moved to a dedicated file. by default, gspread uses the `HTTPClient`.
-Also provided is a new `BackoffHTTPClient` , which retries failed requests with exponential time delay. It can be used with:
+HTTP Clients have moved to a dedicated file. By default, gspread uses the `HTTPClient`.
+Also provided is a new `BackoffHTTPClient`, which retries failed requests with exponential time delay. It can be used with:
 
 ```python
 client = gspread.service_account(http_client=gspread.http_client.BackOffHTTPClient)
 ```
-
-It works the same wayt for:
 
 - `gspread.service_account`
 - `gspread.oauth`
 - `gspread.service_account_from_dict`
 - `gspread.oauth_from_dict`
 
-### python-3.7 end-of-life
+### Silence warnings
 
-spread v6 no longer supports Python 3.7. The lowest supported version is Python 3.8.
-
-### `Worksheet.update` arguments have switched
-
-The method ``Worksheet.update()`` has changed it's signature. The arguments ``range_name`` and ``values`` have swapped.
-
-Please now use kwargs to assign arguments to be compatible with both v5.X.Y and v6.X.Y version.
-
-```python
-file.sheet1.update(range_name="I7", values=[["54"]])
-```
-
-the argument `values` must be a 2D list.
-
-### Colors now use hex representation
-
-GSpread now uses hexadecimal value to color a tab.
-
-You can use the utility function `gspread.utils.convert_colors_to_hex_value` to convert dict values to a single hexadecimal values.
-
-The method ``gspread.Worksheet.update_tab_color()` accepts both dict and string values.
-
-You can update you code as follows:
-
-```python
-tab_color = {"red": 1, "green": 0.1345, "blue": 1}
-file.sheet1.update_tab_color(convert_colors_to_hex_value(**tab_color))
-```
+In version 5 there are many warnings to mark deprecated feature/functions/methods.
+They can be silenced by setting the `GSPREAD_SILENCE_WARNINGS` environment variable to `1`
 
 ## More Examples
 
