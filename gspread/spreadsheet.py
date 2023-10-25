@@ -23,7 +23,7 @@ from .urls import (
     SPREADSHEET_VALUES_CLEAR_URL,
     SPREADSHEET_VALUES_URL,
 )
-from .utils import ExportFormat, finditem, quote
+from .utils import ExportFormat, deprecation_warning, finditem, quote
 from .worksheet import Worksheet
 
 
@@ -64,11 +64,9 @@ class Spreadsheet:
         """Spreadsheet last updated time.
         Only updated on initialisation.
         For actual last updated time, use get_lastUpdateTime()."""
-        warnings.warn(
-            """
-            This is only updated on initialisation and is probably outdated by the time you use it.
-            For an up to date last updated time, use get_lastUpdateTime().
-            """
+        deprecation_warning(
+            version="6.0.0",
+            msg="lastUpdateTime will be removed. Please use get_lastUpdateTime()",
         )
         if "modifiedTime" not in self._properties:
             self.update_drive_metadata()
@@ -759,6 +757,10 @@ class Spreadsheet:
     def refresh_lastUpdateTime(self) -> None:
         """Updates the cached value of lastUpdateTime."""
         # remove this and the below upon deprecation of lastUpdateTime @property
+        deprecation_warning(
+            version="6.0.0",
+            msg="refresh_lastUpdateTime will be removed. Please use get_lastUpdateTime()",
+        )
         self._properties["modifiedTime"] = self.get_lastUpdateTime()
 
     def get_lastUpdateTime(self) -> str:
