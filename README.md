@@ -76,20 +76,6 @@ v6 uses hexadecimal color representation. Change all colors to hex. You can use 
 file.sheet1.update_tab_color(tab_color)
 ```
 
-### HTTP Client
-
-HTTP Clients have moved to a dedicated file. By default, gspread uses the `HTTPClient`.
-Also provided is a new `BackoffHTTPClient`, which retries failed requests with exponential time delay. It can be used with:
-
-```python
-client = gspread.service_account(http_client=gspread.http_client.BackOffHTTPClient)
-```
-
-- `gspread.service_account`
-- `gspread.oauth`
-- `gspread.service_account_from_dict`
-- `gspread.oauth_from_dict`
-
 ### Silence warnings
 
 In version 5 there are many warnings to mark deprecated feature/functions/methods.
