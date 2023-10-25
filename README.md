@@ -66,7 +66,7 @@ As well, `values` can no longer be a list, and must be a 2D array.
 + file.sheet1.update(range_name="I7", values=[["54"]])
 ```
 
-### Change colours from dictionary to text
+### Change colors from dictionary to text
 
 v6 uses hexadecimal color representation. Change all colors to hex. You can use the compatibility function `gspread.utils.convert_colors_to_hex_value()` to convert a dictionary to a hex string.
 
@@ -74,6 +74,13 @@ v6 uses hexadecimal color representation. Change all colors to hex. You can use 
 - tab_color = {"red": 1, "green": 0.5, "blue": 1}
 + tab_color = "#FF7FFF"
 file.sheet1.update_tab_color(tab_color)
+```
+
+### Switch lastUpdateTime from property to method
+
+```diff
+- age = spreadsheet.lastUpdateTime
++ age = spreadsheet.get_lastUpdateTime()
 ```
 
 ### Silence warnings
