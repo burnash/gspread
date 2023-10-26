@@ -553,13 +553,16 @@ def wid_to_gid(wid: str) -> str:
     return str(int(widval, 36) ^ xorval)
 
 
-def rightpad(row: List[Any], max_len: int) -> List[Any]:
+def rightpad(row: List[Any], max_len: int, padding_value: Any = "") -> List[Any]:
     pad_len = max_len - len(row)
-    return row + ([""] * pad_len) if pad_len != 0 else row
+    return row + ([padding_value] * pad_len) if pad_len != 0 else row
 
 
 def fill_gaps(
-    L: List[List[Any]], rows: Optional[int] = None, cols: Optional[int] = None
+    L: List[List[Any]],
+    rows: Optional[int] = None,
+    cols: Optional[int] = None,
+    padding_value: Any = "",
 ) -> List[List[Any]]:
     """Fill gaps in a list of lists.
     e.g.,::
@@ -576,10 +579,12 @@ def fill_gaps(
     :param L: List of lists to fill gaps in.
     :param rows: Number of rows to fill.
     :param cols: Number of columns to fill.
+    :param padding_value: Default value to fill gaps with.
 
     :type L: list[list[T]]
     :type rows: int
     :type cols: int
+    :type padding_value: T
 
     :return: List of lists with gaps filled.
     :rtype: list[list[T]]:
@@ -593,7 +598,7 @@ def fill_gaps(
         if pad_rows:
             L = L + ([[]] * pad_rows)
 
-        return [rightpad(row, max_cols) for row in L]
+        return [rightpad(row, max_cols, padding_value=padding_value) for row in L]
     except ValueError:
         return [[]]
 
@@ -602,7 +607,7 @@ def cell_list_to_rect(cell_list: List["Cell"]) -> List[List[Optional[str]]]:
     if not cell_list:
         return []
 
-    rows: Dict[int, Dict[int, str]] = defaultdict(lambda: {})
+    rows: Dict[int, Dict[int, str]] = defaultdict(dict)
 
     row_offset = min(c.row for c in cell_list)
     col_offset = min(c.col for c in cell_list)
@@ -698,22 +703,33 @@ def combined_merge_values(worksheet_metadata, values):
     ]
     if the top-left four cells are merged.
 
-    :param worksheet_metadata: The metadata returned by the Google API for the worksheet. Should have a "merges" key.
+    :param worksheet_metadata: The metadata returned by the Google API for the worksheet.
+        Should have a "merges" key.
 
     :param values: The values returned by the Google API for the worksheet. 2D array.
     """
     merges = worksheet_metadata.get("merges", [])
     # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex
-    new_values = [[v for v in row] for row in values]
+    new_values = [list(row) for row in values]
+
+    # max row and column indices
+    max_row_index = len(values) - 1
+    max_col_index = len(values[0]) - 1
 
     for merge in merges:
         start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
         start_col, end_col = merge["startColumnIndex"], merge["endColumnIndex"]
+        # if out of bounds, ignore
+        if start_row > max_row_index or start_col > max_col_index:
+            continue
         top_left_value = values[start_row][start_col]
         row_indices = range(start_row, end_row)
         col_indices = range(start_col, end_col)
         for row_index in row_indices:
             for col_index in col_indices:
+                # if out of bounds, ignore
+                if row_index > max_row_index or col_index > max_col_index:
+                    continue
                 new_values[row_index][col_index] = top_left_value
 
     return new_values
@@ -761,8 +777,8 @@ def convert_hex_to_colors_dict(hex_color: str) -> Mapping[str, float]:
         }
 
         return rgb_color
-    except ValueError:
-        raise ValueError(f"Invalid character in hex color string: #{hex_color}")
+    except ValueError as ex:
+        raise ValueError(f"Invalid character in hex color string: #{hex_color}") from ex
 
 
 def convert_colors_to_hex_value(

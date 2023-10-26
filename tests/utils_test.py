@@ -276,17 +276,57 @@ class UtilsTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             utils.convert_colors_to_hex_value(1.23, 0, -50)
 
+    def test_combine_merge_values_outside_range(self):
+        """Make sure that merges outside the range of the sheet are ignored or partially ignored
+        see issue #1298
+        """
+        sheet_data = [
+            [1, None, None, None],
+            [None, None, "title", None],
+            [None, None, 2, None],
+            ["num", "val", None, 0],
+        ]
+        sheet_metadata = {
+            "properties": {"sheetId": 0},
+            "merges": [
+                {
+                    "startRowIndex": 7,
+                    "endRowIndex": 9,
+                    "startColumnIndex": 7,
+                    "endColumnIndex": 9,
+                },
+                {
+                    "startRowIndex": 3,
+                    "endRowIndex": 5,
+                    "startColumnIndex": 1,
+                    "endColumnIndex": 2,
+                },
+            ],
+        }
+        expected_combine = [
+            [1, None, None, None],
+            [None, None, "title", None],
+            [None, None, 2, None],
+            ["num", "val", None, 0],
+        ]
+
+        actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data)
+
+        self.assertEqual(actual_combine, expected_combine)
+
     def test_convert_hex_to_color(self):
-        hex = "#FF7F00"
-        expected_color = {"red": 1, "green": 127 / 255, "blue": 0}
+        hexcolor = "#FF7F00"
+        expected_color = {"red": 1, "green": 0.49803922, "blue": 0}
 
         # successful convert from hex to color
-        rgbcolor = utils.convert_hex_to_colors_dict(hex)
-        self.assertEqual(rgbcolor, expected_color)
+        rgbcolor = utils.convert_hex_to_colors_dict(hexcolor)
+        for key, rgbvalue in rgbcolor.items():
+            self.assertAlmostEqual(rgbvalue, expected_color[key])
 
         # successful ignore alpha
-        rgbcolor = utils.convert_hex_to_colors_dict(f"{hex}42")
-        self.assertEqual(rgbcolor, expected_color)
+        rgbcolor = utils.convert_hex_to_colors_dict(f"{hexcolor}42")
+        for key, rgbvalue in rgbcolor.items():
+            self.assertAlmostEqual(rgbvalue, expected_color[key])
 
         # raise ValueError on invalid hex length
         with self.assertRaises(ValueError):
@@ -308,5 +348,29 @@ class UtilsTest(unittest.TestCase):
             ["", "", "", "", "", ""],
         ]
         actual = utils.fill_gaps(matrix, 3, 6)
+
+        self.assertEqual(actual, expected)
+
+    def test_fill_gaps_with_value(self):
+        """test fill_gaps function"""
+        matrix = [
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+        ]
+        expected = [
+            [1, 2, 3, 4, "a", "a"],
+            [5, 6, 7, 8, "a", "a"],
+            ["a", "a", "a", "a", "a", "a"],
+        ]
+        actual = utils.fill_gaps(matrix, 3, 6, "a")
+
+        self.assertEqual(actual, expected)
+
+        expected = [
+            [1, 2, 3, 4, 3, 3],
+            [5, 6, 7, 8, 3, 3],
+            [3, 3, 3, 3, 3, 3],
+        ]
+        actual = utils.fill_gaps(matrix, 3, 6, 3)
 
         self.assertEqual(actual, expected)

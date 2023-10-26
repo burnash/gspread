@@ -6,6 +6,7 @@ This module contains common spreadsheets' models.
 
 """
 
+import warnings
 from typing import Union
 
 from .exceptions import WorksheetNotFound
@@ -23,9 +24,6 @@ class Spreadsheet:
 
         metadata = self.fetch_sheet_metadata()
         self._properties.update(metadata["properties"])
-
-        drive_metadata = self.client.get_file_drive_metadata(self._properties["id"])
-        self._properties.update(drive_metadata)
 
     @property
     def id(self):
@@ -45,7 +43,22 @@ class Spreadsheet:
     @property
     def creationTime(self):
         """Spreadsheet Creation time."""
+        if "createdTime" not in self._properties:
+            self.update_drive_metadata()
         return self._properties["createdTime"]
+
+    @property
+    def lastUpdateTime(self):
+        """Spreadsheet last updated time.
+        Only updated on initialisation.
+        For actual last updated time, use get_lastUpdateTime()."""
+        warnings.warn(
+            "worksheet.lastUpdateTime is deprecated, please use worksheet.get_lastUpdateTime()",
+            category=DeprecationWarning,
+        )
+        if "modifiedTime" not in self._properties:
+            self.update_drive_metadata()
+        return self._properties["modifiedTime"]
 
     @property
     def timezone(self):
@@ -699,3 +712,9 @@ class Spreadsheet:
         """Get the lastUpdateTime metadata from the Drive API."""
         metadata = self.client.get_file_drive_metadata(self.id)
         return metadata["modifiedTime"]
+
+    def update_drive_metadata(self) -> None:
+        """Fetches the drive metadata from the Drive API
+        and updates the cached values in _properties dict."""
+        drive_metadata = self.client.get_file_drive_metadata(self._properties["id"])
+        self._properties.update(drive_metadata)

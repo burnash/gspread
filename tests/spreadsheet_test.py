@@ -29,25 +29,25 @@ class SpreadsheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_sheet1(self):
         sheet1 = self.spreadsheet.sheet1
-        self.assertTrue(isinstance(sheet1, gspread.Worksheet))
+        self.assertIsInstance(sheet1, gspread.Worksheet)
 
     @pytest.mark.vcr()
     def test_get_worksheet(self):
         sheet1 = self.spreadsheet.get_worksheet(0)
-        self.assertTrue(isinstance(sheet1, gspread.Worksheet))
+        self.assertIsInstance(sheet1, gspread.Worksheet)
 
     @pytest.mark.vcr()
     def test_get_worksheet_by_id(self):
         sheet1_by_int = self.spreadsheet.get_worksheet_by_id(0)
         sheet1_by_str = self.spreadsheet.get_worksheet_by_id("0")
-        self.assertTrue(isinstance(sheet1_by_int, gspread.Worksheet))
-        self.assertTrue(isinstance(sheet1_by_str, gspread.Worksheet))
+        self.assertIsInstance(sheet1_by_int, gspread.Worksheet)
+        self.assertIsInstance(sheet1_by_str, gspread.Worksheet)
 
     @pytest.mark.vcr()
     def test_worksheet(self):
         sheet_title = "Sheet1"
         sheet = self.spreadsheet.worksheet(sheet_title)
-        self.assertTrue(isinstance(sheet, gspread.Worksheet))
+        self.assertIsInstance(sheet, gspread.Worksheet)
 
     @pytest.mark.vcr()
     def test_worksheets(self):
