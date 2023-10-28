@@ -7,6 +7,7 @@ This module contains common worksheets' models.
 """
 
 import re
+import warnings
 from typing import (
     Any,
     Callable,
@@ -24,7 +25,6 @@ from typing import (
     TypeVar,
     Union,
 )
-import warnings
 
 from .cell import Cell
 from .exceptions import GSpreadException
