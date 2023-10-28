@@ -24,6 +24,7 @@ from typing import (
     TypeVar,
     Union,
 )
+import warnings
 
 from .cell import Cell
 from .exceptions import GSpreadException
@@ -1282,6 +1283,15 @@ class Worksheet:
 
         .. versionadded:: 3.3
         """
+        if isinstance(range_name, (list, tuple)) and isinstance(values, str):
+            warnings.warn(
+                "The order of arguments in worksheet.update() has changed. "
+                "Please pass values first and range_name second"
+                "or used named arguments (range_name=, values=)",
+                DeprecationWarning,
+            )
+            range_name, values = values, range_name
+
         full_range_name = absolute_range_name(self.title, range_name)
 
         if not value_input_option:
