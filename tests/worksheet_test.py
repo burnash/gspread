@@ -118,6 +118,7 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_get_values_returns_padded_get_as_listoflists(self):
+        """This is the only test for get_values. It should be identical to `get` but with default arguments"""
         self.sheet.resize(4, 4)
         rows = [
             ["1", "", "", ""],
@@ -129,8 +130,12 @@ class WorksheetTest(GspreadTest):
         self.sheet.update(rows, "A1:D4")
 
         values = self.sheet.get_values("A1:D4")
+        values_from_get = self.sheet.get(
+            "A1:D4", return_type=utils.GridRangeType.ListOfLists, pad_values=True
+        )
         self.assertEqual(values, rows)
         self.assertIsInstance(values, list)
+        self.assertEqual(values_from_get, rows)
 
     @pytest.mark.vcr()
     def test_get_values_and_combine_merged_cells(self):
