@@ -696,7 +696,7 @@ class Worksheet:
             )
 
         keys = self.get_values(
-            f"{head}:{head}", value_render_option=value_render_option
+            "{head}:{head}".format(head=head), value_render_option=value_render_option
         )[0]
 
         if expected_headers is None:
@@ -722,7 +722,9 @@ class Worksheet:
             )
 
         values = self.get_values(
-            f"{first_index}:{last_index}",
+            "{first_index}:{last_index}".format(
+                first_index=first_index, last_index=last_index
+            ),
             value_render_option=value_render_option,
         )
 
