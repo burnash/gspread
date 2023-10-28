@@ -539,7 +539,8 @@ class Worksheet:
             )
 
         keys = self.get(
-            "{head}:{head}".format(head=head), value_render_option=value_render_option,
+            "{head}:{head}".format(head=head),
+            value_render_option=value_render_option,
             return_type=GridRangeType.ListOfLists,
             pad_values=True,
         )[0]
