@@ -1,8 +1,48 @@
 Release History
 ===============
 
+5.12.0 (2023-10-22)
+-------------------
+
+* feature -- adding `worksheet.get_records` to get specific row ranges by @AndrewBasem1 in https://github.com/burnash/gspread/pull/1301
+* Fix list_spreadsheet_files return value by @mephinet in https://github.com/burnash/gspread/pull/1308
+* Fix warning message for `worksheet.update` method by @ksj20 in https://github.com/burnash/gspread/pull/1312
+* change lambda function to dict (fix pyupgrade issue) by @alifeee in https://github.com/burnash/gspread/pull/1319
+* allows users to silence deprecation warnings by @lavigne958 in https://github.com/burnash/gspread/pull/1324
+* Add `maintain_size` to keep asked for size in `get`, `get_values` by @alifeee in https://github.com/burnash/gspread/pull/1305
+
+5.11.3 (2023-09-29)
+-------------------
+
+* Fix list_spreadsheet_files return value by @mephinet in https://github.com/burnash/gspread/pull/1308
+
+5.11.2 (2023-09-18)
+-------------------
+
+* Fix merge_combined_cells in get_values (AND 5.11.2 RELEASE) by @alifeee in https://github.com/burnash/gspread/pull/1299
+
+5.11.1 (2023-09-06)
+-------------------
+
+* Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/burnash/gspread/pull/1288
+* remove Drive API access on Spreadsheet init (FIX - VERSION 5.11.1) by @alifeee in https://github.com/burnash/gspread/pull/1291
+
+5.11.0 (2023-09-04)
+-------------------
+
+* add docs/build to .gitignore by @alifeee in https://github.com/burnash/gspread/pull/1246
+* add release process to CONTRIBUTING.md by @alifeee in https://github.com/burnash/gspread/pull/1247
+* Update/clean readme badges by @lavigne958 in https://github.com/burnash/gspread/pull/1251
+* add test_fill_gaps and docstring for fill_gaps by @alifeee in https://github.com/burnash/gspread/pull/1256
+* Remove API calls from `creationTime`/`lastUpdateTime` by @alifeee in https://github.com/burnash/gspread/pull/1255
+* Fix Worksheet ID Type Inconsistencies by @FlantasticDan in https://github.com/burnash/gspread/pull/1269
+* Add `column_count` prop as well as `col_count` by @alifeee in https://github.com/burnash/gspread/pull/1274
+* Add required kwargs with no default value by @lavigne958 in https://github.com/burnash/gspread/pull/1271
+* Add deprecation warnings for colors by @alifeee in https://github.com/burnash/gspread/pull/1278
+* Add better Exceptions on opening spreadsheets by @alifeee in https://github.com/burnash/gspread/pull/1277
+
 5.10.0 (2023-06-29)
-------------------
+-------------------
 
 * Fix rows_auto_resize in worksheet.py by removing redundant self by @MagicMc23 in https://github.com/burnash/gspread/pull/1194
 * Add deprecation warning for future release 6.0.x by @lavigne958 in https://github.com/burnash/gspread/pull/1195

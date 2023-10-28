@@ -41,6 +41,7 @@ if TYPE_CHECKING:
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")
 A1_ADDR_ROW_COL_RE = re.compile(r"([A-Za-z]+)?([1-9]\d*)?$")
+A1_ADDR_FULL_RE = re.compile(r"[A-Za-z]+\d+:[A-Za-z]+\d+")  # e.g. A1:B2 not A1:B
 
 URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
@@ -558,13 +559,16 @@ def wid_to_gid(wid: str) -> str:
     return str(int(widval, 36) ^ xorval)
 
 
-def rightpad(row: List[Any], max_len: int) -> List[Any]:
+def rightpad(row: List[Any], max_len: int, padding_value: Any = "") -> List[Any]:
     pad_len = max_len - len(row)
-    return row + ([""] * pad_len) if pad_len != 0 else row
+    return row + ([padding_value] * pad_len) if pad_len != 0 else row
 
 
 def fill_gaps(
-    L: List[List[Any]], rows: Optional[int] = None, cols: Optional[int] = None
+    L: List[List[Any]],
+    rows: Optional[int] = None,
+    cols: Optional[int] = None,
+    padding_value: Any = "",
 ) -> List[List[Any]]:
     """Fill gaps in a list of lists.
     e.g.,::
@@ -581,10 +585,12 @@ def fill_gaps(
     :param L: List of lists to fill gaps in.
     :param rows: Number of rows to fill.
     :param cols: Number of columns to fill.
+    :param padding_value: Default value to fill gaps with.
 
     :type L: list[list[T]]
     :type rows: int
     :type cols: int
+    :type padding_value: T
 
     :return: List of lists with gaps filled.
     :rtype: list[list[T]]:
@@ -598,7 +604,7 @@ def fill_gaps(
         if pad_rows:
             L = L + ([[]] * pad_rows)
 
-        return [rightpad(row, max_cols) for row in L]
+        return [rightpad(row, max_cols, padding_value=padding_value) for row in L]
     except ValueError:
         return [[]]
 
@@ -703,22 +709,33 @@ def combined_merge_values(worksheet_metadata, values):
     ]
     if the top-left four cells are merged.
 
-    :param worksheet_metadata: The metadata returned by the Google API for the worksheet. Should have a "merges" key.
+    :param worksheet_metadata: The metadata returned by the Google API for the worksheet.
+        Should have a "merges" key.
 
     :param values: The values returned by the Google API for the worksheet. 2D array.
     """
     merges = worksheet_metadata.get("merges", [])
     # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex
-    new_values = [[v for v in row] for row in values]
+    new_values = [list(row) for row in values]
+
+    # max row and column indices
+    max_row_index = len(values) - 1
+    max_col_index = len(values[0]) - 1
 
     for merge in merges:
         start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
         start_col, end_col = merge["startColumnIndex"], merge["endColumnIndex"]
+        # if out of bounds, ignore
+        if start_row > max_row_index or start_col > max_col_index:
+            continue
         top_left_value = values[start_row][start_col]
         row_indices = range(start_row, end_row)
         col_indices = range(start_col, end_col)
         for row_index in row_indices:
             for col_index in col_indices:
+                # if out of bounds, ignore
+                if row_index > max_row_index or col_index > max_col_index:
+                    continue
                 new_values[row_index][col_index] = top_left_value
 
     return new_values
@@ -766,8 +783,8 @@ def convert_hex_to_colors_dict(hex_color: str) -> Mapping[str, float]:
         }
 
         return rgb_color
-    except ValueError:
-        raise ValueError(f"Invalid character in hex color string: #{hex_color}")
+    except ValueError as ex:
+        raise ValueError(f"Invalid character in hex color string: #{hex_color}") from ex
 
 
 def convert_colors_to_hex_value(
@@ -805,6 +822,65 @@ def convert_colors_to_hex_value(
         raise ValueError("Color value out of accepted range 0-1.")
 
     return f"#{to_hex(red)}{to_hex(green)}{to_hex(blue)}"
+
+
+def is_full_a1_notation(range_name: str) -> bool:
+    """Check if the range name is a full A1 notation.
+    "A1:B2", "Sheet1!A1:B2" are full A1 notations
+    "A1:B", "A1" are not
+
+    Args:
+        range_name (str): The range name to check.
+
+    Returns:
+        bool: True if the range name is a full A1 notation, False otherwise.
+
+    Examples:
+
+        >>> is_full_a1_notation("A1:B2")
+        True
+
+        >>> is_full_a1_notation("A1:B")
+        False
+    """
+    return A1_ADDR_FULL_RE.search(range_name) is not None
+
+
+def get_a1_from_absolute_range(range_name: str) -> str:
+    """Get the A1 notation from an absolute range name.
+    "Sheet1!A1:B2" -> "A1:B2"
+    "A1:B2" -> "A1:B2"
+
+    Args:
+        range_name (str): The range name to check.
+
+    Returns:
+        str: The A1 notation of the range name stripped of the sheet.
+    """
+    if "!" in range_name:
+        return range_name.split("!")[1]
+    return range_name
+
+
+# SHOULD NOT BE NEEDED UNTIL NEXT MAJOR VERSION
+# def deprecation_warning(version: str, msg: str) -> None:
+#     """Emit a deprecation warning.
+
+#     ..note::
+
+#         This warning can be silenced by setting the environment variable:
+#         GSPREAD_SILENCE_WARNINGS=1
+#     """
+
+#     # do not emit warning if env variable is set specifically to 1
+#     if os.getenv(SILENCE_WARNINGS_ENV_KEY, "0") == "1":
+#         return
+
+#     warnings.warn(
+#         DEPRECATION_WARNING_TEMPLATE.format(v_deprecated=version, msg_deprecated=msg),
+#         DeprecationWarning,
+#         4,  # showd the 4th stack: [1]:current->[2]:deprecation_warning->[3]:<gspread method/function>->[4]:<user's code>
+#     )
 
 
 if __name__ == "__main__":

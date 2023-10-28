@@ -7,13 +7,13 @@ on:
 
 jobs:
 
-  build:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Setup python
       uses: actions/setup-python@v4
       with:
@@ -38,7 +38,7 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
+        repository-url: https://test.pypi.org/legacy/
     - name: Publish to PyPi
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
