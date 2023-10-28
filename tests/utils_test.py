@@ -374,3 +374,28 @@ class UtilsTest(unittest.TestCase):
         actual = utils.fill_gaps(matrix, 3, 6, 3)
 
         self.assertEqual(actual, expected)
+
+    def test_is_full_a1_notation(self):
+        """test is_full_a1_notation function"""
+        self.assertTrue(utils.is_full_a1_notation("A1:B2"))
+        self.assertTrue(utils.is_full_a1_notation("Sheet1!A1:B2"))
+        self.assertTrue(utils.is_full_a1_notation("AZ1:BBY2"))
+        self.assertTrue(utils.is_full_a1_notation("AZ142:BBY122"))
+
+        self.assertFalse(utils.is_full_a1_notation("Sheet1"))
+        self.assertFalse(utils.is_full_a1_notation("A:B"))
+        self.assertFalse(utils.is_full_a1_notation("1:2"))
+        self.assertFalse(utils.is_full_a1_notation("1:"))
+        self.assertFalse(utils.is_full_a1_notation("A1"))
+        self.assertFalse(utils.is_full_a1_notation("A"))
+        self.assertFalse(utils.is_full_a1_notation("1"))
+        self.assertFalse(utils.is_full_a1_notation(""))
+
+    def test_get_a1_from_absolute_range(self):
+        """test get_a1_from_absolute_range function"""
+        self.assertEqual(utils.get_a1_from_absolute_range("'Sheet1'!A1:B2"), "A1:B2")
+        self.assertEqual(utils.get_a1_from_absolute_range("'Sheet1'!A1:B"), "A1:B")
+        self.assertEqual(utils.get_a1_from_absolute_range("Sheet1!A1:B2"), "A1:B2")
+        self.assertEqual(utils.get_a1_from_absolute_range("A1:B2"), "A1:B2")
+        self.assertEqual(utils.get_a1_from_absolute_range("A1:B"), "A1:B")
+        self.assertEqual(utils.get_a1_from_absolute_range("2"), "2")

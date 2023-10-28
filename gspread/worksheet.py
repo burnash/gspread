@@ -48,6 +48,8 @@ from .utils import (
     convert_hex_to_colors_dict,
     fill_gaps,
     finditem,
+    get_a1_from_absolute_range,
+    is_full_a1_notation,
     numericise_all,
     rowcol_to_a1,
 )
@@ -394,6 +396,7 @@ class Worksheet:
         major_dimension: Optional[Dimension] = None,
         value_render_option: Optional[ValueRenderOption] = None,
         date_time_render_option: Optional[DateTimeOption] = None,
+        maintain_size: bool = False,
     ) -> List[List[Any]]:
         """Returns a list of lists containing all values from specified range.
 
@@ -470,6 +473,25 @@ class Worksheet:
 
             Empty trailing rows and columns will not be included.
 
+        :param bool maintain_size: (optional) Returns a matrix of values matching the size of the requested range.
+
+            .. warning::
+
+                This can only work if the requested range is a complete bounded A1 notation.
+                Example: ``A1:D4``: OK, ``C3:F``: Not OK, we don't know the end size of the requested range.
+
+                This does not work with ``named_range`` either.
+
+            Examples::
+
+                # Works
+                >>> worksheet.get("A1:B2", maintain_size=True)
+                [['A1', 'B1'], ['A2', '']]
+
+                # Does NOT maintain the requested size
+                >>> worksheet.get("A1:B", maintain_size=True)
+                [['A1', 'B1'], ['A2'], [], ['A4', 'B4'], ['A5']]
+
         Examples::
 
             # Return all values from the sheet
@@ -497,6 +519,7 @@ class Worksheet:
                     major_dimension=major_dimension,
                     value_render_option=value_render_option,
                     date_time_render_option=date_time_render_option,
+                    maintain_size=maintain_size,
                 )
             )
             if combine_merged_cells is True:
@@ -954,6 +977,7 @@ class Worksheet:
         major_dimension: Optional[Dimension] = None,
         value_render_option: Optional[ValueRenderOption] = None,
         date_time_render_option: Optional[DateTimeOption] = None,
+        maintain_size: bool = False,
     ) -> ValueRange:
         """Reads values of a single range or a cell of a sheet.
 
@@ -1041,6 +1065,19 @@ class Worksheet:
         response = self.client.values_get(
             self.spreadsheet_id, range_name, params=params
         )
+
+        values = response.get("values", [])
+
+        # range_name must be a full grid range so that we can guarantee
+        #  startRowIndex and endRowIndex properties
+        if maintain_size is True and is_full_a1_notation(range_name):
+            a1_range = get_a1_from_absolute_range(range_name)
+            grid_range = a1_range_to_grid_range(a1_range)
+            rows = grid_range["endRowIndex"] - grid_range["startRowIndex"]
+            cols = grid_range["endColumnIndex"] - grid_range["startColumnIndex"]
+            values = fill_gaps(values, rows=rows, cols=cols)
+
+        response["values"] = values
 
         return ValueRange.from_json(response)
 

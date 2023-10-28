@@ -41,6 +41,7 @@ if TYPE_CHECKING:
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")
 A1_ADDR_ROW_COL_RE = re.compile(r"([A-Za-z]+)?([1-9]\d*)?$")
+A1_ADDR_FULL_RE = re.compile(r"[A-Za-z]+\d+:[A-Za-z]+\d+")  # e.g. A1:B2 not A1:B
 
 URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
@@ -816,6 +817,65 @@ def convert_colors_to_hex_value(
         raise ValueError("Color value out of accepted range 0-1.")
 
     return f"#{to_hex(red)}{to_hex(green)}{to_hex(blue)}"
+
+
+def is_full_a1_notation(range_name: str) -> bool:
+    """Check if the range name is a full A1 notation.
+    "A1:B2", "Sheet1!A1:B2" are full A1 notations
+    "A1:B", "A1" are not
+
+    Args:
+        range_name (str): The range name to check.
+
+    Returns:
+        bool: True if the range name is a full A1 notation, False otherwise.
+
+    Examples:
+
+        >>> is_full_a1_notation("A1:B2")
+        True
+
+        >>> is_full_a1_notation("A1:B")
+        False
+    """
+    return A1_ADDR_FULL_RE.search(range_name) is not None
+
+
+def get_a1_from_absolute_range(range_name: str) -> str:
+    """Get the A1 notation from an absolute range name.
+    "Sheet1!A1:B2" -> "A1:B2"
+    "A1:B2" -> "A1:B2"
+
+    Args:
+        range_name (str): The range name to check.
+
+    Returns:
+        str: The A1 notation of the range name stripped of the sheet.
+    """
+    if "!" in range_name:
+        return range_name.split("!")[1]
+    return range_name
+
+
+# SHOULD NOT BE NEEDED UNTIL NEXT MAJOR VERSION
+# def deprecation_warning(version: str, msg: str) -> None:
+#     """Emit a deprecation warning.
+
+#     ..note::
+
+#         This warning can be silenced by setting the environment variable:
+#         GSPREAD_SILENCE_WARNINGS=1
+#     """
+
+#     # do not emit warning if env variable is set specifically to 1
+#     if os.getenv(SILENCE_WARNINGS_ENV_KEY, "0") == "1":
+#         return
+
+#     warnings.warn(
+#         DEPRECATION_WARNING_TEMPLATE.format(v_deprecated=version, msg_deprecated=msg),
+#         DeprecationWarning,
+#         4,  # showd the 4th stack: [1]:current->[2]:deprecation_warning->[3]:<gspread method/function>->[4]:<user's code>
+#     )
 
 
 if __name__ == "__main__":

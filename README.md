@@ -1,11 +1,11 @@
 # Google Spreadsheets Python API v4
 
 ![main workflow](https://img.shields.io/github/actions/workflow/status/burnash/gspread/main.yaml?logo=github)
-![github license](https://img.shields.io/pypi/l/gspread?logo=github)
-![latest download](https://img.shields.io/github/downloads-pre/burnash/gspread/latest/total?logo=github)
+![GitHub licence](https://img.shields.io/pypi/l/gspread?logo=github)
+![GitHub downloads](https://img.shields.io/github/downloads-pre/burnash/gspread/latest/total?logo=github)
 ![documentation](https://img.shields.io/readthedocs/gspread?logo=readthedocs)
-![pypi download](https://img.shields.io/pypi/dm/gspread?logo=pypi)
-![pypi version](https://img.shields.io/pypi/v/gspread?logo=pypi)
+![PyPi download](https://img.shields.io/pypi/dm/gspread?logo=pypi)
+![PyPi version](https://img.shields.io/pypi/v/gspread?logo=pypi)
 ![python version](https://img.shields.io/pypi/pyversions/gspread?style=pypi)
 
 Simple interface for working with Google Sheets.
@@ -29,7 +29,7 @@ Requirements: Python 3.8+.
 
 1. [Create credentials in Google API Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
 
-2. Start using gspread:
+2. Start using gspread
 
 ```python
 import gspread
@@ -48,6 +48,45 @@ wks.update('B42', "it's down there somewhere, let me take another look.")
 # Format the header
 wks.format('A1:B1', {'textFormat': {'bold': True}})
 ```
+
+## v5.12 to v6.0 Migration Guide
+
+### Upgrade from Python 3.7
+
+Python 3.7 is [end-of-life](https://devguide.python.org/versions/). gspread v6 requires a minimum of Python 3.8.
+
+### Change `Worksheet.update` arguments
+
+The first two arguments (`values` & `range_name`) have swapped (to `range_name` & `values`). Either swap them (works in v6 only), or use named arguments (works in v5 & v6).
+
+As well, `values` can no longer be a list, and must be a 2D array.
+
+```diff
+- file.sheet1.update(["54"], "B2")
++ file.sheet1.update(range_name="I7", values=[["54"]])
+```
+
+### Change colors from dictionary to text
+
+v6 uses hexadecimal color representation. Change all colors to hex. You can use the compatibility function `gspread.utils.convert_colors_to_hex_value()` to convert a dictionary to a hex string.
+
+```diff
+- tab_color = {"red": 1, "green": 0.5, "blue": 1}
++ tab_color = "#FF7FFF"
+file.sheet1.update_tab_color(tab_color)
+```
+
+### Switch lastUpdateTime from property to method
+
+```diff
+- age = spreadsheet.lastUpdateTime
++ age = spreadsheet.get_lastUpdateTime()
+```
+
+### Silence warnings
+
+In version 5 there are many warnings to mark deprecated feature/functions/methods.
+They can be silenced by setting the `GSPREAD_SILENCE_WARNINGS` environment variable to `1`
 
 ## More Examples
 
@@ -133,6 +172,22 @@ values_list = worksheet.col_values(1)
 
 ```python
 list_of_lists = worksheet.get_values()
+```
+
+### Getting a range of values
+
+Receive only the cells with a value in them
+```python
+>>> worksheet.get_values("A1:B4")
+[['A1', 'B1'], ['A2']]
+```
+
+Receive a lists of lists matching the requested size
+regardless if values are empty or not
+
+```python
+>>> worksheet.get_values("A1:B4", maintain_size=True)
+[['A1', 'B1'], ['A2', ''], ['', ''], ['', '']]
 ```
 
 ### Finding a Cell

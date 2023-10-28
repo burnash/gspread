@@ -172,6 +172,31 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values_with_merged, expected_values)
 
     @pytest.mark.vcr()
+    def test_get_values_and_maintain_size(self):
+        """test get_values with maintain_size=True"""
+        self.sheet.resize(5, 5)
+        sheet_data = [
+            ["1", "2", "", "", ""],
+            ["3", "4", "", "", ""],
+            ["5", "6", "", "", ""],
+            ["", "", "", "", ""],
+            ["", "", "", "", ""],
+        ]
+        request_range = "A1:D4"
+        expected_values = [
+            ["1", "2", "", ""],
+            ["3", "4", "", ""],
+            ["5", "6", "", ""],
+            ["", "", "", ""],
+        ]
+
+        self.sheet.update(sheet_data, "A1:E5")
+
+        values = self.sheet.get_values(request_range, maintain_size=True)
+
+        self.assertEqual(values, expected_values)
+
+    @pytest.mark.vcr()
     def test_update_acell(self):
         sg = self._sequence_generator()
         value = next(sg)
