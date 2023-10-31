@@ -194,7 +194,7 @@ class Client:
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
         """
-        payload = {
+        payload: Dict[str, Any] = {
             "name": title,
             "mimeType": MimeType.google_sheets,
         }
@@ -291,7 +291,7 @@ class Client:
         """
         url = "{}/{}/copy".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        payload = {
+        payload: Dict[str, Any] = {
             "name": title,
             "mimeType": MimeType.google_sheets,
         }
