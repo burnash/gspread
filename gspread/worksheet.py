@@ -6,7 +6,7 @@ This module contains common worksheets' models.
 
 """
 
-from typing import Union
+from typing import Mapping, Union
 
 from .cell import Cell
 from .exceptions import GSpreadException
@@ -1652,7 +1652,7 @@ class Worksheet:
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color: Union[dict, str]):
+    def update_tab_color(self, color: Union[Mapping, str]):
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
