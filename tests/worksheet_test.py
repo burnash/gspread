@@ -1718,7 +1718,33 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_get_and_get_values_have_same_signature(self):
+        """get_values and get should have the same signature apart from
+        return_type and pad_values
+        get_all_values should be the same as get_values
+        """
         sig_get = signature(self.sheet.get)
         sig_get_values = signature(self.sheet.get_values)
+        sig_get_all_values = signature(self.sheet.get_all_values)
 
-        self.assertEqual(sig_get, sig_get_values)
+        # for get and get_values, all params should be equal apart from
+        #  return_type and pad_values
+        params_get = sig_get.parameters
+        params_get_values = sig_get_values.parameters
+
+        self.assertEqual(
+            {
+                key: params_get[key]
+                for key in params_get
+                if key not in ["return_type", "pad_values"]
+            },
+            {
+                key: params_get_values[key]
+                for key in params_get_values
+                if key not in ["return_type", "pad_values"]
+            },
+        )
+        self.assertNotEqual(params_get["return_type"], params_get_values["return_type"])
+        self.assertNotEqual(params_get["pad_values"], params_get_values["pad_values"])
+
+        # get_all_values should be a carbon copy of get_values
+        self.assertEqual(sig_get_values, sig_get_all_values)
