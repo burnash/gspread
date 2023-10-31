@@ -8,6 +8,7 @@ This module contains utility functions.
 
 import os
 import re
+import sys
 import warnings
 from collections import defaultdict, namedtuple
 from collections.abc import Sequence
@@ -16,6 +17,11 @@ from itertools import chain
 from math import inf
 from typing import Mapping
 from urllib.parse import quote as uquote
+
+if sys.version_info.minor < 11:
+    from strenum import StrEnum
+else:
+    from enum import StrEnum  # type: ignore
 
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
