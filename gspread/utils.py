@@ -95,7 +95,7 @@ class ExportFormat(StrEnum):
 class PasteType(StrEnum):
     normal = "PASTE_NORMAL"
     values = "PASTE_VALUES"
-    format = "PASTE_FORMAT"
+    format = "PASTE_FORMAT"  # type: ignore
     no_borders = "PASTE_NO_BORDERS"
     formula = "PASTE_NO_BORDERS"
     data_validation = "PASTE_DATA_VALIDATION"
