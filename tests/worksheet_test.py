@@ -1,7 +1,7 @@
-from inspect import signature
 import itertools
 import random
 import re
+from inspect import signature
 
 import pytest
 
