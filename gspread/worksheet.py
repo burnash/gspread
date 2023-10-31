@@ -390,7 +390,17 @@ class Worksheet:
             for j, value in enumerate(row)
         ]
 
-    def get_values(self, *args, **kwargs) -> List[List[T]]:
+    def get_values(
+        self,
+        range_name: Optional[str] = None,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+        combine_merged_cells: bool = False,
+        maintain_size: bool = False,
+        pad_values: bool = True,
+        return_type: GridRangeType = GridRangeType.ListOfLists,
+    ) -> List[List[T]]:
         """Alias for :meth:`~gspread.worksheet.Worksheet.get`...
 
         with ``return_type`` set to ``List[List[Any]]``
@@ -398,15 +408,38 @@ class Worksheet:
         (legacy method)
         """
         return self.get(
-            *args,
-            pad_values=kwargs.pop("pad_values", True),
-            return_type=kwargs.pop("return_type", GridRangeType.ListOfLists),
-            **kwargs,
+            range_name=range_name,
+            major_dimension=major_dimension,
+            value_render_option=value_render_option,
+            date_time_render_option=date_time_render_option,
+            combine_merged_cells=combine_merged_cells,
+            maintain_size=maintain_size,
+            pad_values=pad_values,
+            return_type=return_type,
         )
 
-    def get_all_values(self, *args, **kwargs) -> ValueRange:
+    def get_all_values(
+        self,
+        range_name: Optional[str] = None,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+        combine_merged_cells: bool = False,
+        maintain_size: bool = False,
+        pad_values: bool = True,
+        return_type: GridRangeType = GridRangeType.ListOfLists,
+    ) -> List[List[T]]:
         """Alias to :meth:`~gspread.worksheet.Worksheet.get_values`"""
-        return self.get_values(*args, **kwargs)
+        return self.get_values(
+            range_name=range_name,
+            major_dimension=major_dimension,
+            value_render_option=value_render_option,
+            date_time_render_option=date_time_render_option,
+            combine_merged_cells=combine_merged_cells,
+            maintain_size=maintain_size,
+            pad_values=pad_values,
+            return_type=return_type,
+        )
 
     def get_all_records(
         self,
