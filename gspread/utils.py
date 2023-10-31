@@ -7,6 +7,7 @@ This module contains utility functions.
 """
 
 import re
+import sys
 from collections import defaultdict
 from collections.abc import Sequence
 from functools import wraps
@@ -30,7 +31,11 @@ from urllib.parse import quote as uquote
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
-from strenum import StrEnum
+
+if sys.version_info.minor < 11:
+    from strenum import StrEnum
+else:
+    from enum import StrEnum  # type: ignore
 
 from .exceptions import IncorrectCellLabel, InvalidInputValue, NoValidUrlKeyFound
 
