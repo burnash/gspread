@@ -398,7 +398,10 @@ class Worksheet:
         (legacy method)
         """
         return self.get(
-            *args, pad_values=True, return_type=GridRangeType.ListOfLists, **kwargs
+            *args,
+            pad_values=kwargs.pop("pad_values", True),
+            return_type=kwargs.pop("return_type", GridRangeType.ListOfLists),
+            **kwargs,
         )
 
     def get_all_values(self, *args, **kwargs) -> ValueRange:

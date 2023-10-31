@@ -139,6 +139,29 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values_from_get, rows)
 
     @pytest.mark.vcr()
+    def test_get_values_can_emulate_get_with_kwargs(self):
+        """Tests that get_values(pad_values=False, return_type=utils.GridRangeType.ValueRange)
+        is the same as get"""
+        self.sheet.resize(4, 4)
+        rows = [
+            ["1", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", "2"],
+        ]
+
+        self.sheet.update(rows, "A1:D4")
+
+        values_get = self.sheet.get("A1:D4")
+        values_emulate_get = self.sheet.get_values(
+            "A1:D4",
+            pad_values=False,
+            return_type=utils.GridRangeType.ValueRange,
+        )
+
+        self.assertEqual(values_get, values_emulate_get)
+
+    @pytest.mark.vcr()
     def test_get_values_and_combine_merged_cells(self):
         self.sheet.resize(4, 4)
         sheet_data = [
