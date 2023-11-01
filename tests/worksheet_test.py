@@ -1275,6 +1275,24 @@ class WorksheetTest(GspreadTest):
         )
 
     @pytest.mark.vcr()
+    def test_update_works_with_swapped_values_and_range(self):
+        values = [
+            ["A1", "B1", "", "D1"],
+            ["", "b2", "", ""],
+            ["", "", "", ""],
+            ["A4", "B4", "", "D4"],
+        ]
+
+        with pytest.warns(DeprecationWarning):
+            self.sheet.update("A1", values)
+
+        read_data = self.sheet.get("D4:A1")
+
+        self.assertEqual(
+            read_data, [["A1", "B1", "", "D1"], ["", "b2"], [], ["A4", "B4", "", "D4"]]
+        )
+
+    @pytest.mark.vcr()
     def test_batch_get(self):
         values = [
             ["A1", "B1", "", "D1"],
