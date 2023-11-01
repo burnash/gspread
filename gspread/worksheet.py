@@ -14,6 +14,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Literal,
     Mapping,
     MutableMapping,
     Optional,
@@ -1580,9 +1581,9 @@ class Worksheet:
             self._properties["gridProperties"]["columnCount"] = cols
         return res
 
-    # TODO(post Python 2): replace the method signature with
-    # def sort(self, *specs, range=None):
-    def sort(self, *specs: Tuple[int, str], **kwargs) -> JSONResponse:
+    def sort(
+        self, *specs: Tuple[int, Literal["asc", "des"]], range: Optional[str] = None
+    ) -> JSONResponse:
         """Sorts worksheet using given sort orders.
 
         :param list specs: The sort order per column. Each sort order
@@ -1600,16 +1601,10 @@ class Worksheet:
             # and column 'B' Z -> A
             wks.sort((7, 'asc'), (2, 'des'), range='A2:G8')
 
-        Warning::
-
-            This function signature will change, arguments will swap places:  sort(range, specs)
-
         .. versionadded:: 3.4
         """
-        range_name = kwargs.pop("range", None)
-
-        if range_name:
-            start_a1, end_a1 = range_name.split(":")
+        if range:
+            start_a1, end_a1 = range.split(":")
             start_row, start_col = a1_to_rowcol(start_a1)
             end_row, end_col = a1_to_rowcol(end_a1)
         else:
