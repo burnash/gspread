@@ -95,7 +95,7 @@ class ExportFormat(StrEnum):
 class PasteType(StrEnum):
     normal = "PASTE_NORMAL"
     values = "PASTE_VALUES"
-    format = "PASTE_FORMAT"
+    format = "PASTE_FORMAT"  # type: ignore
     no_borders = "PASTE_NO_BORDERS"
     formula = "PASTE_NO_BORDERS"
     data_validation = "PASTE_DATA_VALIDATION"
@@ -160,7 +160,7 @@ def finditem(func: Callable[[T], bool], seq: Iterable[T]) -> T:
 def numericise(
     value: Optional[AnyStr],
     empty2zero: bool = False,
-    default_blank: Optional[AnyStr] = "",
+    default_blank: Any = "",
     allow_underscores_in_numeric_literals: bool = False,
 ) -> Optional[Union[int, float, AnyStr]]:
     """Returns a value that depends on the input:
@@ -235,7 +235,7 @@ def numericise(
 def numericise_all(
     values: List[Optional[AnyStr]],
     empty2zero: bool = False,
-    default_blank: Optional[AnyStr] = "",
+    default_blank: Any = "",
     allow_underscores_in_numeric_literals: bool = False,
     ignore: List[int] = [],
 ) -> List[Optional[Union[int, float, AnyStr]]]:

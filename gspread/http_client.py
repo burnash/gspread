@@ -259,7 +259,7 @@ class HTTPClient:
         return r.json()
 
     def spreadsheets_sheets_copy_to(
-        self, id: str, sheet_id: str, destination_spreadsheet_id: str
+        self, id: str, sheet_id: int, destination_spreadsheet_id: str
     ) -> Any:
         """Lower-level method that directly calls `spreadsheets.sheets.copyTo <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.sheets/copyTo>`_."""
         url = SPREADSHEET_SHEETS_COPY_TO_URL % (id, sheet_id)

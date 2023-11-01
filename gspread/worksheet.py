@@ -1910,7 +1910,7 @@ class Worksheet:
         """
         range_label = absolute_range_name(self.title, table_range)
 
-        params = {
+        params: ParamsType = {
             "valueInputOption": value_input_option,
             "insertDataOption": insert_data_option,
             "includeValuesInResponse": include_values_in_response,
@@ -2025,7 +2025,7 @@ class Worksheet:
 
         range_label = absolute_range_name(self.title, "A%s" % row)
 
-        params = {"valueInputOption": value_input_option}
+        params: ParamsType = {"valueInputOption": value_input_option}
 
         body = {"majorDimension": Dimension.rows, "values": values}
 
@@ -2090,7 +2090,7 @@ class Worksheet:
 
         range_label = absolute_range_name(self.title, rowcol_to_a1(1, col))
 
-        params = {"valueInputOption": value_input_option}
+        params: ParamsType = {"valueInputOption": value_input_option}
 
         body = {"majorDimension": Dimension.cols, "values": values}
 
