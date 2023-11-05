@@ -1,11 +1,12 @@
 import itertools
 import random
 import re
+from inspect import signature
 
 import pytest
 
 import gspread
-import gspread.utils as utils
+from gspread import utils
 from gspread.exceptions import APIError, GSpreadException
 
 from .conftest import I18N_STR, GspreadTest
@@ -93,6 +94,74 @@ class WorksheetTest(GspreadTest):
         self.assertSequenceEqual(tuples1, tuples2)
 
     @pytest.mark.vcr()
+    def test_get_returns_ValueRange_with_metadata(self):
+        self.sheet.resize(4, 4)
+        rows = [
+            ["1", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", "2"],
+        ]
+        expected_rows = [
+            ["1"],
+            [],
+            [],
+            ["", "", "", "2"],
+        ]
+
+        self.sheet.update(rows, "A1:D4")
+
+        value_range = self.sheet.get("A1:D4")
+        self.assertTrue(isinstance(value_range, gspread.ValueRange))
+        self.assertEqual(value_range.range, "Sheet1!A1:D4")
+        self.assertEqual(value_range.major_dimension, "ROWS")
+        self.assertEqual(value_range, expected_rows)
+
+    @pytest.mark.vcr()
+    def test_get_values_returns_padded_get_as_listoflists(self):
+        """This is the only test for get_values. It should be identical to `get` but with default arguments"""
+        self.sheet.resize(4, 4)
+        rows = [
+            ["1", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", "2"],
+        ]
+
+        self.sheet.update(rows, "A1:D4")
+
+        values = self.sheet.get_values("A1:D4")
+        values_from_get = self.sheet.get(
+            "A1:D4", return_type=utils.GridRangeType.ListOfLists, pad_values=True
+        )
+        self.assertEqual(values, rows)
+        self.assertIsInstance(values, list)
+        self.assertEqual(values_from_get, rows)
+
+    @pytest.mark.vcr()
+    def test_get_values_can_emulate_get_with_kwargs(self):
+        """Tests that get_values(pad_values=False, return_type=utils.GridRangeType.ValueRange)
+        is the same as get"""
+        self.sheet.resize(4, 4)
+        rows = [
+            ["1", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", "2"],
+        ]
+
+        self.sheet.update(rows, "A1:D4")
+
+        values_get = self.sheet.get("A1:D4")
+        values_emulate_get = self.sheet.get_values(
+            "A1:D4",
+            pad_values=False,
+            return_type=utils.GridRangeType.ValueRange,
+        )
+
+        self.assertEqual(values_get, values_emulate_get)
+
+    @pytest.mark.vcr()
     def test_get_values_and_combine_merged_cells(self):
         self.sheet.resize(4, 4)
         sheet_data = [
@@ -134,7 +203,9 @@ class WorksheetTest(GspreadTest):
         self.sheet.update(sheet_data, "A1:D4")
 
         data_args = self.sheet.get_values(
-            "A1:D4", False, None, utils.ValueRenderOption.formatted
+            "A1:D4",
+            None,
+            utils.ValueRenderOption.formatted,
         )
         data_kwargs = self.sheet.get_values(
             range_name="A1:D4",
@@ -1271,7 +1342,13 @@ class WorksheetTest(GspreadTest):
         read_data = self.sheet.get("A1:D4")
 
         self.assertEqual(
-            read_data, [["A1", "B1", "", "D1"], ["", "b2"], [], ["A4", "B4", "", "D4"]]
+            read_data,
+            [
+                ["A1", "B1", "", "D1"],
+                ["", "b2"],
+                [],
+                ["A4", "B4", "", "D4"],
+            ],
         )
 
     @pytest.mark.vcr()
@@ -1327,7 +1404,15 @@ class WorksheetTest(GspreadTest):
 
         data = self.sheet.get("A1:D4")
 
-        self.assertEqual(data, [["A1", "B1", "", "D1"], [], [], ["A4", "B4", "", "D4"]])
+        self.assertEqual(
+            data,
+            [
+                ["A1", "B1", "", "D1"],
+                [],
+                [],
+                ["A4", "B4", "", "D4"],
+            ],
+        )
 
     @pytest.mark.vcr()
     def test_format(self):
@@ -1648,3 +1733,36 @@ class WorksheetTest(GspreadTest):
             list(itertools.chain(*values)),
             [cell.value for cell in cells],
         )
+
+    @pytest.mark.vcr()
+    def test_get_and_get_values_have_same_signature(self):
+        """get_values and get should have the same signature apart from
+        return_type and pad_values
+        get_all_values should be the same as get_values
+        """
+        sig_get = signature(self.sheet.get)
+        sig_get_values = signature(self.sheet.get_values)
+        sig_get_all_values = signature(self.sheet.get_all_values)
+
+        # for get and get_values, all params should be equal apart from
+        #  return_type and pad_values
+        params_get = sig_get.parameters
+        params_get_values = sig_get_values.parameters
+
+        self.assertEqual(
+            {
+                key: params_get[key]
+                for key in params_get
+                if key not in ["return_type", "pad_values"]
+            },
+            {
+                key: params_get_values[key]
+                for key in params_get_values
+                if key not in ["return_type", "pad_values"]
+            },
+        )
+        self.assertNotEqual(params_get["return_type"], params_get_values["return_type"])
+        self.assertNotEqual(params_get["pad_values"], params_get_values["pad_values"])
+
+        # get_all_values should be a carbon copy of get_values
+        self.assertEqual(sig_get_values, sig_get_all_values)

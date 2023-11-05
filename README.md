@@ -171,22 +171,30 @@ values_list = worksheet.col_values(1)
 ### Getting All Values From a Worksheet as a List of Lists
 
 ```python
-list_of_lists = worksheet.get_values()
+from gspread.utils import GridRangeType
+list_of_lists = worksheet.get(return_type=GridRangeType.ListOfLists)
 ```
 
 ### Getting a range of values
 
-Receive only the cells with a value in them
+Receive only the cells with a value in them.
+
 ```python
->>> worksheet.get_values("A1:B4")
+>>> worksheet.get("A1:B4")
 [['A1', 'B1'], ['A2']]
 ```
 
-Receive a lists of lists matching the requested size
-regardless if values are empty or not
+Receive a rectangular array around the cells with values in them.
 
 ```python
->>> worksheet.get_values("A1:B4", maintain_size=True)
+>>> worksheet.get("A1:B4", pad_values=True)
+[['A1', 'B1'], ['A2', '']]
+```
+
+Receive an array matching the request size regardless of if values are empty or not.
+
+```python
+>>> worksheet.get("A1:B4", maintain_size=True)
 [['A1', 'B1'], ['A2', ''], ['', ''], ['', '']]
 ```
 

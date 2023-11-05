@@ -34,6 +34,7 @@ from .urls import WORKSHEET_DRIVE_URL
 from .utils import (
     DateTimeOption,
     Dimension,
+    GridRangeType,
     InsertDataOption,
     PasteOrientation,
     PasteType,
@@ -394,174 +395,52 @@ class Worksheet:
     def get_values(
         self,
         range_name: Optional[str] = None,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
         combine_merged_cells: bool = False,
-        major_dimension: Optional[Dimension] = None,
-        value_render_option: Optional[ValueRenderOption] = None,
-        date_time_render_option: Optional[DateTimeOption] = None,
         maintain_size: bool = False,
-    ) -> List[List[Any]]:
-        """Returns a list of lists containing all values from specified range.
+        pad_values: bool = True,
+        return_type: GridRangeType = GridRangeType.ListOfLists,
+    ) -> List[List[T]]:
+        """Alias for :meth:`~gspread.worksheet.Worksheet.get`...
 
-        By default values are returned as strings. See ``value_render_option``
-        to change the default format.
-
-        :param str range_name: (optional) Cell range in the A1 notation or
-            a named range. If not specified the method returns values from all
-            non empty cells.
-
-        :param str major_dimension: (optional) The major dimension of the
-            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
-            Defaults to Dimension.rows
-        :type major_dimension: :class:`~gspread.utils.Dimension`
-
-        :param bool combine_merged_cells: (optional) If True, then all cells that
-            are part of a merged cell will have the same value as the top-left
-            cell of the merged cell. Defaults to False.
-
-            .. warning::
-
-                Setting this to True will cause an additional API request to be
-                made to retrieve the values of all merged cells.
-
-
-        :param str value_render_option: (optional) Determines how values should
-            be rendered in the output. See `ValueRenderOption`_ in
-            the Sheets API.
-
-            Possible values are:
-
-            ``ValueRenderOption.formatted``
-                (default) Values will be calculated and formatted according
-                to the cell's formatting. Formatting is based on the
-                spreadsheet's locale, not the requesting user's locale.
-
-            ``ValueRenderOption.unformatted``
-                Values will be calculated, but not formatted in the reply.
-                For example, if A1 is 1.23 and A2 is =A1 and formatted as
-                currency, then A2 would return the number 1.23.
-
-            ``ValueRenderOption.formula``
-                Values will not be calculated. The reply will include
-                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
-                formatted as currency, then A2 would return "=A1".
-
-            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
-        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
-
-
-        :param str date_time_render_option: (optional) How dates, times, and
-            durations should be represented in the output.
-
-            Possible values are:
-
-            ``DateTimeOption.serial_number``
-                (default) Instructs date, time, datetime, and duration fields
-                to be output as doubles in "serial number" format,
-                as popularized by Lotus 1-2-3.
-
-            ``DateTimeOption.formatted_string``
-                Instructs date, time, datetime, and duration fields to be output
-                as strings in their given number format
-                (which depends on the spreadsheet locale).
-
-            .. note::
-
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
-
-            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
-
-        .. note::
-
-            Empty trailing rows and columns will not be included.
-
-        :param bool maintain_size: (optional) Returns a matrix of values matching the size of the requested range.
-
-            .. warning::
-
-                This can only work if the requested range is a complete bounded A1 notation.
-                Example: ``A1:D4``: OK, ``C3:F``: Not OK, we don't know the end size of the requested range.
-
-                This does not work with ``named_range`` either.
-
-            Examples::
-
-                # Works
-                >>> worksheet.get("A1:B2", maintain_size=True)
-                [['A1', 'B1'], ['A2', '']]
-
-                # Does NOT maintain the requested size
-                >>> worksheet.get("A1:B", maintain_size=True)
-                [['A1', 'B1'], ['A2'], [], ['A4', 'B4'], ['A5']]
-
-        Examples::
-
-            # Return all values from the sheet
-            worksheet.get_values()
-
-            # Return all values from columns "A" and "B"
-            worksheet.get_values('A:B')
-
-            # Return values from range "A2:C10"
-            worksheet.get_values('A2:C10')
-
-            # Return values from named range "my_range"
-            worksheet.get_values('my_range')
-
-            # Return unformatted values (e.g. numbers as numbers)
-            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.unformatted)
-
-            # Return cell values without calculating formulas
-            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.formula)
+        with ``return_type`` set to ``List[List[Any]]``
+        and ``pad_values`` set to ``True``
+        (legacy method)
         """
-        try:
-            vals = fill_gaps(
-                self.get(
-                    range_name=range_name,
-                    major_dimension=major_dimension,
-                    value_render_option=value_render_option,
-                    date_time_render_option=date_time_render_option,
-                    maintain_size=maintain_size,
-                )
-            )
-            if combine_merged_cells is True:
-                spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
-                worksheet_meta = finditem(
-                    lambda x: x["properties"]["title"] == self.title,
-                    spreadsheet_meta["sheets"],
-                )
-                return combined_merge_values(worksheet_meta, vals)
-            return vals
-        except KeyError:
-            return [[]]
-
-    def get_all_values(
-        self,
-        major_dimension: Optional[Dimension] = None,
-        value_render_option: Optional[ValueRenderOption] = None,
-        date_time_render_option: Optional[DateTimeOption] = None,
-    ) -> List[List[Any]]:
-        """Returns a list of lists containing all cells' values as strings.
-
-        This is an alias to :meth:`~gspread.worksheet.Worksheet.get_values`
-
-        .. note::
-
-            This is a legacy method.
-            Use :meth:`~gspread.worksheet.Worksheet.get_values` instead.
-
-        Examples::
-
-            # Return all values from the sheet
-            worksheet.get_all_values()
-
-            # Is equivalent to
-            worksheet.get_values()
-        """
-        return self.get_values(
+        return self.get(
+            range_name=range_name,
             major_dimension=major_dimension,
             value_render_option=value_render_option,
             date_time_render_option=date_time_render_option,
+            combine_merged_cells=combine_merged_cells,
+            maintain_size=maintain_size,
+            pad_values=pad_values,
+            return_type=return_type,
+        )
+
+    def get_all_values(
+        self,
+        range_name: Optional[str] = None,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+        combine_merged_cells: bool = False,
+        maintain_size: bool = False,
+        pad_values: bool = True,
+        return_type: GridRangeType = GridRangeType.ListOfLists,
+    ) -> List[List[T]]:
+        """Alias to :meth:`~gspread.worksheet.Worksheet.get_values`"""
+        return self.get_values(
+            range_name=range_name,
+            major_dimension=major_dimension,
+            value_render_option=value_render_option,
+            date_time_render_option=date_time_render_option,
+            combine_merged_cells=combine_merged_cells,
+            maintain_size=maintain_size,
+            pad_values=pad_values,
+            return_type=return_type,
         )
 
     def get_all_records(
@@ -697,8 +576,11 @@ class Worksheet:
                 "last_index must be an integer less than or equal to the number of rows in the worksheet"
             )
 
-        keys = self.get_values(
-            "{head}:{head}".format(head=head), value_render_option=value_render_option
+        keys = self.get(
+            "{head}:{head}".format(head=head),
+            value_render_option=value_render_option,
+            return_type=GridRangeType.ListOfLists,
+            pad_values=True,
         )[0]
 
         if expected_headers is None:
@@ -723,11 +605,13 @@ class Worksheet:
                 )
             )
 
-        values = self.get_values(
+        values = self.get(
             "{first_index}:{last_index}".format(
                 first_index=first_index, last_index=last_index
             ),
             value_render_option=value_render_option,
+            return_type=GridRangeType.ListOfLists,
+            pad_values=True,
         )
 
         values_len = len(values[0])
@@ -981,12 +865,20 @@ class Worksheet:
         major_dimension: Optional[Dimension] = None,
         value_render_option: Optional[ValueRenderOption] = None,
         date_time_render_option: Optional[DateTimeOption] = None,
+        combine_merged_cells: bool = False,
         maintain_size: bool = False,
-    ) -> ValueRange:
+        pad_values: bool = False,
+        return_type: GridRangeType = GridRangeType.ValueRange,
+    ) -> Union[ValueRange, List[List[Any]]]:
         """Reads values of a single range or a cell of a sheet.
 
+        Returns a ValueRange (list of lists) containing all values from a specified range or cell
+
+        By default values are returned as strings. See ``value_render_option``
+        to change the default format.
+
         :param str range_name: (optional) Cell range in the A1 notation or
-            a named range.
+            a named range. If not specified the method returns values from all non empty cells.
 
         :param str major_dimension: (optional) The major dimension of the
             values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
@@ -1040,7 +932,32 @@ class Worksheet:
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
+        :param bool combine_merged_cells: (optional) If True, then all cells that
+            are part of a merged cell will have the same value as the top-left
+            cell of the merged cell. Defaults to False.
+
+            .. warning::
+
+                Setting this to True will cause an additional API request to be
+                made to retrieve the values of all merged cells.
+
+        :param bool maintain_size: (optional) If True, then the returned values
+            will have the same size as the requested range_name. Defaults to False.
+
+        :param bool pad_values: (optional) If True, then empty cells will be
+            filled with empty strings. Defaults to False.
+
+            .. warning::
+
+                    The returned array will not be rectangular unless this is set to True. If this is a problem, see also `maintain_size`.
+
+        :param GridRangeType return_type: (optional) The type of object to return.
+            Defaults to :class:`gspread.utils.GridRangeType.ValueRange`.
+            The other option is `gspread.utils.GridRangeType.ListOfLists`.
+
         :rtype: :class:`gspread.worksheet.ValueRange`
+
+        .. versionadded:: 3.3
 
         Examples::
 
@@ -1053,10 +970,17 @@ class Worksheet:
             # Return values of 'A1:B2' range
             worksheet.get('A1:B2')
 
+            # Return all values from columns "A" and "B"
+            worksheet.get('A:B')
+
             # Return values of 'my_range' named range
             worksheet.get('my_range')
 
-         .. versionadded:: 3.3
+            # Return unformatted values (e.g. numbers as numbers)
+            worksheet.get('A2:B4', value_render_option=ValueRenderOption.unformatted)
+
+            # Return cell values without calculating formulas
+            worksheet.get('A2:B4', value_render_option=ValueRenderOption.formula)
         """
         range_name = absolute_range_name(self.title, range_name)
 
@@ -1070,7 +994,21 @@ class Worksheet:
             self.spreadsheet_id, range_name, params=params
         )
 
-        values = response.get("values", [])
+        values = response.get("values", [[]])
+
+        if pad_values is True:
+            try:
+                values = fill_gaps(values)
+            except KeyError:
+                values = [[]]
+
+        if combine_merged_cells is True:
+            spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
+            worksheet_meta = finditem(
+                lambda x: x["properties"]["title"] == self.title,
+                spreadsheet_meta["sheets"],
+            )
+            values = combined_merge_values(worksheet_meta, values)
 
         # range_name must be a full grid range so that we can guarantee
         #  startRowIndex and endRowIndex properties
@@ -1081,9 +1019,12 @@ class Worksheet:
             cols = grid_range["endColumnIndex"] - grid_range["startColumnIndex"]
             values = fill_gaps(values, rows=rows, cols=cols)
 
-        response["values"] = values
-
-        return ValueRange.from_json(response)
+        if return_type is GridRangeType.ValueRange:
+            response["values"] = values
+            return ValueRange.from_json(response)
+        if return_type is GridRangeType.ListOfLists:
+            return values
+        raise ValueError("return_type must be either ValueRange or ListOfLists")
 
     def batch_get(
         self,

@@ -375,6 +375,23 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+    def test_fill_gaps_with_non_square_array(self):
+        """test fill_gaps function"""
+        matrix = [
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+            [9],
+        ]
+        expected = [
+            [1, 2, 3, 4, "", "", ""],
+            [5, 6, 7, 8, "", "", ""],
+            [9, "", "", "", "", "", ""],
+            ["", "", "", "", "", "", ""],
+        ]
+        actual = utils.fill_gaps(matrix, 4, 7)
+
+        self.assertEqual(actual, expected)
+
     def test_is_full_a1_notation(self):
         """test is_full_a1_notation function"""
         self.assertTrue(utils.is_full_a1_notation("A1:B2"))

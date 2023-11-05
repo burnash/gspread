@@ -107,6 +107,11 @@ class PasteOrientation(StrEnum):
     transpose = "TRANSPOSE"
 
 
+class GridRangeType(StrEnum):
+    ValueRange = "ValueRange"
+    ListOfLists = "ListOfLists"
+
+
 def convert_credentials(credentials: Credentials) -> Credentials:
     module = credentials.__module__
     cls = credentials.__class__.__name__
