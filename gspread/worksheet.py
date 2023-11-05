@@ -484,7 +484,6 @@ class Worksheet:
         self,
         empty2zero=False,
         head=1,
-        use_index=None,
         first_index=None,
         last_index=None,
         default_blank="",
@@ -505,7 +504,6 @@ class Worksheet:
             converted to zeros.
         :param int head: (optional) Determines which index to use as keys,
             starting from 1 following the numeration of the spreadsheet.
-        :param int use_index: (optional) Deprecated. Please ignore.
         :param int first_index: (optional) row to start reading data from (inclusive) (1-based).
         :param int last_index: (optional) row to stop reading at (inclusive) (1-based).
         :param str default_blank: (optional) Determines which value to use for
@@ -542,13 +540,6 @@ class Worksheet:
                 {"A1": "A11", "B2": "B12", "C3": "C13"}
             }
         """
-        if use_index is not None:
-            deprecation_warning(
-                version="6.0.0",
-                msg="use_index in get_records does nothing."
-                "It will be removed. Please do not use it.",
-            )
-
         # some sanity checks
         if first_index is None:
             first_index = head + 1
