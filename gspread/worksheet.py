@@ -310,10 +310,14 @@ class Worksheet:
         """
         try:
             data = self.get(
-                rowcol_to_a1(row, col), value_render_option=value_render_option
+                rowcol_to_a1(row, col),
+                value_render_option=value_render_option,
+                return_type=GridRangeType.ValueRange,
             )
-
-            value = str(data.first())
+            try:
+                value = str(data[0][0])
+            except IndexError:
+                value = str(None)
         except KeyError:
             value = ""
 
