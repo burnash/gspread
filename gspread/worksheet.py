@@ -488,7 +488,6 @@ class Worksheet:
         self,
         empty2zero=False,
         head=1,
-        use_index=0,
         first_index=None,
         last_index=None,
         default_blank="",
@@ -505,17 +504,12 @@ class Worksheet:
         Cell values are numericised (strings that can be read as ints or floats
         are converted), unless specified in numericise_ignore
 
-        Can be used to read data from rows (use_index=0) or columns (use_index=1) (default is 0),
-            check the examples below for more details.
-
         :param bool empty2zero: (optional) Determines whether empty cells are
             converted to zeros.
         :param int head: (optional) Determines which index to use as keys,
             starting from 1 following the numeration of the spreadsheet.
-        :param int use_index: (optional) Determines whether to read records and headers from rows or columns.
-            0 for rows, 1 for columns.
-        :param int first_index: (optional) row/col (depends on `use_index`) to start reading data from (inclusive) (1-based).
-        :param int last_index: (optional) row/col (depends on `use_index`) to stop reading at (inclusive) (1-based).
+        :param int first_index: (optional) row to start reading data from (inclusive) (1-based).
+        :param int last_index: (optional) row to stop reading at (inclusive) (1-based).
         :param str default_blank: (optional) Determines which value to use for
             blank cells, defaults to empty string.
         :param bool allow_underscores_in_numeric_literals: (optional) Allow
@@ -544,24 +538,13 @@ class Worksheet:
             # 3    A11  B12  C13
 
             # Read all rows from the sheet
-            >>> worksheet.get_records(use_index=0)
+            >>> worksheet.get_records()
             {
                 {"A1": "A6", "B2": "B7", "C3": "C8"},
                 {"A1": "A11", "B2": "B12", "C3": "C13"}
             }
-
-            >>> worksheet.get_records(use_index=1)
-            {
-                {"A1": "B2", "A6": "B7", "A11": "B12"},
-                {"A1": "C3", "A6": "C8", "A11": "C13"}
-            }
         """
         # some sanity checks
-        if use_index not in [0, 1]:
-            raise ValueError("use_index must be either 0 or 1")
-        if use_index == 1:  # TODO: implement use_index=1
-            raise NotImplementedError("use_index=1 is not implemented yet")
-
         if first_index is None:
             first_index = head + 1
         elif first_index <= head:
