@@ -50,7 +50,7 @@ DEFAULT_AUTHORIZED_USER_FILENAME = DEFAULT_CONFIG_DIR / "authorized_user.json"
 DEFAULT_SERVICE_ACCOUNT_FILENAME = DEFAULT_CONFIG_DIR / "service_account.json"
 
 
-def authorize(credentials, client_factory=Client):
+def authorize(credentials, client_factory=None):
     """Login to Google API using OAuth2 credentials.
     This is a shortcut/helper function which
     instantiates a client using `client_factory`.
@@ -60,10 +60,13 @@ def authorize(credentials, client_factory=Client):
     :returns: An instance of the class produced by `client_factory`.
     :rtype: :class:`gspread.client.Client`
     """
-    deprecation_warning(
-        version="6.0.0",
-        msg="client_factory will be replaced by gspread.http_client types",
-    )
+    if client_factory is None:
+        client_factory = Client
+    else:
+        deprecation_warning(
+            version="6.0.0",
+            msg="client_factory will be replaced by gspread.http_client types",
+        )
 
     return client_factory(auth=credentials)
 
@@ -124,7 +127,7 @@ def oauth(
     flow=local_server_flow,
     credentials_filename=DEFAULT_CREDENTIALS_FILENAME,
     authorized_user_filename=DEFAULT_AUTHORIZED_USER_FILENAME,
-    client_factory=Client,
+    client_factory=None,
 ):
     r"""Authenticate with OAuth Client ID.
 
@@ -189,10 +192,13 @@ def oauth(
 
     :rtype: :class:`gspread.client.Client`
     """
-    deprecation_warning(
-        version="6.0.0",
-        msg="client_factory will be replaced by gspread.http_client types",
-    )
+    if client_factory is None:
+        client_factory = Client
+    else:
+        deprecation_warning(
+            version="6.0.0",
+            msg="client_factory will be replaced by gspread.http_client types",
+        )
 
     authorized_user_filename = Path(authorized_user_filename)
     creds = load_credentials(filename=authorized_user_filename)
@@ -211,7 +217,7 @@ def oauth_from_dict(
     authorized_user_info=None,
     scopes=DEFAULT_SCOPES,
     flow=local_server_flow,
-    client_factory=Client,
+    client_factory=None,
 ):
     r"""Authenticate with OAuth Client ID.
 
@@ -274,10 +280,13 @@ def oauth_from_dict(
 
     :rtype: (`gspread.client.Client`, str)
     """
-    deprecation_warning(
-        version="6.0.0",
-        msg="client_factory will be replaced by gspread.http_client types",
-    )
+    if client_factory is None:
+        client_factory = Client
+    else:
+        deprecation_warning(
+            version="6.0.0",
+            msg="client_factory will be replaced by gspread.http_client types",
+        )
 
     creds = None
     if authorized_user_info is not None:
@@ -297,7 +306,7 @@ def oauth_from_dict(
 def service_account(
     filename=DEFAULT_SERVICE_ACCOUNT_FILENAME,
     scopes=DEFAULT_SCOPES,
-    client_factory=Client,
+    client_factory=None,
 ):
     """Authenticate using a service account.
 
@@ -323,15 +332,18 @@ def service_account(
 
     :rtype: :class:`gspread.client.Client`
     """
-    deprecation_warning(
-        version="6.0.0",
-        msg="client_factory will be replaced by gspread.http_client types",
-    )
+    if client_factory is None:
+        client_factory = Client
+    else:
+        deprecation_warning(
+            version="6.0.0",
+            msg="client_factory will be replaced by gspread.http_client types",
+        )
     creds = ServiceAccountCredentials.from_service_account_file(filename, scopes=scopes)
     return client_factory(auth=creds)
 
 
-def service_account_from_dict(info, scopes=DEFAULT_SCOPES, client_factory=Client):
+def service_account_from_dict(info, scopes=DEFAULT_SCOPES, client_factory=None):
     """Authenticate using a service account (json).
 
     ``scopes`` parameter defaults to read/write scope available in
@@ -356,10 +368,13 @@ def service_account_from_dict(info, scopes=DEFAULT_SCOPES, client_factory=Client
 
     :rtype: :class:`gspread.client.Client`
     """
-    deprecation_warning(
-        version="6.0.0",
-        msg="client_factory will be replaced by gspread.http_client types",
-    )
+    if client_factory is None:
+        client_factory = Client
+    else:
+        deprecation_warning(
+            version="6.0.0",
+            msg="client_factory will be replaced by gspread.http_client types",
+        )
 
     creds = ServiceAccountCredentials.from_service_account_info(
         info=info,
