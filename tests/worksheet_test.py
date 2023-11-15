@@ -884,7 +884,7 @@ class WorksheetTest(GspreadTest):
 
         # put in new values
         rows = [
-            ["A1", "B2", "C3", "A1"],
+            ["A1", "faff", "C3", "faff"],
             [1, "b2", 1.45, ""],
             ["", "", "", ""],
             ["A4", 0.4, "", 4],
