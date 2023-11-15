@@ -607,7 +607,7 @@ class Worksheet:
             the Sheets API.
         :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
 
-        :param list expected_headers: (optional) List of expected headers, they must be unique.
+        :param list expected_headers: (optional) Set this to allow reading a spreadsheet with duplicate headers. Set this to a list of unique headers that you want to read. Other headers not included in this list may be overwritten and data lost.
 
             .. note::
 
