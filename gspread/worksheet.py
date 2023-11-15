@@ -660,26 +660,24 @@ class Worksheet:
         )[0]
 
         if expected_headers is None:
-            expected_headers = keys
+            # all headers must be unique
+            header_row_is_unique = len(keys) == len(set(keys))
+            if not header_row_is_unique:
+                raise GSpreadException("the header row in the worksheet is not unique")
         else:
+            # all expected headers must be unique
             expected_headers_are_unique = len(expected_headers) == len(
                 set(expected_headers)
             )
             if not expected_headers_are_unique:
                 raise GSpreadException("the given 'expected_headers' are not uniques")
-
-        # validating the headers in the worksheet
-        header_row_is_unique = len(keys) == len(set(keys))
-        if not header_row_is_unique:
-            raise GSpreadException("the header row in the worksheet is not unique")
-
-        # validating that the expected headers are part of the headers in the worksheet
-        if not all(header in keys for header in expected_headers):
-            raise GSpreadException(
-                "the given 'expected_headers' contains unknown headers: {}".format(
-                    set(expected_headers) - set(keys)
+            # expected headers must be a subset of the actual headers
+            if not all(header in keys for header in expected_headers):
+                raise GSpreadException(
+                    "the given 'expected_headers' contains unknown headers: {}".format(
+                        set(expected_headers) - set(keys)
+                    )
                 )
-            )
 
         values = self.get_values(
             "{first_index}:{last_index}".format(
