@@ -492,9 +492,25 @@ class Worksheet:
                     lambda x: x["properties"]["title"] == self.title,
                     spreadsheet_meta["sheets"],
                 )
-                grid_range = a1_range_to_grid_range(
-                    get_a1_from_absolute_range(range_name),
-                )
+
+                # deal with named ranges
+                named_ranges = spreadsheet_meta.get("namedRanges", [])
+                # if there is a named range with the name range_name
+                if any(
+                    range_name == ss_namedRange["name"]
+                    for ss_namedRange in named_ranges
+                    if ss_namedRange.get("name")
+                ):
+                    ss_named_range = finditem(
+                        lambda x: x["name"] == range_name, named_ranges
+                    )
+                    grid_range = ss_named_range.get("range", {})
+                elif range_name is not None:
+                    a1 = get_a1_from_absolute_range(range_name)
+                    grid_range = a1_range_to_grid_range(a1)
+                else:
+                    grid_range = worksheet_meta.get("basicFilter", {}).get("range", {})
+
                 return combined_merge_values(
                     worksheet_metadata=worksheet_meta,
                     values=vals,
