@@ -505,9 +505,11 @@ class Worksheet:
                         lambda x: x["name"] == range_name, named_ranges
                     )
                     grid_range = ss_named_range.get("range", {})
+                # norrmal range_name, i.e., A1:B2
                 elif range_name is not None:
                     a1 = get_a1_from_absolute_range(range_name)
                     grid_range = a1_range_to_grid_range(a1)
+                # no range_name, i.e., all values
                 else:
                     grid_range = worksheet_meta.get("basicFilter", {}).get("range", {})
 
