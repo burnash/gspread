@@ -121,6 +121,10 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values, sheet_data)
         self.assertEqual(values_with_merged, expected_merge)
 
+        # test with cell address
+        values_with_merged = self.sheet.get_values("A1:D4", combine_merged_cells=True)
+        self.assertEqual(values_with_merged, expected_merge)
+
     @pytest.mark.vcr()
     def test_get_values_merge_cells_outside_of_range(self):
         self.sheet.resize(4, 4)
