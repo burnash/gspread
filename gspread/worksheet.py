@@ -689,6 +689,9 @@ class Worksheet:
             ),
             value_render_option=value_render_option,
         )
+        if values == []:
+            return []
+
         keys_row = self.get_values(
             "{head}:{head}".format(head=head), value_render_option=value_render_option
         )
