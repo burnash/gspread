@@ -933,7 +933,7 @@ class WorksheetTest(GspreadTest):
         with pytest.raises(GSpreadException):
             self.sheet.get_all_records()
 
-    @pytest.mark.vcr(allow_playback_repeats=True)
+    @pytest.mark.vcr()
     def test_get_all_records_expected_headers(self):
         self.sheet.resize(4, 4)
 
