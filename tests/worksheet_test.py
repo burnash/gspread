@@ -973,6 +973,38 @@ class WorksheetTest(GspreadTest):
         self.assertDictEqual(expected_values_3, read_records[2])
 
     @pytest.mark.vcr()
+    def test_get_all_records_expected_headers_with_blank(self):
+        # regression test for #590, #629, #1354
+        self.sheet.resize(4, 4)
+
+        # put in new values
+        rows = [
+            ["A1", "faff", "", ""],
+            [1, "b2", 1.45, ""],
+            ["", "", "", ""],
+            ["A4", 0.4, "", 4],
+        ]
+        cell_list = self.sheet.range("A1:D4")
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        with pytest.raises(GSpreadException):
+            self.sheet.get_all_records()
+
+        expected_headers = []
+        read_records = self.sheet.get_all_records(
+            expected_headers=expected_headers,
+        )
+
+        expected_values_1 = dict(zip(rows[0], rows[1]))
+        expected_values_2 = dict(zip(rows[0], rows[2]))
+        expected_values_3 = dict(zip(rows[0], rows[3]))
+        self.assertDictEqual(expected_values_1, read_records[0])
+        self.assertDictEqual(expected_values_2, read_records[1])
+        self.assertDictEqual(expected_values_3, read_records[2])
+
+    @pytest.mark.vcr()
     def test_get_all_records_numericise_unformatted(self):
         self.sheet.resize(2, 4)
         # put in new values, made from three lists
