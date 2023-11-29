@@ -683,16 +683,16 @@ class Worksheet:
                 "last_index must be an integer less than or equal to the number of rows in the worksheet"
             )
 
-        keys = self.get_values(
-            "{head}:{head}".format(head=head), value_render_option=value_render_option
-        )[0]
-
         values = self.get_values(
             "{first_index}:{last_index}".format(
                 first_index=first_index, last_index=last_index
             ),
             value_render_option=value_render_option,
         )
+        keys_row = self.get_values(
+            "{head}:{head}".format(head=head), value_render_option=value_render_option
+        )
+        keys = keys_row[0] if len(keys_row) > 0 else []
 
         values_len = len(values[0])
         keys_len = len(keys)
