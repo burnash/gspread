@@ -121,6 +121,10 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values, sheet_data)
         self.assertEqual(values_with_merged, expected_merge)
 
+        # test with cell address
+        values_with_merged = self.sheet.get_values("A1:D4", combine_merged_cells=True)
+        self.assertEqual(values_with_merged, expected_merge)
+
     @pytest.mark.vcr()
     def test_get_values_merge_cells_outside_of_range(self):
         self.sheet.resize(4, 4)
@@ -144,6 +148,57 @@ class WorksheetTest(GspreadTest):
 
         values_with_merged = self.sheet.get_values(
             REQUEST_RANGE, combine_merged_cells=True
+        )
+        self.assertEqual(values_with_merged, expected_values)
+
+    @pytest.mark.vcr()
+    def test_get_values_merge_cells_from_centre_of_sheet(self):
+        self.sheet.resize(4, 3)
+        sheet_data = [
+            ["1", "2", "4"],
+            ["down", "up", ""],
+            ["", "", "2"],
+            ["num", "val", ""],
+        ]
+        self.sheet.update("A1:C4", sheet_data)
+        self.sheet.merge_cells("A2:A3")
+        self.sheet.merge_cells("C1:C2")
+
+        REQUEST_RANGE = "B1:C3"
+        expected_values = [
+            ["2", "4"],
+            ["up", "4"],
+            ["", "2"],
+        ]
+
+        values_with_merged = self.sheet.get_values(
+            REQUEST_RANGE, combine_merged_cells=True
+        )
+        self.assertEqual(values_with_merged, expected_values)
+
+    @pytest.mark.vcr()
+    def test_get_values_merge_cells_with_named_range(self):
+        self.sheet.resize(4, 3)
+        sheet_data = [
+            ["1", "2", "4"],
+            ["down", "up", ""],
+            ["", "", "2"],
+            ["num", "val", ""],
+        ]
+        self.sheet.update("A1:C4", sheet_data)
+        self.sheet.merge_cells("A2:A3")
+        self.sheet.merge_cells("C1:C2")
+
+        request_range = "NamedRange"
+        self.sheet.define_named_range("B1:C3", request_range)
+        expected_values = [
+            ["2", "4"],
+            ["up", "4"],
+            ["", "2"],
+        ]
+
+        values_with_merged = self.sheet.get_values(
+            request_range, combine_merged_cells=True
         )
         self.assertEqual(values_with_merged, expected_values)
 

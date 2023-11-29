@@ -485,13 +485,41 @@ class Worksheet:
         """
         try:
             vals = fill_gaps(self.get(range_name, **kwargs))
+
             if combine_merged_cells is True:
                 spreadsheet_meta = self.spreadsheet.fetch_sheet_metadata()
                 worksheet_meta = finditem(
                     lambda x: x["properties"]["title"] == self.title,
                     spreadsheet_meta["sheets"],
                 )
-                return combined_merge_values(worksheet_meta, vals)
+
+                # deal with named ranges
+                named_ranges = spreadsheet_meta.get("namedRanges", [])
+                # if there is a named range with the name range_name
+                if any(
+                    range_name == ss_namedRange["name"]
+                    for ss_namedRange in named_ranges
+                    if ss_namedRange.get("name")
+                ):
+                    ss_named_range = finditem(
+                        lambda x: x["name"] == range_name, named_ranges
+                    )
+                    grid_range = ss_named_range.get("range", {})
+                # norrmal range_name, i.e., A1:B2
+                elif range_name is not None:
+                    a1 = get_a1_from_absolute_range(range_name)
+                    grid_range = a1_range_to_grid_range(a1)
+                # no range_name, i.e., all values
+                else:
+                    grid_range = worksheet_meta.get("basicFilter", {}).get("range", {})
+
+                return combined_merge_values(
+                    worksheet_metadata=worksheet_meta,
+                    values=vals,
+                    start_row_index=grid_range.get("startRowIndex", 0),
+                    start_col_index=grid_range.get("startColumnIndex", 0),
+                )
+
             return vals
         except KeyError:
             return []

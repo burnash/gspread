@@ -743,7 +743,7 @@ def accepted_kwargs(**default_kwargs):
     return decorate
 
 
-def combined_merge_values(worksheet_metadata, values):
+def combined_merge_values(worksheet_metadata, values, start_row_index, start_col_index):
     """For each merged region, replace all values with the value of the top-left cell of the region.
     e.g., replaces
     [
@@ -761,6 +761,12 @@ def combined_merge_values(worksheet_metadata, values):
         Should have a "merges" key.
 
     :param values: The values returned by the Google API for the worksheet. 2D array.
+
+    :param start_row_index: The index of the first row of the values in the worksheet.
+        e.g., if the values are in rows 3-5, this should be 2.
+
+    :param start_col_index: The index of the first column of the values in the worksheet.
+        e.g., if the values are in columns C-E, this should be 2.
     """
     merges = worksheet_metadata.get("merges", [])
     # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex
@@ -771,14 +777,24 @@ def combined_merge_values(worksheet_metadata, values):
     max_col_index = len(values[0]) - 1
 
     for merge in merges:
-        start_row, end_row = merge["startRowIndex"], merge["endRowIndex"]
-        start_col, end_col = merge["startColumnIndex"], merge["endColumnIndex"]
+        merge_start_row, merge_end_row = merge["startRowIndex"], merge["endRowIndex"]
+        merge_start_col, merge_end_col = (
+            merge["startColumnIndex"],
+            merge["endColumnIndex"],
+        )
+        # subtract offset
+        merge_start_row -= start_row_index
+        merge_end_row -= start_row_index
+        merge_start_col -= start_col_index
+        merge_end_col -= start_col_index
         # if out of bounds, ignore
-        if start_row > max_row_index or start_col > max_col_index:
+        if merge_start_row > max_row_index or merge_start_col > max_col_index:
             continue
-        top_left_value = values[start_row][start_col]
-        row_indices = range(start_row, end_row)
-        col_indices = range(start_col, end_col)
+        if merge_start_row < 0 or merge_start_col < 0:
+            continue
+        top_left_value = values[merge_start_row][merge_start_col]
+        row_indices = range(merge_start_row, merge_end_row)
+        col_indices = range(merge_start_col, merge_end_col)
         for row_index in row_indices:
             for col_index in col_indices:
                 # if out of bounds, ignore
