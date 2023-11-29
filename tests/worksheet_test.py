@@ -914,34 +914,16 @@ class WorksheetTest(GspreadTest):
         self.sheet.resize(4, 4)
         # put in new values
         rows = [
-            ["A1", "A1", "", "D1"],
-            [1, "b2", 1.45, ""],
-            ["", "", "", ""],
-            ["A4", 0.4, "", 4],
-        ]
-        cell_list = self.sheet.range("A1:D4")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
-
-        with pytest.raises(GSpreadException):
-            self.sheet.get_all_records()
-
-    @pytest.mark.vcr()
-    def test_get_all_records_expected_headers(self):
-        self.sheet.resize(4, 4)
-
-        # put in new values
-        rows = [
             ["A1", "faff", "C3", "faff"],
             [1, "b2", 1.45, ""],
             ["", "", "", ""],
             ["A4", 0.4, "", 4],
         ]
-        cell_list = self.sheet.range("A1:D4")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:D4", rows)
+
+        # check no expected headers
+        with pytest.raises(GSpreadException):
+            self.sheet.get_all_records()
 
         # check non uniques expected headers
         expected_headers = ["A1", "A1"]
