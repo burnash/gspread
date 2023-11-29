@@ -1006,6 +1006,51 @@ class WorksheetTest(GspreadTest):
         self.assertDictEqual(expected_values_1, read_records[0])
         self.assertDictEqual(expected_values_2, read_records[1])
         self.assertDictEqual(expected_values_3, read_records[2])
+
+    @pytest.mark.vcr()
+    def test_get_records_with_all_values_blank(self):
+        # regression test for #1355
+        self.sheet.resize(4, 4)
+
+        rows = [
+            ["a", "b", "c", "d"],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+        ]
+        self.sheet.update("A1:D4", rows)
+
+        expected_values_1 = dict(zip(rows[0], rows[1]))
+        expected_values_2 = dict(zip(rows[0], rows[2]))
+        expected_values_3 = dict(zip(rows[0], rows[3]))
+
+        # I ask for get_records(first_index=2, last_index=4)
+        # I want [{...}, {...}, {...}]
+
+        read_records_first_last = self.sheet.get_records(first_index=2, last_index=4)
+        self.assertEqual(len(read_records_first_last), 3)
+        self.assertDictEqual(expected_values_1, read_records_first_last[0])
+        self.assertDictEqual(expected_values_2, read_records_first_last[1])
+        self.assertDictEqual(expected_values_3, read_records_first_last[2])
+
+        # I ask for get_records()
+        # I want []
+        read_records_nofirst_nolast = self.sheet.get_records()
+        self.assertEqual(len(read_records_nofirst_nolast), 0)
+
+        # I ask for get_records(first_index=1)
+        # I want []
+        read_records_first_nolast = self.sheet.get_records(first_index=2)
+        self.assertEqual(len(read_records_first_nolast), 0)
+
+        # I ask for get_records(last_index=4)
+        # I want [{...}, {...}, {...}]
+        read_records_nofirst_last = self.sheet.get_records(last_index=4)
+        self.assertEqual(len(read_records_nofirst_last), 3)
+        self.assertDictEqual(expected_values_1, read_records_nofirst_last[0])
+        self.assertDictEqual(expected_values_2, read_records_nofirst_last[1])
+        self.assertDictEqual(expected_values_3, read_records_nofirst_last[2])
+
     @pytest.mark.vcr()
     def test_get_all_records_numericise_unformatted(self):
         self.sheet.resize(2, 4)
