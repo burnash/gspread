@@ -687,6 +687,12 @@ class Worksheet:
             "{head}:{head}".format(head=head), value_render_option=value_render_option
         )[0]
 
+        values = self.get_values(
+            "{first_index}:{last_index}".format(
+                first_index=first_index, last_index=last_index
+            ),
+            value_render_option=value_render_option,
+        )
         if expected_headers is None:
             # all headers must be unique
             header_row_is_unique = len(keys) == len(set(keys))
