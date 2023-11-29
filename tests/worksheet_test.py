@@ -949,7 +949,7 @@ class WorksheetTest(GspreadTest):
         self.assertDictEqual(expected_values_3, read_records[2])
 
     @pytest.mark.vcr()
-    def test_get_all_records_expected_headers_with_blank(self):
+    def test_get_all_records_with_blank_final_headers(self):
         # regression test for #590, #629, #1354
         self.sheet.resize(4, 4)
 
