@@ -805,10 +805,7 @@ class WorksheetTest(GspreadTest):
             ["", "", "", ""],
             ["A4", 0.4, "", 4],
         ]
-        cell_list = self.sheet.range("A1:D4")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:D4", rows)
 
         # first, read empty strings to empty strings
         read_records = self.sheet.get_all_records()
@@ -846,10 +843,7 @@ class WorksheetTest(GspreadTest):
             ["", "", "", ""],
             ["A4", 0.4, "", 4],
         ]
-        cell_list = self.sheet.range("A1:D6")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:D6", rows)
 
         # first, read empty strings to empty strings
         read_records = self.sheet.get_all_records(head=3)
@@ -984,10 +978,7 @@ class WorksheetTest(GspreadTest):
             ["", "", "", ""],
             ["A4", 0.4, "", 4],
         ]
-        cell_list = self.sheet.range("A1:D4")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:D4", rows)
 
         with pytest.raises(GSpreadException):
             self.sheet.get_all_records()
@@ -1038,10 +1029,7 @@ class WorksheetTest(GspreadTest):
             [7, 8, 9],
             [10, 11, 12],
         ]
-        cell_list = self.sheet.range("A1:C5")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:C5", rows)
 
         # test1 - set last_index only
         read_records = self.sheet.get_records(last_index=3)
@@ -1088,14 +1076,7 @@ class WorksheetTest(GspreadTest):
             ["A1", "B1", "C1"],
             [1, 2, 3, 4],
         ]
-        cell_list = self.sheet.range("A1:C1")
-        for cell in cell_list:
-            cell.value = rows[0][cell.col - 1]
-        self.sheet.update_cells(cell_list)
-        cell_list = self.sheet.range("A2:D2")
-        for cell in cell_list:
-            cell.value = rows[1][cell.col - 1]
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:C2", rows)
 
         read_records = self.sheet.get_records(head=1, first_index=2, last_index=2)
         rows[0].append("")
@@ -1108,19 +1089,9 @@ class WorksheetTest(GspreadTest):
         self.sheet.resize(2, 4)
         rows = [
             ["A1", "B1", "C1"],
-            [
-                1,
-                2,
-            ],
+            [1, 2],
         ]
-        cell_list = self.sheet.range("A1:C1")
-        for cell in cell_list:
-            cell.value = rows[0][cell.col - 1]
-        self.sheet.update_cells(cell_list)
-        cell_list = self.sheet.range("A2:B2")
-        for cell in cell_list:
-            cell.value = rows[1][cell.col - 1]
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:C2", rows)
 
         read_records = self.sheet.get_records(head=1, first_index=2, last_index=2)
         rows[1].append("")
@@ -1132,20 +1103,10 @@ class WorksheetTest(GspreadTest):
     def test_get_records_pad_more_than_one_key(self):
         self.sheet.resize(2, 4)
         rows = [
-            [
-                "A1",
-                "B1",
-            ],
+            ["A1", "B1"],
             [1, 2, 3, 4],
         ]
-        cell_list = self.sheet.range("A1:B1")
-        for cell in cell_list:
-            cell.value = rows[0][cell.col - 1]
-        self.sheet.update_cells(cell_list)
-        cell_list = self.sheet.range("A2:D2")
-        for cell in cell_list:
-            cell.value = rows[1][cell.col - 1]
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:C2", rows)
 
         with pytest.raises(GSpreadException):
             self.sheet.get_records(head=1, first_index=2, last_index=2)
