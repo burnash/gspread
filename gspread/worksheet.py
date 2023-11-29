@@ -693,6 +693,16 @@ class Worksheet:
             ),
             value_render_option=value_render_option,
         )
+
+        values_len = len(values[0])
+        keys_len = len(keys)
+        values_wider_than_keys_by = values_len - keys_len
+
+        if values_wider_than_keys_by > 0:
+            keys.extend([default_blank] * values_wider_than_keys_by)
+        elif values_wider_than_keys_by < 0:
+            values = fill_gaps(values, cols=keys_len, padding_value=default_blank)
+
         if expected_headers is None:
             # all headers must be unique
             header_row_is_unique = len(keys) == len(set(keys))
@@ -712,29 +722,6 @@ class Worksheet:
                         set(expected_headers) - set(keys)
                     )
                 )
-
-        values = self.get_values(
-            "{first_index}:{last_index}".format(
-                first_index=first_index, last_index=last_index
-            ),
-            value_render_option=value_render_option,
-        )
-
-        values_len = len(values[0])
-        keys_len = len(keys)
-        values_wider_than_keys_by = values_len - keys_len
-        default_blank_in_keys = default_blank in keys
-
-        if ((values_wider_than_keys_by > 0) and default_blank_in_keys) or (
-            values_wider_than_keys_by > 1
-        ):
-            raise GSpreadException(
-                "the header row in the worksheet contains multiple empty cells"
-            )
-        elif values_wider_than_keys_by == 1:
-            keys.append(default_blank)
-        elif values_wider_than_keys_by < 0:
-            values = fill_gaps(values, cols=keys_len, padding_value=default_blank)
 
         if numericise_ignore == ["all"]:
             pass
