@@ -1132,7 +1132,7 @@ class WorksheetTest(GspreadTest):
             ["A1", "B1", "C1"],
             [1, 2, 3, 4],
         ]
-        self.sheet.update("A1:C2", rows)
+        self.sheet.update("A1:D2", rows)
 
         read_records = self.sheet.get_records(head=1, first_index=2, last_index=2)
         rows[0].append("")
@@ -1162,7 +1162,7 @@ class WorksheetTest(GspreadTest):
             ["A1", "B1"],
             [1, 2, 3, 4],
         ]
-        self.sheet.update("A1:C2", rows)
+        self.sheet.update("A1:D2", rows)
 
         with pytest.raises(GSpreadException):
             self.sheet.get_records(head=1, first_index=2, last_index=2)
