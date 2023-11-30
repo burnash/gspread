@@ -697,14 +697,15 @@ class Worksheet:
         )
         keys = keys_row[0] if len(keys_row) > 0 else []
 
-        values_len = len(values[0])
-        keys_len = len(keys)
-        values_wider_than_keys_by = values_len - keys_len
+        values_width = len(values[0])
+        keys_width = len(keys)
+        values_wider_than_keys_by = values_width - keys_width
 
+        # pad keys and values to be the same WIDTH
         if values_wider_than_keys_by > 0:
             keys.extend([default_blank] * values_wider_than_keys_by)
         elif values_wider_than_keys_by < 0:
-            values = fill_gaps(values, cols=keys_len, padding_value=default_blank)
+            values = fill_gaps(values, cols=keys_width, padding_value=default_blank)
 
         if expected_headers is None:
             # all headers must be unique
