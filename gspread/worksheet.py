@@ -676,12 +676,15 @@ class Worksheet:
 
         if last_index is None:
             last_index = self.row_count
+            last_index_set = False
         elif last_index < first_index:
             raise ValueError("last_index must be greater than or equal to first_index")
         elif last_index > self.row_count:
             raise ValueError(
                 "last_index must be an integer less than or equal to the number of rows in the worksheet"
             )
+        else:
+            last_index_set = True
 
         values = self.get_values(
             "{first_index}:{last_index}".format(
@@ -690,7 +693,13 @@ class Worksheet:
             value_render_option=value_render_option,
         )
         if values == []:
-            return []
+            # see test_get_records_with_all_values_blank
+            #  if last index is not asked for,
+            #  we don't know the length of the sheet so we return []
+            if last_index_set is False:
+                return []
+            # otherwise values will later be padded to be the size of keys + sheet size
+            values = [[]]
 
         keys_row = self.get_values(
             "{head}:{head}".format(head=head), value_render_option=value_render_option
