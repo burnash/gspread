@@ -805,10 +805,7 @@ class WorksheetTest(GspreadTest):
             ["", "", "", ""],
             ["A4", 0.4, "", 4],
         ]
-        cell_list = self.sheet.range("A1:D4")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:D4", rows)
 
         # first, read empty strings to empty strings
         read_records = self.sheet.get_all_records()
@@ -846,10 +843,7 @@ class WorksheetTest(GspreadTest):
             ["", "", "", ""],
             ["A4", 0.4, "", 4],
         ]
-        cell_list = self.sheet.range("A1:D6")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:D6", rows)
 
         # first, read empty strings to empty strings
         read_records = self.sheet.get_all_records(head=3)
@@ -920,34 +914,16 @@ class WorksheetTest(GspreadTest):
         self.sheet.resize(4, 4)
         # put in new values
         rows = [
-            ["A1", "A1", "", "D1"],
-            [1, "b2", 1.45, ""],
-            ["", "", "", ""],
-            ["A4", 0.4, "", 4],
-        ]
-        cell_list = self.sheet.range("A1:D4")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
-
-        with pytest.raises(GSpreadException):
-            self.sheet.get_all_records()
-
-    @pytest.mark.vcr(allow_playback_repeats=True)
-    def test_get_all_records_expected_headers(self):
-        self.sheet.resize(4, 4)
-
-        # put in new values
-        rows = [
             ["A1", "faff", "C3", "faff"],
             [1, "b2", 1.45, ""],
             ["", "", "", ""],
             ["A4", 0.4, "", 4],
         ]
-        cell_list = self.sheet.range("A1:D4")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:D4", rows)
+
+        # check no expected headers
+        with pytest.raises(GSpreadException):
+            self.sheet.get_all_records()
 
         # check non uniques expected headers
         expected_headers = ["A1", "A1"]
@@ -971,6 +947,109 @@ class WorksheetTest(GspreadTest):
         self.assertDictEqual(expected_values_1, read_records[0])
         self.assertDictEqual(expected_values_2, read_records[1])
         self.assertDictEqual(expected_values_3, read_records[2])
+
+    @pytest.mark.vcr()
+    def test_get_all_records_with_blank_final_headers(self):
+        # regression test for #590, #629, #1354
+        self.sheet.resize(4, 4)
+
+        # put in new values
+        rows = [
+            ["A1", "faff", "", ""],
+            [1, "b2", 1.45, ""],
+            ["", "", "", ""],
+            ["A4", 0.4, "", 4],
+        ]
+        self.sheet.update("A1:D4", rows)
+
+        with pytest.raises(GSpreadException):
+            self.sheet.get_all_records()
+
+        expected_headers = []
+        read_records = self.sheet.get_all_records(
+            expected_headers=expected_headers,
+        )
+
+        expected_values_1 = dict(zip(rows[0], rows[1]))
+        expected_values_2 = dict(zip(rows[0], rows[2]))
+        expected_values_3 = dict(zip(rows[0], rows[3]))
+        self.assertDictEqual(expected_values_1, read_records[0])
+        self.assertDictEqual(expected_values_2, read_records[1])
+        self.assertDictEqual(expected_values_3, read_records[2])
+
+    @pytest.mark.vcr()
+    def test_get_all_records_with_keys_blank(self):
+        # regression test for #1355
+        self.sheet.resize(4, 4)
+
+        rows = [
+            ["", "", "", ""],
+            ["c", "d", "e", "f"],
+            ["g", "h", "i", "j"],
+            ["k", "l", "m", ""],
+        ]
+        cell_list = self.sheet.range("A1:D4")
+        for cell, value in zip(cell_list, itertools.chain(*rows)):
+            cell.value = value
+        self.sheet.update_cells(cell_list)
+
+        # duplicate headers
+        with pytest.raises(GSpreadException):
+            self.sheet.get_all_records()
+
+        # ignore duplicate headers
+        read_records = self.sheet.get_all_records(expected_headers=[])
+
+        expected_values_1 = dict(zip(rows[0], rows[1]))
+        expected_values_2 = dict(zip(rows[0], rows[2]))
+        expected_values_3 = dict(zip(rows[0], rows[3]))
+        self.assertDictEqual(expected_values_1, read_records[0])
+        self.assertDictEqual(expected_values_2, read_records[1])
+        self.assertDictEqual(expected_values_3, read_records[2])
+
+    @pytest.mark.vcr()
+    def test_get_records_with_all_values_blank(self):
+        # regression test for #1355
+        self.sheet.resize(4, 4)
+
+        rows = [
+            ["a", "b", "c", "d"],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+        ]
+        self.sheet.update("A1:D4", rows)
+
+        expected_values_1 = dict(zip(rows[0], rows[1]))
+        expected_values_2 = dict(zip(rows[0], rows[2]))
+        expected_values_3 = dict(zip(rows[0], rows[3]))
+
+        # I ask for get_records(first_index=2, last_index=4)
+        # I want [{...}, {...}, {...}]
+
+        read_records_first_last = self.sheet.get_records(first_index=2, last_index=4)
+        self.assertEqual(len(read_records_first_last), 3)
+        self.assertDictEqual(expected_values_1, read_records_first_last[0])
+        self.assertDictEqual(expected_values_2, read_records_first_last[1])
+        self.assertDictEqual(expected_values_3, read_records_first_last[2])
+
+        # I ask for get_records()
+        # I want []
+        read_records_nofirst_nolast = self.sheet.get_records()
+        self.assertEqual(len(read_records_nofirst_nolast), 0)
+
+        # I ask for get_records(first_index=1)
+        # I want []
+        read_records_first_nolast = self.sheet.get_records(first_index=2)
+        self.assertEqual(len(read_records_first_nolast), 0)
+
+        # I ask for get_records(last_index=4)
+        # I want [{...}, {...}, {...}]
+        read_records_nofirst_last = self.sheet.get_records(last_index=4)
+        self.assertEqual(len(read_records_nofirst_last), 3)
+        self.assertDictEqual(expected_values_1, read_records_nofirst_last[0])
+        self.assertDictEqual(expected_values_2, read_records_nofirst_last[1])
+        self.assertDictEqual(expected_values_3, read_records_nofirst_last[2])
 
     @pytest.mark.vcr()
     def test_get_all_records_numericise_unformatted(self):
@@ -1006,10 +1085,7 @@ class WorksheetTest(GspreadTest):
             [7, 8, 9],
             [10, 11, 12],
         ]
-        cell_list = self.sheet.range("A1:C5")
-        for cell, value in zip(cell_list, itertools.chain(*rows)):
-            cell.value = value
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:C5", rows)
 
         # test1 - set last_index only
         read_records = self.sheet.get_records(last_index=3)
@@ -1056,14 +1132,7 @@ class WorksheetTest(GspreadTest):
             ["A1", "B1", "C1"],
             [1, 2, 3, 4],
         ]
-        cell_list = self.sheet.range("A1:C1")
-        for cell in cell_list:
-            cell.value = rows[0][cell.col - 1]
-        self.sheet.update_cells(cell_list)
-        cell_list = self.sheet.range("A2:D2")
-        for cell in cell_list:
-            cell.value = rows[1][cell.col - 1]
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:D2", rows)
 
         read_records = self.sheet.get_records(head=1, first_index=2, last_index=2)
         rows[0].append("")
@@ -1076,19 +1145,9 @@ class WorksheetTest(GspreadTest):
         self.sheet.resize(2, 4)
         rows = [
             ["A1", "B1", "C1"],
-            [
-                1,
-                2,
-            ],
+            [1, 2],
         ]
-        cell_list = self.sheet.range("A1:C1")
-        for cell in cell_list:
-            cell.value = rows[0][cell.col - 1]
-        self.sheet.update_cells(cell_list)
-        cell_list = self.sheet.range("A2:B2")
-        for cell in cell_list:
-            cell.value = rows[1][cell.col - 1]
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:C2", rows)
 
         read_records = self.sheet.get_records(head=1, first_index=2, last_index=2)
         rows[1].append("")
@@ -1100,20 +1159,10 @@ class WorksheetTest(GspreadTest):
     def test_get_records_pad_more_than_one_key(self):
         self.sheet.resize(2, 4)
         rows = [
-            [
-                "A1",
-                "B1",
-            ],
+            ["A1", "B1"],
             [1, 2, 3, 4],
         ]
-        cell_list = self.sheet.range("A1:B1")
-        for cell in cell_list:
-            cell.value = rows[0][cell.col - 1]
-        self.sheet.update_cells(cell_list)
-        cell_list = self.sheet.range("A2:D2")
-        for cell in cell_list:
-            cell.value = rows[1][cell.col - 1]
-        self.sheet.update_cells(cell_list)
+        self.sheet.update("A1:D2", rows)
 
         with pytest.raises(GSpreadException):
             self.sheet.get_records(head=1, first_index=2, last_index=2)

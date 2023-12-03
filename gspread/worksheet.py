@@ -676,16 +676,48 @@ class Worksheet:
 
         if last_index is None:
             last_index = self.row_count
+            last_index_set = False
         elif last_index < first_index:
             raise ValueError("last_index must be greater than or equal to first_index")
         elif last_index > self.row_count:
             raise ValueError(
                 "last_index must be an integer less than or equal to the number of rows in the worksheet"
             )
+        else:
+            last_index_set = True
 
-        keys = self.get_values(
+        values = self.get_values(
+            "{first_index}:{last_index}".format(
+                first_index=first_index, last_index=last_index
+            ),
+            value_render_option=value_render_option,
+        )
+        if values == []:
+            # see test_get_records_with_all_values_blank
+            #  if last index is not asked for,
+            #  we don't know the length of the sheet so we return []
+            if last_index_set is False:
+                return []
+            # otherwise values will later be padded to be the size of keys + sheet size
+            values = [[]]
+
+        keys_row = self.get_values(
             "{head}:{head}".format(head=head), value_render_option=value_render_option
-        )[0]
+        )
+        keys = keys_row[0] if len(keys_row) > 0 else []
+
+        values_width = len(values[0])
+        keys_width = len(keys)
+        values_wider_than_keys_by = values_width - keys_width
+
+        # pad keys and values to be the same WIDTH
+        if values_wider_than_keys_by > 0:
+            keys.extend([default_blank] * values_wider_than_keys_by)
+        elif values_wider_than_keys_by < 0:
+            values = fill_gaps(values, cols=keys_width, padding_value=default_blank)
+
+        # pad values to be the HEIGHT of last_index - first_index + 1
+        values = fill_gaps(values, rows=last_index - first_index + 1)
 
         if expected_headers is None:
             # all headers must be unique
@@ -706,29 +738,6 @@ class Worksheet:
                         set(expected_headers) - set(keys)
                     )
                 )
-
-        values = self.get_values(
-            "{first_index}:{last_index}".format(
-                first_index=first_index, last_index=last_index
-            ),
-            value_render_option=value_render_option,
-        )
-
-        values_len = len(values[0])
-        keys_len = len(keys)
-        values_wider_than_keys_by = values_len - keys_len
-        default_blank_in_keys = default_blank in keys
-
-        if ((values_wider_than_keys_by > 0) and default_blank_in_keys) or (
-            values_wider_than_keys_by > 1
-        ):
-            raise GSpreadException(
-                "the header row in the worksheet contains multiple empty cells"
-            )
-        elif values_wider_than_keys_by == 1:
-            keys.append(default_blank)
-        elif values_wider_than_keys_by < 0:
-            values = fill_gaps(values, cols=keys_len, padding_value=default_blank)
 
         if numericise_ignore == ["all"]:
             pass
