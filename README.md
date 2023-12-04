@@ -62,8 +62,13 @@ The first two arguments (`values` & `range_name`) have swapped (to `range_name` 
 As well, `values` can no longer be a list, and must be a 2D array.
 
 ```diff
-- file.sheet1.update(["54"], "B2")
-+ file.sheet1.update(range_name="I7", values=[["54"]])
+- file.sheet1.update([["new", "values"]])
++ file.sheet1.update([["new", "values"]]) # unchanged
+
+- file.sheet1.update("B2:C2", [["54", "55"]])
++ file.sheet1.update([["54", "55"]], "B2:C2")
+# or
++ file.sheet1.update(range_name="B2:C2", values=[["54", "55"]])
 ```
 
 ### Change colors from dictionary to text
