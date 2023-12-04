@@ -1,6 +1,12 @@
 Release History
 ===============
 
+5.12.1 (2023-12-04)
+-------------------
+
+* Many fixes for `get_records` by @alifeee in https://github.com/burnash/gspread/pull/1357
+* change `worksheet.update` migration guide by @alifeee in https://github.com/burnash/gspread/pull/1362
+
 5.12.1 (2023-11-29)
 -------------------
 
