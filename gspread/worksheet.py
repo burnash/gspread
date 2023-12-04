@@ -1218,6 +1218,7 @@ class Worksheet:
                 "Please pass values first and range_name second"
                 "or used named arguments (range_name=, values=)",
                 DeprecationWarning,
+                stacklevel=2,
             )
             range_name, values = values, range_name
 
