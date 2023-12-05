@@ -1054,7 +1054,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_records_with_some_values_blank(self):
         # regression test for #1363
-        self.sheet.resize(6, 4)
+        self.sheet.resize(6,4)
 
         rows = [
             ["a", "b", "c", "d"],
