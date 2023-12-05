@@ -717,7 +717,8 @@ class Worksheet:
             values = fill_gaps(values, cols=keys_width, padding_value=default_blank)
 
         # pad values to be the HEIGHT of last_index - first_index + 1
-        values = fill_gaps(values, rows=last_index - first_index + 1)
+        if last_index_set is True:
+            values = fill_gaps(values, rows=last_index - first_index + 1)
 
         if expected_headers is None:
             # all headers must be unique
