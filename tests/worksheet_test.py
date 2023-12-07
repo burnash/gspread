@@ -1052,6 +1052,28 @@ class WorksheetTest(GspreadTest):
         self.assertDictEqual(expected_values_3, read_records_nofirst_last[2])
 
     @pytest.mark.vcr()
+    def test_get_records_with_some_values_blank(self):
+        # regression test for #1363
+        self.sheet.resize(6, 4)
+
+        rows = [
+            ["a", "b", "c", "d"],
+            ["x", "y", "z", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+        ]
+
+        self.sheet.update("A1:D6", rows)
+
+        read_records = self.sheet.get_records()
+
+        expected_values_1 = dict(zip(rows[0], rows[1]))
+        self.assertEqual(len(read_records), 1)
+        self.assertDictEqual(expected_values_1, read_records[0])
+
+    @pytest.mark.vcr()
     def test_get_all_records_numericise_unformatted(self):
         self.sheet.resize(2, 4)
         # put in new values, made from three lists
