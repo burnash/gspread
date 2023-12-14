@@ -1,6 +1,22 @@
 Release History
 ===============
 
+5.12.1 (2023-12-04)
+-------------------
+
+* Many fixes for `get_records` by @alifeee in https://github.com/burnash/gspread/pull/1357
+* change `worksheet.update` migration guide by @alifeee in https://github.com/burnash/gspread/pull/1362
+
+5.12.1 (2023-11-29)
+-------------------
+
+* feature/readme migration v6 by @lavigne958 in https://github.com/burnash/gspread/pull/1297
+* add deprecation warnings for lastUpdateTime... by @alifeee in https://github.com/burnash/gspread/pull/1333
+* remove `use_index` and references to it in `get_records` by @alifeee in https://github.com/burnash/gspread/pull/1343
+* make deprecation warning dependent on if kwarg is used for client_factory by @alifeee in https://github.com/burnash/gspread/pull/1349
+* fix 1352 expected headers broken by @alifeee in https://github.com/burnash/gspread/pull/1353
+* fix `combine_merged_cells` when using from a range that doesn't start at `A1` by @alifeee in https://github.com/burnash/gspread/pull/1335
+
 5.12.0 (2023-10-22)
 -------------------
 
