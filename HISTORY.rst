@@ -1,6 +1,11 @@
 Release History
 ===============
 
+5.12.3 (2023-12-15)
+-------------------
+
+* 1363 get all records retrieves a large number of empty rows after the end of the data by @alifeee in https://github.com/burnash/gspread/pull/1364
+
 5.12.2 (2023-12-04)
 -------------------
 
