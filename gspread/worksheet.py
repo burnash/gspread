@@ -522,7 +522,7 @@ class Worksheet:
             the Sheets API.
         :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
 
-        :param list expected_headers: (optional) List of expected headers, they must be unique.
+        :param list expected_headers: (optional) Set this to allow reading a spreadsheet with duplicate headers. Set this to a list of unique headers that you want to read. Other headers not included in this list may be overwritten and data lost.
 
             .. note::
 
@@ -556,66 +556,69 @@ class Worksheet:
 
         if last_index is None:
             last_index = self.row_count
+            last_index_set = False
         elif last_index < first_index:
             raise ValueError("last_index must be greater than or equal to first_index")
         elif last_index > self.row_count:
             raise ValueError(
                 "last_index must be an integer less than or equal to the number of rows in the worksheet"
             )
+        else:
+            last_index_set = True
 
-        keys = self.get(
-            "{head}:{head}".format(head=head),
+        values = self.get_values(
+            "{first_index}:{last_index}".format(
+                first_index=first_index, last_index=last_index
+            ),
             value_render_option=value_render_option,
-            return_type=GridRangeType.ListOfLists,
-            pad_values=True,
-        )[0]
+        )
+        if values == [[]]:
+            # see test_get_records_with_all_values_blank
+            #  if last index is not asked for,
+            #  we don't know the length of the sheet so we return []
+            if last_index_set is False:
+                return []
+            # otherwise values will later be padded to be the size of keys + sheet size
+            values = [[]]
+
+        keys_row = self.get_values(
+            "{head}:{head}".format(head=head), value_render_option=value_render_option
+        )
+        keys = keys_row[0] if len(keys_row) > 0 else []
+
+        values_width = len(values[0])
+        keys_width = len(keys)
+        values_wider_than_keys_by = values_width - keys_width
+
+        # pad keys and values to be the same WIDTH
+        if values_wider_than_keys_by > 0:
+            keys.extend([default_blank] * values_wider_than_keys_by)
+        elif values_wider_than_keys_by < 0:
+            values = fill_gaps(values, cols=keys_width, padding_value=default_blank)
+
+        # pad values to be the HEIGHT of last_index - first_index + 1
+        if last_index_set is True:
+            values = fill_gaps(values, rows=last_index - first_index + 1)
 
         if expected_headers is None:
-            expected_headers = keys
+            # all headers must be unique
+            header_row_is_unique = len(keys) == len(set(keys))
+            if not header_row_is_unique:
+                raise GSpreadException("the header row in the worksheet is not unique")
         else:
+            # all expected headers must be unique
             expected_headers_are_unique = len(expected_headers) == len(
                 set(expected_headers)
             )
             if not expected_headers_are_unique:
                 raise GSpreadException("the given 'expected_headers' are not uniques")
-
-        # validating the headers in the worksheet
-        header_row_is_unique = len(keys) == len(set(keys))
-        if not header_row_is_unique:
-            raise GSpreadException("the header row in the worksheet is not unique")
-
-        # validating that the expected headers are part of the headers in the worksheet
-        if not all(header in keys for header in expected_headers):
-            raise GSpreadException(
-                "the given 'expected_headers' contains unknown headers: {}".format(
-                    set(expected_headers) - set(keys)
+            # expected headers must be a subset of the actual headers
+            if not all(header in keys for header in expected_headers):
+                raise GSpreadException(
+                    "the given 'expected_headers' contains unknown headers: {}".format(
+                        set(expected_headers) - set(keys)
+                    )
                 )
-            )
-
-        values = self.get(
-            "{first_index}:{last_index}".format(
-                first_index=first_index, last_index=last_index
-            ),
-            value_render_option=value_render_option,
-            return_type=GridRangeType.ListOfLists,
-            pad_values=True,
-        )
-
-        values_len = len(values[0])
-        keys_len = len(keys)
-        values_wider_than_keys_by = values_len - keys_len
-        default_blank_in_keys = default_blank in keys
-
-        if ((values_wider_than_keys_by > 0) and default_blank_in_keys) or (
-            values_wider_than_keys_by > 1
-        ):
-            raise GSpreadException(
-                "the header row in the worksheet contains multiple empty cells"
-            )
-        elif values_wider_than_keys_by == 1:
-            keys.append(default_blank)
-        elif values_wider_than_keys_by < 0:
-            values = fill_gaps(values, cols=keys_len, padding_value=default_blank)
 
         if numericise_ignore == ["all"]:
             pass
@@ -969,7 +972,8 @@ class Worksheet:
             # Return cell values without calculating formulas
             worksheet.get('A2:B4', value_render_option=ValueRenderOption.formula)
         """
-        range_name = absolute_range_name(self.title, range_name)
+        # do not override the given range name with the build up range name for the actual request
+        get_range_name = absolute_range_name(self.title, range_name)
 
         params: ParamsType = {
             "majorDimension": major_dimension,
@@ -978,7 +982,7 @@ class Worksheet:
         }
 
         response = self.client.values_get(
-            self.spreadsheet_id, range_name, params=params
+            self.spreadsheet_id, get_range_name, params=params
         )
 
         values = response.get("values", [[]])
@@ -995,7 +999,36 @@ class Worksheet:
                 lambda x: x["properties"]["title"] == self.title,
                 spreadsheet_meta["sheets"],
             )
-            values = combined_merge_values(worksheet_meta, values)
+
+            # deal with named ranges
+            named_ranges = spreadsheet_meta.get("namedRanges", [])
+            # if there is a named range with the name range_name
+            if any(
+                range_name == ss_namedRange["name"]
+                for ss_namedRange in named_ranges
+                if ss_namedRange.get("name")
+            ):
+                ss_named_range = finditem(
+                    lambda x: x["name"] == range_name, named_ranges
+                )
+                grid_range = ss_named_range.get("range", {})
+            # norrmal range_name, i.e., A1:B2
+            elif range_name is not None:
+                a1 = get_a1_from_absolute_range(range_name)
+                grid_range = a1_range_to_grid_range(a1)
+            # no range_name, i.e., all values
+            else:
+                grid_range = worksheet_meta.get("basicFilter", {}).get("range", {})
+
+            values = combined_merge_values(
+                worksheet_metadata=worksheet_meta,
+                values=values,
+                start_row_index=grid_range.get("startRowIndex", 0),
+                start_col_index=grid_range.get("startColumnIndex", 0),
+            )
+
+        # In case range_name is None
+        range_name = range_name or ""
 
         # range_name must be a full grid range so that we can guarantee
         #  startRowIndex and endRowIndex properties
