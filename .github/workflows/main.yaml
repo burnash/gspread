@@ -31,6 +31,6 @@ jobs:
       - run: tox -e py
       - run: mypy --install-types --ignore-missing-imports . || true
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py # --py36-plus
-      - run: safety check -i 42559 # pip <= 20.1.1, we upgrade it just above
+      - run: safety check -i 42559 -i 62044 # pip <= 20.1.1, we upgrade it just above
       - run: tox -e build
       - run: tox -e doc
