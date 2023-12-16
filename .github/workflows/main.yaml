@@ -20,7 +20,7 @@ jobs:
         python: ["3.8", "3.9", "3.10", "3.11", "3.x"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -U pip
