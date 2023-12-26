@@ -2547,7 +2547,7 @@ class Worksheet:
 
         :param str name: Range name in A1 notation, e.g. 'A1:A5'.
         :param str merge_type: (optional) one of ``MERGE_ALL``,
-            ``MERGE_COLUMNS``, or ``MERGE_ROWS``. Defaults to ``MERGE_ROWS``.
+            ``MERGE_COLUMNS``, or ``MERGE_ROWS``. Defaults to ``MERGE_ALL``.
             See `MergeType`_ in the Sheets API reference.
 
         Alternatively, you may specify numeric boundaries. All values
