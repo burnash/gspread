@@ -203,6 +203,39 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values_with_merged, expected_values)
 
     @pytest.mark.vcr()
+    def test_get_merge_cells_and_unmerge_cells(self):
+        self.sheet.resize(4, 4)
+        sheet_data = [
+            ["1", "", "2", "3"],
+            ["", "", "", ""],
+            ["", "4", "", ""],
+            ["", "5", "", ""],
+        ]
+        self.sheet.update("A1:D4", sheet_data)
+        self.sheet.merge_cells("A1:B2", utils.MergeType.merge_all)
+        self.sheet.merge_cells("C1:D2", utils.MergeType.merge_columns)
+        self.sheet.merge_cells("B3:C4", utils.MergeType.merge_rows)
+
+        REQUEST_RANGE = "A1:D4"
+        expected_values = [
+            ["1", "1", "2", "3"],
+            ["1", "1", "2", "3"],
+            ["", "4", "4", ""],
+            ["", "5", "5", ""],
+        ]
+        values_with_merged = self.sheet.get_values(
+            REQUEST_RANGE, combine_merged_cells=True
+        )
+        self.assertEqual(values_with_merged, expected_values)
+
+        self.sheet.unmerge_cells("A1:D4")
+        expected_values = sheet_data
+        values_with_merged = self.sheet.get_values(
+            REQUEST_RANGE, combine_merged_cells=True
+        )
+        self.assertEqual(values_with_merged, expected_values)
+
+    @pytest.mark.vcr()
     def test_get_values_and_maintain_size(self):
         """test get_values with maintain_size=True"""
         self.sheet.resize(5, 5)
