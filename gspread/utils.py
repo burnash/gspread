@@ -89,6 +89,10 @@ PasteOrientation = namedtuple("PasteOrientation", ["normal", "transpose"])(
     "NORMAL", "TRANSPOSE"
 )
 
+MergeType = namedtuple("MergeType", ["merge_all", "merge_columns", "merge_rows"])(
+    "MERGE_ALL", "MERGE_COLUMNS", "MERGE_ROWS"
+)
+
 DEPRECATION_WARNING_TEMPLATE = (
     "[Deprecated][in version {v_deprecated}]: {msg_deprecated}"
 )

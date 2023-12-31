@@ -14,6 +14,7 @@ from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
 from .utils import (
     REQUIRED_KWARGS,
     Dimension,
+    MergeType,
     PasteOrientation,
     PasteType,
     ValueInputOption,
@@ -2541,14 +2542,14 @@ class Worksheet:
         return self.spreadsheet._spreadsheets_sheets_copy_to(self.id, spreadsheet_id)
 
     @cast_to_a1_notation
-    def merge_cells(self, name, merge_type="MERGE_ALL"):
-        """Merge cells. There are 3 merge types: ``MERGE_ALL``, ``MERGE_COLUMNS``,
-        and ``MERGE_ROWS``.
+    def merge_cells(self, name, merge_type=MergeType.merge_all):
+        """Merge cells.
 
         :param str name: Range name in A1 notation, e.g. 'A1:A5'.
-        :param str merge_type: (optional) one of ``MERGE_ALL``,
-            ``MERGE_COLUMNS``, or ``MERGE_ROWS``. Defaults to ``MERGE_ROWS``.
+        :param merge_type: (optional) one of ``MergeType.merge_all``,
+            ``MergeType.merge_columns``, or ``MergeType.merge_rows``. Defaults to ``MergeType.merge_all``.
             See `MergeType`_ in the Sheets API reference.
+        :type merge_type: :namedtuple:`~gspread.utils.MergeType`
 
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):
