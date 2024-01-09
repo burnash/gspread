@@ -449,7 +449,13 @@ class Worksheet:
 
     def get_all_records(
         self,
-        **kwargs,
+        head=1,
+        expected_headers=None,
+        value_render_option=None,
+        default_blank="",
+        numericise_ignore=[],
+        allow_underscores_in_numeric_literals=False,
+        empty2zero=False,
     ) -> List[Dict[str, Union[int, float, str]]]:
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
@@ -459,74 +465,27 @@ class Worksheet:
         Cell values are numericised (strings that can be read as ints or floats
         are converted), unless specified in numericise_ignore
 
-        :param bool empty2zero: (optional) Determines whether empty cells are
-            converted to zeros.
         :param int head: (optional) Determines which row to use as keys,
             starting from 1 following the numeration of the spreadsheet.
-        :param str default_blank: (optional) Determines which value to use for
-            blank cells, defaults to empty string.
-        :param bool allow_underscores_in_numeric_literals: (optional) Allow
-            underscores in numeric literals, as introduced in PEP 515
-        :param list numericise_ignore: (optional) List of ints of indices of
-            the columns (starting at 1) to ignore numericising, special use
-            of ['all'] to ignore numericising on all columns.
-        :param value_render_option: (optional) Determines how values should
-            be rendered in the output. See `ValueRenderOption`_ in
-            the Sheets API.
-        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
-
         :param list expected_headers: (optional) List of expected headers, they must be unique.
 
             .. note::
 
                 returned dictionaries will contain all headers even if not included in this list
-
-        """
-        return self.get_records(**kwargs)
-
-    def get_records(  # noqa: C901 # this comment disables the complexity check for this function
-        self,
-        empty2zero=False,
-        head=1,
-        first_index=None,
-        last_index=None,
-        default_blank="",
-        allow_underscores_in_numeric_literals=False,
-        numericise_ignore=[],
-        value_render_option=None,
-        expected_headers=None,
-    ):
-        """Returns a list of dictionaries, all of them having the contents of
-        the spreadsheet range selected with the head row/col as keys and each of these
-        dictionaries holding the contents of subsequent selected rows/cols of cells as
-        values.
-
-        Cell values are numericised (strings that can be read as ints or floats
-        are converted), unless specified in numericise_ignore
-
-        :param bool empty2zero: (optional) Determines whether empty cells are
-            converted to zeros.
-        :param int head: (optional) Determines which index to use as keys,
-            starting from 1 following the numeration of the spreadsheet.
-        :param int first_index: (optional) row to start reading data from (inclusive) (1-based).
-        :param int last_index: (optional) row to stop reading at (inclusive) (1-based).
-        :param str default_blank: (optional) Determines which value to use for
-            blank cells, defaults to empty string.
-        :param bool allow_underscores_in_numeric_literals: (optional) Allow
-            underscores in numeric literals, as introduced in PEP 515
-        :param list numericise_ignore: (optional) List of ints of indices of
-            the columns (starting at 1) to ignore numericising, special use
-            of ['all'] to ignore numericising on all columns.
         :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
+        :param str default_blank: (optional) Determines which value to use for
+            blank cells, defaults to empty string.
+        :param list numericise_ignore: (optional) List of ints of indices of
+            the columns (starting at 1) to ignore numericising, special use
+            of ['all'] to ignore numericising on all columns.
+        :param bool allow_underscores_in_numeric_literals: (optional) Allow
+            underscores in numeric literals, as introduced in PEP 515
+        :param bool empty2zero: (optional) Determines whether empty cells are
+            converted to zeros when numericised, defaults to False.
 
-        :param list expected_headers: (optional) Set this to allow reading a spreadsheet with duplicate headers. Set this to a list of unique headers that you want to read. Other headers not included in this list may be overwritten and data lost.
-
-            .. note::
-
-                returned dictionaries will contain all headers even if not included in this list
 
         Examples::
 
@@ -538,73 +497,32 @@ class Worksheet:
             # 3    A11  B12  C13
 
             # Read all rows from the sheet
-            >>> worksheet.get_records()
+            >>> worksheet.get_all_records()
             {
                 {"A1": "A6", "B2": "B7", "C3": "C8"},
                 {"A1": "A11", "B2": "B12", "C3": "C13"}
             }
         """
-        # some sanity checks
-        if first_index is None:
-            first_index = head + 1
-        elif first_index <= head:
-            raise ValueError("first_index must be greater than the head row")
-        elif first_index > self.row_count:
-            raise ValueError(
-                "first_index must be less than or equal to the number of rows in the worksheet"
-            )
-
-        if last_index is None:
-            last_index = self.row_count
-            last_index_set = False
-        elif last_index < first_index:
-            raise ValueError("last_index must be greater than or equal to first_index")
-        elif last_index > self.row_count:
-            raise ValueError(
-                "last_index must be an integer less than or equal to the number of rows in the worksheet"
-            )
-        else:
-            last_index_set = True
-
-        values = self.get_values(
-            "{first_index}:{last_index}".format(
-                first_index=first_index, last_index=last_index
-            ),
+        entire_sheet = self.get(
             value_render_option=value_render_option,
+            pad_values=True,
         )
-        if values == [[]]:
-            # see test_get_records_with_all_values_blank
-            #  if last index is not asked for,
+        if entire_sheet == [[]]:
+            # see test_get_all_records_with_all_values_blank
             #  we don't know the length of the sheet so we return []
-            if last_index_set is False:
-                return []
-            # otherwise values will later be padded to be the size of keys + sheet size
-            values = [[]]
+            return []
 
-        keys_row = self.get_values(
-            "{head}:{head}".format(head=head), value_render_option=value_render_option
-        )
-        keys = keys_row[0] if len(keys_row) > 0 else []
-
-        values_width = len(values[0])
-        keys_width = len(keys)
-        values_wider_than_keys_by = values_width - keys_width
-
-        # pad keys and values to be the same WIDTH
-        if values_wider_than_keys_by > 0:
-            keys.extend([default_blank] * values_wider_than_keys_by)
-        elif values_wider_than_keys_by < 0:
-            values = fill_gaps(values, cols=keys_width, padding_value=default_blank)
-
-        # pad values to be the HEIGHT of last_index - first_index + 1
-        if last_index_set is True:
-            values = fill_gaps(values, rows=last_index - first_index + 1)
+        keys = entire_sheet[head - 1]
+        values = entire_sheet[head:]
 
         if expected_headers is None:
             # all headers must be unique
             header_row_is_unique = len(keys) == len(set(keys))
             if not header_row_is_unique:
-                raise GSpreadException("the header row in the worksheet is not unique")
+                raise GSpreadException(
+                    "the header row in the worksheet is not unique"
+                    "try passing 'expected_headers' to get_all_records"
+                )
         else:
             # all expected headers must be unique
             expected_headers_are_unique = len(expected_headers) == len(
@@ -615,9 +533,8 @@ class Worksheet:
             # expected headers must be a subset of the actual headers
             if not all(header in keys for header in expected_headers):
                 raise GSpreadException(
-                    "the given 'expected_headers' contains unknown headers: {}".format(
-                        set(expected_headers) - set(keys)
-                    )
+                    "the given 'expected_headers' contains unknown headers: "
+                    f"{set(expected_headers) - set(keys)}"
                 )
 
         if numericise_ignore == ["all"]:
