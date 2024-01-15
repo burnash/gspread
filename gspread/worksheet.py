@@ -55,6 +55,7 @@ from .utils import (
     is_full_a1_notation,
     numericise_all,
     rowcol_to_a1,
+    to_records,
 )
 
 CellFormat = TypedDict(
@@ -507,10 +508,10 @@ class Worksheet:
 
             # Read all rows from the sheet
             >>> worksheet.get_all_records()
-            {
+            [
                 {"A1": "A6", "B2": "B7", "C3": "C8"},
                 {"A1": "A11", "B2": "B12", "C3": "C13"}
-            }
+            ]
         """
         entire_sheet = self.get(
             value_render_option=value_render_option,
@@ -560,9 +561,7 @@ class Worksheet:
                 for row in values
             ]
 
-        formatted_records = [dict(zip(keys, row)) for row in values]
-
-        return formatted_records
+        return to_records(keys, values)
 
     def get_all_cells(self) -> List[Cell]:
         """Returns a list of all `Cell` of the current sheet."""
