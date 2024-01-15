@@ -878,6 +878,16 @@ def get_a1_from_absolute_range(range_name: str) -> str:
     return range_name
 
 
+def to_records(
+    headers: Iterable[Any] = [], values: Iterable[Iterable[Any]] = [[]]
+) -> List[Dict[str, Union[str, int, float]]]:
+    """Builds the list of dictionaries, all of them have the headers sequence as keys set,
+    each key is associated to the corresponding value for the same index in the sub-list.
+    There are as many dictionaries as they are entry in the of given values."""
+
+    return [dict(zip(headers, row)) for row in values]
+
+
 # SHOULD NOT BE NEEDED UNTIL NEXT MAJOR VERSION
 # def deprecation_warning(version: str, msg: str) -> None:
 #     """Emit a deprecation warning.
