@@ -462,6 +462,15 @@ class Worksheet:
         dictionaries holding the contents of subsequent rows of cells as
         values.
 
+        This method uses the function :func:`gspread.utils.to_records` to build the resulting
+        records. It mainly wraps around the function and handle the simplest use case
+        using a header row (default = 1) and the the reste of the entire sheet.
+
+        .. note::
+
+           for any particular use-case, please get your dataset, your headers
+           then use the function :func:`gspread.utils.to_records` to build the records.
+
         Cell values are numericised (strings that can be read as ints or floats
         are converted), unless specified in numericise_ignore
 
