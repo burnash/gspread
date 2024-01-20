@@ -88,40 +88,19 @@ file.sheet1.update_tab_color(tab_color)
 + age = spreadsheet.get_lastUpdateTime()
 ```
 
-### Removed method `Worksheet.get_records`
+### Replace method `Worksheet.get_records`
 
-The method `Worksheet.get_records()` has been removed.
-The function `utils.to_records` has been added.
-
-It takes hearder row, a matrix values and build the records from them.
-
-### Simplify method `Worksheet.get_all_records`
-
-v6 simplified the method `Worksheet.get_all_records`, it does not accept a bounded ranges of rows for
-the values to fill the records. The below arguments have been remove from the method signature:
-
-- first_index
-- last_index
-
-It now uses the function `utils.to_records`.
-
-Update the method signature as follow:
+In v6 you can now only get *all* sheet records, using `Worksheet.get_all_records()`. The method `Worksheet.get_records()` has been removed. You can get some records using your own fetches and combine them with `gspread.utils.to_records()`.
 
 ```diff
-  get_all_records(
-      empty2zero=False,
-      head=1,
--     first_index=None,
--     last_index=None,
-      default_blank="",
-      allow_underscores_in_numeric_literals=False,
-      numericise_ignore=[],
-      value_render_option=None,
-      expected_headers=None,
-  )
++ from gspread import utils
+  all_records = spreadsheet.get_all_records(head=1)
+- some_records = spreadsheet.get_all_records(head=1, first_index=6, last_index=9)
+- some_records = spreadsheet.get_records(head=1, first_index=6, last_index=9)
++ header = spreadsheet.get("1:1")[0]
++ cells = spreadsheet.get("6:9")
++ some_records = utils.to_records(header, cells)
 ```
-
-In order to achieve the previous behavior one case use the new function `utils.to_records` by manually providing the headers and the values.
 
 ### Silence warnings
 
