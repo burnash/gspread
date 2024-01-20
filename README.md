@@ -88,6 +88,20 @@ file.sheet1.update_tab_color(tab_color)
 + age = spreadsheet.get_lastUpdateTime()
 ```
 
+### Replace method `Worksheet.get_records`
+
+In v6 you can now only get *all* sheet records, using `Worksheet.get_all_records()`. The method `Worksheet.get_records()` has been removed. You can get some records using your own fetches and combine them with `gspread.utils.to_records()`.
+
+```diff
++ from gspread import utils
+  all_records = spreadsheet.get_all_records(head=1)
+- some_records = spreadsheet.get_all_records(head=1, first_index=6, last_index=9)
+- some_records = spreadsheet.get_records(head=1, first_index=6, last_index=9)
++ header = spreadsheet.get("1:1")[0]
++ cells = spreadsheet.get("6:9")
++ some_records = utils.to_records(header, cells)
+```
+
 ### Silence warnings
 
 In version 5 there are many warnings to mark deprecated feature/functions/methods.
