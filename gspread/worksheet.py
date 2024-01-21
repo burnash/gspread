@@ -2606,6 +2606,32 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
+    def get_notes(self, default_empty_value: Optional[str] = None) -> List[List[str]]:
+        """Returns a list of lists containing all notes in the sheet, or the empty list if the
+        sheet does not have a note.
+
+        .. note::
+
+            The resulting matrix is as long as the last row holding a note
+                (could be smaller than the last data row)
+
+            The resulting matrix is as large as the last column holding a note
+                (could be smaller than the last data column)
+
+        :param str default_empty_value: (optional) Determines which value to use
+            for cells without notes, defaults to None.
+        """
+        params: ParamsType = {"fields": "sheets.data.rowData.values.note"}
+        res = self.client.spreadsheets_get(self.spreadsheet_id, params)
+        data = res["sheets"][self.index]["data"][0].get("rowData", [])
+        notes: List[List[str]] = []
+        for row in data:
+            notes.append([])
+            for cell in row.get("values", []):
+                notes[-1].append(cell.get("note", default_empty_value))
+
+        return notes
+
     def get_note(self, cell: str) -> str:
         """Get the content of the note located at `cell`, or the empty string if the
         cell does not have a note.
