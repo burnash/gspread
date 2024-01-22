@@ -167,6 +167,14 @@ worksheet = sh.add_worksheet(title="A worksheet", rows="100", cols="20")
 sh.del_worksheet(worksheet)
 ```
 
+### Protecting / Unprotecting a Worksheet
+
+```python
+worksheet.protect()
+# Run your code without risk from other users (apart from the sheet owner!)
+worksheet.unprotect()
+```
+
 ### Getting a Cell Value
 
 ```python
