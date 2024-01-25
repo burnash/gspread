@@ -36,6 +36,7 @@ from .utils import (
     Dimension,
     GridRangeType,
     InsertDataOption,
+    MergeType,
     PasteOrientation,
     PasteType,
     T,
@@ -2492,14 +2493,14 @@ class Worksheet:
         )
 
     @cast_to_a1_notation
-    def merge_cells(self, name: str, merge_type: str = "MERGE_ALL") -> JSONResponse:
-        """Merge cells. There are 3 merge types: ``MERGE_ALL``, ``MERGE_COLUMNS``,
-        and ``MERGE_ROWS``.
+    def merge_cells(self, name: str, merge_type: str = MergeType.merge_all):
+        """Merge cells.
 
         :param str name: Range name in A1 notation, e.g. 'A1:A5'.
-        :param str merge_type: (optional) one of ``MERGE_ALL``,
-            ``MERGE_COLUMNS``, or ``MERGE_ROWS``. Defaults to ``MERGE_ROWS``.
+        :param merge_type: (optional) one of ``MergeType.merge_all``,
+            ``MergeType.merge_columns``, or ``MergeType.merge_rows``. Defaults to ``MergeType.merge_all``.
             See `MergeType`_ in the Sheets API reference.
+        :type merge_type: :namedtuple:`~gspread.utils.MergeType`
 
         Alternatively, you may specify numeric boundaries. All values
         index from 1 (one):

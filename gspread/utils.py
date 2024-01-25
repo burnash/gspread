@@ -52,6 +52,15 @@ class Dimension(StrEnum):
     cols = "COLUMNS"
 
 
+class MergeType(StrEnum):
+    merge_all = "MERGE_ALL"
+    merge_columns = "MERGE_COLUMNS"
+    merge_rows = "MERGE_ROWS"
+
+
+SILENCE_WARNINGS_ENV_KEY = "GSPREAD_SILENCE_WARNINGS"
+
+
 class ValueRenderOption(StrEnum):
     formatted = "FORMATTED_VALUE"
     unformatted = "UNFORMATTED_VALUE"
