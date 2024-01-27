@@ -2,116 +2,53 @@
 gspread.client
 ~~~~~~~~~~~~~~
 
-This module contains Client class responsible for communicating with
-Google API.
+This module contains Client class responsible for managing spreadsheet files
 
 """
-from http import HTTPStatus
-from typing import Any, Dict, List, Tuple, Type
 
-from google.auth.transport.requests import AuthorizedSession
+from http import HTTPStatus
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+from google.auth.credentials import Credentials
 from requests import Response
 
 from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
+from .http_client import HTTPClient, HTTPClientType, ParamsType
 from .spreadsheet import Spreadsheet
 from .urls import (
     DRIVE_FILES_API_V3_COMMENTS_URL,
     DRIVE_FILES_API_V3_URL,
     DRIVE_FILES_UPLOAD_API_V2_URL,
 )
-from .utils import (
-    ExportFormat,
-    MimeType,
-    convert_credentials,
-    deprecation_warning,
-    extract_id_from_url,
-    finditem,
-)
+from .utils import ExportFormat, MimeType, extract_id_from_url, finditem
 
 
 class Client:
-    """An instance of this class communicates with Google API.
+    """An instance of this class Manages Spreadsheet files
 
-    :param auth: An OAuth2 credential object. Credential objects
-        created by `google-auth <https://github.com/googleapis/google-auth-library-python>`_.
+    It is used to:
+        - open/create/list/delete spreadsheets
+        - create/delete/list spreadsheet permission
+        - etc
 
-    :param session: (optional) A session object capable of making HTTP requests
-        while persisting some parameters across requests.
-        Defaults to `google.auth.transport.requests.AuthorizedSession <https://google-auth.readthedocs.io/en/latest/reference/google.auth.transport.requests.html#google.auth.transport.requests.AuthorizedSession>`_.
-
-    >>> c = gspread.Client(auth=OAuthCredentialObject)
+    It is the gspread entry point.
+    It will handle creating necessary :class:`~gspread.models.Spreadsheet` instances.
     """
 
-    def __init__(self, auth, session=None):
-        if auth is not None:
-            self.auth = convert_credentials(auth)
-            self.session = session or AuthorizedSession(self.auth)
-        else:
-            self.session = session
+    def __init__(
+        self, auth: Credentials, http_client: HTTPClientType = HTTPClient
+    ) -> None:
+        self.http_client = http_client(auth)
 
-        self.timeout = None
-
-    def login(self):
-        from google.auth.transport.requests import Request
-
-        self.auth.refresh(Request(self.session))
-
-        self.session.headers.update({"Authorization": "Bearer %s" % self.auth.token})
-
-    def set_timeout(self, timeout):
-        """How long to wait for the server to send
-        data before giving up, as a float, or a ``(connect timeout,
-        read timeout)`` tuple.
-
-        Value for ``timeout`` is in seconds (s).
-        """
-        self.timeout = timeout
-
-    def request(
-        self,
-        method,
-        endpoint,
-        params=None,
-        data=None,
-        json=None,
-        files=None,
-        headers=None,
-    ):
-        response = getattr(self.session, method)(
-            endpoint,
-            json=json,
-            params=params,
-            data=data,
-            files=files,
-            headers=headers,
-            timeout=self.timeout,
-        )
-
-        if response.ok:
-            return response
-        else:
-            raise APIError(response)
-
-    def get_file_drive_metadata(self, id):
+    def get_file_drive_metadata(self, id: str) -> Any:
         """Get the metadata from the Drive API for a specific file
         This method is mainly here to retrieve the create/update time
         of a file (these metadata are only accessible from the Drive API).
         """
-
-        url = DRIVE_FILES_API_V3_URL + "/{}".format(id)
-
-        params = {
-            "supportsAllDrives": True,
-            "includeItemsFromAllDrives": True,
-            "fields": "id,name,createdTime,modifiedTime",
-        }
-
-        res = self.request("get", url, params=params)
-
-        return res.json()
+        return self.http_client.get_file_drive_metadata(id)
 
     def list_spreadsheet_files(
-        self, title=None, folder_id=None
+        self, title: Optional[str] = None, folder_id: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """List all the spreadsheet files
 
@@ -141,7 +78,7 @@ class Client:
         if folder_id:
             query += f' and parents in "{folder_id}"'
 
-        params = {
+        params: ParamsType = {
             "q": query,
             "pageSize": 1000,
             "supportsAllDrives": True,
@@ -153,7 +90,7 @@ class Client:
             if page_token:
                 params["pageToken"] = page_token
 
-            response = self.request("get", url, params=params)
+            response = self.http_client.request("get", url, params=params)
             response_json = response.json()
             files.extend(response_json["files"])
 
@@ -164,7 +101,7 @@ class Client:
 
         return files, response
 
-    def open(self, title, folder_id=None):
+    def open(self, title: str, folder_id: Optional[str] = None) -> Spreadsheet:
         """Opens a spreadsheet.
 
         :param str title: A title of a spreadsheet.
@@ -192,9 +129,9 @@ class Client:
         # Drive uses different terminology
         properties["title"] = properties["name"]
 
-        return Spreadsheet(self, properties)
+        return Spreadsheet(self.http_client, properties)
 
-    def open_by_key(self, key):
+    def open_by_key(self, key: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `key` (a.k.a Spreadsheet ID).
 
         :param str key: A key of a spreadsheet as it appears in a URL in a browser.
@@ -203,7 +140,7 @@ class Client:
         >>> gc.open_by_key('0BmgG6nO_6dprdS1MN3d3MkdPa142WFRrdnRRUWl1UFE')
         """
         try:
-            spreadsheet = Spreadsheet(self, {"id": key})
+            spreadsheet = Spreadsheet(self.http_client, {"id": key})
         except APIError as ex:
             if ex.response.status_code == HTTPStatus.NOT_FOUND:
                 raise SpreadsheetNotFound(ex.response) from ex
@@ -212,7 +149,7 @@ class Client:
             raise ex
         return spreadsheet
 
-    def open_by_url(self, url):
+    def open_by_url(self, url: str) -> Spreadsheet:
         """Opens a spreadsheet specified by `url`.
 
         :param str url: URL of a spreadsheet as it appears in a browser.
@@ -226,7 +163,7 @@ class Client:
         """
         return self.open_by_key(extract_id_from_url(url))
 
-    def openall(self, title=None):
+    def openall(self, title: Optional[str] = None) -> List[Spreadsheet]:
         """Opens all available spreadsheets.
 
         :param str title: (optional) If specified can be used to filter
@@ -242,10 +179,11 @@ class Client:
             ]
 
         return [
-            Spreadsheet(self, dict(title=x["name"], **x)) for x in spreadsheet_files
+            Spreadsheet(self.http_client, dict(title=x["name"], **x))
+            for x in spreadsheet_files
         ]
 
-    def create(self, title, folder_id=None):
+    def create(self, title: str, folder_id: Optional[str] = None) -> Spreadsheet:
         """Creates a new spreadsheet.
 
         :param str title: A title of a new spreadsheet.
@@ -256,23 +194,25 @@ class Client:
         :returns: a :class:`~gspread.models.Spreadsheet` instance.
 
         """
-        payload = {
+        payload: Dict[str, Any] = {
             "name": title,
             "mimeType": MimeType.google_sheets,
         }
 
-        params = {
+        params: ParamsType = {
             "supportsAllDrives": True,
         }
 
         if folder_id is not None:
             payload["parents"] = [folder_id]
 
-        r = self.request("post", DRIVE_FILES_API_V3_URL, json=payload, params=params)
+        r = self.http_client.request(
+            "post", DRIVE_FILES_API_V3_URL, json=payload, params=params
+        )
         spreadsheet_id = r.json()["id"]
         return self.open_by_key(spreadsheet_id)
 
-    def export(self, file_id, format=ExportFormat.PDF):
+    def export(self, file_id: str, format: str = ExportFormat.PDF) -> bytes:
         """Export the spreadsheet in the given format.
 
         :param str file_id: The key of the spreadsheet to export
@@ -289,7 +229,7 @@ class Client:
 
             See `ExportFormat`_ in the Drive API.
 
-        :type format: :namedtuple:`~gspread.utils.ExportFormat`
+        :type format: :class:`~gspread.utils.ExportFormat`
 
         :returns bytes: The content of the exported file.
 
@@ -301,19 +241,19 @@ class Client:
 
         url = "{}/{}/export".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params = {"mimeType": format}
+        params: ParamsType = {"mimeType": format}
 
-        r = self.request("get", url, params=params)
+        r = self.http_client.request("get", url, params=params)
         return r.content
 
     def copy(
         self,
-        file_id,
-        title=None,
-        copy_permissions=False,
-        folder_id=None,
-        copy_comments=True,
-    ):
+        file_id: str,
+        title: Optional[str] = None,
+        copy_permissions: bool = False,
+        folder_id: Optional[str] = None,
+        copy_comments: bool = True,
+    ) -> Spreadsheet:
         """Copies a spreadsheet.
 
         :param str file_id: A key of a spreadsheet to copy.
@@ -351,7 +291,7 @@ class Client:
         """
         url = "{}/{}/copy".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        payload = {
+        payload: Dict[str, Any] = {
             "name": title,
             "mimeType": MimeType.google_sheets,
         }
@@ -359,8 +299,8 @@ class Client:
         if folder_id is not None:
             payload["parents"] = [folder_id]
 
-        params = {"supportsAllDrives": True}
-        r = self.request("post", url, json=payload, params=params)
+        params: ParamsType = {"supportsAllDrives": True}
+        r = self.http_client.request("post", url, json=payload, params=params)
         spreadsheet_id = r.json()["id"]
 
         new_spreadsheet = self.open_by_key(spreadsheet_id)
@@ -372,15 +312,13 @@ class Client:
             for p in permissions:
                 if p.get("deleted"):
                     continue
-                try:
-                    new_spreadsheet.share(
-                        value=p["emailAddress"],
-                        perm_type=p["type"],
-                        role=p["role"],
-                        notify=False,
-                    )
-                except Exception:
-                    pass
+
+                new_spreadsheet.share(
+                    email_address=p["emailAddress"],
+                    perm_type=p["type"],
+                    role=p["role"],
+                    notify=False,
+                )
 
         if copy_comments is True:
             source_url = DRIVE_FILES_API_V3_COMMENTS_URL % (file_id)
@@ -394,7 +332,7 @@ class Client:
 
             while page_token is not None:
                 params["pageToken"] = page_token
-                res = self.request("get", source_url, params=params).json()
+                res = self.http_client.request("get", source_url, params=params).json()
 
                 comments.extend(res["comments"])
                 page_token = res.get("nextPageToken", None)
@@ -404,23 +342,26 @@ class Client:
             # choose 'id' randomly out of all the fields, but no need to use it for now.
             params = {"fields": "id"}
             for comment in comments:
-                self.request("post", destination_url, json=comment, params=params)
+                self.http_client.request(
+                    "post", destination_url, json=comment, params=params
+                )
 
         return new_spreadsheet
 
-    def del_spreadsheet(self, file_id):
+    def del_spreadsheet(self, file_id: str) -> None:
         """Deletes a spreadsheet.
 
         :param str file_id: a spreadsheet ID (a.k.a file ID).
         """
         url = "{}/{}".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params = {"supportsAllDrives": True}
-        self.request("delete", url, params=params)
+        params: ParamsType = {"supportsAllDrives": True}
+        self.http_client.request("delete", url, params=params)
 
-    def import_csv(self, file_id, data):
+    def import_csv(self, file_id: str, data: Union[str, bytes]) -> None:
         """Imports data into the first page of the spreadsheet.
 
+        :param str file_id:
         :param str data: A CSV string of data.
 
         Example:
@@ -440,15 +381,15 @@ class Client:
         """
         # Make sure we send utf-8
         if type(data) is str:
-            data = data.encode("utf-8")
+            payload = data.encode("utf-8")
 
         headers = {"Content-Type": "text/csv"}
         url = "{}/{}".format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
 
-        self.request(
+        self.http_client.request(
             "put",
             url,
-            data=data,
+            data=bytes(payload),
             params={
                 "uploadType": "media",
                 "convert": True,
@@ -457,14 +398,14 @@ class Client:
             headers=headers,
         )
 
-    def list_permissions(self, file_id):
+    def list_permissions(self, file_id: str) -> List[Dict[str, Union[str, bool]]]:
         """Retrieve a list of permissions for a file.
 
         :param str file_id: a spreadsheet ID (aka file ID).
         """
         url = "{}/{}/permissions".format(DRIVE_FILES_API_V3_URL, file_id)
 
-        params = {
+        params: ParamsType = {
             "supportsAllDrives": True,
             "fields": "nextPageToken,permissions",
         }
@@ -477,7 +418,7 @@ class Client:
             if token:
                 params["pageToken"] = token
 
-            r = self.request("get", url, params=params).json()
+            r = self.http_client.request("get", url, params=params).json()
             permissions.extend(r["permissions"])
 
             token = r.get("nextPageToken", None)
@@ -486,14 +427,14 @@ class Client:
 
     def insert_permission(
         self,
-        file_id,
-        value,
-        perm_type,
-        role,
-        notify=True,
-        email_message=None,
-        with_link=False,
-    ):
+        file_id: str,
+        value: Optional[str],
+        perm_type: Optional[str],
+        role: Optional[str],
+        notify: bool = True,
+        email_message: Optional[str] = None,
+        with_link: bool = False,
+    ) -> Response:
         """Creates a new permission for a file.
 
         :param str file_id: a spreadsheet ID (aka file ID).
@@ -541,7 +482,7 @@ class Client:
             "role": role,
             "withLink": with_link,
         }
-        params = {
+        params: ParamsType = {
             "supportsAllDrives": "true",
         }
 
@@ -556,9 +497,9 @@ class Client:
         else:
             raise ValueError("Invalid permission type: {}".format(perm_type))
 
-        return self.request("post", url, json=payload, params=params)
+        return self.http_client.request("post", url, json=payload, params=params)
 
-    def remove_permission(self, file_id, permission_id):
+    def remove_permission(self, file_id: str, permission_id: str) -> None:
         """Deletes a permission from a file.
 
         :param str file_id: a spreadsheet ID (aka file ID.)
@@ -568,83 +509,5 @@ class Client:
             DRIVE_FILES_API_V3_URL, file_id, permission_id
         )
 
-        params = {"supportsAllDrives": True}
-        self.request("delete", url, params=params)
-
-
-class BackoffClient(Client):
-    """BackoffClient is a gspread client with exponential
-    backoff retries.
-
-    In case a request fails due to some API rate limits,
-    it will wait for some time, then retry the request.
-
-    This can help by trying the request after some time and
-    prevent the application from failing (by raising an APIError exception).
-
-    .. Warning::
-        This Client is not production ready yet.
-        Use it at your own risk !
-
-    .. note::
-        To use with the `auth` module, make sure to pass this backoff
-        client factory using the ``client_factory`` parameter of the
-        method used.
-
-    .. note::
-        Currently known issues are:
-
-        * will retry exponentially even when the error should
-          raise instantly. Due to the Drive API that raises
-          403 (Forbidden) errors for forbidden access and
-          for api rate limit exceeded."""
-
-    _HTTP_ERROR_CODES = [
-        HTTPStatus.FORBIDDEN,  # Drive API return a 403 Forbidden on usage rate limit exceeded
-        HTTPStatus.REQUEST_TIMEOUT,  # in case of a timeout
-        HTTPStatus.TOO_MANY_REQUESTS,  # sheet API usage rate limit exceeded
-    ]
-    _NR_BACKOFF = 0
-    _MAX_BACKOFF = 128  # arbitrary maximum backoff
-    _MAX_BACKOFF_REACHED = False  # Stop after reaching _MAX_BACKOFF
-
-    def __init__(self, auth):
-        deprecation_warning(
-            version="6.0.0",
-            msg="this class will be deprecated and moved to gspread.http_client package",
-        )
-        super().__init__(auth)
-
-    def request(self, *args, **kwargs):
-        try:
-            return super().request(*args, **kwargs)
-        except APIError as err:
-            data = err.response.json()
-            code = data["error"]["code"]
-
-            # check if error should retyr
-            if code in self._HTTP_ERROR_CODES and self._MAX_BACKOFF_REACHED is False:
-                self._NR_BACKOFF += 1
-                wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
-
-                if wait >= self._MAX_BACKOFF:
-                    self._MAX_BACKOFF_REACHED = True
-
-                import time
-
-                time.sleep(wait)
-
-                # make the request again
-                response = self.request(*args, **kwargs)
-
-                # reset counters for next time
-                self._NR_BACKOFF = 0
-                self._MAX_BACKOFF_REACHED = False
-
-                return response
-
-            # failed too many times, raise APIEerror
-            raise err
-
-
-ClientFactory = Type[Client]
+        params: ParamsType = {"supportsAllDrives": True}
+        self.http_client.request("delete", url, params=params)

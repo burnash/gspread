@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.x"]
+        python: ["3.8", "3.9", "3.10", "3.11", "3.x"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,7 +29,6 @@ jobs:
         if: ${{ matrix.python >= '3.8' }}
       - run: tox -e lint
       - run: tox -e py
-      - run: mypy --install-types --ignore-missing-imports . || true
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py # --py36-plus
       - run: safety check -i 42559 -i 62044 # pip <= 20.1.1, we upgrade it just above
       - run: tox -e build

@@ -6,38 +6,72 @@ This module contains common worksheets' models.
 
 """
 
-from typing import Union
+import re
+import warnings
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    Literal,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    TypedDict,
+    TypeVar,
+    Union,
+)
 
 from .cell import Cell
 from .exceptions import GSpreadException
-from .urls import SPREADSHEET_URL, WORKSHEET_DRIVE_URL
+from .http_client import HTTPClient, ParamsType
+from .urls import WORKSHEET_DRIVE_URL
 from .utils import (
-    REQUIRED_KWARGS,
+    DateTimeOption,
     Dimension,
+    GridRangeType,
+    InsertDataOption,
     MergeType,
     PasteOrientation,
     PasteType,
+    T,
     ValueInputOption,
     ValueRenderOption,
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
-    accepted_kwargs,
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
     convert_colors_to_hex_value,
     convert_hex_to_colors_dict,
-    deprecation_warning,
     fill_gaps,
-    filter_dict_values,
     finditem,
     get_a1_from_absolute_range,
     is_full_a1_notation,
-    is_scalar,
     numericise_all,
     rowcol_to_a1,
+    to_records,
 )
+
+CellFormat = TypedDict(
+    "CellFormat",
+    {
+        "range": str,
+        "format": Mapping[str, Any],
+    },
+)
+
+
+BatchData = TypedDict("BatchData", {"range": str, "values": List[List[Any]]})
+
+JSONResponse = MutableMapping[str, Any]
+ValueRangeType = TypeVar("ValueRangeType", bound="ValueRange")
 
 
 class ValueRange(list):
@@ -76,8 +110,10 @@ class ValueRange(list):
        It will be instantiated using the response from the sheet API.
     """
 
+    _json: MutableMapping[str, Any] = {}
+
     @classmethod
-    def from_json(cls, json):
+    def from_json(cls: Type[ValueRangeType], json: Mapping[str, Any]) -> ValueRangeType:
         values = json.get("values", [])
         new_obj = cls(values)
         new_obj._json = {
@@ -88,12 +124,12 @@ class ValueRange(list):
         return new_obj
 
     @property
-    def range(self):
+    def range(self) -> str:
         """The range of the values"""
         return self._json["range"]
 
     @property
-    def major_dimension(self):
+    def major_dimension(self) -> str:
         """The major dimension of this range
 
         Can be one of:
@@ -103,7 +139,7 @@ class ValueRange(list):
         """
         return self._json["majorDimension"]
 
-    def first(self, default=None):
+    def first(self, default: Optional[str] = None) -> Optional[str]:
         """Returns the value of a first cell in a range.
 
         If the range is empty, return the default value.
@@ -119,12 +155,17 @@ class Worksheet:
     (aka "worksheet").
     """
 
-    def __init__(self, spreadsheet, properties):
-        self.spreadsheet = spreadsheet
-        self.client = spreadsheet.client
+    def __init__(
+        self,
+        spreadsheet_id: str,
+        client: HTTPClient,
+        properties: MutableMapping[str, Any],
+    ):
+        self.spreadsheet_id = spreadsheet_id
+        self.client = client
         self._properties = properties
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<{} {} id:{}>".format(
             self.__class__.__name__,
             repr(self.title),
@@ -132,109 +173,95 @@ class Worksheet:
         )
 
     @property
-    def id(self):
+    def id(self) -> int:
         """Worksheet ID."""
         return self._properties["sheetId"]
 
     @property
-    def title(self):
+    def title(self) -> str:
         """Worksheet title."""
         return self._properties["title"]
 
     @property
-    def url(self):
+    def url(self) -> str:
         """Worksheet URL."""
-        return WORKSHEET_DRIVE_URL % (self.spreadsheet.id, self.id)
+        return WORKSHEET_DRIVE_URL % (self.spreadsheet_id, self.id)
 
     @property
-    def index(self):
+    def index(self) -> int:
         """Worksheet index."""
         return self._properties["index"]
 
     @property
-    def isSheetHidden(self):
+    def isSheetHidden(self) -> bool:
         """Worksheet hidden status."""
         # if the property is not set then hidden=False
         return self._properties.get("hidden", False)
 
     @property
-    def updated(self):
-        """.. deprecated:: 2.0
-
-        This feature is not supported in Sheets API v4.
-        """
-        import warnings
-
-        warnings.warn(
-            "Worksheet.updated() is deprecated, "
-            "this feature is not supported in Sheets API v4",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-    @property
-    def row_count(self):
+    def row_count(self) -> int:
         """Number of rows."""
         return self._properties["gridProperties"]["rowCount"]
 
     @property
-    def col_count(self):
-        """Number of columns."""
+    def col_count(self) -> int:
+        """Number of columns.
+
+        .. warning::
+
+           This value is fetched when opening the worksheet.
+           This is not dynamically updated when adding columns, yet.
+        """
         return self._properties["gridProperties"]["columnCount"]
 
     @property
-    def column_count(self):
+    def column_count(self) -> int:
         """Number of columns"""
         return self.col_count
 
     @property
-    def frozen_row_count(self):
+    def frozen_row_count(self) -> int:
         """Number of frozen rows."""
         return self._properties["gridProperties"].get("frozenRowCount", 0)
 
     @property
-    def frozen_col_count(self):
+    def frozen_col_count(self) -> int:
         """Number of frozen columns."""
         return self._properties["gridProperties"].get("frozenColumnCount", 0)
 
     @property
-    def is_gridlines_hidden(self):
+    def is_gridlines_hidden(self) -> bool:
         """Whether or not gridlines hidden. Boolean.
         True if hidden. False if shown.
         """
         return self._properties["gridProperties"].get("hideGridlines", False)
 
     @property
-    def tab_color(self):
-        """Tab color style. Dict with RGB color values.
-        If any of R, G, B are 0, they will not be present in the dict.
-        """
-        deprecation_warning(
-            version="6.0.0",
-            msg="""color format will change to hex format "#RRGGBB".
-                To suppress warning, use "get_tab_color()" and convert back to dict format, use gspread.utils.convert_hex_to_colors_dict.
-                However, we recommend changing your code to use hex format.""",
-        )
+    def tab_color(self) -> Optional[str]:
+        """Tab color style. Hex with RGB color values."""
+        return self.get_tab_color()
 
-        return self._properties.get("tabColorStyle", {}).get("rgbColor", None)
-
-    def get_tab_color(self) -> Union[str, None]:
+    def get_tab_color(self) -> Optional[str]:
         """Tab color style in hex format. String."""
         tab_color = self._properties.get("tabColorStyle", {}).get("rgbColor", None)
         if tab_color is None:
             return None
         return convert_colors_to_hex_value(**tab_color)
 
-    def _get_sheet_property(self, property, default_value):
+    def _get_sheet_property(self, property: str, default_value: Optional[T]) -> T:
         """return a property of this worksheet or default value if not found"""
-        meta = self.spreadsheet.fetch_sheet_metadata()
+        meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
         sheet = finditem(
             lambda x: x["properties"]["sheetId"] == self.id, meta["sheets"]
         )
 
         return sheet.get(property, default_value)
 
-    def acell(self, label, value_render_option=ValueRenderOption.formatted):
+    def acell(
+        self,
+        label: str,
+        value_render_option: ValueRenderOption = ValueRenderOption.formatted,
+    ) -> Cell:
         """Returns an instance of a :class:`gspread.cell.Cell`.
 
         :param label: Cell label in A1 notation
@@ -243,7 +270,7 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -256,7 +283,12 @@ class Worksheet:
             *(a1_to_rowcol(label)), value_render_option=value_render_option
         )
 
-    def cell(self, row, col, value_render_option=ValueRenderOption.formatted):
+    def cell(
+        self,
+        row: int,
+        col: int,
+        value_render_option: ValueRenderOption = ValueRenderOption.formatted,
+    ) -> Cell:
         """Returns an instance of a :class:`gspread.cell.Cell` located at
         `row` and `col` column.
 
@@ -267,7 +299,7 @@ class Worksheet:
         :param value_render_option: (optional) Determines how values should be
                                     rendered in the output. See
                                     `ValueRenderOption`_ in the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
@@ -280,17 +312,21 @@ class Worksheet:
         """
         try:
             data = self.get(
-                rowcol_to_a1(row, col), value_render_option=value_render_option
+                rowcol_to_a1(row, col),
+                value_render_option=value_render_option,
+                return_type=GridRangeType.ValueRange,
             )
-
-            value = data.first()
+            try:
+                value = str(data[0][0])
+            except IndexError:
+                value = str(None)
         except KeyError:
             value = ""
 
         return Cell(row, col, value)
 
     @cast_to_a1_notation
-    def range(self, name=""):
+    def range(self, name: str = "") -> List[Cell]:
         """Returns a list of :class:`gspread.cell.Cell` objects from a specified range.
 
         :param name: A string with range value in A1 notation (e.g. 'A1:A5')
@@ -328,7 +364,7 @@ class Worksheet:
         """
         range_label = absolute_range_name(self.title, name)
 
-        data = self.spreadsheet.values_get(range_label)
+        data = self.client.values_get(self.spreadsheet_id, range_label)
 
         if ":" not in name:
             name = data.get("range", "")
@@ -362,285 +398,105 @@ class Worksheet:
             for j, value in enumerate(row)
         ]
 
-    @accepted_kwargs(
-        major_dimension=None,
-        combine_merged_cells=False,
-        value_render_option=None,
-        date_time_render_option=None,
-        maintain_size=False,
-    )
-    def get_values(self, range_name=None, combine_merged_cells=False, **kwargs):
-        """Returns a list of lists containing all values from specified range.
+    def get_values(
+        self,
+        range_name: Optional[str] = None,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+        combine_merged_cells: bool = False,
+        maintain_size: bool = False,
+        pad_values: bool = True,
+        return_type: GridRangeType = GridRangeType.ListOfLists,
+    ) -> List[List[T]]:
+        """Alias for :meth:`~gspread.worksheet.Worksheet.get`...
 
-        By default values are returned as strings. See ``value_render_option``
-        to change the default format.
-
-        :param str range_name: (optional) Cell range in the A1 notation or
-            a named range. If not specified the method returns values from all
-            non empty cells.
-
-        :param str major_dimension: (optional) The major dimension of the
-            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
-            Defaults to Dimension.rows
-        :type major_dimension: :namedtuple:`~gspread.utils.Dimension`
-
-        :param bool combine_merged_cells: (optional) If True, then all cells that
-            are part of a merged cell will have the same value as the top-left
-            cell of the merged cell. Defaults to False.
-
-            .. warning::
-
-                Setting this to True will cause an additional API request to be
-                made to retrieve the values of all merged cells.
-
-
-        :param str value_render_option: (optional) Determines how values should
-            be rendered in the output. See `ValueRenderOption`_ in
-            the Sheets API.
-
-            Possible values are:
-
-            ``ValueRenderOption.formatted``
-                (default) Values will be calculated and formatted according
-                to the cell's formatting. Formatting is based on the
-                spreadsheet's locale, not the requesting user's locale.
-
-            ``ValueRenderOption.unformatted``
-                Values will be calculated, but not formatted in the reply.
-                For example, if A1 is 1.23 and A2 is =A1 and formatted as
-                currency, then A2 would return the number 1.23.
-
-            ``ValueRenderOption.formula``
-                Values will not be calculated. The reply will include
-                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
-                formatted as currency, then A2 would return "=A1".
-
-            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
-
-
-        :param str date_time_render_option: (optional) How dates, times, and
-            durations should be represented in the output.
-
-            Possible values are:
-
-            ``DateTimeOption.serial_number``
-                (default) Instructs date, time, datetime, and duration fields
-                to be output as doubles in "serial number" format,
-                as popularized by Lotus 1-2-3.
-
-            ``DateTimeOption.formatted_string``
-                Instructs date, time, datetime, and duration fields to be output
-                as strings in their given number format
-                (which depends on the spreadsheet locale).
-
-            .. note::
-
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
-
-            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
-
-        .. note::
-
-            Empty trailing rows and columns will not be included.
-
-        :param bool maintain_size: (optional) Returns a matrix of values matching the size of the requested range.
-
-            .. warning::
-
-                This can only work if the requested range is a complete bounded A1 notation.
-                Example: ``A1:D4``: OK, ``C3:F``: Not OK, we don't know the end size of the requested range.
-
-                This does not work with ``named_range`` either.
-
-            Examples::
-
-                # Works
-                >>> worksheet.get("A1:B2", maintain_size=True)
-                [['A1', 'B1'], ['A2', '']]
-
-                # Does NOT maintain the requested size
-                >>> worksheet.get("A1:B", maintain_size=True)
-                [['A1', 'B1'], ['A2'], [], ['A4', 'B4'], ['A5']]
-
-        Examples::
-
-            # Return all values from the sheet
-            worksheet.get_values()
-
-            # Return all values from columns "A" and "B"
-            worksheet.get_values('A:B')
-
-            # Return values from range "A2:C10"
-            worksheet.get_values('A2:C10')
-
-            # Return values from named range "my_range"
-            worksheet.get_values('my_range')
-
-            # Return unformatted values (e.g. numbers as numbers)
-            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.unformatted)
-
-            # Return cell values without calculating formulas
-            worksheet.get_values('A2:B4', value_render_option=ValueRenderOption.formula)
+        with ``return_type`` set to ``List[List[Any]]``
+        and ``pad_values`` set to ``True``
+        (legacy method)
         """
-        try:
-            vals = fill_gaps(self.get(range_name, **kwargs))
+        return self.get(
+            range_name=range_name,
+            major_dimension=major_dimension,
+            value_render_option=value_render_option,
+            date_time_render_option=date_time_render_option,
+            combine_merged_cells=combine_merged_cells,
+            maintain_size=maintain_size,
+            pad_values=pad_values,
+            return_type=return_type,
+        )
 
-            if combine_merged_cells is True:
-                spreadsheet_meta = self.spreadsheet.fetch_sheet_metadata()
-                worksheet_meta = finditem(
-                    lambda x: x["properties"]["title"] == self.title,
-                    spreadsheet_meta["sheets"],
-                )
+    def get_all_values(
+        self,
+        range_name: Optional[str] = None,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+        combine_merged_cells: bool = False,
+        maintain_size: bool = False,
+        pad_values: bool = True,
+        return_type: GridRangeType = GridRangeType.ListOfLists,
+    ) -> List[List[T]]:
+        """Alias to :meth:`~gspread.worksheet.Worksheet.get_values`"""
+        return self.get_values(
+            range_name=range_name,
+            major_dimension=major_dimension,
+            value_render_option=value_render_option,
+            date_time_render_option=date_time_render_option,
+            combine_merged_cells=combine_merged_cells,
+            maintain_size=maintain_size,
+            pad_values=pad_values,
+            return_type=return_type,
+        )
 
-                # deal with named ranges
-                named_ranges = spreadsheet_meta.get("namedRanges", [])
-                # if there is a named range with the name range_name
-                if any(
-                    range_name == ss_namedRange["name"]
-                    for ss_namedRange in named_ranges
-                    if ss_namedRange.get("name")
-                ):
-                    ss_named_range = finditem(
-                        lambda x: x["name"] == range_name, named_ranges
-                    )
-                    grid_range = ss_named_range.get("range", {})
-                # norrmal range_name, i.e., A1:B2
-                elif range_name is not None:
-                    a1 = get_a1_from_absolute_range(range_name)
-                    grid_range = a1_range_to_grid_range(a1)
-                # no range_name, i.e., all values
-                else:
-                    grid_range = worksheet_meta.get("basicFilter", {}).get("range", {})
-
-                return combined_merge_values(
-                    worksheet_metadata=worksheet_meta,
-                    values=vals,
-                    start_row_index=grid_range.get("startRowIndex", 0),
-                    start_col_index=grid_range.get("startColumnIndex", 0),
-                )
-
-            return vals
-        except KeyError:
-            return []
-
-    @accepted_kwargs(
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-    )
-    def get_all_values(self, **kwargs):
-        """Returns a list of lists containing all cells' values as strings.
-
-        This is an alias to :meth:`~gspread.worksheet.Worksheet.get_values`
-
-        .. note::
-
-            This is a legacy method.
-            Use :meth:`~gspread.worksheet.Worksheet.get_values` instead.
-
-        Examples::
-
-            # Return all values from the sheet
-            worksheet.get_all_values()
-
-            # Is equivalent to
-            worksheet.get_values()
-        """
-        return self.get_values(**kwargs)
-
-    @accepted_kwargs(
-        empty2zero=False,
-        head=1,
-        default_blank="",
-        allow_underscores_in_numeric_literals=False,
-        numericise_ignore=[],
-        value_render_option=None,
-        expected_headers=None,
-    )
     def get_all_records(
         self,
-        **kwargs,
-    ):
+        head=1,
+        expected_headers=None,
+        value_render_option=None,
+        default_blank="",
+        numericise_ignore=[],
+        allow_underscores_in_numeric_literals=False,
+        empty2zero=False,
+    ) -> List[Dict[str, Union[int, float, str]]]:
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
         dictionaries holding the contents of subsequent rows of cells as
         values.
 
+        This method uses the function :func:`gspread.utils.to_records` to build the resulting
+        records. It mainly wraps around the function and handle the simplest use case
+        using a header row (default = 1) and the the reste of the entire sheet.
+
+        .. note::
+
+           for any particular use-case, please get your dataset, your headers
+           then use the function :func:`gspread.utils.to_records` to build the records.
+
         Cell values are numericised (strings that can be read as ints or floats
         are converted), unless specified in numericise_ignore
 
-        :param bool empty2zero: (optional) Determines whether empty cells are
-            converted to zeros.
         :param int head: (optional) Determines which row to use as keys,
             starting from 1 following the numeration of the spreadsheet.
-        :param str default_blank: (optional) Determines which value to use for
-            blank cells, defaults to empty string.
-        :param bool allow_underscores_in_numeric_literals: (optional) Allow
-            underscores in numeric literals, as introduced in PEP 515
-        :param list numericise_ignore: (optional) List of ints of indices of
-            the columns (starting at 1) to ignore numericising, special use
-            of ['all'] to ignore numericising on all columns.
-        :param value_render_option: (optional) Determines how values should
-            be rendered in the output. See `ValueRenderOption`_ in
-            the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
-
         :param list expected_headers: (optional) List of expected headers, they must be unique.
 
             .. note::
 
                 returned dictionaries will contain all headers even if not included in this list
-
-        """
-        return self.get_records(**kwargs)
-
-    def get_records(  # noqa: C901 # this comment disables the complexity check for this function
-        self,
-        empty2zero=False,
-        head=1,
-        use_index=None,
-        first_index=None,
-        last_index=None,
-        default_blank="",
-        allow_underscores_in_numeric_literals=False,
-        numericise_ignore=[],
-        value_render_option=None,
-        expected_headers=None,
-    ):
-        """Returns a list of dictionaries, all of them having the contents of
-        the spreadsheet range selected with the head row/col as keys and each of these
-        dictionaries holding the contents of subsequent selected rows/cols of cells as
-        values.
-
-        Cell values are numericised (strings that can be read as ints or floats
-        are converted), unless specified in numericise_ignore
-
-        :param bool empty2zero: (optional) Determines whether empty cells are
-            converted to zeros.
-        :param int head: (optional) Determines which index to use as keys,
-            starting from 1 following the numeration of the spreadsheet.
-        :param int use_index: (optional) Deprecated. Please ignore.
-        :param int first_index: (optional) row to start reading data from (inclusive) (1-based).
-        :param int last_index: (optional) row to stop reading at (inclusive) (1-based).
-        :param str default_blank: (optional) Determines which value to use for
-            blank cells, defaults to empty string.
-        :param bool allow_underscores_in_numeric_literals: (optional) Allow
-            underscores in numeric literals, as introduced in PEP 515
-        :param list numericise_ignore: (optional) List of ints of indices of
-            the columns (starting at 1) to ignore numericising, special use
-            of ['all'] to ignore numericising on all columns.
         :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
+        :param str default_blank: (optional) Determines which value to use for
+            blank cells, defaults to empty string.
+        :param list numericise_ignore: (optional) List of ints of indices of
+            the columns (starting at 1) to ignore numericising, special use
+            of ['all'] to ignore numericising on all columns.
+        :param bool allow_underscores_in_numeric_literals: (optional) Allow
+            underscores in numeric literals, as introduced in PEP 515
+        :param bool empty2zero: (optional) Determines whether empty cells are
+            converted to zeros when numericised, defaults to False.
 
-        :param list expected_headers: (optional) Set this to allow reading a spreadsheet with duplicate headers. Set this to a list of unique headers that you want to read. Other headers not included in this list may be overwritten and data lost.
-
-            .. note::
-
-                returned dictionaries will contain all headers even if not included in this list
 
         Examples::
 
@@ -652,80 +508,32 @@ class Worksheet:
             # 3    A11  B12  C13
 
             # Read all rows from the sheet
-            >>> worksheet.get_records()
-            {
+            >>> worksheet.get_all_records()
+            [
                 {"A1": "A6", "B2": "B7", "C3": "C8"},
                 {"A1": "A11", "B2": "B12", "C3": "C13"}
-            }
+            ]
         """
-        if use_index is not None:
-            deprecation_warning(
-                version="6.0.0",
-                msg="use_index in get_records does nothing."
-                "It will be removed. Please do not use it.",
-            )
-
-        # some sanity checks
-        if first_index is None:
-            first_index = head + 1
-        elif first_index <= head:
-            raise ValueError("first_index must be greater than the head row")
-        elif first_index > self.row_count:
-            raise ValueError(
-                "first_index must be less than or equal to the number of rows in the worksheet"
-            )
-
-        if last_index is None:
-            last_index = self.row_count
-            last_index_set = False
-        elif last_index < first_index:
-            raise ValueError("last_index must be greater than or equal to first_index")
-        elif last_index > self.row_count:
-            raise ValueError(
-                "last_index must be an integer less than or equal to the number of rows in the worksheet"
-            )
-        else:
-            last_index_set = True
-
-        values = self.get_values(
-            "{first_index}:{last_index}".format(
-                first_index=first_index, last_index=last_index
-            ),
+        entire_sheet = self.get(
             value_render_option=value_render_option,
+            pad_values=True,
         )
-        if values == []:
-            # see test_get_records_with_all_values_blank
-            #  if last index is not asked for,
+        if entire_sheet == [[]]:
+            # see test_get_all_records_with_all_values_blank
             #  we don't know the length of the sheet so we return []
-            if last_index_set is False:
-                return []
-            # otherwise values will later be padded to be the size of keys + sheet size
-            values = [[]]
+            return []
 
-        keys_row = self.get_values(
-            "{head}:{head}".format(head=head), value_render_option=value_render_option
-        )
-        keys = keys_row[0] if len(keys_row) > 0 else []
-
-        values_width = len(values[0])
-        keys_width = len(keys)
-        values_wider_than_keys_by = values_width - keys_width
-
-        # pad keys and values to be the same WIDTH
-        if values_wider_than_keys_by > 0:
-            keys.extend([default_blank] * values_wider_than_keys_by)
-        elif values_wider_than_keys_by < 0:
-            values = fill_gaps(values, cols=keys_width, padding_value=default_blank)
-
-        # pad values to be the HEIGHT of last_index - first_index + 1
-        if last_index_set is True:
-            values = fill_gaps(values, rows=last_index - first_index + 1)
+        keys = entire_sheet[head - 1]
+        values = entire_sheet[head:]
 
         if expected_headers is None:
             # all headers must be unique
             header_row_is_unique = len(keys) == len(set(keys))
             if not header_row_is_unique:
-                raise GSpreadException("the header row in the worksheet is not unique")
+                raise GSpreadException(
+                    "the header row in the worksheet is not unique"
+                    "try passing 'expected_headers' to get_all_records"
+                )
         else:
             # all expected headers must be unique
             expected_headers_are_unique = len(expected_headers) == len(
@@ -736,9 +544,8 @@ class Worksheet:
             # expected headers must be a subset of the actual headers
             if not all(header in keys for header in expected_headers):
                 raise GSpreadException(
-                    "the given 'expected_headers' contains unknown headers: {}".format(
-                        set(expected_headers) - set(keys)
-                    )
+                    "the given 'expected_headers' contains unknown headers: "
+                    f"{set(expected_headers) - set(keys)}"
                 )
 
         if numericise_ignore == ["all"]:
@@ -755,26 +562,31 @@ class Worksheet:
                 for row in values
             ]
 
-        formatted_records = [dict(zip(keys, row)) for row in values]
+        return to_records(keys, values)
 
-        return formatted_records
-
-    def get_all_cells(self):
+    def get_all_cells(self) -> List[Cell]:
         """Returns a list of all `Cell` of the current sheet."""
 
         return self.range()
 
-    @accepted_kwargs(
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-    )
-    def row_values(self, row, **kwargs):
+    def row_values(
+        self,
+        row: int,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> List[Optional[Union[int, float, str]]]:
         """Returns a list of all values in a `row`.
 
         Empty cells in this list will be rendered as :const:`None`.
 
         :param int row: Row number (one-based).
+
+        :param str major_dimension: (optional) The major dimension of the
+            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
+            Defaults to Dimension.rows
+        :type major_dimension: :class:`~gspread.utils.Dimension`
+
         :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
@@ -798,7 +610,7 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         :param date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
@@ -820,15 +632,24 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
         """
         try:
-            data = self.get("A{}:{}".format(row, row), **kwargs)
+            data = self.get(
+                "A{}:{}".format(row, row),
+                major_dimension,
+                value_render_option,
+                date_time_render_option,
+            )
             return data[0] if data else []
         except KeyError:
             return []
 
-    def col_values(self, col, value_render_option=ValueRenderOption.formatted):
+    def col_values(
+        self,
+        col: int,
+        value_render_option: ValueRenderOption = ValueRenderOption.formatted,
+    ) -> List[Optional[Union[int, float, str]]]:
         """Returns a list of all values in column `col`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -837,7 +658,7 @@ class Worksheet:
         :param str value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
         """
@@ -847,7 +668,8 @@ class Worksheet:
 
         range_name = absolute_range_name(self.title, range_label)
 
-        data = self.spreadsheet.values_get(
+        data = self.client.values_get(
+            self.spreadsheet_id,
             range_name,
             params={
                 "valueRenderOption": value_render_option,
@@ -860,7 +682,7 @@ class Worksheet:
         except KeyError:
             return []
 
-    def update_acell(self, label, value):
+    def update_acell(self, label: str, value: Union[int, float, str]) -> JSONResponse:
         """Updates the value of a cell.
 
         :param str label: Cell label in A1 notation.
@@ -872,7 +694,9 @@ class Worksheet:
         """
         return self.update_cell(*(a1_to_rowcol(label)), value=value)
 
-    def update_cell(self, row, col, value):
+    def update_cell(
+        self, row: int, col: int, value: Union[int, float, str]
+    ) -> JSONResponse:
         """Updates the value of a cell.
 
         :param int row: Row number.
@@ -885,7 +709,8 @@ class Worksheet:
         """
         range_name = absolute_range_name(self.title, rowcol_to_a1(row, col))
 
-        data = self.spreadsheet.values_update(
+        data = self.client.values_update(
+            self.spreadsheet_id,
             range_name,
             params={"valueInputOption": ValueInputOption.user_entered},
             body={"values": [[value]]},
@@ -893,7 +718,11 @@ class Worksheet:
 
         return data
 
-    def update_cells(self, cell_list, value_input_option=ValueInputOption.raw):
+    def update_cells(
+        self,
+        cell_list: List[Cell],
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+    ) -> Mapping[str, Any]:
         """Updates many cells at once.
 
         :param list cell_list: List of :class:`gspread.cell.Cell` objects to update.
@@ -901,7 +730,7 @@ class Worksheet:
             interpreted. Possible values are:
 
             ``ValueInputOption.raw``
-                The values the user has entered will not be parsed and will be
+                (default) The values the user has entered will not be parsed and will be
                 stored as-is.
 
             ``ValueInputOption.user_entered``
@@ -937,7 +766,8 @@ class Worksheet:
 
         range_name = absolute_range_name(self.title, "{}:{}".format(start, end))
 
-        data = self.spreadsheet.values_update(
+        data = self.client.values_update(
+            self.spreadsheet_id,
             range_name,
             params={"valueInputOption": value_input_option},
             body={"values": values_rect},
@@ -945,146 +775,31 @@ class Worksheet:
 
         return data
 
-    @accepted_kwargs(
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-        maintain_size=False,
-    )
-    def get(self, range_name=None, **kwargs):
+    def get(
+        self,
+        range_name: Optional[str] = None,
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+        combine_merged_cells: bool = False,
+        maintain_size: bool = False,
+        pad_values: bool = False,
+        return_type: GridRangeType = GridRangeType.ValueRange,
+    ) -> Union[ValueRange, List[List[Any]]]:
         """Reads values of a single range or a cell of a sheet.
 
-         :param str range_name: (optional) Cell range in the A1 notation or
-             a named range.
+        Returns a ValueRange (list of lists) containing all values from a specified range or cell
 
-         :param str major_dimension: (optional) The major dimension that results
-             should use. Either ``ROWS`` or ``COLUMNS``.
+        By default values are returned as strings. See ``value_render_option``
+        to change the default format.
 
-         :param value_render_option: (optional) Determines how values should
-             be rendered in the output. See `ValueRenderOption`_ in
-             the Sheets API.
+        :param str range_name: (optional) Cell range in the A1 notation or
+            a named range. If not specified the method returns values from all non empty cells.
 
-             Possible values are:
-
-             ``ValueRenderOption.formatted``
-                 (default) Values will be calculated and formatted according
-                 to the cell's formatting. Formatting is based on the
-                 spreadsheet's locale, not the requesting user's locale.
-
-             ``ValueRenderOption.unformatted``
-                 Values will be calculated, but not formatted in the reply.
-                 For example, if A1 is 1.23 and A2 is =A1 and formatted as
-                 currency, then A2 would return the number 1.23.
-
-             ``ValueRenderOption.formula``
-                 Values will not be calculated. The reply will include
-                 the formulas. For example, if A1 is 1.23 and A2 is =A1 and
-                 formatted as currency, then A2 would return "=A1".
-
-             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
-
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
-
-        :param str date_time_render_option: (optional) How dates, times, and
-             durations should be represented in the output.
-
-             Possible values are:
-
-             ``DateTimeOption.serial_number``
-                 (default) Instructs date, time, datetime, and duration fields
-                 to be output as doubles in "serial number" format,
-                 as popularized by Lotus 1-2-3.
-
-             ``DateTimeOption.formatted_string``
-                 Instructs date, time, datetime, and duration fields to be output
-                 as strings in their given number format
-                 (which depends on the spreadsheet locale).
-
-            .. note::
-
-                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
-
-             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-
-        :param bool maintain_size: (optional) Returns a matrix of values matching the size of the requested range.
-
-            .. warning::
-
-                This can only work if the requested range is a complete bounded A1 notation.
-                Example: ``A1:D4``: OK, ``C3:F``: Not OK, we don't know the end size of the requested range.
-
-                This does not work with ``named_range`` either.
-
-            Examples::
-
-                # Works
-                >>> worksheet.get("A1:B2", maintain_size=True)
-                [['A1', 'B1'], ['A2', '']]
-
-                # Does NOT maintain the requested size
-                >>> worksheet.get("A1:B", maintain_size=True)
-                [['A1', 'B1'], ['A2'], [], ['A4', 'B4'], ['A5']]
-
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
-
-         :rtype: :class:`gspread.worksheet.ValueRange`
-
-         Examples::
-
-             # Return all values from the sheet
-             worksheet.get()
-
-             # Return value of 'A1' cell
-             worksheet.get('A1')
-
-             # Return values of 'A1:B2' range
-             worksheet.get('A1:B2')
-
-             # Return values of 'my_range' named range
-             worksheet.get('my_range')
-
-         .. versionadded:: 3.3
-        """
-        range_name = absolute_range_name(self.title, range_name)
-
-        params = filter_dict_values(
-            {
-                "majorDimension": kwargs["major_dimension"],
-                "valueRenderOption": kwargs["value_render_option"],
-                "dateTimeRenderOption": kwargs["date_time_render_option"],
-            }
-        )
-
-        response = self.spreadsheet.values_get(range_name, params=params)
-
-        values = response.get("values", [])
-
-        # range_name must be a full grid range so that we can guarantee
-        #  startRowIndex and endRowIndex properties
-        if kwargs["maintain_size"] is True and is_full_a1_notation(range_name):
-            a1_range = get_a1_from_absolute_range(range_name)
-            grid_range = a1_range_to_grid_range(a1_range)
-            rows = grid_range["endRowIndex"] - grid_range["startRowIndex"]
-            cols = grid_range["endColumnIndex"] - grid_range["startColumnIndex"]
-            values = fill_gaps(values, rows=rows, cols=cols)
-
-        response["values"] = values
-
-        return ValueRange.from_json(response)
-
-    @accepted_kwargs(
-        major_dimension=None,
-        value_render_option=None,
-        date_time_render_option=None,
-    )
-    def batch_get(self, ranges, **kwargs):
-        """Returns one or more ranges of values from the sheet.
-
-        :param list ranges: List of cell ranges in the A1 notation or named
-            ranges.
-
-        :param str major_dimension: (optional) The major dimension that results
-            should use. Either ``ROWS`` or ``COLUMNS``.
+        :param str major_dimension: (optional) The major dimension of the
+            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
+            Defaults to Dimension.rows
+        :type major_dimension: :class:`~gspread.utils.Dimension`
 
         :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
@@ -1109,7 +824,7 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
-        :type value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         :param str date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
@@ -1131,7 +846,195 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
+
+        :param bool combine_merged_cells: (optional) If True, then all cells that
+            are part of a merged cell will have the same value as the top-left
+            cell of the merged cell. Defaults to False.
+
+            .. warning::
+
+                Setting this to True will cause an additional API request to be
+                made to retrieve the values of all merged cells.
+
+        :param bool maintain_size: (optional) If True, then the returned values
+            will have the same size as the requested range_name. Defaults to False.
+
+        :param bool pad_values: (optional) If True, then empty cells will be
+            filled with empty strings. Defaults to False.
+
+            .. warning::
+
+                    The returned array will not be rectangular unless this is set to True. If this is a problem, see also `maintain_size`.
+
+        :param GridRangeType return_type: (optional) The type of object to return.
+            Defaults to :class:`gspread.utils.GridRangeType.ValueRange`.
+            The other option is `gspread.utils.GridRangeType.ListOfLists`.
+
+        :rtype: :class:`gspread.worksheet.ValueRange`
+
+        .. versionadded:: 3.3
+
+        Examples::
+
+            # Return all values from the sheet
+            worksheet.get()
+
+            # Return value of 'A1' cell
+            worksheet.get('A1')
+
+            # Return values of 'A1:B2' range
+            worksheet.get('A1:B2')
+
+            # Return all values from columns "A" and "B"
+            worksheet.get('A:B')
+
+            # Return values of 'my_range' named range
+            worksheet.get('my_range')
+
+            # Return unformatted values (e.g. numbers as numbers)
+            worksheet.get('A2:B4', value_render_option=ValueRenderOption.unformatted)
+
+            # Return cell values without calculating formulas
+            worksheet.get('A2:B4', value_render_option=ValueRenderOption.formula)
+        """
+        # do not override the given range name with the build up range name for the actual request
+        get_range_name = absolute_range_name(self.title, range_name)
+
+        params: ParamsType = {
+            "majorDimension": major_dimension,
+            "valueRenderOption": value_render_option,
+            "dateTimeRenderOption": date_time_render_option,
+        }
+
+        response = self.client.values_get(
+            self.spreadsheet_id, get_range_name, params=params
+        )
+
+        values = response.get("values", [[]])
+
+        if pad_values is True:
+            try:
+                values = fill_gaps(values)
+            except KeyError:
+                values = [[]]
+
+        if combine_merged_cells is True:
+            spreadsheet_meta = self.client.fetch_sheet_metadata(self.spreadsheet_id)
+            worksheet_meta = finditem(
+                lambda x: x["properties"]["title"] == self.title,
+                spreadsheet_meta["sheets"],
+            )
+
+            # deal with named ranges
+            named_ranges = spreadsheet_meta.get("namedRanges", [])
+            # if there is a named range with the name range_name
+            if any(
+                range_name == ss_namedRange["name"]
+                for ss_namedRange in named_ranges
+                if ss_namedRange.get("name")
+            ):
+                ss_named_range = finditem(
+                    lambda x: x["name"] == range_name, named_ranges
+                )
+                grid_range = ss_named_range.get("range", {})
+            # norrmal range_name, i.e., A1:B2
+            elif range_name is not None:
+                a1 = get_a1_from_absolute_range(range_name)
+                grid_range = a1_range_to_grid_range(a1)
+            # no range_name, i.e., all values
+            else:
+                grid_range = worksheet_meta.get("basicFilter", {}).get("range", {})
+
+            values = combined_merge_values(
+                worksheet_metadata=worksheet_meta,
+                values=values,
+                start_row_index=grid_range.get("startRowIndex", 0),
+                start_col_index=grid_range.get("startColumnIndex", 0),
+            )
+
+        # In case range_name is None
+        range_name = range_name or ""
+
+        # range_name must be a full grid range so that we can guarantee
+        #  startRowIndex and endRowIndex properties
+        if maintain_size is True and is_full_a1_notation(range_name):
+            a1_range = get_a1_from_absolute_range(range_name)
+            grid_range = a1_range_to_grid_range(a1_range)
+            rows = grid_range["endRowIndex"] - grid_range["startRowIndex"]
+            cols = grid_range["endColumnIndex"] - grid_range["startColumnIndex"]
+            values = fill_gaps(values, rows=rows, cols=cols)
+
+        if return_type is GridRangeType.ValueRange:
+            response["values"] = values
+            return ValueRange.from_json(response)
+        if return_type is GridRangeType.ListOfLists:
+            return values
+        raise ValueError("return_type must be either ValueRange or ListOfLists")
+
+    def batch_get(
+        self,
+        ranges: Iterable[str],
+        major_dimension: Optional[Dimension] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> List[ValueRange]:
+        """Returns one or more ranges of values from the sheet.
+
+        :param list ranges: List of cell ranges in the A1 notation or named
+            ranges.
+
+        :param str major_dimension: (optional) The major dimension of the
+            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
+            Defaults to Dimension.rows
+        :type major_dimension: :class:`~gspread.utils.Dimension`
+
+        :param value_render_option: (optional) Determines how values should
+            be rendered in the output. See `ValueRenderOption`_ in
+            the Sheets API.
+
+            Possible values are:
+
+            ``ValueRenderOption.formatted``
+                (default) Values will be calculated and formatted according
+                to the cell's formatting. Formatting is based on the
+                spreadsheet's locale, not the requesting user's locale.
+
+            ``ValueRenderOption.unformatted``
+                Values will be calculated, but not formatted in the reply.
+                For example, if A1 is 1.23 and A2 is =A1 and formatted as
+                currency, then A2 would return the number 1.23.
+
+            ``ValueRenderOption.formula``
+                Values will not be calculated. The reply will include
+                the formulas. For example, if A1 is 1.23 and A2 is =A1 and
+                formatted as currency, then A2 would return "=A1".
+
+            .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
+
+        :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
+
+        :param str date_time_render_option: (optional) How dates, times, and
+            durations should be represented in the output.
+
+            Possible values are:
+
+            ``DateTimeOption.serial_number``
+                (default) Instructs date, time, datetime, and duration fields
+                to be output as doubles in "serial number" format,
+                as popularized by Lotus 1-2-3.
+
+            ``DateTimeOption.formatted_string``
+                Instructs date, time, datetime, and duration fields to be output
+                as strings in their given number format
+                (which depends on the spreadsheet locale).
+
+            .. note::
+
+                This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
+
+            The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
         .. versionadded:: 3.3
 
@@ -1142,37 +1045,34 @@ class Worksheet:
         """
         ranges = [absolute_range_name(self.title, r) for r in ranges if r]
 
-        params = filter_dict_values(
-            {
-                "majorDimension": kwargs["major_dimension"],
-                "valueRenderOption": kwargs["value_render_option"],
-                "dateTimeRenderOption": kwargs["date_time_render_option"],
-            }
-        )
+        params: ParamsType = {
+            "majorDimension": major_dimension,
+            "valueRenderOption": value_render_option,
+            "dateTimeRenderOption": date_time_render_option,
+        }
 
-        response = self.spreadsheet.values_batch_get(ranges=ranges, params=params)
+        response = self.client.values_batch_get(
+            self.spreadsheet_id, ranges=ranges, params=params
+        )
 
         return [ValueRange.from_json(x) for x in response["valueRanges"]]
 
-    # required kwargs is a special value just to allow users to use kwargs
-    # and regular args mixed in order to transit to version 6.0.0
-    # This will be be entirely removed in version 6.0.0
-    @accepted_kwargs(
-        range_name=REQUIRED_KWARGS,
-        values=REQUIRED_KWARGS,
-        raw=True,
-        major_dimension=None,
-        value_input_option=None,
-        include_values_in_response=None,
-        response_value_render_option=None,
-        response_date_time_render_option=None,
-    )
-    def update(self, range_name, values=None, **kwargs):
+    def update(
+        self,
+        values: Iterable[Iterable[Any]],
+        range_name: Optional[str] = None,
+        raw: bool = True,
+        major_dimension: Optional[Dimension] = None,
+        value_input_option: Optional[ValueInputOption] = None,
+        include_values_in_response: Optional[bool] = None,
+        response_value_render_option: Optional[ValueRenderOption] = None,
+        response_date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> JSONResponse:
         """Sets values in a cell range of the sheet.
 
-        :param str range_name: The A1 notation of the values
+        :param list values: The data to be written in a matrix format.
+        :param str range_name: (optional) The A1 notation of the values
             to update.
-        :param list values: The data to be written.
 
         :param bool raw: The values will not be parsed by Sheets API and will
             be stored as-is. For example, formulas will be rendered as plain
@@ -1180,13 +1080,15 @@ class Worksheet:
             the ``value_input_option`` parameter.
 
         :param str major_dimension: (optional) The major dimension of the
-            values. Either ``ROWS`` or ``COLUMNS``.
+            values. `Dimension.rows` ("ROWS") or `Dimension.cols` ("COLUMNS").
+            Defaults to Dimension.rows
+        :type major_dimension: :class:`~gspread.utils.Dimension`
 
         :param str value_input_option: (optional) How the input data should be
             interpreted. Possible values are:
 
             ``ValueInputOption.raw``
-                The values the user has entered will not be parsed and will be
+                (default) The values the user has entered will not be parsed and will be
                 stored as-is.
 
             ``ValueInputOption.user_entered``
@@ -1196,7 +1098,7 @@ class Worksheet:
                 applied when entering text into a cell via
                 the Google Sheets UI.
 
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
 
         :param response_value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
@@ -1221,7 +1123,7 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
-        :type response_value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type response_value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         :param str response_date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
@@ -1243,25 +1145,25 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
         Examples::
 
             # Sets 'Hello world' in 'A2' cell
-            worksheet.update('A2', 'Hello world')
+            worksheet.update([['Hello world']], 'A2')
 
             # Updates cells A1, B1, C1 with values 42, 43, 44 respectively
-            worksheet.update([42, 43, 44])
+            worksheet.update([[42, 43, 44]])
 
             # Updates A2 and A3 with values 42 and 43
             # Note that update range can be bigger than values array
-            worksheet.update('A2:B4', [[42], [43]])
+            worksheet.update([[42], [43]], 'A2:B4')
 
             # Add a formula
-            worksheet.update('A5', '=SUM(A1:A4)', raw=False)
+            worksheet.update([['=SUM(A1:A4)']], 'A5', raw=False)
 
             # Update 'my_range' named range with values 42 and 43
-            worksheet.update('my_range', [[42], [43]])
+            worksheet.update([[42], [43]], 'my_range')
 
             # Note: named ranges are defined in the scope of
             # a spreadsheet, so even if `my_range` does not belong to
@@ -1269,56 +1171,48 @@ class Worksheet:
 
         .. versionadded:: 3.3
         """
-        deprecation_warning(
-            version="6.0.0",
-            msg="Method signature's arguments 'range_name' and 'values' will change their order."
-            " We recommend using named arguments for minimal impact. In addition, the argument 'values' will be mandatory of type: 'List[List]'."
-            " (ex) Worksheet.update(values = [[]], range_name=) ",
-        )
+        if isinstance(range_name, (list, tuple)) and isinstance(values, str):
+            warnings.warn(
+                "The order of arguments in worksheet.update() has changed. "
+                "Please pass values first and range_name second"
+                "or used named arguments (range_name=, values=)",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            range_name, values = values, range_name
 
-        if is_scalar(range_name):
-            range_name = absolute_range_name(self.title, range_name)
-        else:
-            values = range_name
-            range_name = absolute_range_name(self.title)
+        full_range_name = absolute_range_name(self.title, range_name)
 
-        if is_scalar(values):
-            values = [[values]]
-
-        if not kwargs["value_input_option"]:
-            kwargs["value_input_option"] = (
-                ValueInputOption.raw if kwargs["raw"] else ValueInputOption.user_entered
+        if not value_input_option:
+            value_input_option = (
+                ValueInputOption.raw if raw is True else ValueInputOption.user_entered
             )
 
-        params = filter_dict_values(
-            {
-                "valueInputOption": kwargs["value_input_option"],
-                "includeValuesInResponse": kwargs["include_values_in_response"],
-                "responseValueRenderOption": kwargs["response_value_render_option"],
-                "responseDateTimeRenderOption": kwargs[
-                    "response_date_time_render_option"
-                ],
-            }
-        )
+        params: ParamsType = {
+            "valueInputOption": value_input_option,
+            "includeValuesInResponse": include_values_in_response,
+            "responseValueRenderOption": response_value_render_option,
+            "responseDateTimeRenderOption": response_date_time_render_option,
+        }
 
-        response = self.spreadsheet.values_update(
-            range_name,
+        response = self.client.values_update(
+            self.spreadsheet_id,
+            full_range_name,
             params=params,
-            body=filter_dict_values(
-                {"values": values, "majorDimension": kwargs["major_dimension"]}
-            ),
+            body={"values": values, "majorDimension": major_dimension},
         )
 
         return response
 
-    @accepted_kwargs(
-        raw=True,
-        value_input_option=None,
-        include_values_in_response=None,
-        response_value_render_option=None,
-        response_date_time_render_option=None,
-    )
-    def batch_update(self, data, **kwargs):
+    def batch_update(
+        self,
+        data: Iterable[MutableMapping[str, Any]],
+        raw: bool = True,
+        value_input_option: Optional[ValueInputOption] = None,
+        include_values_in_response: Optional[bool] = None,
+        response_value_render_option: Optional[ValueRenderOption] = None,
+        response_date_time_render_option: Optional[DateTimeOption] = None,
+    ) -> JSONResponse:
         """Sets values in one or more cell ranges of the sheet at once.
 
         :param list data: List of dictionaries in the form of
@@ -1342,7 +1236,7 @@ class Worksheet:
               applied when entering text into a cell via
               the Google Sheets UI.
 
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
 
         :param response_value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
@@ -1367,7 +1261,7 @@ class Worksheet:
 
             .. _ValueRenderOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption
 
-        :type response_value_render_option: :namedtuple:`~gspread.utils.ValueRenderOption`
+        :type response_value_render_option: :class:`~gspread.utils.ValueRenderOption`
 
         :param str response_date_time_render_option: (optional) How dates, times, and
             durations should be represented in the output.
@@ -1389,7 +1283,7 @@ class Worksheet:
                 This is ignored if ``value_render_option`` is ``ValueRenderOption.formatted``.
 
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
-        :type date_time_render_option: :namedtuple:`~gspread.utils.DateTimeOption`
+        :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
         Examples::
 
@@ -1407,32 +1301,27 @@ class Worksheet:
 
         .. versionadded:: 3.3
         """
-        if not kwargs["value_input_option"]:
-            kwargs["value_input_option"] = (
-                ValueInputOption.raw if kwargs["raw"] else ValueInputOption.user_entered
+        if not value_input_option:
+            value_input_option = (
+                ValueInputOption.raw if raw is True else ValueInputOption.user_entered
             )
 
-        data = [
-            dict(vr, range=absolute_range_name(self.title, vr["range"])) for vr in data
-        ]
+        for values in data:
+            values["range"] = absolute_range_name(self.title, values["range"])
 
-        body = filter_dict_values(
-            {
-                "valueInputOption": kwargs["value_input_option"],
-                "includeValuesInResponse": kwargs["include_values_in_response"],
-                "responseValueRenderOption": kwargs["response_value_render_option"],
-                "responseDateTimeRenderOption": kwargs[
-                    "response_date_time_render_option"
-                ],
-                "data": data,
-            }
-        )
+        body: MutableMapping[str, Any] = {
+            "valueInputOption": value_input_option,
+            "includeValuesInResponse": include_values_in_response,
+            "responseValueRenderOption": response_value_render_option,
+            "responseDateTimeRenderOption": response_date_time_render_option,
+            "data": data,
+        }
 
-        response = self.spreadsheet.values_batch_update(body=body)
+        response = self.client.values_batch_update(self.spreadsheet_id, body=body)
 
         return response
 
-    def batch_format(self, formats):
+    def batch_format(self, formats: List[CellFormat]) -> JSONResponse:
         """Formats cells in batch.
 
         :param list formats: List of ranges to format and the new format to apply
@@ -1474,7 +1363,8 @@ class Worksheet:
         .. versionadded:: 5.4
         """
 
-        body = {
+        # No need to type more than that it's only internal to that method
+        body: Dict[str, Any] = {
             "requests": [],
         }
 
@@ -1496,9 +1386,11 @@ class Worksheet:
                 }
             )
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def format(self, ranges, format):
+    def format(
+        self, ranges: Union[List[str], str], format: JSONResponse
+    ) -> JSONResponse:
         """Format a list of ranges with the given format.
 
         :param str|list ranges: Target ranges in the A1 notation.
@@ -1536,14 +1428,18 @@ class Worksheet:
         .. versionadded:: 3.3
         """
 
-        if is_scalar(ranges):
-            ranges = [ranges]
+        if isinstance(ranges, list):
+            range_list = ranges
+        else:
+            range_list = [ranges]
 
-        formats = [{"range": range, "format": format} for range in ranges]
+        formats = [CellFormat(range=range, format=format) for range in range_list]
 
         return self.batch_format(formats)
 
-    def resize(self, rows=None, cols=None):
+    def resize(
+        self, rows: Optional[int] = None, cols: Optional[int] = None
+    ) -> JSONResponse:
         """Resizes the worksheet. Specify one of ``rows`` or ``cols``.
 
         :param int rows: (optional) New number of rows.
@@ -1576,16 +1472,16 @@ class Worksheet:
             ]
         }
 
-        res = self.spreadsheet.batch_update(body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
         if rows is not None:
             self._properties["gridProperties"]["rowCount"] = rows
         if cols is not None:
             self._properties["gridProperties"]["columnCount"] = cols
         return res
 
-    # TODO(post Python 2): replace the method signature with
-    # def sort(self, *specs, range=None):
-    def sort(self, *specs, **kwargs):
+    def sort(
+        self, *specs: Tuple[int, Literal["asc", "des"]], range: Optional[str] = None
+    ) -> JSONResponse:
         """Sorts worksheet using given sort orders.
 
         :param list specs: The sort order per column. Each sort order
@@ -1603,20 +1499,10 @@ class Worksheet:
             # and column 'B' Z -> A
             wks.sort((7, 'asc'), (2, 'des'), range='A2:G8')
 
-        Warning::
-
-            This function signature will change, arguments will swap places:  sort(range, specs)
-
         .. versionadded:: 3.4
         """
-        deprecation_warning(
-            version="6.0.0",
-            msg="This function signature will change, arguments will swap places:  sort(range, specs)",
-        )
-        range_name = kwargs.pop("range", None)
-
-        if range_name:
-            start_a1, end_a1 = range_name.split(":")
+        if range:
+            start_a1, end_a1 = range.split(":")
             start_row, start_col = a1_to_rowcol(start_a1)
             end_row, end_col = a1_to_rowcol(end_a1)
         else:
@@ -1660,10 +1546,10 @@ class Worksheet:
             ]
         }
 
-        response = self.spreadsheet.batch_update(body)
+        response = self.client.batch_update(self.spreadsheet_id, body)
         return response
 
-    def update_title(self, title):
+    def update_title(self, title: str) -> JSONResponse:
         """Renames the worksheet.
 
         :param str title: A new title.
@@ -1679,27 +1565,19 @@ class Worksheet:
             ]
         }
 
-        response = self.spreadsheet.batch_update(body)
+        response = self.client.batch_update(self.spreadsheet_id, body)
         self._properties["title"] = title
         return response
 
-    def update_tab_color(self, color: Union[dict, str]):
+    def update_tab_color(self, color: str) -> JSONResponse:
         """Changes the worksheet's tab color.
         Use clear_tab_color() to remove the color.
 
-        :param dict color: The red, green and blue values of the color, between 0 and 1.
+        :param str color:  Hex color value.
         """
 
-        if isinstance(color, str):
-            color = convert_hex_to_colors_dict(color)
-        else:
-            deprecation_warning(
-                version="6.0.0",
-                msg="""color format will change to hex format "#RRGGBB".
-                    To suppress this warning, first convert color to hex with "gspread.utils.convert_colors_to_hex_value(color)""",
-            )
+        color_dict = convert_hex_to_colors_dict(color)
 
-        red, green, blue = color["red"], color["green"], color["blue"]
         body = {
             "requests": [
                 {
@@ -1707,11 +1585,7 @@ class Worksheet:
                         "properties": {
                             "sheetId": self.id,
                             "tabColorStyle": {
-                                "rgbColor": {
-                                    "red": red,
-                                    "green": green,
-                                    "blue": blue,
-                                }
+                                "rgbColor": color_dict,
                             },
                         },
                         "fields": "tabColorStyle",
@@ -1720,18 +1594,12 @@ class Worksheet:
             ]
         }
 
-        response = self.spreadsheet.batch_update(body)
+        response = self.client.batch_update(self.spreadsheet_id, body)
 
-        sheet_color = {
-            "red": red,
-            "green": green,
-            "blue": blue,
-        }
-
-        self._properties["tabColorStyle"] = {"rgbColor": sheet_color}
+        self._properties["tabColorStyle"] = {"rgbColor": color_dict}
         return response
 
-    def clear_tab_color(self):
+    def clear_tab_color(self) -> JSONResponse:
         """Clears the worksheet's tab color.
         Use update_tab_color() to set the color.
         """
@@ -1750,11 +1618,11 @@ class Worksheet:
                 },
             ],
         }
-        response = self.spreadsheet.batch_update(body)
+        response = self.client.batch_update(self.spreadsheet_id, body)
         self._properties.pop("tabColorStyle")
         return response
 
-    def update_index(self, index):
+    def update_index(self, index: int) -> JSONResponse:
         """Updates the ``index`` property for the worksheet.
 
         See the `Sheets API documentation
@@ -1777,11 +1645,13 @@ class Worksheet:
             ]
         }
 
-        res = self.spreadsheet.batch_update(body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
         self._properties["index"] = index
         return res
 
-    def _auto_resize(self, start_index, end_index, dimension):
+    def _auto_resize(
+        self, start_index: int, end_index: int, dimension: Dimension
+    ) -> JSONResponse:
         """Updates the size of rows or columns in the  worksheet.
 
         Index start from 0
@@ -1789,6 +1659,7 @@ class Worksheet:
         :param start_index: The index (inclusive) to begin resizing
         :param end_index: The index (exclusive) to finish resizing
         :param dimension: Specifies whether to resize the row or column
+        :type major_dimension: :class:`~gspread.utils.Dimension`
 
 
         .. versionadded:: 5.3.3
@@ -1800,17 +1671,19 @@ class Worksheet:
                         "dimensions": {
                             "sheetId": self.id,
                             "dimension": dimension,
-                            "startIndex": int(start_index),
-                            "endIndex": int(end_index),
+                            "startIndex": start_index,
+                            "endIndex": end_index,
                         }
                     }
                 }
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def columns_auto_resize(self, start_column_index, end_column_index):
+    def columns_auto_resize(
+        self, start_column_index: int, end_column_index: int
+    ) -> JSONResponse:
         """Updates the size of rows or columns in the  worksheet.
 
         Index start from 0
@@ -1824,7 +1697,9 @@ class Worksheet:
         """
         return self._auto_resize(start_column_index, end_column_index, Dimension.cols)
 
-    def rows_auto_resize(self, start_row_index, end_row_index):
+    def rows_auto_resize(
+        self, start_row_index: int, end_row_index: int
+    ) -> JSONResponse:
         """Updates the size of rows or columns in the  worksheet.
 
         Index start from 0
@@ -1837,7 +1712,7 @@ class Worksheet:
         """
         return self._auto_resize(start_row_index, end_row_index, Dimension.rows)
 
-    def add_rows(self, rows):
+    def add_rows(self, rows: int) -> None:
         """Adds rows to worksheet.
 
         :param rows: Number of new rows to add.
@@ -1846,7 +1721,7 @@ class Worksheet:
         """
         self.resize(rows=self.row_count + rows)
 
-    def add_cols(self, cols):
+    def add_cols(self, cols: int) -> None:
         """Adds columns to worksheet.
 
         :param cols: Number of new columns to add.
@@ -1857,12 +1732,12 @@ class Worksheet:
 
     def append_row(
         self,
-        values,
-        value_input_option=ValueInputOption.raw,
-        insert_data_option=None,
-        table_range=None,
-        include_values_in_response=False,
-    ):
+        values: Sequence[Union[str, int, float]],
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        insert_data_option: Optional[InsertDataOption] = None,
+        table_range: Optional[str] = None,
+        include_values_in_response: bool = False,
+    ) -> JSONResponse:
         """Adds a row to the worksheet and populates it with values.
 
         Widens the worksheet if there are more values than columns.
@@ -1871,7 +1746,7 @@ class Worksheet:
         :param value_input_option: (optional) Determines how the input data
             should be interpreted. See `ValueInputOption`_ in the Sheets API
             reference.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param str insert_data_option: (optional) Determines how the input data
             should be inserted. See `InsertDataOption`_ in the Sheets API
             reference.
@@ -1896,23 +1771,23 @@ class Worksheet:
 
     def append_rows(
         self,
-        values,
-        value_input_option=ValueInputOption.raw,
-        insert_data_option=None,
-        table_range=None,
-        include_values_in_response=False,
-    ):
+        values: Sequence[Sequence[Union[str, int, float]]],
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        insert_data_option: Optional[InsertDataOption] = None,
+        table_range: Optional[str] = None,
+        include_values_in_response: Optional[bool] = None,
+    ) -> JSONResponse:
         """Adds multiple rows to the worksheet and populates them with values.
 
         Widens the worksheet if there are more values than columns.
 
         :param list values: List of rows each row is List of values for
             the new row.
-        :param str value_input_option: (optional) Determines how input data
+        :param value_input_option: (optional) Determines how input data
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param str insert_data_option: (optional) Determines how the input data
             should be inserted. See `InsertDataOption`_ in the Sheets API
             reference.
@@ -1928,7 +1803,7 @@ class Worksheet:
         """
         range_label = absolute_range_name(self.title, table_range)
 
-        params = {
+        params: ParamsType = {
             "valueInputOption": value_input_option,
             "insertDataOption": insert_data_option,
             "includeValuesInResponse": include_values_in_response,
@@ -1936,18 +1811,18 @@ class Worksheet:
 
         body = {"values": values}
 
-        res = self.spreadsheet.values_append(range_label, params, body)
+        res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
         num_new_rows = len(values)
         self._properties["gridProperties"]["rowCount"] += num_new_rows
         return res
 
     def insert_row(
         self,
-        values,
-        index=1,
-        value_input_option=ValueInputOption.raw,
-        inherit_from_before=False,
-    ):
+        values: Sequence[Union[str, int, float]],
+        index: int = 1,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        inherit_from_before: bool = False,
+    ) -> JSONResponse:
         """Adds a row to the worksheet at the specified index and populates it
         with values.
 
@@ -1959,7 +1834,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param bool inherit_from_before: (optional) If True, the new row will
             inherit its properties from the previous row. Defaults to False,
             meaning that the new row acquires the properties of the row
@@ -1982,11 +1857,11 @@ class Worksheet:
 
     def insert_rows(
         self,
-        values,
-        row=1,
-        value_input_option=ValueInputOption.raw,
-        inherit_from_before=False,
-    ):
+        values: Sequence[Sequence[Union[str, int, float]]],
+        row: int = 1,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        inherit_from_before: bool = False,
+    ) -> JSONResponse:
         """Adds multiple rows to the worksheet at the specified index and
         populates them with values.
 
@@ -1998,7 +1873,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param bool inherit_from_before: (optional) If true, new rows will
             inherit their properties from the previous row. Defaults to False,
             meaning that new rows acquire the properties of the row immediately
@@ -2023,7 +1898,7 @@ class Worksheet:
                 "inherit_from_before cannot be used when inserting row(s) at the top of a spreadsheet"
             )
 
-        body = {
+        insert_dimension_body = {
             "requests": [
                 {
                     "insertDimension": {
@@ -2039,26 +1914,26 @@ class Worksheet:
             ]
         }
 
-        self.spreadsheet.batch_update(body)
+        self.client.batch_update(self.spreadsheet_id, insert_dimension_body)
 
         range_label = absolute_range_name(self.title, "A%s" % row)
 
-        params = {"valueInputOption": value_input_option}
+        params: ParamsType = {"valueInputOption": value_input_option}
 
         body = {"majorDimension": Dimension.rows, "values": values}
 
-        res = self.spreadsheet.values_append(range_label, params, body)
+        res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
         num_new_rows = len(values)
         self._properties["gridProperties"]["rowCount"] += num_new_rows
         return res
 
     def insert_cols(
         self,
-        values,
-        col=1,
-        value_input_option=ValueInputOption.raw,
-        inherit_from_before=False,
-    ):
+        values: Sequence[Sequence[Union[str, int, float]]],
+        col: int = 1,
+        value_input_option: ValueInputOption = ValueInputOption.raw,
+        inherit_from_before: bool = False,
+    ) -> JSONResponse:
         """Adds multiple new cols to the worksheet at specified index and
         populates them with values.
 
@@ -2070,7 +1945,7 @@ class Worksheet:
             should be interpreted. Possible values are ``ValueInputOption.raw``
             or ``ValueInputOption.user_entered``.
             See `ValueInputOption`_ in the Sheets API.
-        :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
         :param bool inherit_from_before: (optional) If True, new columns will
             inherit their properties from the previous column. Defaults to
             False, meaning that new columns acquire the properties of the
@@ -2088,7 +1963,7 @@ class Worksheet:
                 "inherit_from_before cannot be used when inserting column(s) at the left edge of a spreadsheet"
             )
 
-        body = {
+        insert_dimension_body = {
             "requests": [
                 {
                     "insertDimension": {
@@ -2104,46 +1979,29 @@ class Worksheet:
             ]
         }
 
-        self.spreadsheet.batch_update(body)
+        self.client.batch_update(self.spreadsheet_id, insert_dimension_body)
 
         range_label = absolute_range_name(self.title, rowcol_to_a1(1, col))
 
-        params = {"valueInputOption": value_input_option}
+        params: ParamsType = {"valueInputOption": value_input_option}
 
         body = {"majorDimension": Dimension.cols, "values": values}
 
-        res = self.spreadsheet.values_append(range_label, params, body)
+        res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
         num_new_cols = len(values)
         self._properties["gridProperties"]["columnCount"] += num_new_cols
         return res
 
-    def delete_row(self, index):
-        """.. deprecated:: 5.0
-
-        Deletes the row from the worksheet at the specified index.
-
-        :param int index: Index of a row for deletion.
-        """
-        import warnings
-
-        warnings.warn(
-            "Worksheet.delete_row() is deprecated, "
-            "Please use `Worksheet.delete_rows()` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.delete_rows(index)
-
     @cast_to_a1_notation
     def add_protected_range(
         self,
-        name,
-        editor_users_emails,
-        editor_groups_emails=[],
-        description=None,
-        warning_only=False,
-        requesting_user_can_edit=False,
-    ):
+        name: str,
+        editor_users_emails: Sequence[str],
+        editor_groups_emails: Sequence[str] = [],
+        description: Optional[str] = None,
+        warning_only: bool = False,
+        requesting_user_can_edit: bool = False,
+    ) -> JSONResponse:
         """Add protected range to the sheet. Only the editors can edit
         the protected range.
 
@@ -2202,9 +2060,9 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_protected_range(self, id):
+    def delete_protected_range(self, id: str) -> JSONResponse:
         """Delete protected range identified by the ID ``id``.
 
         To retrieve the ID of a protected range use the following method
@@ -2221,13 +2079,15 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_dimension(self, dimension, start_index, end_index=None):
+    def delete_dimension(
+        self, dimension: Dimension, start_index: int, end_index: Optional[int] = None
+    ) -> JSONResponse:
         """Deletes multi rows from the worksheet at the specified index.
 
         :param dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
-        :type dimension: :namedtuple:`~gspread.utils.Dimension`
+        :type dimension: :class:`~gspread.utils.Dimension`
         :param int start_index: Index of a first row for deletion.
         :param int end_index: Index of a last row for deletion. When
             ``end_index`` is not specified this method only deletes a single
@@ -2251,7 +2111,7 @@ class Worksheet:
             ]
         }
 
-        res = self.spreadsheet.batch_update(body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
         if end_index is None:
             end_index = start_index
         num_deleted = end_index - start_index + 1
@@ -2261,7 +2121,9 @@ class Worksheet:
             self._properties["gridProperties"]["columnCount"] -= num_deleted
         return res
 
-    def delete_rows(self, start_index, end_index=None):
+    def delete_rows(
+        self, start_index: int, end_index: Optional[int] = None
+    ) -> JSONResponse:
         """Deletes multiple rows from the worksheet at the specified index.
 
         :param int start_index: Index of a first row for deletion.
@@ -2280,7 +2142,9 @@ class Worksheet:
         """
         return self.delete_dimension(Dimension.rows, start_index, end_index)
 
-    def delete_columns(self, start_index, end_index=None):
+    def delete_columns(
+        self, start_index: int, end_index: Optional[int] = None
+    ) -> JSONResponse:
         """Deletes multiple columns from the worksheet at the specified index.
 
         :param int start_index: Index of a first column for deletion.
@@ -2290,11 +2154,13 @@ class Worksheet:
         """
         return self.delete_dimension(Dimension.cols, start_index, end_index)
 
-    def clear(self):
+    def clear(self) -> JSONResponse:
         """Clears all cells in the worksheet."""
-        return self.spreadsheet.values_clear(absolute_range_name(self.title))
+        return self.client.values_clear(
+            self.spreadsheet_id, absolute_range_name(self.title)
+        )
 
-    def batch_clear(self, ranges):
+    def batch_clear(self, ranges: Sequence[str]) -> JSONResponse:
         """Clears multiple ranges of cells with 1 API call.
 
         `Batch Clear`_
@@ -2316,12 +2182,21 @@ class Worksheet:
 
         body = {"ranges": ranges}
 
-        response = self.spreadsheet.values_batch_clear(body=body)
+        response = self.client.values_batch_clear(self.spreadsheet_id, body=body)
 
         return response
 
-    def _finder(self, func, query, case_sensitive, in_row=None, in_column=None):
-        data = self.spreadsheet.values_get(absolute_range_name(self.title))
+    def _finder(
+        self,
+        func: Callable[[Callable[[Cell], bool], Iterable[Cell]], Iterator[Cell]],
+        query: Union[str, re.Pattern],
+        case_sensitive: bool,
+        in_row: Optional[int] = None,
+        in_column: Optional[int] = None,
+    ) -> Iterator[Cell]:
+        data = self.client.values_get(
+            self.spreadsheet_id, absolute_range_name(self.title)
+        )
 
         try:
             values = fill_gaps(data["values"])
@@ -2331,45 +2206,63 @@ class Worksheet:
         cells = self._list_cells(values, in_row, in_column)
 
         if isinstance(query, str):
+            str_query = query
 
-            def match(x):
+            def match(x: Cell) -> bool:
                 if case_sensitive:
-                    return x.value == query
+                    return x.value == str_query
                 else:
-                    return x.value.casefold() == query.casefold()
+                    return x.value.casefold() == str_query.casefold()
+
+        elif isinstance(query, re.Pattern):
+            re_query = query
+
+            def match(x: Cell) -> bool:
+                return re_query.search(x.value) is not None
 
         else:
-
-            def match(x):
-                return query.search(x.value)
+            raise TypeError(
+                "query must be of type: 'str' or 're.Pattern' (obtained from re.compile())"
+            )
 
         return func(match, cells)
 
-    def _list_cells(self, values, in_row=None, in_column=None):
+    def _list_cells(
+        self,
+        values: Sequence[Sequence[Union[str, int, float]]],
+        in_row: Optional[int] = None,
+        in_column: Optional[int] = None,
+    ) -> List[Cell]:
         """Returns a list of ``Cell`` instances scoped by optional
         ``in_row``` or ``in_column`` values (both one-based).
         """
-        if in_row and in_column:
+        if in_row is not None and in_column is not None:
             raise TypeError("Either 'in_row' or 'in_column' should be specified.")
 
-        if in_column:
+        if in_column is not None:
             return [
-                Cell(row=i + 1, col=in_column, value=row[in_column - 1])
+                Cell(row=i + 1, col=in_column, value=str(row[in_column - 1]))
                 for i, row in enumerate(values)
             ]
-        elif in_row:
+        elif in_row is not None:
             return [
-                Cell(row=in_row, col=j + 1, value=value)
+                Cell(row=in_row, col=j + 1, value=str(value))
                 for j, value in enumerate(values[in_row - 1])
             ]
         else:
             return [
-                Cell(row=i + 1, col=j + 1, value=value)
+                Cell(row=i + 1, col=j + 1, value=str(value))
                 for i, row in enumerate(values)
                 for j, value in enumerate(row)
             ]
 
-    def find(self, query, in_row=None, in_column=None, case_sensitive=True):
+    def find(
+        self,
+        query: Union[str, re.Pattern],
+        in_row: Optional[bool] = None,
+        in_column: Optional[bool] = None,
+        case_sensitive: bool = True,
+    ) -> Optional[Cell]:
         """Finds the first cell matching the query.
 
         :param query: A literal string to match or compiled regular expression.
@@ -2384,11 +2277,17 @@ class Worksheet:
         :rtype: :class:`gspread.cell.Cell`
         """
         try:
-            return self._finder(finditem, query, case_sensitive, in_row, in_column)
+            return next(self._finder(filter, query, case_sensitive, in_row, in_column))
         except StopIteration:
             return None
 
-    def findall(self, query, in_row=None, in_column=None, case_sensitive=True):
+    def findall(
+        self,
+        query: Union[str, re.Pattern],
+        in_row: Optional[int] = None,
+        in_column: Optional[int] = None,
+        case_sensitive: bool = True,
+    ) -> List[Cell]:
         """Finds all cells matching the query.
 
         Returns a list of :class:`gspread.cell.Cell`.
@@ -2404,9 +2303,15 @@ class Worksheet:
         :returns: the list of all matching cells or empty list otherwise
         :rtype: list
         """
-        return list(self._finder(filter, query, case_sensitive, in_row, in_column))
 
-    def freeze(self, rows=None, cols=None):
+        return [
+            elem
+            for elem in self._finder(filter, query, case_sensitive, in_row, in_column)
+        ]
+
+    def freeze(
+        self, rows: Optional[int] = None, cols: Optional[int] = None
+    ) -> JSONResponse:
         """Freeze rows and/or columns on the worksheet.
 
         :param rows: Number of rows to freeze.
@@ -2439,7 +2344,7 @@ class Worksheet:
             ]
         }
 
-        res = self.spreadsheet.batch_update(body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
         if rows is not None:
             self._properties["gridProperties"]["frozenRowCount"] = rows
         if cols is not None:
@@ -2447,7 +2352,7 @@ class Worksheet:
         return res
 
     @cast_to_a1_notation
-    def set_basic_filter(self, name=None):
+    def set_basic_filter(self, name: Optional[str] = None):
         """Add a basic filter to the worksheet. If a range or boundaries
         are passed, the filter will be limited to the given range.
 
@@ -2472,9 +2377,9 @@ class Worksheet:
 
         body = {"requests": [{"setBasicFilter": {"filter": {"range": grid_range}}}]}
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def clear_basic_filter(self):
+    def clear_basic_filter(self) -> JSONResponse:
         """Remove the basic filter from a worksheet.
 
         .. versionadded:: 3.4
@@ -2489,25 +2394,64 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def export(self, format):
-        """.. deprecated:: 2.0
+    @classmethod
+    def _duplicate(
+        cls,
+        client: HTTPClient,
+        spreadsheet_id: str,
+        sheet_id: int,
+        insert_sheet_index: Optional[int] = None,
+        new_sheet_id: Optional[int] = None,
+        new_sheet_name: Optional[str] = None,
+    ) -> "Worksheet":
+        """Class method to duplicate a :class:`gspread.worksheet.Worksheet`.
 
-        This feature is not supported in Sheets API v4.
+        :param Session client: The HTTP client used for the HTTP request
+        :param str spreadsheet_id: The spreadsheet ID (used for the HTTP request)
+        :param int sheet_id: The original sheet ID
+        :param int insert_sheet_index: (optional) The zero-based index
+            where the new sheet should be inserted. The index of all sheets
+            after this are incremented.
+        :param int new_sheet_id: (optional) The ID of the new sheet.
+            If not set, an ID is chosen. If set, the ID must not conflict with
+            any existing sheet ID. If set, it must be non-negative.
+        :param str new_sheet_name: (optional) The name of the new sheet.
+            If empty, a new name is chosen for you.
+
+        :returns: a newly created :class:`gspread.worksheet.Worksheet`.
+
+        .. note::
+           This is a class method in order for the spreadsheet class
+           to use it without an instance of a Worksheet object
         """
-        import warnings
 
-        warnings.warn(
-            "Worksheet.export() is deprecated, "
-            "this feature is not supported in Sheets API v4",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+        body = {
+            "requests": [
+                {
+                    "duplicateSheet": {
+                        "sourceSheetId": sheet_id,
+                        "insertSheetIndex": insert_sheet_index,
+                        "newSheetId": new_sheet_id,
+                        "newSheetName": new_sheet_name,
+                    }
+                }
+            ]
+        }
+
+        data = client.batch_update(spreadsheet_id, body)
+
+        properties = data["replies"][0]["duplicateSheet"]["properties"]
+
+        return Worksheet(spreadsheet_id, client, properties)
 
     def duplicate(
-        self, insert_sheet_index=None, new_sheet_id=None, new_sheet_name=None
-    ):
+        self,
+        insert_sheet_index: Optional[int] = None,
+        new_sheet_id: Optional[int] = None,
+        new_sheet_name: Optional[str] = None,
+    ) -> "Worksheet":
         """Duplicate the sheet.
 
         :param int insert_sheet_index: (optional) The zero-based index
@@ -2523,14 +2467,19 @@ class Worksheet:
 
         .. versionadded:: 3.1
         """
-        return self.spreadsheet.duplicate_sheet(
-            self.id, insert_sheet_index, new_sheet_id, new_sheet_name
+        return Worksheet._duplicate(
+            self.client,
+            self.spreadsheet_id,
+            self.id,
+            insert_sheet_index=insert_sheet_index,
+            new_sheet_id=new_sheet_id,
+            new_sheet_name=new_sheet_name,
         )
 
     def copy_to(
         self,
-        spreadsheet_id,
-    ):
+        destination_spreadsheet_id: str,
+    ) -> JSONResponse:
         """Copies this sheet to another spreadsheet.
 
         :param str spreadsheet_id: The ID of the spreadsheet to copy
@@ -2539,10 +2488,12 @@ class Worksheet:
             the newly created sheet.
         :rtype: dict
         """
-        return self.spreadsheet._spreadsheets_sheets_copy_to(self.id, spreadsheet_id)
+        return self.client.spreadsheets_sheets_copy_to(
+            self.spreadsheet_id, self.id, destination_spreadsheet_id
+        )
 
     @cast_to_a1_notation
-    def merge_cells(self, name, merge_type=MergeType.merge_all):
+    def merge_cells(self, name: str, merge_type: str = MergeType.merge_all):
         """Merge cells.
 
         :param str name: Range name in A1 notation, e.g. 'A1:A5'.
@@ -2571,10 +2522,10 @@ class Worksheet:
             "requests": [{"mergeCells": {"mergeType": merge_type, "range": grid_range}}]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     @cast_to_a1_notation
-    def unmerge_cells(self, name):
+    def unmerge_cells(self, name: str) -> JSONResponse:
         """Unmerge cells.
 
         Unmerge previously merged cells.
@@ -2605,9 +2556,9 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def get_note(self, cell):
+    def get_note(self, cell: str) -> str:
         """Get the content of the note located at `cell`, or the empty string if the
         cell does not have a note.
 
@@ -2615,22 +2566,20 @@ class Worksheet:
             e.g. 'D7'.
         """
         absolute_cell = absolute_range_name(self.title, cell)
-        url = SPREADSHEET_URL % (self.spreadsheet.id)
-        params = {"ranges": absolute_cell, "fields": "sheets/data/rowData/values/note"}
-        response = self.client.request("get", url, params=params)
-        response.raise_for_status()
-        response_json = response.json()
+        params: ParamsType = {
+            "ranges": absolute_cell,
+            "fields": "sheets/data/rowData/values/note",
+        }
+        res = self.client.spreadsheets_get(self.spreadsheet_id, params)
 
         try:
-            note = response_json["sheets"][0]["data"][0]["rowData"][0]["values"][0][
-                "note"
-            ]
+            note = res["sheets"][0]["data"][0]["rowData"][0]["values"][0]["note"]
         except (IndexError, KeyError):
             note = ""
 
         return note
 
-    def update_notes(self, notes):
+    def update_notes(self, notes: Mapping[str, str]) -> None:
         """update multiple notes. The notes are attached to a certain cell.
 
         :param notes dict: A dict of notes with their cells coordinates and respective content
@@ -2650,7 +2599,8 @@ class Worksheet:
         .. versionadded:: 5.9
         """
 
-        body = {"requests": []}
+        # No need to type lower than the sequence, it's internal only
+        body: MutableMapping[str, List[Any]] = {"requests": []}
 
         for range, content in notes.items():
             if not isinstance(content, str):
@@ -2678,10 +2628,10 @@ class Worksheet:
 
             body["requests"].append(req)
 
-        self.spreadsheet.batch_update(body)
+        self.client.batch_update(self.spreadsheet_id, body)
 
     @cast_to_a1_notation
-    def update_note(self, cell, content):
+    def update_note(self, cell: str, content: str) -> None:
         """Update the content of the note located at `cell`.
 
         :param str cell: A string with cell coordinates in A1 notation,
@@ -2693,7 +2643,7 @@ class Worksheet:
         self.update_notes({cell: content})
 
     @cast_to_a1_notation
-    def insert_note(self, cell, content):
+    def insert_note(self, cell: str, content: str) -> None:
         """Insert a note. The note is attached to a certain cell.
 
         :param str cell: A string with cell coordinates in A1 notation,
@@ -2712,7 +2662,7 @@ class Worksheet:
         """
         self.update_notes({cell: content})
 
-    def insert_notes(self, notes):
+    def insert_notes(self, notes: Mapping[str, str]) -> None:
         """insert multiple notes. The notes are attached to a certain cell.
 
         :param notes dict: A dict of notes with their cells coordinates and respective content
@@ -2733,7 +2683,7 @@ class Worksheet:
         """
         self.update_notes(notes)
 
-    def clear_notes(self, ranges):
+    def clear_notes(self, ranges: Iterable[str]) -> None:
         """Clear all notes located at the at the coordinates
         pointed to by ``ranges``.
 
@@ -2744,7 +2694,7 @@ class Worksheet:
         self.update_notes(notes)
 
     @cast_to_a1_notation
-    def clear_note(self, cell):
+    def clear_note(self, cell: str) -> None:
         """Clear a note. The note is attached to a certain cell.
 
         :param str cell: A string with cell coordinates in A1 notation,
@@ -2764,7 +2714,7 @@ class Worksheet:
         self.update_notes({cell: ""})
 
     @cast_to_a1_notation
-    def define_named_range(self, name, range_name):
+    def define_named_range(self, name: str, range_name: str) -> JSONResponse:
         """
         :param str name: A string with range value in A1 notation,
             e.g. 'A1:A5'.
@@ -2794,9 +2744,9 @@ class Worksheet:
                 }
             ]
         }
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_named_range(self, named_range_id):
+    def delete_named_range(self, named_range_id: str) -> JSONResponse:
         """
         :param str named_range_id: The ID of the named range to delete.
             Can be obtained with Spreadsheet.list_named_ranges()
@@ -2813,9 +2763,11 @@ class Worksheet:
                 }
             ]
         }
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def _add_dimension_group(self, start, end, dimension):
+    def _add_dimension_group(
+        self, start: int, end: int, dimension: Dimension
+    ) -> JSONResponse:
         """
         update this sheet by grouping 'dimension'
 
@@ -2823,6 +2775,7 @@ class Worksheet:
         :param int end: The end (exclusive) of the grou
         :param str dimension: The dimension to group, can be one of
             ``ROWS`` or ``COLUMNS``.
+        :type diension: :class:`~gspread.utils.Dimension`
         """
         body = {
             "requests": [
@@ -2839,9 +2792,9 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def add_dimension_group_columns(self, start, end):
+    def add_dimension_group_columns(self, start: int, end: int) -> JSONResponse:
         """
         Group columns in order to hide them in the UI.
 
@@ -2857,7 +2810,7 @@ class Worksheet:
         """
         return self._add_dimension_group(start, end, Dimension.cols)
 
-    def add_dimension_group_rows(self, start, end):
+    def add_dimension_group_rows(self, start: int, end: int) -> JSONResponse:
         """
         Group rows in order to hide them in the UI.
 
@@ -2871,7 +2824,9 @@ class Worksheet:
         """
         return self._add_dimension_group(start, end, Dimension.rows)
 
-    def _delete_dimension_group(self, start, end, dimension):
+    def _delete_dimension_group(
+        self, start: int, end: int, dimension: Dimension
+    ) -> JSONResponse:
         """delete a dimension group in this sheet"""
         body = {
             "requests": [
@@ -2888,9 +2843,9 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def delete_dimension_group_columns(self, start, end):
+    def delete_dimension_group_columns(self, start: int, end: int) -> JSONResponse:
         """
         Remove the grouping of a set of columns.
 
@@ -2906,7 +2861,7 @@ class Worksheet:
         """
         return self._delete_dimension_group(start, end, Dimension.cols)
 
-    def delete_dimension_group_rows(self, start, end):
+    def delete_dimension_group_rows(self, start: int, end: int) -> JSONResponse:
         """
         Remove the grouping of a set of rows.
 
@@ -2919,7 +2874,7 @@ class Worksheet:
         """
         return self._delete_dimension_group(start, end, Dimension.rows)
 
-    def list_dimension_group_columns(self):
+    def list_dimension_group_columns(self) -> List[JSONResponse]:
         """
         List all the grouped columns in this worksheet.
 
@@ -2928,7 +2883,7 @@ class Worksheet:
         """
         return self._get_sheet_property("columnGroups", [])
 
-    def list_dimension_group_rows(self):
+    def list_dimension_group_rows(self) -> List[JSONResponse]:
         """
         List all the grouped rows in this worksheet.
 
@@ -2937,7 +2892,9 @@ class Worksheet:
         """
         return self._get_sheet_property("rowGroups", [])
 
-    def _hide_dimension(self, start, end, dimension):
+    def _hide_dimension(
+        self, start: int, end: int, dimension: Dimension
+    ) -> JSONResponse:
         """
         Update this sheet by hiding the given 'dimension'
 
@@ -2947,7 +2904,7 @@ class Worksheet:
         :param int end: The (exclusive) end of the dimension to hide
         :param str dimension: The dimension to hide, can be one of
             ``ROWS`` or ``COLUMNS``.
-        :type diension: :namedtuple:`~gspread.utils.Dimension`
+        :type diension: :class:`~gspread.utils.Dimension`
         """
         body = {
             "requests": [
@@ -2968,9 +2925,9 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def hide_columns(self, start, end):
+    def hide_columns(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly hide the given column index range.
 
@@ -2981,7 +2938,7 @@ class Worksheet:
         """
         return self._hide_dimension(start, end, Dimension.cols)
 
-    def hide_rows(self, start, end):
+    def hide_rows(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly hide the given row index range.
 
@@ -2992,7 +2949,9 @@ class Worksheet:
         """
         return self._hide_dimension(start, end, Dimension.rows)
 
-    def _unhide_dimension(self, start, end, dimension):
+    def _unhide_dimension(
+        self, start: int, end: int, dimension: Dimension
+    ) -> JSONResponse:
         """
         Update this sheet by unhiding the given 'dimension'
 
@@ -3002,7 +2961,7 @@ class Worksheet:
         :param int end: The (inclusive) end of the dimension to unhide
         :param str dimension: The dimension to hide, can be one of
             ``ROWS`` or ``COLUMNS``.
-        :type dimension: :namedtuple:`~gspread.utils.Dimension`
+        :type dimension: :class:`~gspread.utils.Dimension`
         """
         body = {
             "requests": [
@@ -3023,9 +2982,9 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
-    def unhide_columns(self, start, end):
+    def unhide_columns(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly unhide the given column index range.
 
@@ -3036,7 +2995,7 @@ class Worksheet:
         """
         return self._unhide_dimension(start, end, Dimension.cols)
 
-    def unhide_rows(self, start, end):
+    def unhide_rows(self, start: int, end: int) -> JSONResponse:
         """
         Explicitly unhide the given row index range.
 
@@ -3047,7 +3006,7 @@ class Worksheet:
         """
         return self._unhide_dimension(start, end, Dimension.rows)
 
-    def _set_hidden_flag(self, hidden):
+    def _set_hidden_flag(self, hidden: bool) -> JSONResponse:
         """Send the appropriate request to hide/show the current worksheet"""
 
         body = {
@@ -3064,19 +3023,19 @@ class Worksheet:
             ]
         }
 
-        res = self.spreadsheet.batch_update(body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
         self._properties["hidden"] = hidden
         return res
 
-    def hide(self):
+    def hide(self) -> JSONResponse:
         """Hides the current worksheet from the UI."""
         return self._set_hidden_flag(True)
 
-    def show(self):
+    def show(self) -> JSONResponse:
         """Show the current worksheet in the UI."""
         return self._set_hidden_flag(False)
 
-    def _set_gridlines_hidden_flag(self, hidden):
+    def _set_gridlines_hidden_flag(self, hidden: bool) -> JSONResponse:
         """Hide/show gridlines on the current worksheet"""
 
         body = {
@@ -3095,25 +3054,25 @@ class Worksheet:
             ]
         }
 
-        res = self.spreadsheet.batch_update(body)
+        res = self.client.batch_update(self.spreadsheet_id, body)
         self._properties["gridProperties"]["hideGridlines"] = hidden
         return res
 
-    def hide_gridlines(self):
+    def hide_gridlines(self) -> JSONResponse:
         """Hide gridlines on the current worksheet"""
         return self._set_gridlines_hidden_flag(True)
 
-    def show_gridlines(self):
+    def show_gridlines(self) -> JSONResponse:
         """Show gridlines on the current worksheet"""
         return self._set_gridlines_hidden_flag(False)
 
     def copy_range(
         self,
-        source,
-        dest,
-        paste_type=PasteType.normal,
-        paste_orientation=PasteOrientation.normal,
-    ):
+        source: str,
+        dest: str,
+        paste_type: PasteType = PasteType.normal,
+        paste_orientation: PasteOrientation = PasteOrientation.normal,
+    ) -> JSONResponse:
         """Copies a range of data from source to dest
 
         .. note::
@@ -3132,10 +3091,10 @@ class Worksheet:
         :param paste_type: the paste type to apply. Many paste type are available from
             the Sheet API, see above note for detailed values for all values and their effects.
             Defaults to ``PasteType.normal``
-        :type paste_type: :namedtuple:`~gspread.utils.PasteType`
+        :type paste_type: :class:`~gspread.utils.PasteType`
         :param paste_orientation: The paste orient to apply.
             Possible values are: ``normal`` to keep the same orientation, ``transpose`` where all rows become columns and vice versa.
-        :type paste_orientation: :namedtuple:`~gspread.utils.PasteOrientation`
+        :type paste_orientation: :class:`~gspread.utils.PasteOrientation`
         """
         body = {
             "requests": [
@@ -3150,14 +3109,14 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def cut_range(
         self,
-        source,
-        dest,
-        paste_type=PasteType.normal,
-    ):
+        source: str,
+        dest: str,
+        paste_type: PasteType = PasteType.normal,
+    ) -> JSONResponse:
         """Moves a range of data form source to dest
 
         .. note::
@@ -3172,7 +3131,7 @@ class Worksheet:
         :param paste_type: the paste type to apply. Many paste type are available from
             the Sheet API, see above note for detailed values for all values and their effects.
             Defaults to ``PasteType.normal``
-        :type paste_type: :namedtuple:`~gspread.utils.PasteType`
+        :type paste_type: :class:`~gspread.utils.PasteType`
         """
 
         # in the cut/paste request, the destination object
@@ -3196,4 +3155,4 @@ class Worksheet:
             ]
         }
 
-        return self.spreadsheet.batch_update(body)
+        return self.client.batch_update(self.spreadsheet_id, body)

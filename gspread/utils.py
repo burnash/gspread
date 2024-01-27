@@ -6,22 +6,37 @@ This module contains utility functions.
 
 """
 
-import os
 import re
-import warnings
-from collections import defaultdict, namedtuple
+from collections import defaultdict
 from collections.abc import Sequence
 from functools import wraps
 from itertools import chain
-from math import inf
-from typing import Mapping
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AnyStr,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 from urllib.parse import quote as uquote
 
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
+from strenum import StrEnum
 
 from .exceptions import IncorrectCellLabel, InvalidInputValue, NoValidUrlKeyFound
+
+if TYPE_CHECKING:
+    from .cell import Cell
+
 
 MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")
@@ -31,78 +46,82 @@ A1_ADDR_FULL_RE = re.compile(r"[A-Za-z]+\d+:[A-Za-z]+\d+")  # e.g. A1:B2 not A1:
 URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
 
-Dimension = namedtuple("Dimension", ["rows", "cols"])("ROWS", "COLUMNS")
-ValueRenderOption = namedtuple(
-    "ValueRenderOption", ["formatted", "unformatted", "formula"]
-)("FORMATTED_VALUE", "UNFORMATTED_VALUE", "FORMULA")
-ValueInputOption = namedtuple("ValueInputOption", ["raw", "user_entered"])(
-    "RAW", "USER_ENTERED"
-)
-DateTimeOption = namedtuple(
-    "DateTimeOption", ["serial_number", "formatted_string", "formated_string"]
-)("SERIAL_NUMBER", "FORMATTED_STRING", "FORMATTED_STRING")
-MimeType = namedtuple(
-    "MimeType",
-    ["google_sheets", "pdf", "excel", "csv", "open_office_sheet", "tsv", "zip"],
-)(
-    "application/vnd.google-apps.spreadsheet",
-    "application/pdf",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "text/csv",
-    "application/vnd.oasis.opendocument.spreadsheet",
-    "text/tab-separated-values",
-    "application/zip",
-)
-ExportFormat = namedtuple(
-    "ExportFormat", ["PDF", "EXCEL", "CSV", "OPEN_OFFICE_SHEET", "TSV", "ZIPPED_HTML"]
-)(
-    MimeType.pdf,
-    MimeType.excel,
-    MimeType.csv,
-    MimeType.open_office_sheet,
-    MimeType.tsv,
-    MimeType.zip,
-)
 
-PasteType = namedtuple(
-    "PasteType",
-    [
-        "normal",
-        "values",
-        "format",
-        "no_borders",
-        "formula",
-        "data_validation",
-        "conditional_formating",
-    ],
-)(
-    "PASTE_NORMAL",
-    "PASTE_VALUES",
-    "PASTE_FORMAT",
-    "PASTE_NO_BORDERS",
-    "PASTE_FORMULA",
-    "PASTE_DATA_VALIDATION",
-    "PASTE_CONDITIONAL_FORMATTING",
-)
+class Dimension(StrEnum):
+    rows = "ROWS"
+    cols = "COLUMNS"
 
-PasteOrientation = namedtuple("PasteOrientation", ["normal", "transpose"])(
-    "NORMAL", "TRANSPOSE"
-)
 
-MergeType = namedtuple("MergeType", ["merge_all", "merge_columns", "merge_rows"])(
-    "MERGE_ALL", "MERGE_COLUMNS", "MERGE_ROWS"
-)
+class MergeType(StrEnum):
+    merge_all = "MERGE_ALL"
+    merge_columns = "MERGE_COLUMNS"
+    merge_rows = "MERGE_ROWS"
 
-DEPRECATION_WARNING_TEMPLATE = (
-    "[Deprecated][in version {v_deprecated}]: {msg_deprecated}"
-)
-
-REQUIRED_KWARGS = "required"
 
 SILENCE_WARNINGS_ENV_KEY = "GSPREAD_SILENCE_WARNINGS"
 
 
-def convert_credentials(credentials):
+class ValueRenderOption(StrEnum):
+    formatted = "FORMATTED_VALUE"
+    unformatted = "UNFORMATTED_VALUE"
+    formula = "FORMULA"
+
+
+class ValueInputOption(StrEnum):
+    raw = "RAW"
+    user_entered = "USER_ENTERED"
+
+
+class InsertDataOption(StrEnum):
+    overwrite = "OVERWRITE"
+    insert_rows = "INSERT_ROWS"
+
+
+class DateTimeOption(StrEnum):
+    serial_number = "SERIAL_NUMBER"
+    formatted_string = "FORMATTED_STRING"
+
+
+class MimeType(StrEnum):
+    google_sheets = "application/vnd.google-apps.spreadsheet"
+    pdf = "application/pdf"
+    excel = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    csv = "text/csv"
+    open_office_sheet = "application/vnd.oasis.opendocument.spreadsheet"
+    tsv = "text/tab-separated-values"
+    zip = "application/zip"
+
+
+class ExportFormat(StrEnum):
+    PDF = MimeType.pdf
+    EXCEL = MimeType.excel
+    CSV = MimeType.csv
+    OPEN_OFFICE_SHEET = MimeType.open_office_sheet
+    TSV = MimeType.tsv
+    ZIPPED_HTML = MimeType.zip
+
+
+class PasteType(StrEnum):
+    normal = "PASTE_NORMAL"
+    values = "PASTE_VALUES"
+    format = "PASTE_FORMAT"  # type: ignore
+    no_borders = "PASTE_NO_BORDERS"
+    formula = "PASTE_NO_BORDERS"
+    data_validation = "PASTE_DATA_VALIDATION"
+    conditional_formating = "PASTE_CONDITIONAL_FORMATTING"
+
+
+class PasteOrientation(StrEnum):
+    normal = "NORMAL"
+    transpose = "TRANSPOSE"
+
+
+class GridRangeType(StrEnum):
+    ValueRange = "ValueRange"
+    ListOfLists = "ListOfLists"
+
+
+def convert_credentials(credentials: Credentials) -> Credentials:
     module = credentials.__module__
     cls = credentials.__class__.__name__
     if "oauth2client" in module and cls == "ServiceAccountCredentials":
@@ -121,7 +140,7 @@ def convert_credentials(credentials):
     )
 
 
-def _convert_oauth(credentials):
+def _convert_oauth(credentials: Any) -> Credentials:
     return UserCredentials(
         credentials.access_token,
         credentials.refresh_token,
@@ -133,7 +152,7 @@ def _convert_oauth(credentials):
     )
 
 
-def _convert_service_account(credentials):
+def _convert_service_account(credentials: Any) -> Credentials:
     data = credentials.serialization_data
     data["token_uri"] = credentials.token_uri
     scopes = credentials._scopes.split() or [
@@ -144,17 +163,20 @@ def _convert_service_account(credentials):
     return ServiceAccountCredentials.from_service_account_info(data, scopes=scopes)
 
 
-def finditem(func, seq):
+T = TypeVar("T")
+
+
+def finditem(func: Callable[[T], bool], seq: Iterable[T]) -> T:
     """Finds and returns first item in iterable for which func(item) is True."""
     return next(item for item in seq if func(item))
 
 
 def numericise(
-    value,
-    empty2zero=False,
-    default_blank="",
-    allow_underscores_in_numeric_literals=False,
-):
+    value: Optional[AnyStr],
+    empty2zero: bool = False,
+    default_blank: Any = "",
+    allow_underscores_in_numeric_literals: bool = False,
+) -> Optional[Union[int, float, AnyStr]]:
     """Returns a value that depends on the input:
 
         - Float if input is a string that can be converted to Float
@@ -200,6 +222,7 @@ def numericise(
     >>> numericise(None)
     >>>
     """
+    numericised: Optional[Union[int, float, AnyStr]] = value
     if isinstance(value, str):
         if "_" in value:
             if not allow_underscores_in_numeric_literals:
@@ -209,29 +232,27 @@ def numericise(
         # replace comma separating thousands to match python format
         cleaned_value = value.replace(",", "")
         try:
-            int_value = int(cleaned_value)
-            return int_value
+            numericised = int(cleaned_value)
         except ValueError:
             try:
-                float_value = float(cleaned_value)
-                return float_value
+                numericised = float(cleaned_value)
             except ValueError:
                 if value == "":
                     if empty2zero:
-                        value = 0
+                        numericised = 0
                     else:
-                        value = default_blank
+                        numericised = default_blank
 
-    return value
+    return numericised
 
 
 def numericise_all(
-    values,
-    empty2zero=False,
-    default_blank="",
-    allow_underscores_in_numeric_literals=False,
-    ignore=[],
-):
+    values: List[Optional[AnyStr]],
+    empty2zero: bool = False,
+    default_blank: Any = "",
+    allow_underscores_in_numeric_literals: bool = False,
+    ignore: List[int] = [],
+) -> List[Optional[Union[int, float, AnyStr]]]:
     """Returns a list of numericised values from strings except those from the
     row specified as ignore.
 
@@ -263,7 +284,7 @@ def numericise_all(
     return numericised_list
 
 
-def rowcol_to_a1(row, col):
+def rowcol_to_a1(row: int, col: int) -> str:
     """Translates a row and column cell address to A1 notation.
 
     :param row: The row of the cell to be converted.
@@ -282,9 +303,6 @@ def rowcol_to_a1(row, col):
     A1
 
     """
-    row = int(row)
-    col = int(col)
-
     if row < 1 or col < 1:
         raise IncorrectCellLabel("({}, {})".format(row, col))
 
@@ -303,7 +321,7 @@ def rowcol_to_a1(row, col):
     return label
 
 
-def a1_to_rowcol(label):
+def a1_to_rowcol(label: str) -> Tuple[int, int]:
     """Translates a cell's address in A1 notation to a tuple of integers.
 
     :param str label: A cell label in A1 notation, e.g. 'B1'.
@@ -332,7 +350,10 @@ def a1_to_rowcol(label):
     return (row, col)
 
 
-def _a1_to_rowcol_unbounded(label):
+IntOrInf = Union[int, float]
+
+
+def _a1_to_rowcol_unbounded(label: str) -> Tuple[IntOrInf, IntOrInf]:
     """Translates a cell's address in A1 notation to a tuple of integers.
 
     Same as `a1_to_rowcol()` but allows for missing row or column part
@@ -375,24 +396,25 @@ def _a1_to_rowcol_unbounded(label):
     if m:
         column_label, row = m.groups()
 
+        col: IntOrInf
         if column_label:
             col = 0
             for i, c in enumerate(reversed(column_label.upper())):
                 col += (ord(c) - MAGIC_NUMBER) * (26**i)
         else:
-            col = inf
+            col = float("inf")
 
         if row:
             row = int(row)
         else:
-            row = inf
+            row = float("inf")
     else:
         raise IncorrectCellLabel(label)
 
     return (row, col)
 
 
-def a1_range_to_grid_range(name, sheet_id=None):
+def a1_range_to_grid_range(name: str, sheet_id: Optional[int] = None) -> Dict[str, int]:
     """Converts a range defined in A1 notation to a dict representing
     a `GridRange`_.
 
@@ -448,15 +470,17 @@ def a1_range_to_grid_range(name, sheet_id=None):
         "endColumnIndex": end_column_index,
     }
 
-    grid_range = {key: value for (key, value) in grid_range.items() if value != inf}
+    filtered_grid_range: Dict[str, int] = {
+        key: value for (key, value) in grid_range.items() if isinstance(value, int)
+    }
 
     if sheet_id is not None:
-        grid_range["sheetId"] = sheet_id
+        filtered_grid_range["sheetId"] = sheet_id
 
-    return grid_range
+    return filtered_grid_range
 
 
-def column_letter_to_index(column):
+def column_letter_to_index(column: str) -> int:
     """Converts a column letter to its numerical index.
 
     This is useful when using the method :meth:`gspread.worksheet.Worksheet.col_values`.
@@ -490,7 +514,7 @@ def column_letter_to_index(column):
             "invalid value: {}, must be a column letter".format(column)
         )
 
-    if index is inf:
+    if not isinstance(index, int):
         raise InvalidInputValue(
             "invalid value: {}, must be a column letter".format(column)
         )
@@ -498,19 +522,21 @@ def column_letter_to_index(column):
     return index
 
 
-def cast_to_a1_notation(method):
+def cast_to_a1_notation(method: Callable[..., Any]) -> Callable[..., Any]:
     """Decorator function casts wrapped arguments to A1 notation in range
     method calls.
     """
 
     @wraps(method)
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
         try:
             if len(args):
                 int(args[0])
 
                 # Convert to A1 notation
+                # Assuming rowcol_to_a1 has appropriate typing
                 range_start = rowcol_to_a1(*args[:2])
+                # Assuming rowcol_to_a1 has appropriate typing
                 range_end = rowcol_to_a1(*args[-2:])
                 range_name = ":".join((range_start, range_end))
 
@@ -523,7 +549,7 @@ def cast_to_a1_notation(method):
     return wrapper
 
 
-def extract_id_from_url(url):
+def extract_id_from_url(url: str) -> str:
     m2 = URL_KEY_V2_RE.search(url)
     if m2:
         return m2.group(1)
@@ -535,19 +561,24 @@ def extract_id_from_url(url):
     raise NoValidUrlKeyFound
 
 
-def wid_to_gid(wid):
+def wid_to_gid(wid: str) -> str:
     """Calculate gid of a worksheet from its wid."""
     widval = wid[1:] if len(wid) > 3 else wid
     xorval = 474 if len(wid) > 3 else 31578
     return str(int(widval, 36) ^ xorval)
 
 
-def rightpad(row, max_len, padding_value=""):
+def rightpad(row: List[Any], max_len: int, padding_value: Any = "") -> List[Any]:
     pad_len = max_len - len(row)
     return row + ([padding_value] * pad_len) if pad_len != 0 else row
 
 
-def fill_gaps(L, rows=None, cols=None, padding_value=""):
+def fill_gaps(
+    L: List[List[Any]],
+    rows: Optional[int] = None,
+    cols: Optional[int] = None,
+    padding_value: Any = "",
+) -> List[List[Any]]:
     """Fill gaps in a list of lists.
     e.g.,::
 
@@ -584,14 +615,14 @@ def fill_gaps(L, rows=None, cols=None, padding_value=""):
 
         return [rightpad(row, max_cols, padding_value=padding_value) for row in L]
     except ValueError:
-        return []
+        return [[]]
 
 
-def cell_list_to_rect(cell_list):
+def cell_list_to_rect(cell_list: List["Cell"]) -> List[List[Optional[str]]]:
     if not cell_list:
         return []
 
-    rows = defaultdict(dict)
+    rows: Dict[int, Dict[int, str]] = defaultdict(dict)
 
     row_offset = min(c.row for c in cell_list)
     col_offset = min(c.col for c in cell_list)
@@ -614,11 +645,11 @@ def cell_list_to_rect(cell_list):
     return [[rows[i].get(j) for j in rect_cols] for i in rect_rows]
 
 
-def quote(value, safe="", encoding="utf-8"):
+def quote(value: str, safe: str = "", encoding: str = "utf-8") -> str:
     return uquote(value.encode(encoding), safe)
 
 
-def absolute_range_name(sheet_name, range_name=None):
+def absolute_range_name(sheet_name: str, range_name: Optional[str] = None) -> str:
     """Return an absolutized path of a range.
 
     >>> absolute_range_name("Sheet1", "A1:B1")
@@ -647,7 +678,7 @@ def absolute_range_name(sheet_name, range_name=None):
         return sheet_name
 
 
-def is_scalar(x):
+def is_scalar(x: Any) -> bool:
     """Return True if the value is scalar.
 
     A scalar is not a sequence but can be a string.
@@ -671,80 +702,6 @@ def is_scalar(x):
     True
     """
     return isinstance(x, str) or not isinstance(x, Sequence)
-
-
-def filter_dict_values(D):
-    """Return a shallow copy of D with all `None` values excluded.
-
-    >>> filter_dict_values({'a': 1, 'b': 2, 'c': None})
-    {'a': 1, 'b': 2}
-
-    >>> filter_dict_values({'a': 1, 'b': 2, 'c': 0})
-    {'a': 1, 'b': 2, 'c': 0}
-
-    >>> filter_dict_values({})
-    {}
-
-    >>> filter_dict_values({'imnone': None})
-    {}
-    """
-    return {k: v for k, v in D.items() if v is not None}
-
-
-def accepted_kwargs(**default_kwargs):
-    """
-    >>> @accepted_kwargs(d='d', e=None)
-    ... def foo(a, b, c='c', **kwargs):
-    ...     return {
-    ...         'a': a,
-    ...         'b': b,
-    ...         'c': c,
-    ...         'd': kwargs['d'],
-    ...         'e': kwargs['e'],
-    ...     }
-    ...
-
-    >>> foo('a', 'b')
-    {'a': 'a', 'b': 'b', 'c': 'c', 'd': 'd', 'e': None}
-
-    >>> foo('a', 'b', 'NEW C')
-    {'a': 'a', 'b': 'b', 'c': 'NEW C', 'd': 'd', 'e': None}
-
-    >>> foo('a', 'b', e='Not None')
-    {'a': 'a', 'b': 'b', 'c': 'c', 'd': 'd', 'e': 'Not None'}
-
-    >>> foo('a', 'b', d='NEW D')
-    {'a': 'a', 'b': 'b', 'c': 'c', 'd': 'NEW D', 'e': None}
-
-    >>> foo('a', 'b', a_typo='IS DETECTED')
-    Traceback (most recent call last):
-    ...
-    TypeError: foo got unexpected keyword arguments: ['a_typo']
-
-    >>> foo('a', 'b', d='NEW D', c='THIS DOES NOT WORK BECAUSE OF d')
-    Traceback (most recent call last):
-    ...
-    TypeError: foo got unexpected keyword arguments: ['c']
-
-    """
-
-    def decorate(f):
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            unexpected_kwargs = set(kwargs) - set(default_kwargs)
-            if unexpected_kwargs:
-                err = "%s got unexpected keyword arguments: %s"
-                raise TypeError(err % (f.__name__, list(unexpected_kwargs)))
-
-            for k, v in default_kwargs.items():
-                if v != REQUIRED_KWARGS:
-                    kwargs.setdefault(k, v)
-
-            return f(*args, **kwargs)
-
-        return wrapper
-
-    return decorate
 
 
 def combined_merge_values(worksheet_metadata, values, start_row_index, start_col_index):
@@ -930,24 +887,54 @@ def get_a1_from_absolute_range(range_name: str) -> str:
     return range_name
 
 
-def deprecation_warning(version: str, msg: str) -> None:
-    """Emit a deprecation warning.
+def to_records(
+    headers: Iterable[Any] = [], values: Iterable[Iterable[Any]] = [[]]
+) -> List[Dict[str, Union[str, int, float]]]:
+    """Builds the list of dictionaries, all of them have the headers sequence as keys set,
+    each key is associated to the corresponding value for the same index in each list from
+    the matrix ``values``.
+    There are as many dictionaries as they are entry in the list of given values.
 
-    ..note::
+    :param list: headers the key set for all dictionaries
+    :param list: values a matrix of values
 
-        This warning can be silenced by setting the environment variable:
-        GSPREAD_SILENCE_WARNINGS=1
+    Examples::
+
+        >>> to_records(["name", "City"], [["Spiderman", "NY"], ["Batman", "Gotham"]])
+        [
+            {
+                "Name": "Spiderman",
+                "City": "NY",
+            },
+            {
+                "Name": "Batman",
+                "City": "Gotham",
+            },
+        ]
     """
 
-    # do not emit warning if env variable is set specifically to 1
-    if os.getenv(SILENCE_WARNINGS_ENV_KEY, "0") == "1":
-        return
+    return [dict(zip(headers, row)) for row in values]
 
-    warnings.warn(
-        DEPRECATION_WARNING_TEMPLATE.format(v_deprecated=version, msg_deprecated=msg),
-        DeprecationWarning,
-        4,  # showd the 4th stack: [1]:current->[2]:deprecation_warning->[3]:<gspread method/function>->[4]:<user's code>
-    )
+
+# SHOULD NOT BE NEEDED UNTIL NEXT MAJOR VERSION
+# def deprecation_warning(version: str, msg: str) -> None:
+#     """Emit a deprecation warning.
+
+#     ..note::
+
+#         This warning can be silenced by setting the environment variable:
+#         GSPREAD_SILENCE_WARNINGS=1
+#     """
+
+#     # do not emit warning if env variable is set specifically to 1
+#     if os.getenv(SILENCE_WARNINGS_ENV_KEY, "0") == "1":
+#         return
+
+#     warnings.warn(
+#         DEPRECATION_WARNING_TEMPLATE.format(v_deprecated=version, msg_deprecated=msg),
+#         DeprecationWarning,
+#         4,  # showd the 4th stack: [1]:current->[2]:deprecation_warning->[3]:<gspread method/function>->[4]:<user's code>
+#     )
 
 
 if __name__ == "__main__":

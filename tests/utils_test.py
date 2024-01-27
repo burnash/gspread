@@ -260,6 +260,22 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual_combine, expected_combine)
 
+    def test_convert_colors_to_hex_value(self):
+        color = {"red": 1, "green": 0.49803922, "blue": 0}
+        expected_hex = "#FF7F00"
+
+        # successful convert from colors
+        hex = utils.convert_colors_to_hex_value(**color)
+        self.assertEqual(hex, expected_hex)
+
+        # successful convert from partial input
+        hex = utils.convert_colors_to_hex_value(green=1)
+        self.assertEqual(hex, "#00FF00")
+
+        # throw ValueError on color values out of range (0-1)
+        with self.assertRaises(ValueError):
+            utils.convert_colors_to_hex_value(1.23, 0, -50)
+
     def test_combine_merge_values_outside_range(self):
         """Make sure that merges outside the range of the sheet are ignored or partially ignored
         see issue #1298
@@ -347,22 +363,6 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual_combine, expected_combined_cropped)
 
-    def test_convert_colors_to_hex_value(self):
-        color = {"red": 1, "green": 0.5, "blue": 0}
-        expected_hex = "#FF8000"
-
-        # successful convert from colors
-        hex = utils.convert_colors_to_hex_value(**color)
-        self.assertEqual(hex, expected_hex)
-
-        # successful convert from partial input
-        hex = utils.convert_colors_to_hex_value(green=1)
-        self.assertEqual(hex, "#00FF00")
-
-        # throw ValueError on color values out of range (0-1)
-        with self.assertRaises(ValueError):
-            utils.convert_colors_to_hex_value(1.23, 0, -50)
-
     def test_convert_hex_to_color(self):
         hexcolor = "#FF7F00"
         expected_color = {"red": 1, "green": 0.49803922, "blue": 0}
@@ -424,30 +424,22 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-    def test_accepted_kwargs(self):
-        """test accepted_kwargs function.
-        Test the temporary special value: REQUIRED_KWARGS
-        """
+    def test_fill_gaps_with_non_square_array(self):
+        """test fill_gaps function"""
+        matrix = [
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+            [9],
+        ]
+        expected = [
+            [1, 2, 3, 4, "", "", ""],
+            [5, 6, 7, 8, "", "", ""],
+            [9, "", "", "", "", "", ""],
+            ["", "", "", "", "", "", ""],
+        ]
+        actual = utils.fill_gaps(matrix, 4, 7)
 
-        expected_arg0 = 0
-        expected_arg1 = 1
-
-        @utils.accepted_kwargs(arg1=1)
-        def sample_arg1(arg0, **kwargs):
-            self.assertEqual(arg0, expected_arg0)
-            self.assertEqual(kwargs["arg1"], expected_arg1)
-
-        sample_arg1(0)
-
-        expected_arg2 = 2
-
-        @utils.accepted_kwargs(arg1=utils.REQUIRED_KWARGS, arg2=2)
-        def sample_arg2(arg0, arg1=None, **kwargs):
-            self.assertEqual(arg0, expected_arg0)
-            self.assertEqual(arg1, expected_arg1)
-            self.assertEqual(kwargs["arg2"], expected_arg2)
-
-        sample_arg2(0, arg1=1, arg2=2)
+        self.assertEqual(actual, expected)
 
     def test_is_full_a1_notation(self):
         """test is_full_a1_notation function"""
@@ -473,3 +465,41 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(utils.get_a1_from_absolute_range("A1:B2"), "A1:B2")
         self.assertEqual(utils.get_a1_from_absolute_range("A1:B"), "A1:B")
         self.assertEqual(utils.get_a1_from_absolute_range("2"), "2")
+
+    def test_to_records_empty_args(self):
+        """Test to_records with empty args"""
+
+        self.assertListEqual(utils.to_records([], []), [])
+        self.assertListEqual(utils.to_records([], [[]]), [{}])
+        self.assertListEqual(utils.to_records(["a1", "b2"], []), [])
+        self.assertListEqual(utils.to_records(["a1", "b2"], [[]]), [{}])
+        self.assertListEqual(utils.to_records([], [["a1"]]), [{}])
+        self.assertListEqual(utils.to_records([], [["a1"], ["a2"]]), [{}, {}])
+        self.assertListEqual(utils.to_records([], [[], ["a2"]]), [{}, {}])
+
+    def test_to_records(self):
+        """Test to_records with values"""
+
+        headers = ["HA", "HB", "HC"]
+        values = [["A2", "B2", "C2"], ["A3", "B3"], ["", "B4", "C4"]]
+
+        records = utils.to_records(headers, values)
+
+        self.assertEqual(len(values), len(records))
+
+        for i in range(len(records)):
+            record = records[i]
+            keys = record.keys()
+
+            # Some rows have shorter values ("A3", "B3")
+            # so the list of keys is smaller
+            # but never bigger than the list of headers
+            self.assertLessEqual(len(keys), len(headers))
+
+            # Each resulting key must be part of the given header
+            for key in keys:
+                self.assertIn(key, headers)
+
+                # given key are unordered
+                # but they must match a value from the given input values
+                self.assertIn(record[key], values[i])

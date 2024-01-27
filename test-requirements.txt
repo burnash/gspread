@@ -1,6 +1,7 @@
-google-auth>=1.12.0
-google-auth-oauthlib>=0.4.1
+google-auth==2.15.0
+google-auth-oauthlib>=0.8.0
 vcrpy
 pytest
 pytest-vcr
 urllib3==1.26.15
+StrEnum==0.4.15

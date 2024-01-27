@@ -82,7 +82,7 @@ class CellTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_merge_cells(self):
-        self.sheet.update("A1:B2", [[42, 43], [43, 44]])
+        self.sheet.update([[42, 43], [43, 44]], "A1:B2")
 
         # test merge rows
         self.sheet.merge_cells(1, 1, 2, 2, merge_type="MERGE_ROWS")
@@ -105,7 +105,7 @@ class CellTest(GspreadTest):
         self.sheet.define_named_range("A1:B2", "TestDefineNamedRange")
 
         # get the ranges from the metadata
-        named_range_dict = self.sheet.spreadsheet.fetch_sheet_metadata(
+        named_range_dict = self.spreadsheet.fetch_sheet_metadata(
             params={"fields": "namedRanges"}
         )
 
@@ -140,7 +140,7 @@ class CellTest(GspreadTest):
         self.sheet.delete_named_range(named_range_id)
 
         # get the ranges from the metadata
-        named_range_dict = self.sheet.spreadsheet.fetch_sheet_metadata(
+        named_range_dict = self.spreadsheet.fetch_sheet_metadata(
             params={"fields": "namedRanges"}
         )
 
