@@ -1,6 +1,12 @@
 Release History
 ===============
 
+5.12.4.(2023-12-31)
+-------------------
+
+* Bump actions/setup-python from 4 to 5 by @dependabot in https://github.com/burnash/gspread/pull/1370
+* Fixed default value of merge_type parameter in merge_cells function docstring. by @neolooong in https://github.com/burnash/gspread/pull/1373
+
 5.12.3 (2023-12-15)
 -------------------
 
