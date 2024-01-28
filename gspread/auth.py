@@ -15,6 +15,7 @@ from google.auth.credentials import Credentials
 from google.oauth2.credentials import Credentials as OAuthCredentials
 from google.oauth2.service_account import Credentials as SACredentials
 from google_auth_oauthlib.flow import InstalledAppFlow
+from requests import Session
 
 from .client import Client
 from .http_client import HTTPClient, HTTPClientType
@@ -54,7 +55,9 @@ DEFAULT_SERVICE_ACCOUNT_FILENAME = DEFAULT_CONFIG_DIR / "service_account.json"
 
 
 def authorize(
-    credentials: Credentials, http_client: HTTPClientType = HTTPClient
+    credentials: Credentials,
+    http_client: HTTPClientType = HTTPClient,
+    session: Optional[Session] = None,
 ) -> Client:
     """Login to Google API using OAuth2 credentials.
     This is a shortcut/helper function which
@@ -62,11 +65,19 @@ def authorize(
     By default :class:`gspread.HTTPClient` is used (but could also use
     :class:`gspread.BackOffHTTPClient` to avoid rate limiting).
 
+    It can take an additional `requests.Session` object in order to provide
+    you own session object.
+
+    .. note::
+
+       When providing your own `requests.Session` object,
+       use the value `None` as `credentials`.
+
     :returns: An instance of the class produced by `http_client`.
     :rtype: :class:`gspread.client.Client`
     """
 
-    return Client(auth=credentials, http_client=http_client)
+    return Client(auth=credentials, http_client=http_client, session=session)
 
 
 def local_server_flow(
