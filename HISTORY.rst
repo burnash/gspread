@@ -1,7 +1,41 @@
 Release History
 ===============
 
-5.12.4.(2023-12-31)
+6.0.0 (2024-01-28)
+------------------
+
+* Remove deprecated method delete_row by @cgkoutzigiannis in https://github.com/burnash/gspread/pull/1062
+* Initial typing in client.py by @OskarBrzeski in https://github.com/burnash/gspread/pull/1159
+* Split client http client by @lavigne958 in https://github.com/burnash/gspread/pull/1190
+* Spelling fix & update docs with date_time_render_option behaviour by @alifeee in https://github.com/burnash/gspread/pull/1187
+* #966  Add sketch typing for utils.py by @butvinm in https://github.com/burnash/gspread/pull/1196
+* Remove accepted_kwargs decorator by @lavigne958 in https://github.com/burnash/gspread/pull/1229
+* Remove/python-3.7 by @alifeee in https://github.com/burnash/gspread/pull/1234
+* Bump isort from 5.11.4 to 5.12.0 by @dependabot in https://github.com/burnash/gspread/pull/1165
+* bump flake8 to 6.0.0 by @alifeee in https://github.com/burnash/gspread/pull/1236
+* merge master into 6.0.0 by @lavigne958 in https://github.com/burnash/gspread/pull/1241
+* Remplace named tuples with enums by @lavigne958 in https://github.com/burnash/gspread/pull/1250
+* Feature/add type hints worksheets by @lavigne958 in https://github.com/burnash/gspread/pull/1254
+* Implement hex color conversion by @idonec in https://github.com/burnash/gspread/pull/1270
+* remove lastUpdateTime by @alifeee in https://github.com/burnash/gspread/pull/1295
+* Merge `master` into `feature/release_6_0_0` by @alifeee in https://github.com/burnash/gspread/pull/1320
+* Add type checking to lint by @alifeee in https://github.com/burnash/gspread/pull/1337
+* Warning/update swapped args by @alifeee in https://github.com/burnash/gspread/pull/1336
+* Improve `Worksheet.sort()` signature by @lavigne958 in https://github.com/burnash/gspread/pull/1342
+* Make `get_values` and alias of `get` by @alifeee in https://github.com/burnash/gspread/pull/1296
+* fix type issue (remove `.first()` function) by @alifeee in https://github.com/burnash/gspread/pull/1344
+* Remove/get records   use index by @alifeee in https://github.com/burnash/gspread/pull/1345
+* increase warning stacklevel from 1 to 2 by @alifeee in https://github.com/burnash/gspread/pull/1361
+* Feature/merge master by @lavigne958 in https://github.com/burnash/gspread/pull/1371
+* feature/merge master by @lavigne958 in https://github.com/burnash/gspread/pull/1372
+* Simplify get records by @alifeee in https://github.com/burnash/gspread/pull/1374
+* Add util function `to_records` to build records by @lavigne958 in https://github.com/burnash/gspread/pull/1377
+* feature/add utils get records by @lavigne958 in https://github.com/burnash/gspread/pull/1378
+* Add migration guide for get_all_records by @lavigne958 in https://github.com/burnash/gspread/pull/1379
+* feature/merge master into release 6 0 0 by @lavigne958 in https://github.com/burnash/gspread/pull/1381
+* Feature/release 6 0 0 by @lavigne958 in https://github.com/burnash/gspread/pull/1382
+
+5.12.4 (2023-12-31)
 -------------------
 
 * Bump actions/setup-python from 4 to 5 by @dependabot in https://github.com/burnash/gspread/pull/1370
