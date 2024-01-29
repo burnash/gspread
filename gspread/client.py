@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from google.auth.credentials import Credentials
 from requests import Response, Session
 
-from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
+from .exceptions import APIError, SpreadsheetNotFound
 from .http_client import HTTPClient, HTTPClientType, ParamsType
 from .spreadsheet import Spreadsheet
 from .urls import (
@@ -239,15 +239,7 @@ class Client:
         .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
         """
 
-        if format not in ExportFormat:
-            raise UnSupportedExportFormat
-
-        url = "{}/{}/export".format(DRIVE_FILES_API_V3_URL, file_id)
-
-        params: ParamsType = {"mimeType": format}
-
-        r = self.http_client.request("get", url, params=params)
-        return r.content
+        return self.http_client.export(file_id=file_id, format=format)
 
     def copy(
         self,

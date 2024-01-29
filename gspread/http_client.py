@@ -13,7 +13,7 @@ from google.auth.credentials import Credentials
 from google.auth.transport.requests import AuthorizedSession
 from requests import Response, Session
 
-from .exceptions import APIError
+from .exceptions import APIError, UnSupportedExportFormat
 from .urls import (
     DRIVE_FILES_API_V3_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
@@ -26,7 +26,7 @@ from .urls import (
     SPREADSHEET_VALUES_CLEAR_URL,
     SPREADSHEET_VALUES_URL,
 )
-from .utils import convert_credentials, quote
+from .utils import ExportFormat, convert_credentials, quote
 
 ParamsType = MutableMapping[str, Optional[Union[str, int, bool, float, List[str]]]]
 
@@ -305,6 +305,40 @@ class HTTPClient:
         res = self.request("get", url, params=params)
 
         return res.json()
+
+    def export(self, file_id: str, format: str = ExportFormat.PDF) -> bytes:
+        """Export the spreadsheet in the given format.
+
+        :param str file_id: The key of the spreadsheet to export
+
+        :param str format: The format of the resulting file.
+            Possible values are:
+
+                * ``ExportFormat.PDF``
+                * ``ExportFormat.EXCEL``
+                * ``ExportFormat.CSV``
+                * ``ExportFormat.OPEN_OFFICE_SHEET``
+                * ``ExportFormat.TSV``
+                * ``ExportFormat.ZIPPED_HTML``
+
+            See `ExportFormat`_ in the Drive API.
+
+        :type format: :class:`~gspread.utils.ExportFormat`
+
+        :returns bytes: The content of the exported file.
+
+        .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
+        """
+
+        if format not in ExportFormat:
+            raise UnSupportedExportFormat
+
+        url = "{}/{}/export".format(DRIVE_FILES_API_V3_URL, file_id)
+
+        params: ParamsType = {"mimeType": format}
+
+        r = self.request("get", url, params=params)
+        return r.content
 
 
 class BackOffHTTPClient(HTTPClient):
