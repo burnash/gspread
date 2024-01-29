@@ -10,7 +10,7 @@ from http import HTTPStatus
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from google.auth.credentials import Credentials
-from requests import Response
+from requests import Response, Session
 
 from .exceptions import APIError, SpreadsheetNotFound, UnSupportedExportFormat
 from .http_client import HTTPClient, HTTPClientType, ParamsType
@@ -36,9 +36,12 @@ class Client:
     """
 
     def __init__(
-        self, auth: Credentials, http_client: HTTPClientType = HTTPClient
+        self,
+        auth: Credentials,
+        http_client: HTTPClientType = HTTPClient,
+        session: Optional[Session] = None,
     ) -> None:
-        self.http_client = http_client(auth)
+        self.http_client = http_client(auth, session)
 
     def get_file_drive_metadata(self, id: str) -> Any:
         """Get the metadata from the Drive API for a specific file
