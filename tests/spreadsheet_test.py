@@ -233,6 +233,6 @@ class SpreadsheetTest(GspreadTest):
 
         res_values = bytes(res).decode("utf-8").strip("'").split(",")
 
-        self.assertEquals(
+        self.assertEqual(
             values[0], res_values, "exported values are not the value initially set"
         )
