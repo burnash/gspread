@@ -7,7 +7,18 @@ Google API.
 
 """
 from http import HTTPStatus
-from typing import IO, Any, List, Mapping, MutableMapping, Optional, Tuple, Type, Union
+from typing import (
+    IO,
+    Any,
+    Dict,
+    List,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+)
 
 from google.auth.credentials import Credentials
 from google.auth.transport.requests import AuthorizedSession
@@ -339,6 +350,119 @@ class HTTPClient:
 
         r = self.request("get", url, params=params)
         return r.content
+
+    def insert_permission(
+        self,
+        file_id: str,
+        email_address: Optional[str],
+        perm_type: Optional[str],
+        role: Optional[str],
+        notify: bool = True,
+        email_message: Optional[str] = None,
+        with_link: bool = False,
+    ) -> Response:
+        """Creates a new permission for a file.
+
+        :param str file_id: a spreadsheet ID (aka file ID).
+        :param email_address: user or group e-mail address, domain name
+            or None for 'anyone' type.
+        :type email_address: str, None
+        :param str perm_type: (optional) The account type.
+            Allowed values are: ``user``, ``group``, ``domain``, ``anyone``
+        :param str role: (optional) The primary role for this user.
+            Allowed values are: ``owner``, ``writer``, ``reader``
+        :param bool notify: Whether to send an email to the target
+            user/domain. Default ``True``.
+        :param str email_message: (optional) An email message to be sent
+            if ``notify=True``.
+        :param bool with_link: Whether the link is required for this
+            permission to be active. Default ``False``.
+
+        :returns dict: the newly created permission
+
+        Examples::
+
+            # Give write permissions to otto@example.com
+
+            gc.insert_permission(
+                '0BmgG6nO_6dprnRRUWl1UFE',
+                'otto@example.org',
+                perm_type='user',
+                role='writer'
+            )
+
+            # Make the spreadsheet publicly readable
+
+            gc.insert_permission(
+                '0BmgG6nO_6dprnRRUWl1UFE',
+                None,
+                perm_type='anyone',
+                role='reader'
+            )
+
+        """
+        url = "{}/{}/permissions".format(DRIVE_FILES_API_V3_URL, file_id)
+        payload = {
+            "type": perm_type,
+            "role": role,
+            "withLink": with_link,
+        }
+        params: ParamsType = {
+            "supportsAllDrives": "true",
+        }
+
+        if perm_type == "domain":
+            payload["domain"] = email_address
+        elif perm_type in {"user", "group"}:
+            payload["emailAddress"] = email_address
+            params["sendNotificationEmail"] = notify
+            params["emailMessage"] = email_message
+        elif perm_type == "anyone":
+            pass
+        else:
+            raise ValueError("Invalid permission type: {}".format(perm_type))
+
+        return self.request("post", url, json=payload, params=params)
+
+    def list_permissions(self, file_id: str) -> List[Dict[str, Union[str, bool]]]:
+        """Retrieve a list of permissions for a file.
+
+        :param str file_id: a spreadsheet ID (aka file ID).
+        """
+        url = "{}/{}/permissions".format(DRIVE_FILES_API_V3_URL, file_id)
+
+        params: ParamsType = {
+            "supportsAllDrives": True,
+            "fields": "nextPageToken,permissions",
+        }
+
+        token = ""
+
+        permissions = []
+
+        while token is not None:
+            if token:
+                params["pageToken"] = token
+
+            r = self.request("get", url, params=params).json()
+            permissions.extend(r["permissions"])
+
+            token = r.get("nextPageToken", None)
+
+        return permissions
+
+    def remove_permission(self, file_id: str, permission_id: str) -> None:
+        """Deletes a permission from a file.
+
+        :param str file_id: a spreadsheet ID (aka file ID.)
+        :param str permission_id: an ID for the permission.
+        """
+        url = "{}/{}/permissions/{}".format(
+            DRIVE_FILES_API_V3_URL, file_id, permission_id
+        )
+
+        params: ParamsType = {"supportsAllDrives": True}
+        self.request("delete", url, params=params)
 
 
 class BackOffHTTPClient(HTTPClient):

@@ -398,34 +398,14 @@ class Client:
 
         :param str file_id: a spreadsheet ID (aka file ID).
         """
-        url = "{}/{}/permissions".format(DRIVE_FILES_API_V3_URL, file_id)
-
-        params: ParamsType = {
-            "supportsAllDrives": True,
-            "fields": "nextPageToken,permissions",
-        }
-
-        token = ""
-
-        permissions = []
-
-        while token is not None:
-            if token:
-                params["pageToken"] = token
-
-            r = self.http_client.request("get", url, params=params).json()
-            permissions.extend(r["permissions"])
-
-            token = r.get("nextPageToken", None)
-
-        return permissions
+        return self.http_client.list_permissions(file_id)
 
     def insert_permission(
         self,
         file_id: str,
-        value: Optional[str],
-        perm_type: Optional[str],
-        role: Optional[str],
+        value: Optional[str] = None,
+        perm_type: Optional[str] = None,
+        role: Optional[str] = None,
         notify: bool = True,
         email_message: Optional[str] = None,
         with_link: bool = False,
@@ -434,7 +414,7 @@ class Client:
 
         :param str file_id: a spreadsheet ID (aka file ID).
         :param value: user or group e-mail address, domain name
-            or None for 'default' type.
+            or None for 'anyone' type.
         :type value: str, None
         :param str perm_type: (optional) The account type.
             Allowed values are: ``user``, ``group``, ``domain``, ``anyone``
@@ -470,29 +450,9 @@ class Client:
             )
 
         """
-
-        url = "{}/{}/permissions".format(DRIVE_FILES_API_V3_URL, file_id)
-        payload = {
-            "type": perm_type,
-            "role": role,
-            "withLink": with_link,
-        }
-        params: ParamsType = {
-            "supportsAllDrives": "true",
-        }
-
-        if perm_type == "domain":
-            payload["domain"] = value
-        elif perm_type in {"user", "group"}:
-            payload["emailAddress"] = value
-            params["sendNotificationEmail"] = notify
-            params["emailMessage"] = email_message
-        elif perm_type == "anyone":
-            pass
-        else:
-            raise ValueError("Invalid permission type: {}".format(perm_type))
-
-        return self.http_client.request("post", url, json=payload, params=params)
+        return self.http_client.insert_permission(
+            file_id, value, perm_type, role, notify, email_message, with_link
+        )
 
     def remove_permission(self, file_id: str, permission_id: str) -> None:
         """Deletes a permission from a file.
@@ -500,9 +460,4 @@ class Client:
         :param str file_id: a spreadsheet ID (aka file ID.)
         :param str permission_id: an ID for the permission.
         """
-        url = "{}/{}/permissions/{}".format(
-            DRIVE_FILES_API_V3_URL, file_id, permission_id
-        )
-
-        params: ParamsType = {"supportsAllDrives": True}
-        self.http_client.request("delete", url, params=params)
+        self.http_client.remove_permission(file_id, permission_id)

@@ -457,9 +457,9 @@ class Spreadsheet:
     ):
         """Share the spreadsheet with other accounts.
 
-        :param value: user or group e-mail address, domain name
-                      or None for 'default' type.
-        :type value: str, None
+        :param email_address: user or group e-mail address, domain name
+                      or None for 'anyone' type.
+        :type email_address: str, None
         :param perm_type: The account type.
                Allowed values are: ``user``, ``group``, ``domain``,
                ``anyone``.
@@ -484,7 +484,7 @@ class Spreadsheet:
         """
         return self.client.insert_permission(
             self.id,
-            value=email_address,
+            email_address=email_address,
             perm_type=perm_type,
             role=role,
             notify=notify,
