@@ -189,7 +189,7 @@ def oauth(
     authorized_user_filename = Path(authorized_user_filename)
     creds = load_credentials(filename=authorized_user_filename)
 
-    if not type(creds) is Credentials:
+    if not isinstance(creds, OAuthCredentials):
         with open(credentials_filename) as json_file:
             client_config = json.load(json_file)
         creds = flow(client_config=client_config, scopes=scopes)
