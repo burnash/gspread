@@ -9,7 +9,7 @@ Simple authentication with OAuth.
 import json
 import os
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional, Callable, Tuple, Union
+from typing import Any, Dict, Iterable, Mapping, Optional, Protocol, Tuple, Union
 
 from google.auth.credentials import Credentials
 from google.oauth2.credentials import Credentials as OAuthCredentials
