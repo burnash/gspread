@@ -135,3 +135,27 @@ class ClientTest(GspreadTest):
         private_id = "1jIKzPs8LsiZZdLdeMEP-5ZIHw6RkjiOmj1LrJN706Yc"
         with self.assertRaises(PermissionError):
             self.gc.open_by_key(private_id)
+
+    @pytest.mark.vcr()
+    def test_client_export_spreadsheet(self):
+        """Test the export feature of a spreadsheet.
+
+        JSON cannot serialize binary data (like PDF or OpenSpreadsheetFormat)
+        Export to CSV text format only
+        """
+
+        values = [
+            ["a1", "B2"],
+        ]
+        self.spreadsheet.sheet1.update(
+            values=values,
+            range_name="A1:B2",
+        )
+
+        res = self.gc.export(self.spreadsheet.id, gspread.utils.ExportFormat.CSV)
+
+        res_values = bytes(res).decode("utf-8").strip("'").split(",")
+
+        self.assertEqual(
+            values[0], res_values, "exported values are not the value initially set"
+        )
