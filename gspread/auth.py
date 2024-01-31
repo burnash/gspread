@@ -281,7 +281,7 @@ def oauth_from_dict(
         creds = OAuthCredentials.from_authorized_user_info(authorized_user_info, scopes)
 
     if not creds and credentials is not None:
-        creds = flow(client_config=credentials, scopres=scopes)
+        creds = flow(client_config=credentials, scopes=scopes)
 
     client = Client(auth=creds, http_client=http_client)
 
