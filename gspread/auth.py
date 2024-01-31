@@ -9,7 +9,7 @@ Simple authentication with OAuth.
 import json
 import os
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, Mapping, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, Mapping, Optional, Protocol, Tuple, Union
 
 from google.auth.credentials import Credentials
 from google.oauth2.credentials import Credentials as OAuthCredentials
@@ -80,6 +80,15 @@ def authorize(
     return Client(auth=credentials, http_client=http_client, session=session)
 
 
+class FlowCallable(Protocol):
+    """Protocol for OAuth flow callables."""
+
+    def __call__(
+        self, client_config: Mapping[str, Any], scopes: Iterable[str], port: int = 0
+    ) -> Credentials:
+        ...
+
+
 def local_server_flow(
     client_config: Mapping[str, Any], scopes: Iterable[str], port: int = 0
 ) -> Credentials:
@@ -117,7 +126,7 @@ def store_credentials(
 
 def oauth(
     scopes: Iterable[str] = DEFAULT_SCOPES,
-    flow: Callable[..., Credentials] = local_server_flow,
+    flow: FlowCallable = local_server_flow,
     credentials_filename: Union[str, Path] = DEFAULT_CREDENTIALS_FILENAME,
     authorized_user_filename: Union[str, Path] = DEFAULT_AUTHORIZED_USER_FILENAME,
     http_client: HTTPClientType = HTTPClient,
@@ -202,7 +211,7 @@ def oauth_from_dict(
     credentials: Optional[Mapping[str, Any]] = None,
     authorized_user_info: Optional[Mapping[str, Any]] = None,
     scopes: Iterable[str] = DEFAULT_SCOPES,
-    flow: Callable[..., Credentials] = local_server_flow,
+    flow: FlowCallable = local_server_flow,
     http_client: HTTPClientType = HTTPClient,
 ) -> Tuple[Client, Dict[str, Any]]:
     r"""Authenticate with OAuth Client ID.
@@ -272,7 +281,7 @@ def oauth_from_dict(
         creds = OAuthCredentials.from_authorized_user_info(authorized_user_info, scopes)
 
     if not creds and credentials is not None:
-        creds = flow(client_config=credentials, scopres=scopes)
+        creds = flow(client_config=credentials, scopes=scopes)
 
     client = Client(auth=creds, http_client=http_client)
 
