@@ -228,7 +228,7 @@ class Spreadsheet:
 
         try:
             properties = sheet_data["sheets"][index]["properties"]
-            return Worksheet(self.id, self.client, properties)
+            return Worksheet(self.id, self.client, properties, self)
         except (KeyError, IndexError):
             raise WorksheetNotFound("index {} not found".format(index))
 
@@ -259,7 +259,7 @@ class Spreadsheet:
                 lambda x: x["properties"]["sheetId"] == worksheet_id_int,
                 sheet_data["sheets"],
             )
-            return Worksheet(self.id, self.client, item["properties"])
+            return Worksheet(self.id, self.client, item["properties"], self)
         except (StopIteration, KeyError):
             raise WorksheetNotFound("id {} not found".format(worksheet_id_int))
 
@@ -276,7 +276,7 @@ class Spreadsheet:
         """
         sheet_data = self.fetch_sheet_metadata()
         worksheets = [
-            Worksheet(self.id, self.client, s["properties"])
+            Worksheet(self.id, self.client, s["properties"], self)
             for s in sheet_data["sheets"]
         ]
         if exclude_hidden:
@@ -307,7 +307,7 @@ class Spreadsheet:
                 lambda x: x["properties"]["title"] == title,
                 sheet_data["sheets"],
             )
-            return Worksheet(self.id, self.client, item["properties"])
+            return Worksheet(self.id, self.client, item["properties"], self)
         except (StopIteration, KeyError):
             raise WorksheetNotFound(title)
 
@@ -349,9 +349,7 @@ class Spreadsheet:
 
         properties = data["replies"][0]["addSheet"]["properties"]
 
-        worksheet = Worksheet(self.id, self.client, properties)
-
-        return worksheet
+        return Worksheet(self.id, self.client, properties, self)
 
     def duplicate_sheet(
         self,
@@ -383,6 +381,7 @@ class Spreadsheet:
             self.client,
             self.id,
             source_sheet_id,
+            self,
             insert_sheet_index=insert_sheet_index,
             new_sheet_id=new_sheet_id,
             new_sheet_name=new_sheet_name,

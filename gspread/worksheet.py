@@ -160,10 +160,15 @@ class Worksheet:
         spreadsheet_id: str,
         client: HTTPClient,
         properties: MutableMapping[str, Any],
+        spreadsheet: Any,
     ):
         self.spreadsheet_id = spreadsheet_id
         self.client = client
         self._properties = properties
+
+        # kept for backward compatibility - publicly available
+        # do not use if possible.
+        self.spreadsheet = spreadsheet
 
     def __repr__(self) -> str:
         return "<{} {} id:{}>".format(
@@ -2402,6 +2407,7 @@ class Worksheet:
         client: HTTPClient,
         spreadsheet_id: str,
         sheet_id: int,
+        spreadsheet: Any,
         insert_sheet_index: Optional[int] = None,
         new_sheet_id: Optional[int] = None,
         new_sheet_name: Optional[str] = None,
@@ -2444,7 +2450,7 @@ class Worksheet:
 
         properties = data["replies"][0]["duplicateSheet"]["properties"]
 
-        return Worksheet(spreadsheet_id, client, properties)
+        return Worksheet(spreadsheet_id, client, properties, spreadsheet)
 
     def duplicate(
         self,
@@ -2471,6 +2477,7 @@ class Worksheet:
             self.client,
             self.spreadsheet_id,
             self.id,
+            self.spreadsheet,
             insert_sheet_index=insert_sheet_index,
             new_sheet_id=new_sheet_id,
             new_sheet_name=new_sheet_name,
