@@ -1441,6 +1441,13 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(value_ranges[0].first(), "A1")
 
     @pytest.mark.vcr()
+    def test_cell_return_first(self):
+        cell = self.sheet.cell(1, 1)
+
+        self.assertIsInstance(cell, gspread.cell.Cell)
+        self.assertIsNone(cell.value)
+
+    @pytest.mark.vcr()
     def test_batch_update(self):
         self.sheet.batch_update(
             [

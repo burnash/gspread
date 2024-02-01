@@ -316,10 +316,14 @@ class Worksheet:
                 value_render_option=value_render_option,
                 return_type=GridRangeType.ValueRange,
             )
-            try:
-                value = str(data[0][0])
-            except IndexError:
-                value = str(None)
+
+            # we force a return type to GridRangeType.ValueRange
+            # help typing tool to see it too :-)
+            if isinstance(data, ValueRange):
+                value = data.first()
+            else:
+                raise RuntimeError("returned data must be of type ValueRange")
+
         except KeyError:
             value = ""
 
@@ -2209,7 +2213,7 @@ class Worksheet:
             str_query = query
 
             def match(x: Cell) -> bool:
-                if case_sensitive:
+                if case_sensitive or x.value is None:
                     return x.value == str_query
                 else:
                     return x.value.casefold() == str_query.casefold()
