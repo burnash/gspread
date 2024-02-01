@@ -9,6 +9,7 @@ This module contains common worksheets' models.
 import re
 import warnings
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     Dict,
@@ -58,6 +59,9 @@ from .utils import (
     rowcol_to_a1,
     to_records,
 )
+
+if TYPE_CHECKING is True:
+    from .spreadsheet import Spreadsheet
 
 CellFormat = TypedDict(
     "CellFormat",
@@ -160,7 +164,7 @@ class Worksheet:
         spreadsheet_id: str,
         client: HTTPClient,
         properties: MutableMapping[str, Any],
-        spreadsheet: Any,
+        spreadsheet: "Spreadsheet",
     ):
         self.spreadsheet_id = spreadsheet_id
         self.client = client
@@ -168,7 +172,7 @@ class Worksheet:
 
         # kept for backward compatibility - publicly available
         # do not use if possible.
-        self.spreadsheet = spreadsheet
+        self._spreadsheet = spreadsheet
 
     def __repr__(self) -> str:
         return "<{} {} id:{}>".format(
@@ -181,6 +185,11 @@ class Worksheet:
     def id(self) -> int:
         """Worksheet ID."""
         return self._properties["sheetId"]
+
+    @property
+    def spreadsheet(self) -> "Spreadsheet":
+        """Parent spreadsheet"""
+        return self._spreadsheet
 
     @property
     def title(self) -> str:

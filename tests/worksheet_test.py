@@ -39,6 +39,16 @@ class WorksheetTest(GspreadTest):
         self.assertIsInstance(cell, gspread.cell.Cell)
 
     @pytest.mark.vcr()
+    def test_attributes(self):
+        self.assertIsInstance(self.sheet.spreadsheet_id, str)
+        self.assertEqual(self.sheet.spreadsheet_id, self.spreadsheet.id)
+
+        self.assertIsInstance(self.sheet.client, gspread.http_client.HTTPClient)
+
+        self.assertIsInstance(self.sheet.spreadsheet, gspread.spreadsheet.Spreadsheet)
+        self.assertEqual(self.sheet.spreadsheet, self.spreadsheet)
+
+    @pytest.mark.vcr()
     def test_cell(self):
         cell = self.sheet.cell(1, 1)
         self.assertIsInstance(cell, gspread.cell.Cell)
