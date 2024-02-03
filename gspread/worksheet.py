@@ -2259,8 +2259,8 @@ class Worksheet:
     def find(
         self,
         query: Union[str, re.Pattern],
-        in_row: Optional[bool] = None,
-        in_column: Optional[bool] = None,
+        in_row: Optional[int] = None,
+        in_column: Optional[int] = None,
         case_sensitive: bool = True,
     ) -> Optional[Cell]:
         """Finds the first cell matching the query.
