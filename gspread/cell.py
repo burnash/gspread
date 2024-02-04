@@ -16,12 +16,12 @@ class Cell:
     in a :class:`~gspread.worksheet.Worksheet`.
     """
 
-    def __init__(self, row: int, col: int, value: str = "") -> None:
+    def __init__(self, row: int, col: int, value: Optional[str] = "") -> None:
         self._row: int = row
         self._col: int = col
 
         #: Value of the cell.
-        self.value: str = value
+        self.value: Optional[str] = value
 
     @classmethod
     def from_address(cls, label: str, value: str = "") -> "Cell":
