@@ -161,11 +161,34 @@ class Worksheet:
 
     def __init__(
         self,
-        spreadsheet_id: str,
-        client: HTTPClient,
-        properties: MutableMapping[str, Any],
         spreadsheet: "Spreadsheet",
+        properties: MutableMapping[str, Any],
+        spreadsheet_id: Optional[str] = None,
+        client: Optional[HTTPClient] = None,
     ):
+        # This object is not intended to be created manually
+        # only using gspread code like: spreadsheet.get_worksheet(0)
+        # keep it backward compatible signarure but raise with explicit message
+        # in case of missing new attributes
+
+        if spreadsheet_id is None or "":
+            raise RuntimeError(
+                """Missing spreadsheet_id parameter, it must be provided with a
+                valid spreadsheet ID.
+                Please allocate new Worksheet object using method like:
+                spreadsheet.get_worksheet(0)
+                """
+            )
+
+        if client is None or not isinstance(client, HTTPClient):
+            raise RuntimeError(
+                """Missing HTTP Client, it must be provided with a
+                valid instance of type gspread.http_client.HTTPClient .
+                Please allocate new Worksheet object using method like:
+                spreadsheet.get_worksheet(0)
+                """
+            )
+
         self.spreadsheet_id = spreadsheet_id
         self.client = client
         self._properties = properties
@@ -2459,7 +2482,7 @@ class Worksheet:
 
         properties = data["replies"][0]["duplicateSheet"]["properties"]
 
-        return Worksheet(spreadsheet_id, client, properties, spreadsheet)
+        return Worksheet(spreadsheet, properties, spreadsheet_id, client)
 
     def duplicate(
         self,

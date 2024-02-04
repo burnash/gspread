@@ -228,7 +228,7 @@ class Spreadsheet:
 
         try:
             properties = sheet_data["sheets"][index]["properties"]
-            return Worksheet(self.id, self.client, properties, self)
+            return Worksheet(self, properties, self.id, self.client)
         except (KeyError, IndexError):
             raise WorksheetNotFound("index {} not found".format(index))
 
@@ -259,7 +259,7 @@ class Spreadsheet:
                 lambda x: x["properties"]["sheetId"] == worksheet_id_int,
                 sheet_data["sheets"],
             )
-            return Worksheet(self.id, self.client, item["properties"], self)
+            return Worksheet(self, item["properties"], self.id, self.client)
         except (StopIteration, KeyError):
             raise WorksheetNotFound("id {} not found".format(worksheet_id_int))
 
@@ -276,7 +276,7 @@ class Spreadsheet:
         """
         sheet_data = self.fetch_sheet_metadata()
         worksheets = [
-            Worksheet(self.id, self.client, s["properties"], self)
+            Worksheet(self, s["properties"], self.id, self.client)
             for s in sheet_data["sheets"]
         ]
         if exclude_hidden:
@@ -307,7 +307,7 @@ class Spreadsheet:
                 lambda x: x["properties"]["title"] == title,
                 sheet_data["sheets"],
             )
-            return Worksheet(self.id, self.client, item["properties"], self)
+            return Worksheet(self, item["properties"], self.id, self.client)
         except (StopIteration, KeyError):
             raise WorksheetNotFound(title)
 
@@ -349,7 +349,7 @@ class Spreadsheet:
 
         properties = data["replies"][0]["addSheet"]["properties"]
 
-        return Worksheet(self.id, self.client, properties, self)
+        return Worksheet(self, properties, self.id, self.client)
 
     def duplicate_sheet(
         self,
