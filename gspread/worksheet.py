@@ -9,6 +9,7 @@ This module contains common worksheets' models.
 import re
 import warnings
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
     Dict,
@@ -58,6 +59,9 @@ from .utils import (
     rowcol_to_a1,
     to_records,
 )
+
+if TYPE_CHECKING is True:
+    from .spreadsheet import Spreadsheet
 
 CellFormat = TypedDict(
     "CellFormat",
@@ -157,13 +161,41 @@ class Worksheet:
 
     def __init__(
         self,
-        spreadsheet_id: str,
-        client: HTTPClient,
+        spreadsheet: "Spreadsheet",
         properties: MutableMapping[str, Any],
+        spreadsheet_id: Optional[str] = None,
+        client: Optional[HTTPClient] = None,
     ):
+        # This object is not intended to be created manually
+        # only using gspread code like: spreadsheet.get_worksheet(0)
+        # keep it backward compatible signarure but raise with explicit message
+        # in case of missing new attributes
+
+        if spreadsheet_id is None or "":
+            raise RuntimeError(
+                """Missing spreadsheet_id parameter, it must be provided with a
+                valid spreadsheet ID.
+                Please allocate new Worksheet object using method like:
+                spreadsheet.get_worksheet(0)
+                """
+            )
+
+        if client is None or not isinstance(client, HTTPClient):
+            raise RuntimeError(
+                """Missing HTTP Client, it must be provided with a
+                valid instance of type gspread.http_client.HTTPClient .
+                Please allocate new Worksheet object using method like:
+                spreadsheet.get_worksheet(0)
+                """
+            )
+
         self.spreadsheet_id = spreadsheet_id
         self.client = client
         self._properties = properties
+
+        # kept for backward compatibility - publicly available
+        # do not use if possible.
+        self._spreadsheet = spreadsheet
 
     def __repr__(self) -> str:
         return "<{} {} id:{}>".format(
@@ -176,6 +208,11 @@ class Worksheet:
     def id(self) -> int:
         """Worksheet ID."""
         return self._properties["sheetId"]
+
+    @property
+    def spreadsheet(self) -> "Spreadsheet":
+        """Parent spreadsheet"""
+        return self._spreadsheet
 
     @property
     def title(self) -> str:
@@ -2406,6 +2443,7 @@ class Worksheet:
         client: HTTPClient,
         spreadsheet_id: str,
         sheet_id: int,
+        spreadsheet: Any,
         insert_sheet_index: Optional[int] = None,
         new_sheet_id: Optional[int] = None,
         new_sheet_name: Optional[str] = None,
@@ -2448,7 +2486,7 @@ class Worksheet:
 
         properties = data["replies"][0]["duplicateSheet"]["properties"]
 
-        return Worksheet(spreadsheet_id, client, properties)
+        return Worksheet(spreadsheet, properties, spreadsheet_id, client)
 
     def duplicate(
         self,
@@ -2475,6 +2513,7 @@ class Worksheet:
             self.client,
             self.spreadsheet_id,
             self.id,
+            self.spreadsheet,
             insert_sheet_index=insert_sheet_index,
             new_sheet_id=new_sheet_id,
             new_sheet_name=new_sheet_name,
