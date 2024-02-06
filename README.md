@@ -71,6 +71,10 @@ As well, `values` can no longer be a list, and must be a 2D array.
 + file.sheet1.update(range_name="B2:C2", values=[["54", "55"]])
 ```
 
+### More
+
+<details><summary>See More Migration Guide</summary>
+
 ### Change colors from dictionary to text
 
 v6 uses hexadecimal color representation. Change all colors to hex. You can use the compatibility function `gspread.utils.convert_colors_to_hex_value()` to convert a dictionary to a hex string.
@@ -106,6 +110,18 @@ In v6 you can now only get *all* sheet records, using `Worksheet.get_all_records
 
 In version 5 there are many warnings to mark deprecated feature/functions/methods.
 They can be silenced by setting the `GSPREAD_SILENCE_WARNINGS` environment variable to `1`
+
+### Add more data to `gspread.Worksheet.__init__`
+
+```diff
+  gc = gspread.service_account(filename="google_credentials.json")
+  spreadsheet = gc.open_by_key("{{key}}")
+  properties = spreadsheet.fetch_sheet_metadata()["sheets"][0]["properties"]
+- worksheet = gspread.Worksheet(spreadsheet, properties)
++ worksheet = gspread.Worksheet(spreadsheet, properties, spreadsheet.id, gc.http_client)
+```
+
+</details>
 
 ## More Examples
 
