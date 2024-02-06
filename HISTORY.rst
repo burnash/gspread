@@ -1,6 +1,19 @@
 Release History
 ===============
 
+6.0.1 (2024-02-06)
+------------------
+
+* Allow client to use external Session object by @lavigne958 in https://github.com/burnash/gspread/pull/1384
+* Remove-py-3.7-support by @alifeee in https://github.com/burnash/gspread/pull/1396
+* bugfix/client export by @lavigne958 in https://github.com/burnash/gspread/pull/1392
+* Fix oauth flow typo by @alifeee in https://github.com/burnash/gspread/pull/1397
+* check oauth creds type using `isinstance` by @alifeee in https://github.com/burnash/gspread/pull/1398
+* Fix type hints at find method in worksheet.py by @deftfitf in https://github.com/burnash/gspread/pull/1407
+* Fixup get empty cell value is `None` by @lavigne958 in https://github.com/burnash/gspread/pull/1404
+* Fix missing attribute `spreadsheet` in `Worksheet`. by @lavigne958 in https://github.com/burnash/gspread/pull/1402
+* update migration guide by @alifeee in https://github.com/burnash/gspread/pull/1409
+
 6.0.0 (2024-01-28)
 ------------------
 
