@@ -87,7 +87,7 @@ def client():
     else:
         auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
 
-    gc = Client(auth_credentials, BackOffHTTPClient)
+    gc = Client(auth=auth_credentials, http_client=BackOffHTTPClient)
     if not isinstance(gc, gspread.client.Client) is True:
         raise AssertionError
 

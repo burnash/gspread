@@ -77,7 +77,7 @@ def authorize(
     :rtype: :class:`gspread.client.Client`
     """
 
-    return Client(auth=credentials, http_client=http_client, session=session)
+    return Client(auth=credentials, session=session, http_client=http_client)
 
 
 class FlowCallable(Protocol):

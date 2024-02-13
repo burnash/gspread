@@ -38,8 +38,8 @@ class Client:
     def __init__(
         self,
         auth: Credentials,
-        http_client: HTTPClientType = HTTPClient,
         session: Optional[Session] = None,
+        http_client: HTTPClientType = HTTPClient,
     ) -> None:
         self.http_client = http_client(auth, session)
 
