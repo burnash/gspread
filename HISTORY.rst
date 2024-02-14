@@ -1,6 +1,11 @@
 Release History
 ===============
 
+6.0.2 (2024-02-14)
+------------------
+
+* Fixup gspread client init arguments by @lavigne958 in https://github.com/burnash/gspread/pull/1412
+
 6.0.1 (2024-02-06)
 ------------------
 
