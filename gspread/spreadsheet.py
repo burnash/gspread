@@ -7,9 +7,10 @@ This module contains common spreadsheets' models.
 """
 
 import warnings
-from typing import Union
+from typing import Any, Dict, Union
 
 from .exceptions import WorksheetNotFound
+from .http_client import HTTPClient
 from .urls import DRIVE_FILES_API_V3_URL, SPREADSHEET_DRIVE_URL
 from .utils import ExportFormat, finditem
 from .worksheet import Worksheet
@@ -18,7 +19,7 @@ from .worksheet import Worksheet
 class Spreadsheet:
     """The class that represents a spreadsheet."""
 
-    def __init__(self, http_client, properties):
+    def __init__(self, http_client: HTTPClient, properties: Dict[str, Any]):
         self.client = http_client
         self._properties = properties
 

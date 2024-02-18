@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 import gspread
@@ -144,4 +146,20 @@ class ClientTest(GspreadTest):
 
         self.assertEqual(
             values[0], res_values, "exported values are not the value initially set"
+        )
+
+    @pytest.mark.vcr()
+    def test_add_timeout(self):
+        """Test the method to set the HTTP request timeout"""
+
+        # So far it took 0.17 seconds to fetch the metadata with my connection.
+        # Once recorded it takes 0.001 seconds to run it, so 1 second should be a large enough value
+        timeout = 1
+        self.gc.set_timeout(timeout)
+        start = time.time()
+        self.spreadsheet.fetch_sheet_metadata()
+        end = time.time()
+
+        self.assertLessEqual(
+            end - start, timeout, "Request took longer than the set timeout value"
         )

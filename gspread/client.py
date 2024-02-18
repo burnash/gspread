@@ -43,6 +43,17 @@ class Client:
     ) -> None:
         self.http_client = http_client(auth, session)
 
+    def set_timeout(self, timeout: Optional[Union[float, Tuple[float, float]]] = None):
+        """How long to wait for the server to send
+        data before giving up, as a float, or a ``(connect timeout,
+        read timeout)`` tuple.
+
+        Use value ``None`` to restore default timeout
+
+        Value for ``timeout`` is in seconds (s).
+        """
+        self.http_client.set_timeout(timeout)
+
     def get_file_drive_metadata(self, id: str) -> Any:
         """Get the metadata from the Drive API for a specific file
         This method is mainly here to retrieve the create/update time
