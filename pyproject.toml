@@ -44,3 +44,6 @@ file = "LICENSE.txt"
 
 [tool.flit.sdist]
 include = ["docs/", "HISTORY.rst"]
+
+[tool.setuptools.package-data]
+gspread = ["gspread/py.typed"]
