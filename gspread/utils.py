@@ -58,9 +58,6 @@ class MergeType(StrEnum):
     merge_rows = "MERGE_ROWS"
 
 
-SILENCE_WARNINGS_ENV_KEY = "GSPREAD_SILENCE_WARNINGS"
-
-
 class ValueRenderOption(StrEnum):
     formatted = "FORMATTED_VALUE"
     unformatted = "UNFORMATTED_VALUE"
@@ -270,13 +267,15 @@ def numericise_all(
     ignore = ignore or []
 
     numericised_list = [
-        values[index]
-        if index + 1 in ignore
-        else numericise(
-            values[index],
-            empty2zero=empty2zero,
-            default_blank=default_blank,
-            allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals,
+        (
+            values[index]
+            if index + 1 in ignore
+            else numericise(
+                values[index],
+                empty2zero=empty2zero,
+                default_blank=default_blank,
+                allow_underscores_in_numeric_literals=allow_underscores_in_numeric_literals,
+            )
         )
         for index in range(len(values))
     ]
@@ -917,6 +916,14 @@ def to_records(
 
 
 # SHOULD NOT BE NEEDED UNTIL NEXT MAJOR VERSION
+# DEPRECATION_WARNING_TEMPLATE = (
+#     "[Deprecated][in version {v_deprecated}]: {msg_deprecated}"
+# )
+
+
+# SILENCE_WARNINGS_ENV_KEY = "GSPREAD_SILENCE_WARNINGS"
+
+
 # def deprecation_warning(version: str, msg: str) -> None:
 #     """Emit a deprecation warning.
 
