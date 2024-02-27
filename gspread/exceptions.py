@@ -6,7 +6,7 @@ Exceptions used in gspread.
 
 """
 
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Mapping, Optional, Union
 
 from requests import Response
 
@@ -40,15 +40,12 @@ class APIError(GSpreadException):
     such as when we attempt to retrieve things that don't exist."""
 
     def __init__(self, response: Response):
-        super().__init__(self._extract_text(response))
+        super().__init__(self._extract_error(response))
         self.response: Response = response
+        self.error: Mapping[str, Any] = response.json()["error"]
+        self.code: int = self.error["code"]
 
-    def _extract_text(
-        self, response: Response
-    ) -> Union[Dict[str, Union[int, str]], str]:
-        return self._text_from_detail(response) or response.text
-
-    def _text_from_detail(
+    def _extract_error(
         self, response: Response
     ) -> Optional[Dict[str, Union[int, str]]]:
         try:
@@ -56,6 +53,14 @@ class APIError(GSpreadException):
             return dict(errors["error"])
         except (AttributeError, KeyError, ValueError):
             return None
+
+    def __str__(self) -> str:
+        return "{}: [{}]: {}".format(
+            self.__class__.__name__, self.code, self.error["message"]
+        )
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class SpreadsheetNotFound(GSpreadException):

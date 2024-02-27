@@ -38,7 +38,7 @@ def get_method_name(self_id):
 
 
 def ignore_retry_requests(response):
-    SKIP_RECORD = [403, 408, 429]
+    SKIP_RECORD = [408, 429]
     if response["status"]["code"] in SKIP_RECORD:
         return None  # do not record
 

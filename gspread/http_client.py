@@ -6,6 +6,7 @@ This module contains HTTPClient class responsible for communicating with
 Google API.
 
 """
+import time
 from http import HTTPStatus
 from typing import (
     IO,
@@ -493,31 +494,50 @@ class BackOffHTTPClient(HTTPClient):
           for api rate limit exceeded."""
 
     _HTTP_ERROR_CODES: List[HTTPStatus] = [
-        HTTPStatus.FORBIDDEN,  # Drive API return a 403 Forbidden on usage rate limit exceeded
         HTTPStatus.REQUEST_TIMEOUT,  # in case of a timeout
         HTTPStatus.TOO_MANY_REQUESTS,  # sheet API usage rate limit exceeded
     ]
     _NR_BACKOFF: int = 0
     _MAX_BACKOFF: int = 128  # arbitrary maximum backoff
-    _MAX_BACKOFF_REACHED: bool = False  # Stop after reaching _MAX_BACKOFF
 
     def request(self, *args: Any, **kwargs: Any) -> Response:
+        # Check if we should retry the request
+        def _should_retry(
+            code: int,
+            error: Mapping[str, Any],
+            wait: int,
+        ) -> bool:
+            # Drive API return a dict object 'errors', the sheet API does not
+            if "errors" in error:
+                # Drive API returns a code 403 when reaching quotas/usage limits
+                if (
+                    code == HTTPStatus.FORBIDDEN
+                    and error["errors"][0]["domain"] == "usageLimits"
+                ):
+                    return True
+
+            # We retry if:
+            #   - the return code is one of:
+            #     - 429: too many requests
+            #     - 408: request timeout
+            #     - >= 500: some server error
+            #   - AND we did not reach the max retry limit
+            return (
+                code in self._HTTP_ERROR_CODES
+                or code >= HTTPStatus.INTERNAL_SERVER_ERROR
+            ) and wait <= self._MAX_BACKOFF
+
         try:
             return super().request(*args, **kwargs)
         except APIError as err:
-            data = err.response.json()
-            code = data["error"]["code"]
+            code = err.code
+            error = err.error
+
+            self._NR_BACKOFF += 1
+            wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
 
             # check if error should retry
-            if code in self._HTTP_ERROR_CODES and self._MAX_BACKOFF_REACHED is False:
-                self._NR_BACKOFF += 1
-                wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
-
-                if wait >= self._MAX_BACKOFF:
-                    self._MAX_BACKOFF_REACHED = True
-
-                import time
-
+            if _should_retry(code, error, wait) is True:
                 time.sleep(wait)
 
                 # make the request again
@@ -525,7 +545,6 @@ class BackOffHTTPClient(HTTPClient):
 
                 # reset counters for next time
                 self._NR_BACKOFF = 0
-                self._MAX_BACKOFF_REACHED = False
 
                 return response
 
