@@ -527,17 +527,23 @@ def cast_to_a1_notation(method: Callable[..., Any]) -> Callable[..., Any]:
     method calls.
     """
 
+    def contains_row_cols(args: Tuple[Any, ...]) -> bool:
+        return (
+            isinstance(args[0], int)
+            and isinstance(args[1], int)
+            and isinstance(args[2], int)
+            and isinstance(args[3], int)
+        )
+
     @wraps(method)
     def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
         try:
-            if len(args):
-                int(args[0])
-
+            if len(args) >= 4 and contains_row_cols(args):
                 # Convert to A1 notation
                 # Assuming rowcol_to_a1 has appropriate typing
                 range_start = rowcol_to_a1(*args[:2])
                 # Assuming rowcol_to_a1 has appropriate typing
-                range_end = rowcol_to_a1(*args[-2:])
+                range_end = rowcol_to_a1(*args[2:4])
                 range_name = ":".join((range_start, range_end))
 
                 args = (range_name,) + args[4:]
