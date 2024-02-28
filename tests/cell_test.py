@@ -128,6 +128,22 @@ class CellTest(GspreadTest):
         self.sheet.delete_named_range(named_range["namedRangeId"])
 
     @pytest.mark.vcr()
+    def test_define_named_range_coordinates(self):
+        range_name = "testNamedRange"
+        self.sheet.define_named_range(1, 1, 2, 2, range_name)
+
+        named_range_dict = self.spreadsheet.fetch_sheet_metadata(
+            params={"fields": "namedRanges"}
+        )
+
+        # make sure that a range was returned and it has the namedRanges key,
+        #  also that the dict contains a single range
+        self.assertNotEqual(named_range_dict, {})
+        self.assertIn("namedRanges", named_range_dict)
+        self.assertTrue(len(named_range_dict["namedRanges"]) == 1)
+        self.assertEqual(named_range_dict["namedRanges"][0]["name"], range_name)
+
+    @pytest.mark.vcr()
     def test_delete_named_range(self):
         # define a named range
         result = self.sheet.define_named_range("A1:B2", "TestDeleteNamedRange")
