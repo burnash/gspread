@@ -5,6 +5,7 @@ __author__ = "Anton Burnashev"
 
 
 from .auth import (
+    api_key,
     authorize,
     oauth,
     oauth_from_dict,

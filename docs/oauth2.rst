@@ -5,6 +5,7 @@ To access spreadsheets via Google Sheets API you need to authenticate and author
 
 * If you plan to access spreadsheets on behalf of a bot account use :ref:`Service Account <service-account>`.
 * If you'd like to access spreadsheets on behalf of end users (including yourself) use :ref:`OAuth Client ID <oauth-client-id>`.
+* If you'd like to **only** open public spreadsheets use :ref:`API key <api-key>`
 
 .. _enable-api-access:
 
@@ -247,3 +248,50 @@ as second argument in your next `oauth` request to be directly authenticated and
 .. NOTE::
     The user interface of Google Developers Console may be different when you're reading this. If you find that this document is out of sync with the actual UI, please update it. Improvements to the documentation are always welcome.
     Click **Edit on GitHub** in the top right corner of the page, make it better and submit a PR.
+
+
+.. _api-key:
+
+For public spreadsheets only
+----------------------------
+
+An API key is a token that allows an application to open public spreadsheet files.
+
+Here's how to get one:
+
+1. :ref:`enable-api-access` if you haven't done it yet.
+
+2. Go to "APIs & Services > Credentials" and choose "Create credentials > API key"
+
+3. A pop-up should display your newly created key.
+
+4. Copy the key.
+
+5. That's it your key is created.
+
+.. note::
+
+   You can access your key any time later, come back to the "APIs & Services > Credentials" page,
+   you'll be able to see your key again.
+
+6. Create a new Python file with this code:
+
+::
+
+    import gspread
+
+    gc = gspread.api_key("<your newly create key>"")
+
+    sh = gc.open_by_key("1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms")
+
+    print(sh.sheet1.get('A1'))
+
+Ta-da !
+
+.. note::
+
+   You can only open public keys, this means you can only open spreadsheet files
+   using the methods: ``gc.open_by_key`` and ``gc.open_by_url``.
+
+   The method ``gc.open()`` searches your private files to find the one with a matching
+   name so it will never work.

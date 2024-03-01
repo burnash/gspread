@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping, Optional, Protocol, Tuple, Union
 
+from google.auth.api_key import Credentials as APIKeyCredentials
 from google.auth.credentials import Credentials
 from google.oauth2.credentials import Credentials as OAuthCredentials
 from google.oauth2.service_account import Credentials as SACredentials
@@ -187,7 +188,7 @@ def oauth(
 
             * `%APPDATA%\gspread\authorized_user.json` on Windows
             * `~/.config/gspread/authorized_user.json` everywhere else
-    :type http_client: :class:`gspread.HTTPClient`
+    :type http_client: :class:`gspread.http_client.HTTPClient`
     :param http_client: A factory function that returns a client class.
         Defaults to :class:`gspread.http_client.HTTPClient` (but could also use
         :class:`gspread.http_client.BackOffHTTPClient` to avoid rate limiting)
@@ -268,7 +269,7 @@ def oauth_from_dict(
     :param list scopes: The scopes used to obtain authorization.
     :param function flow: OAuth flow to use for authentication.
         Defaults to :meth:`~gspread.auth.local_server_flow`
-    :type http_client: :class:`gspread.HTTPClientType`
+    :type http_client: :class:`gspread.http_client.HTTPClient`
     :param http_client: A factory function that returns a client class.
         Defaults to :class:`gspread.http_client.HTTPClient` (but could also use
         :class:`gspread.http_client.BackOffHTTPClient` to avoid rate limiting)
@@ -313,7 +314,7 @@ def service_account(
 
     :param str filename: The path to the service account json file.
     :param list scopes: The scopes used to obtain authorization.
-    :type http_client: :class:`gspread.HTTPClientType`
+    :type http_client: :class:`gspread.http_client.HTTPClient`
     :param http_client: A factory function that returns a client class.
         Defaults to :class:`gspread.HTTPClient` (but could also use
         :class:`gspread.BackOffHTTPClient` to avoid rate limiting)
@@ -346,7 +347,7 @@ def service_account_from_dict(
 
     :param info (Mapping[str, str]): The service account info in Google format
     :param list scopes: The scopes used to obtain authorization.
-    :type http_client: :class:`gspread.HTTPClientType`
+    :type http_client: :class:`gspread.http_client.HTTPClient`
     :param http_client: A factory function that returns a client class.
         Defaults to :class:`gspread.http_client.HTTPClient` (but could also use
         :class:`gspread.http_client.BackOffHTTPClient` to avoid rate limiting)
@@ -357,4 +358,27 @@ def service_account_from_dict(
         info=info,
         scopes=scopes,
     )
+    return Client(auth=creds, http_client=http_client)
+
+
+def api_key(token: str, http_client: HTTPClientType = HTTPClient) -> Client:
+    """Authenticate using an API key.
+
+    Allows you to open public spreadsheet files.
+
+    .. warning::
+
+       This method only allows you to open public spreadsheet files.
+       It does not work for private spreadsheet files.
+
+    :param token str: The actual API key to use
+    :type http_client: :class:`gspread.http_client.HTTPClient`
+    :param http_client: A factory function that returns a client class.
+        Defaults to :class:`gspread.http_client.HTTPClient` (but could also use
+        :class:`gspread.http_client.BackOffHTTPClient` to avoid rate limiting)
+
+    :rtype: :class:`gspread.client.Client`
+
+    """
+    creds = APIKeyCredentials(token)
     return Client(auth=creds, http_client=http_client)
