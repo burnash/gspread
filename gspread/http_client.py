@@ -6,6 +6,7 @@ This module contains HTTPClient class responsible for communicating with
 Google API.
 
 """
+
 import time
 from http import HTTPStatus
 from typing import (
@@ -88,10 +89,12 @@ class HTTPClient:
 
         self.session.headers.update({"Authorization": "Bearer %s" % self.auth.token})
 
-    def set_timeout(self, timeout: Union[float, Tuple[float, float]]) -> None:
+    def set_timeout(self, timeout: Optional[Union[float, Tuple[float, float]]]) -> None:
         """How long to wait for the server to send
         data before giving up, as a float, or a ``(connect timeout,
         read timeout)`` tuple.
+
+        Use value ``None`` to restore default timeout
 
         Value for ``timeout`` is in seconds (s).
         """
