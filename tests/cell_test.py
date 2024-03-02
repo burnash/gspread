@@ -102,7 +102,8 @@ class CellTest(GspreadTest):
     @pytest.mark.vcr()
     def test_define_named_range(self):
         # define the named range
-        self.sheet.define_named_range("A1:B2", "TestDefineNamedRange")
+        range_name = "TestDefineNamedRange"
+        self.sheet.define_named_range("A1:B2", range_name)
 
         # get the ranges from the metadata
         named_range_dict = self.spreadsheet.fetch_sheet_metadata(
@@ -118,7 +119,7 @@ class CellTest(GspreadTest):
         named_range = named_range_dict["namedRanges"][0]
 
         # ensure all of the properties of the named range match what we expect
-        self.assertEqual(named_range["name"], "TestDefineNamedRange")
+        self.assertEqual(named_range["name"], range_name)
         self.assertEqual(named_range["range"]["startRowIndex"], 0)
         self.assertEqual(named_range["range"]["endRowIndex"], 2)
         self.assertEqual(named_range["range"]["startColumnIndex"], 0)
@@ -126,6 +127,36 @@ class CellTest(GspreadTest):
 
         # clean up the named range
         self.sheet.delete_named_range(named_range["namedRangeId"])
+
+        # ensure the range has been deleted
+        named_range_dict = self.spreadsheet.fetch_sheet_metadata(
+            params={"fields": "namedRanges"}
+        )
+
+        self.assertEqual(named_range_dict, {})
+
+        # Add the same range but with index based coordinates
+        self.sheet.define_named_range(1, 1, 2, 2, range_name)
+
+        # Check the created named range
+        named_range_dict = self.spreadsheet.fetch_sheet_metadata(
+            params={"fields": "namedRanges"}
+        )
+
+        # make sure that a range was returned and it has the namedRanges key,
+        #  also that the dict contains a single range
+        self.assertNotEqual(named_range_dict, {})
+        self.assertIn("namedRanges", named_range_dict)
+        self.assertTrue(len(named_range_dict["namedRanges"]) == 1)
+
+        named_range = named_range_dict["namedRanges"][0]
+
+        # ensure all of the properties of the named range match what we expect
+        self.assertEqual(named_range["name"], range_name)
+        self.assertEqual(named_range["range"]["startRowIndex"], 0)
+        self.assertEqual(named_range["range"]["endRowIndex"], 2)
+        self.assertEqual(named_range["range"]["startColumnIndex"], 0)
+        self.assertEqual(named_range["range"]["endColumnIndex"], 2)
 
     @pytest.mark.vcr()
     def test_delete_named_range(self):
