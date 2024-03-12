@@ -81,7 +81,7 @@ class Cell:
         numeric_value = numericise(self.value, default_blank=None)
 
         # if could not convert, return None
-        if type(numeric_value) == int or type(numeric_value) == float:
+        if isinstance(numeric_value, int) or isinstance(numeric_value, float):
             return numeric_value
         else:
             return None
