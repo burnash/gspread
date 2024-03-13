@@ -572,7 +572,7 @@ class Worksheet:
             header_row_is_unique = len(keys) == len(set(keys))
             if not header_row_is_unique:
                 raise GSpreadException(
-                    "the header row in the worksheet is not unique"
+                    "the header row in the worksheet is not unique, "
                     "try passing 'expected_headers' to get_all_records"
                 )
         else:
