@@ -261,10 +261,10 @@ cell_list = worksheet.findall(criteria_re)
 
 ```python
 # Update a single cell
-worksheet.update('B1', 'Bingo!')
+worksheet.update_acell('Bingo!', 'B1')
 
 # Update a range
-worksheet.update('A1:B2', [[1, 2], [3, 4]])
+worksheet.update([[1, 2], [3, 4]], 'A1:B2')
 
 # Update multiple ranges at once
 worksheet.batch_update([{
