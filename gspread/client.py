@@ -15,11 +15,7 @@ from requests import Response, Session
 from .exceptions import APIError, SpreadsheetNotFound
 from .http_client import HTTPClient, HTTPClientType, ParamsType
 from .spreadsheet import Spreadsheet
-from .urls import (
-    DRIVE_FILES_API_V3_COMMENTS_URL,
-    DRIVE_FILES_API_V3_URL,
-    DRIVE_FILES_UPLOAD_API_V2_URL,
-)
+from .urls import DRIVE_FILES_API_V3_COMMENTS_URL, DRIVE_FILES_API_V3_URL
 from .utils import ExportFormat, MimeType, extract_id_from_url, finditem
 
 
@@ -364,7 +360,7 @@ class Client:
         params: ParamsType = {"supportsAllDrives": True}
         self.http_client.request("delete", url, params=params)
 
-    def import_csv(self, file_id: str, data: Union[str, bytes]) -> None:
+    def import_csv(self, file_id: str, data: Union[str, bytes]) -> Any:
         """Imports data into the first page of the spreadsheet.
 
         :param str file_id:
@@ -385,24 +381,7 @@ class Client:
            replaces the contents of the first worksheet.
 
         """
-        # Make sure we send utf-8
-        if type(data) is str:
-            payload = data.encode("utf-8")
-
-        headers = {"Content-Type": "text/csv"}
-        url = "{}/{}".format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
-
-        self.http_client.request(
-            "put",
-            url,
-            data=bytes(payload),
-            params={
-                "uploadType": "media",
-                "convert": True,
-                "supportsAllDrives": True,
-            },
-            headers=headers,
-        )
+        return self.http_client.import_csv(file_id, data)
 
     def list_permissions(self, file_id: str) -> List[Dict[str, Union[str, bool]]]:
         """Retrieve a list of permissions for a file.

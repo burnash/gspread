@@ -29,6 +29,7 @@ from requests import Response, Session
 from .exceptions import APIError, UnSupportedExportFormat
 from .urls import (
     DRIVE_FILES_API_V3_URL,
+    DRIVE_FILES_UPLOAD_API_V2_URL,
     SPREADSHEET_BATCH_UPDATE_URL,
     SPREADSHEET_SHEETS_COPY_TO_URL,
     SPREADSHEET_URL,
@@ -467,6 +468,47 @@ class HTTPClient:
 
         params: ParamsType = {"supportsAllDrives": True}
         self.request("delete", url, params=params)
+
+    def import_csv(self, file_id: str, data: Union[str, bytes]) -> Any:
+        """Imports data into the first page of the spreadsheet.
+
+        :param str data: A CSV string of data.
+
+        Example:
+
+        .. code::
+
+            # Read CSV file contents
+            content = open('file_to_import.csv', 'r').read()
+
+            gc.import_csv(spreadsheet.id, content)
+
+        .. note::
+
+           This method removes all other worksheets and then entirely
+           replaces the contents of the first worksheet.
+
+        """
+        # Make sure we send utf-8
+        if isinstance(data, str):
+            data = data.encode("utf-8")
+
+        headers = {"Content-Type": "text/csv"}
+        url = "{}/{}".format(DRIVE_FILES_UPLOAD_API_V2_URL, file_id)
+
+        res = self.request(
+            "put",
+            url,
+            data=data,
+            params={
+                "uploadType": "media",
+                "convert": True,
+                "supportsAllDrives": True,
+            },
+            headers=headers,
+        )
+
+        return res.json()
 
 
 class BackOffHTTPClient(HTTPClient):
