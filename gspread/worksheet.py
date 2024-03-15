@@ -43,6 +43,7 @@ from .utils import (
     T,
     ValueInputOption,
     ValueRenderOption,
+    ValidationConditionType,
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
@@ -3198,6 +3199,54 @@ class Worksheet:
                     }
                 }
             ]
+        }
+
+        return self.client.batch_update(self.spreadsheet_id, body)
+
+    def add_validation(
+        self,
+        source: str,
+        condition_type: ValidationConditionType,
+        *values: Iterable[Any],
+        **kwargs,
+    ) -> Any:
+        """Adds a data validation rule to any given range.
+
+        .. note::
+
+            ``condition_type`` values are explained here: `ConditionType`_
+
+            .._ConditionType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ConditionType
+
+
+        :param str source: The A1 notation of the source range to move
+        :param condition_type: The sort of condition to apply.
+        :param values: List of condition values or RelativeDate.
+        :type values: Any | RelativeDate
+        :param str inputMessage: Message to show for the validation.
+        :param bool strict: Whether to reject invalid data or not.
+        :param bool showCustomUi: Whether to show a custom Ui for list values.
+        """
+
+        grid = a1_range_to_grid_range(source, self.id)
+
+        body = {
+            "requests": [
+                {
+                    "setDataValidation": {
+                        "range": grid,
+                        "rule": {
+                            "condition": {
+                                "type": condition_type,
+                                "values": [
+                                    ({"userEnteredValue": value}) for value in values
+                                ],
+                            },
+                            **kwargs,
+                        },
+                    }
+                }
+            ],
         }
 
         return self.client.batch_update(self.spreadsheet_id, body)
