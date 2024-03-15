@@ -13,7 +13,6 @@ from .conftest import I18N_STR, GspreadTest
 
 
 class WorksheetTest(GspreadTest):
-
     """Test for gspread.Worksheet."""
 
     @pytest.fixture(scope="function", autouse=True)
@@ -1495,6 +1494,19 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(protected_ranges[0]["range"]["endColumnIndex"], 2)
         self.assertEqual(protected_ranges[0]["range"]["startRowIndex"], 0)
         self.assertEqual(protected_ranges[0]["range"]["endRowIndex"], 2)
+
+    @pytest.mark.vcr()
+    def test_add_protected_range_warning(self):
+        self.sheet.add_protected_range("A1:B2", warning_only=True)
+
+        metadata = self.spreadsheet.fetch_sheet_metadata()
+        protected_ranges = metadata["sheets"][0]["protectedRanges"]
+
+        self.assertEqual(protected_ranges[0]["range"]["startColumnIndex"], 0)
+        self.assertEqual(protected_ranges[0]["range"]["endColumnIndex"], 2)
+        self.assertEqual(protected_ranges[0]["range"]["startRowIndex"], 0)
+        self.assertEqual(protected_ranges[0]["range"]["endRowIndex"], 2)
+        self.assertEqual(protected_ranges[0]["warningOnly"], True)
 
     @pytest.mark.vcr()
     def test_delete_protected_range(self):
