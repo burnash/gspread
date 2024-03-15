@@ -1485,6 +1485,29 @@ class WorksheetTest(GspreadTest):
         )
 
     @pytest.mark.vcr()
+    def test_add_protected_range_normal(self):
+        self.sheet.add_protected_range("A1:B2", [])
+
+        metadata = self.spreadsheet.fetch_sheet_metadata()
+        protected_ranges = metadata["sheets"][0]["protectedRanges"]
+
+        self.assertEqual(protected_ranges[0]["range"]["startColumnIndex"], 0)
+        self.assertEqual(protected_ranges[0]["range"]["endColumnIndex"], 2)
+        self.assertEqual(protected_ranges[0]["range"]["startRowIndex"], 0)
+        self.assertEqual(protected_ranges[0]["range"]["endRowIndex"], 2)
+
+    @pytest.mark.vcr()
+    def test_delete_protected_range(self):
+        self.sheet.add_protected_range("A1:B2", [])
+        metadata = self.spreadsheet.fetch_sheet_metadata()
+        protected_ranges = metadata["sheets"][0]["protectedRanges"]
+        self.assertEqual(len(protected_ranges), 1)
+
+        self.sheet.delete_protected_range(protected_ranges[0]["protectedRangeId"])
+        metadata = self.spreadsheet.fetch_sheet_metadata()
+        self.assertNotIn("protectedRanges", metadata["sheets"][0])
+
+    @pytest.mark.vcr()
     def test_format(self):
         cell_format = {
             "backgroundColor": {"green": 1, "blue": 1},
