@@ -2091,7 +2091,9 @@ class Worksheet:
                             "description": description,
                             "warningOnly": warning_only,
                             "requestingUserCanEdit": requesting_user_can_edit,
-                            "editors": None if warning_only else {
+                            "editors": None
+                            if warning_only
+                            else {
                                 "users": editor_users_emails,
                                 "groups": editor_groups_emails,
                             },
