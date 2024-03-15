@@ -1,11 +1,14 @@
 import itertools
 import os
 import unittest
+from typing import Any
 
 import pytest
-import vcr
 from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
+from requests import Response
+from vcr import VCR
+from vcr.errors import CannotOverwriteExistingCassetteException
 
 import gspread
 from gspread.client import Client
@@ -52,7 +55,7 @@ def vcr_config():
         "decode_compressed_response": True,  # decode requests to save clear content
         "record_mode": RECORD_MODE,
         "serializer": "json",
-        "path_transformer": vcr.VCR.ensure_suffix(".json"),
+        "path_transformer": VCR.ensure_suffix(".json"),
         "before_record_response": ignore_retry_requests,
         "ignore_hosts": [
             "oauth2.googleapis.com",  # skip oauth requests, in replay mode we don't use them
@@ -80,6 +83,27 @@ class GspreadTest(unittest.TestCase):
         return prefixed_counter(get_method_name(self.id()))
 
 
+class VCRHTTPClient(BackOffHTTPClient):
+    def request(self, *args: Any, **kwargs: Any) -> Response:
+        try:
+            return super().request(*args, **kwargs)
+        except CannotOverwriteExistingCassetteException as e:
+            if CREDS_FILENAME is None or RECORD_MODE is None:
+                raise RuntimeError(
+                    """
+
+cannot make new HTTP requests in replay-mode. Please run tests with env variables CREDS_FILENAME and RECORD_MODE
+Please refer to contributing guide for details:
+
+https://github.com/burnash/gspread/blob/master/.github/CONTRIBUTING.md
+"""
+                )
+
+            # necessary env variables were provided, this is a real error
+            # like missing access rights on the actual file/folder where to save the cassette
+            raise e
+
+
 @pytest.fixture(scope="module")
 def client():
     if CREDS_FILENAME:
@@ -87,7 +111,7 @@ def client():
     else:
         auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
 
-    gc = Client(auth=auth_credentials, http_client=BackOffHTTPClient)
+    gc = Client(auth=auth_credentials, http_client=VCRHTTPClient)
     if not isinstance(gc, gspread.client.Client) is True:
         raise AssertionError
 
