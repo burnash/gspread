@@ -118,6 +118,41 @@ class GridRangeType(StrEnum):
     ListOfLists = "ListOfLists"
 
 
+class ValidationConditionType(StrEnum):
+    number_greater = "NUMBER_GREATER"
+    number_greater_than_eq = "NUMBER_GREATER_THAN_EQ"
+    number_less = "NUMBER_LESS"
+    number_less_than_eq = "NUMBER_LESS_THAN_EQ"
+    number_eq = "NUMBER_EQ"
+    number_not_eq = "NUMBER_NOT_EQ"
+    number_between = "NUMBER_BETWEEN"
+    number_not_between = "NUMBER_NOT_BETWEEN"
+    text_contains = "TEXT_CONTAINS"
+    text_not_contains = "TEXT_NOT_CONTAINS"
+    text_starts_with = "TEXT_STARTS_WITH"
+    text_ends_with = "TEXT_ENDS_WITH"
+    text_eq = "TEXT_EQ"
+    text_is_email = "TEXT_IS_EMAIL"
+    text_is_url = "TEXT_IS_URL"
+    date_eq = "DATE_EQ"
+    date_before = "DATE_BEFORE"
+    date_after = "DATE_AFTER"
+    date_on_or_before = "DATE_ON_OR_BEFORE"
+    date_on_or_after = "DATE_ON_OR_AFTER"
+    date_between = "DATE_BETWEEN"
+    date_not_between = "DATE_NOT_BETWEEN"
+    date_is_valid = "DATE_IS_VALID"
+    one_of_range = "ONE_OF_RANGE"
+    one_of_list = "ONE_OF_LIST"
+    blank = "BLANK"
+    not_blank = "NOT_BLANK"
+    custom_formula = "CUSTOM_FORMULA"
+    boolean = "BOOLEAN"
+    text_not_eq = "TEXT_NOT_EQ"
+    date_not_eq = "DATE_NOT_EQ"
+    filter_expression = "FILTER_EXPRESSION"
+
+
 def convert_credentials(credentials: Credentials) -> Credentials:
     module = credentials.__module__
     cls = credentials.__class__.__name__

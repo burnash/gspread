@@ -41,6 +41,7 @@ from .utils import (
     PasteOrientation,
     PasteType,
     T,
+    ValidationConditionType,
     ValueInputOption,
     ValueRenderOption,
     a1_range_to_grid_range,
@@ -2091,12 +2092,14 @@ class Worksheet:
                             "description": description,
                             "warningOnly": warning_only,
                             "requestingUserCanEdit": requesting_user_can_edit,
-                            "editors": None
-                            if warning_only
-                            else {
-                                "users": editor_users_emails,
-                                "groups": editor_groups_emails,
-                            },
+                            "editors": (
+                                None
+                                if warning_only
+                                else {
+                                    "users": editor_users_emails,
+                                    "groups": editor_groups_emails,
+                                }
+                            ),
                         }
                     }
                 }
@@ -3198,6 +3201,91 @@ class Worksheet:
                     }
                 }
             ]
+        }
+
+        return self.client.batch_update(self.spreadsheet_id, body)
+
+    def add_validation(
+        self,
+        range: str,
+        condition_type: ValidationConditionType,
+        values: Iterable[Any],
+        inputMessage: Optional[str] = None,
+        strict: bool = False,
+        showCustomUi: bool = False,
+    ) -> Any:
+        """Adds a data validation rule to any given range.
+
+        .. note::
+
+            ``condition_type`` values are explained here: `ConditionType`_
+
+            .. _ConditionType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ConditionType
+
+
+        :param str source: The A1 notation of the source range to move
+        :param condition_type: The sort of condition to apply.
+        :param values: List of condition values.
+        :type values: Any
+        :param str inputMessage: Message to show for the validation.
+        :param bool strict: Whether to reject invalid data or not.
+        :param bool showCustomUi: Whether to show a custom UI(Dropdown) for list values.
+
+        **Examples**
+
+        .. code-block:: python
+
+            import gspread
+            from gspread.utils import ValidationConditionType
+
+
+            ...
+
+            ws = spreadsheet.sheet1
+
+            ws.add_validation(
+                'A1',
+                ValidationConditionType.number_greater,
+                10,
+                strict=True,
+                inputMessage='Value must be greater than 10',
+            )
+
+            ws.add_validation(
+                'C2:C7',
+                ValidationConditionType.one_of_list,
+                'Yes',
+                'No',
+                showCustomUi=True
+            )
+        """
+
+        if not isinstance(condition_type, ValidationConditionType):
+            raise TypeError(
+                "condition_type param should be a valid ValidationConditionType."
+            )
+
+        grid = a1_range_to_grid_range(range, self.id)
+
+        body = {
+            "requests": [
+                {
+                    "setDataValidation": {
+                        "range": grid,
+                        "rule": {
+                            "condition": {
+                                "type": condition_type,
+                                "values": [
+                                    ({"userEnteredValue": value}) for value in values
+                                ],
+                            },
+                            "showCustomUi": showCustomUi,
+                            "strict": strict,
+                            "inputMessage": inputMessage,
+                        },
+                    }
+                }
+            ],
         }
 
         return self.client.batch_update(self.spreadsheet_id, body)
