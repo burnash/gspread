@@ -2037,7 +2037,7 @@ class Worksheet:
     def add_protected_range(
         self,
         name: str,
-        editor_users_emails: Sequence[str],
+        editor_users_emails: Sequence[str] = [],
         editor_groups_emails: Sequence[str] = [],
         description: Optional[str] = None,
         warning_only: bool = False,
@@ -2091,7 +2091,9 @@ class Worksheet:
                             "description": description,
                             "warningOnly": warning_only,
                             "requestingUserCanEdit": requesting_user_can_edit,
-                            "editors": {
+                            "editors": None
+                            if warning_only
+                            else {
                                 "users": editor_users_emails,
                                 "groups": editor_groups_emails,
                             },
