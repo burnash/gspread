@@ -3232,6 +3232,11 @@ class Worksheet:
         :param bool showCustomUi: Whether to show a custom Ui for list values.
         """
 
+        if not isinstance(condition_type, ValidationConditionType):
+            raise TypeError(
+                "condition_type param should be a valid ValidationConditionType."
+            )
+
         grid = a1_range_to_grid_range(source, self.id)
 
         body = {
