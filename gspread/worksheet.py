@@ -2092,12 +2092,14 @@ class Worksheet:
                             "description": description,
                             "warningOnly": warning_only,
                             "requestingUserCanEdit": requesting_user_can_edit,
-                            "editors": None
-                            if warning_only
-                            else {
-                                "users": editor_users_emails,
-                                "groups": editor_groups_emails,
-                            },
+                            "editors": (
+                                None
+                                if warning_only
+                                else {
+                                    "users": editor_users_emails,
+                                    "groups": editor_groups_emails,
+                                }
+                            ),
                         }
                     }
                 }
@@ -3208,7 +3210,9 @@ class Worksheet:
         source: str,
         condition_type: ValidationConditionType,
         *values: Iterable[Any],
-        **kwargs,
+        inputMessage: str | None = None,
+        strict: bool = False,
+        showCustomUi: bool = False,
     ) -> Any:
         """Adds a data validation rule to any given range.
 
@@ -3242,7 +3246,9 @@ class Worksheet:
                                     ({"userEnteredValue": value}) for value in values
                                 ],
                             },
-                            **kwargs,
+                            "showCustomUi": showCustomUi,
+                            "strict": strict,
+                            "inputMessage": inputMessage,
                         },
                     }
                 }
