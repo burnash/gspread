@@ -3225,8 +3225,8 @@ class Worksheet:
 
         :param str source: The A1 notation of the source range to move
         :param condition_type: The sort of condition to apply.
-        :param values: List of condition values or RelativeDate.
-        :type values: Any | RelativeDate
+        :param values: List of condition values.
+        :type values: Any
         :param str inputMessage: Message to show for the validation.
         :param bool strict: Whether to reject invalid data or not.
         :param bool showCustomUi: Whether to show a custom Ui for list values.
