@@ -3229,7 +3229,33 @@ class Worksheet:
         :type values: Any
         :param str inputMessage: Message to show for the validation.
         :param bool strict: Whether to reject invalid data or not.
-        :param bool showCustomUi: Whether to show a custom Ui for list values.
+        :param bool showCustomUi: Whether to show a custom UI(Dropdown) for list values.
+
+        **Examples**
+        .. code-block:: python
+            import gspread
+            from gspread.utils import ValidationConditionType
+
+
+            ...
+
+            ws = spreadsheet.sheet1
+
+            ws.add_validation(
+                'A1',
+                ValidationConditionType.number_greater,
+                10,
+                strict=True,
+                inputMessage='Value must be greater than 10',
+            )
+
+            ws.add_validation(
+                'C2:C7',
+                ValidationConditionType.one_of_list,
+                'Yes',
+                'No',
+                showCustomUi=True
+            )
         """
 
         if not isinstance(condition_type, ValidationConditionType):
