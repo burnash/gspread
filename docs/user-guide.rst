@@ -139,6 +139,42 @@ If you want to get a cell formula:
 
    cell = worksheet.cell(1, 2, value_render_option='FORMULA').value
 
+Getting Unformatted Cell Value
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Get the Unformatted value from a cell.
+Example: cells formatted as currency will display with the selected
+currency but they actual value is regular number.
+
+Get the formatted (as displayed) value:
+
+.. code:: python
+
+   worksheet.get("A1:B2")
+
+Results in: ``[['$12.00']]``
+
+Get the unformatted value:
+
+.. code:: python
+
+   from gspread.utils import ValueRenderOption
+   worksheet.get("A1:B2", value_render_option=ValueRenderOption.unformatted)
+
+Results in: ``[[12]]``
+
+Getting Cell formula
+~~~~~~~~~~~~~~~~~~~~
+
+Get the formula from a cell instead of the resulting value:
+
+.. code:: python
+
+   from gspread.utils import ValueRenderOption
+   worksheet.get("G6", value_render_option=ValueRenderOption.formula)
+
+Resulsts in: ``[['=1/1024']]``
+
 
 Getting All Values From a Row or a Column
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
