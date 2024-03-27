@@ -3220,7 +3220,7 @@ class Worksheet:
 
             ``condition_type`` values are explained here: `ConditionType`_
 
-            .._ConditionType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ConditionType
+            .. _ConditionType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ConditionType
 
 
         :param str source: The A1 notation of the source range to move
@@ -3232,6 +3232,7 @@ class Worksheet:
         :param bool showCustomUi: Whether to show a custom UI(Dropdown) for list values.
 
         **Examples**
+
         .. code-block:: python
             import gspread
             from gspread.utils import ValidationConditionType
