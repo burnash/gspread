@@ -3211,7 +3211,7 @@ class Worksheet:
         condition_type: ValidationConditionType,
         values: Iterable[Any],
         *,
-        inputMessage: str | None = None,
+        inputMessage: Optional[str] = None,
         strict: bool = False,
         showCustomUi: bool = False,
     ) -> Any:
