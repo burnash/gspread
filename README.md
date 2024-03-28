@@ -276,6 +276,24 @@ worksheet.batch_update([{
 }])
 ```
 
+### Get unformatted cell value or formula
+
+```python
+from gspread.utils import ValueRenderOption
+
+# Get formatted cell value as displayed in the UI
+>>> worksheet.get("A1:B2")
+[['$12.00']]
+
+# Get unformatted value from the same cell range
+>>> worksheet.get("A1:B2", value_render_option=ValueRenderOption.unformatted)
+[[12]]
+
+# Get formula from a cell
+>>> worksheet.get("C2:D2", value_render_option=ValueRenderOption.formula)
+[['=1/1024']]
+```
+
 ## Documentation
 
 [Documentation]\: [https://gspread.readthedocs.io/][Documentation]
