@@ -1,6 +1,25 @@
 Release History
 ===============
 
+6.0.1 (2024-03-28)
+------------------
+
+* Add py.typed marker by @lavigne958 in https://github.com/burnash/gspread/pull/1422
+* Improve back-off client by @lavigne958 in https://github.com/burnash/gspread/pull/1415
+* Add new auth method API key by @lavigne958 in https://github.com/burnash/gspread/pull/1428
+* Bugfix/add set timeout by @lavigne958 in https://github.com/burnash/gspread/pull/1417
+* Fix wrapper `cast_to_a1_notation` by @lavigne958 in https://github.com/burnash/gspread/pull/1427
+* Bump bandit from 1.7.5 to 1.7.8 by @dependabot in https://github.com/burnash/gspread/pull/1433
+* Bump mypy from 1.6.1 to 1.9.0 by @dependabot in https://github.com/burnash/gspread/pull/1432
+* Bump typing-extensions from 4.8.0 to 4.10.0 by @dependabot in https://github.com/burnash/gspread/pull/1424
+* Bump flake8 from 5.0.4 to 7.0.0 by @dependabot in https://github.com/burnash/gspread/pull/1375
+* fix error message readability by @imrehg in https://github.com/burnash/gspread/pull/1435
+* Add missing method `import_csv()` by @lavigne958 in https://github.com/burnash/gspread/pull/1426
+* update readme examples by @alifeee in https://github.com/burnash/gspread/pull/1431
+* Add user friendly message when we can't override a test cassette by @lavigne958 in https://github.com/burnash/gspread/pull/1438
+* Allow "warning" type protected ranges by @alifeee in https://github.com/burnash/gspread/pull/1439
+* Improve README and documentation with value render options by @lavigne958 in https://github.com/burnash/gspread/pull/1446
+
 6.0.2 (2024-02-14)
 ------------------
 
