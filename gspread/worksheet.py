@@ -3207,10 +3207,9 @@ class Worksheet:
 
     def add_validation(
         self,
-        source: str,
+        range: str,
         condition_type: ValidationConditionType,
         values: Iterable[Any],
-        *,
         inputMessage: Optional[str] = None,
         strict: bool = False,
         showCustomUi: bool = False,
@@ -3265,7 +3264,7 @@ class Worksheet:
                 "condition_type param should be a valid ValidationConditionType."
             )
 
-        grid = a1_range_to_grid_range(source, self.id)
+        grid = a1_range_to_grid_range(range, self.id)
 
         body = {
             "requests": [
