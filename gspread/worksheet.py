@@ -3246,7 +3246,7 @@ class Worksheet:
             ws.add_validation(
                 'A1',
                 ValidationConditionType.number_greater,
-                10,
+                [10],
                 strict=True,
                 inputMessage='Value must be greater than 10',
             )
@@ -3254,8 +3254,7 @@ class Worksheet:
             ws.add_validation(
                 'C2:C7',
                 ValidationConditionType.one_of_list,
-                'Yes',
-                'No',
+                ['Yes','No'],
                 showCustomUi=True
             )
         """
