@@ -284,7 +284,9 @@ class HTTPClient:
         r = self.request("post", url, json=body)
         return r.json()
 
-    def fetch_sheet_metadata(self, id: str, params: Optional[ParamsType] = None) -> Any:
+    def fetch_sheet_metadata(
+        self, id: str, params: Optional[ParamsType] = None
+    ) -> Mapping[str, Any]:
         """Similar to :method spreadsheets_get:`gspread.http_client.spreadsheets_get`,
         get the spreadsheet form the API but by default **does not get the cells data**.
         It only retrieve the the metadata from the spreadsheet.
