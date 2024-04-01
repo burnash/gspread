@@ -1879,8 +1879,7 @@ class WorksheetTest(GspreadTest):
             sheet.add_validation(
                 "A1",
                 utils.ValidationConditionType.one_of_list,
-                ["y",
-                "n"],
+                ["y", "n"],
                 strict=True,
             ),
             {"spreadsheetId": self.spreadsheet.id, "replies": [{}]},
