@@ -316,6 +316,44 @@ Update a range
 
    worksheet.update('A1:B2', [[1, 2], [3, 4]])
 
+
+Adding Data Validation
+~~~~~~~~~~~~~~~~~~~~~~
+
+You can add a strict validation to a cell.
+
+.. code:: python
+
+   ws.add_validation(
+      'A1',
+      ValidationConditionType.number_greater,
+      [10],
+      strict=True,
+      inputMessage='Value must be greater than 10',
+   )
+ 
+
+Or add validation with a drop down.
+
+.. code:: python
+   
+   worksheet.add_validation(
+      'C2:C7',
+      ValidationConditionType.one_of_list,
+      ['Yes',
+      'No',]
+      showCustomUi=True
+   )
+
+
+Check out the api docs for `DataValidationRule`_ and `CondtionType`_ for more details.
+
+.. _CondtionType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ConditionType
+
+.. _DataValidationRule: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#DataValidationRule 
+
+
+
 Formatting
 ~~~~~~~~~~
 
