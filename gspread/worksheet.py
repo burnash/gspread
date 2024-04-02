@@ -114,7 +114,7 @@ class ValueRange(list):
        It will be instantiated using the response from the sheet API.
     """
 
-    _json: MutableMapping[str, Any] = {}
+    _json: MutableMapping[str, str] = {}
 
     @classmethod
     def from_json(cls: Type[ValueRangeType], json: Mapping[str, Any]) -> ValueRangeType:
@@ -449,7 +449,7 @@ class Worksheet:
         maintain_size: bool = False,
         pad_values: bool = True,
         return_type: GridRangeType = GridRangeType.ListOfLists,
-    ) -> List[List[T]]:
+    ) -> Union[ValueRange, List[List[Any]]]:
         """Alias for :meth:`~gspread.worksheet.Worksheet.get`...
 
         with ``return_type`` set to ``List[List[Any]]``
@@ -477,7 +477,7 @@ class Worksheet:
         maintain_size: bool = False,
         pad_values: bool = True,
         return_type: GridRangeType = GridRangeType.ListOfLists,
-    ) -> List[List[T]]:
+    ) -> Union[ValueRange, List[List[Any]]]:
         """Alias to :meth:`~gspread.worksheet.Worksheet.get_values`"""
         return self.get_values(
             range_name=range_name,
@@ -492,13 +492,13 @@ class Worksheet:
 
     def get_all_records(
         self,
-        head=1,
-        expected_headers=None,
-        value_render_option=None,
-        default_blank="",
-        numericise_ignore=[],
-        allow_underscores_in_numeric_literals=False,
-        empty2zero=False,
+        head: int = 1,
+        expected_headers: Optional[List[str]] = None,
+        value_render_option: Optional[ValueRenderOption] = None,
+        default_blank: str = "",
+        numericise_ignore: Iterable[Union[str, int]] = [],
+        allow_underscores_in_numeric_literals: bool = False,
+        empty2zero: bool = False,
     ) -> List[Dict[str, Union[int, float, str]]]:
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
@@ -598,7 +598,7 @@ class Worksheet:
                     empty2zero,
                     default_blank,
                     allow_underscores_in_numeric_literals,
-                    numericise_ignore,
+                    numericise_ignore,  # type: ignore
                 )
                 for row in values
             ]
@@ -616,7 +616,7 @@ class Worksheet:
         major_dimension: Optional[Dimension] = None,
         value_render_option: Optional[ValueRenderOption] = None,
         date_time_render_option: Optional[DateTimeOption] = None,
-    ) -> List[Optional[Union[int, float, str]]]:
+    ) -> List[str]:
         """Returns a list of all values in a `row`.
 
         Empty cells in this list will be rendered as :const:`None`.
@@ -826,7 +826,7 @@ class Worksheet:
         maintain_size: bool = False,
         pad_values: bool = False,
         return_type: GridRangeType = GridRangeType.ValueRange,
-    ) -> Union[ValueRange, List[List[Any]]]:
+    ) -> Union[ValueRange, List[List[str]]]:
         """Reads values of a single range or a cell of a sheet.
 
         Returns a ValueRange (list of lists) containing all values from a specified range or cell
@@ -2091,12 +2091,14 @@ class Worksheet:
                             "description": description,
                             "warningOnly": warning_only,
                             "requestingUserCanEdit": requesting_user_can_edit,
-                            "editors": None
-                            if warning_only
-                            else {
-                                "users": editor_users_emails,
-                                "groups": editor_groups_emails,
-                            },
+                            "editors": (
+                                None
+                                if warning_only
+                                else {
+                                    "users": editor_users_emails,
+                                    "groups": editor_groups_emails,
+                                }
+                            ),
                         }
                     }
                 }
@@ -2395,7 +2397,7 @@ class Worksheet:
         return res
 
     @cast_to_a1_notation
-    def set_basic_filter(self, name: Optional[str] = None):
+    def set_basic_filter(self, name: Optional[str] = None) -> Any:
         """Add a basic filter to the worksheet. If a range or boundaries
         are passed, the filter will be limited to the given range.
 
@@ -2538,7 +2540,7 @@ class Worksheet:
         )
 
     @cast_to_a1_notation
-    def merge_cells(self, name: str, merge_type: str = MergeType.merge_all):
+    def merge_cells(self, name: str, merge_type: str = MergeType.merge_all) -> Any:
         """Merge cells.
 
         :param str name: Range name in A1 notation, e.g. 'A1:A5'.

@@ -39,7 +39,9 @@ class Client:
     ) -> None:
         self.http_client = http_client(auth, session)
 
-    def set_timeout(self, timeout: Optional[Union[float, Tuple[float, float]]] = None):
+    def set_timeout(
+        self, timeout: Optional[Union[float, Tuple[float, float]]] = None
+    ) -> None:
         """How long to wait for the server to send
         data before giving up, as a float, or a ``(connect timeout,
         read timeout)`` tuple.
@@ -76,7 +78,7 @@ class Client:
         return files
 
     def _list_spreadsheet_files(
-        self, title=None, folder_id=None
+        self, title: Optional[str] = None, folder_id: Optional[str] = None
     ) -> Tuple[List[Dict[str, Any]], Response]:
         files = []
         page_token = ""
@@ -316,9 +318,9 @@ class Client:
                     continue
 
                 new_spreadsheet.share(
-                    email_address=p["emailAddress"],
-                    perm_type=p["type"],
-                    role=p["role"],
+                    email_address=str(p["emailAddress"]),
+                    perm_type=str(p["type"]),
+                    role=str(p["role"]),
                     notify=False,
                 )
 

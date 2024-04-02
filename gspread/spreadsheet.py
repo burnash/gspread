@@ -7,10 +7,13 @@ This module contains common spreadsheets' models.
 """
 
 import warnings
-from typing import Any, Dict, Union
+from typing import Any, Dict, Generator, Iterable, List, Mapping, Optional, Union
 
+from requests import Response
+
+from .cell import Cell
 from .exceptions import WorksheetNotFound
-from .http_client import HTTPClient
+from .http_client import HTTPClient, ParamsType
 from .urls import DRIVE_FILES_API_V3_URL, SPREADSHEET_DRIVE_URL
 from .utils import ExportFormat, finditem
 from .worksheet import Worksheet
@@ -19,7 +22,7 @@ from .worksheet import Worksheet
 class Spreadsheet:
     """The class that represents a spreadsheet."""
 
-    def __init__(self, http_client: HTTPClient, properties: Dict[str, Any]):
+    def __init__(self, http_client: HTTPClient, properties: Dict[str, Union[str, Any]]):
         self.client = http_client
         self._properties = properties
 
@@ -27,29 +30,29 @@ class Spreadsheet:
         self._properties.update(metadata["properties"])
 
     @property
-    def id(self):
+    def id(self) -> str:
         """Spreadsheet ID."""
         return self._properties["id"]
 
     @property
-    def title(self):
+    def title(self) -> str:
         """Spreadsheet title."""
         return self._properties["title"]
 
     @property
-    def url(self):
+    def url(self) -> str:
         """Spreadsheet URL."""
         return SPREADSHEET_DRIVE_URL % self.id
 
     @property
-    def creationTime(self):
+    def creationTime(self) -> str:
         """Spreadsheet Creation time."""
         if "createdTime" not in self._properties:
             self.update_drive_metadata()
         return self._properties["createdTime"]
 
     @property
-    def lastUpdateTime(self):
+    def lastUpdateTime(self) -> str:
         """Spreadsheet last updated time.
         Only updated on initialisation.
         For actual last updated time, use get_lastUpdateTime()."""
@@ -62,31 +65,31 @@ class Spreadsheet:
         return self._properties["modifiedTime"]
 
     @property
-    def timezone(self):
+    def timezone(self) -> str:
         """Spreadsheet timeZone"""
         return self._properties["timeZone"]
 
     @property
-    def locale(self):
+    def locale(self) -> str:
         """Spreadsheet locale"""
         return self._properties["locale"]
 
     @property
-    def sheet1(self):
+    def sheet1(self) -> Worksheet:
         """Shortcut property for getting the first worksheet."""
         return self.get_worksheet(0)
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[Worksheet, None, None]:
         yield from self.worksheets()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<{} {} id:{}>".format(
             self.__class__.__name__,
             repr(self.title),
             self.id,
         )
 
-    def batch_update(self, body):
+    def batch_update(self, body: Mapping[str, Any]) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>:batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate>`_.
 
         :param dict body: `Batch Update Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/batchUpdate#request-body>`_.
@@ -97,7 +100,9 @@ class Spreadsheet:
         """
         return self.client.batch_update(self.id, body)
 
-    def values_append(self, range, params, body):
+    def values_append(
+        self, range: str, params: ParamsType, body: Mapping[str, Any]
+    ) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:append <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_
@@ -111,7 +116,7 @@ class Spreadsheet:
         """
         return self.client.values_append(self.id, range, params, body)
 
-    def values_clear(self, range):
+    def values_clear(self, range: str) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:clear <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/clear>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to clear.
@@ -122,7 +127,11 @@ class Spreadsheet:
         """
         return self.client.values_clear(self.id, range)
 
-    def values_batch_clear(self, params=None, body=None):
+    def values_batch_clear(
+        self,
+        params: Optional[ParamsType] = None,
+        body: Optional[Mapping[str, Any]] = None,
+    ) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:batchClear`
 
         :param dict params: (optional) `Values Batch Clear Query parameters <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchClear#path-parameters>`_.
@@ -131,7 +140,7 @@ class Spreadsheet:
         """
         return self.client.values_batch_clear(self.id, params, body)
 
-    def values_get(self, range, params=None):
+    def values_get(self, range: str, params: Optional[ParamsType] = None) -> Any:
         """Lower-level method that directly calls `GET spreadsheets/<ID>/values/<range> <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/get>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
@@ -143,7 +152,9 @@ class Spreadsheet:
         """
         return self.client.values_get(self.id, range, params=params)
 
-    def values_batch_get(self, ranges, params=None):
+    def values_batch_get(
+        self, ranges: List[str], params: Optional[ParamsType] = None
+    ) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:batchGet <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchGet>`_.
 
         :param list ranges: List of ranges in the `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to retrieve.
@@ -153,7 +164,12 @@ class Spreadsheet:
         """
         return self.client.values_batch_get(self.id, ranges, params=params)
 
-    def values_update(self, range, params=None, body=None):
+    def values_update(
+        self,
+        range: str,
+        params: Optional[ParamsType] = None,
+        body: Optional[Mapping[str, Any]] = None,
+    ) -> Any:
         """Lower-level method that directly calls `PUT spreadsheets/<ID>/values/<range> <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/update>`_.
 
         :param str range: The `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_notation>`_ of the values to update.
@@ -178,7 +194,7 @@ class Spreadsheet:
         """
         return self.client.values_update(self.id, range, params=params, body=body)
 
-    def values_batch_update(self, body=None):
+    def values_batch_update(self, body: Optional[Mapping[str, Any]] = None) -> Any:
         """Lower-level method that directly calls `spreadsheets/<ID>/values:batchUpdate <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate>`_.
 
         :param dict body: (optional) `Values Batch Update Request body <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate#request-body>`_.
@@ -187,17 +203,21 @@ class Spreadsheet:
         """
         return self.client.values_batch_update(self.id, body=body)
 
-    def _spreadsheets_get(self, params=None):
+    def _spreadsheets_get(self, params: Optional[ParamsType] = None) -> Any:
         """A method stub that directly calls `spreadsheets.get <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/get>`_."""
         return self.client.spreadsheets_get(self.id, params=params)
 
-    def _spreadsheets_sheets_copy_to(self, sheet_id, destination_spreadsheet_id):
+    def _spreadsheets_sheets_copy_to(
+        self, sheet_id: int, destination_spreadsheet_id: str
+    ) -> Any:
         """Lower-level method that directly calls `spreadsheets.sheets.copyTo <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.sheets/copyTo>`_."""
         return self.client.spreadsheets_sheets_copy_to(
             self.id, sheet_id, destination_spreadsheet_id
         )
 
-    def fetch_sheet_metadata(self, params=None):
+    def fetch_sheet_metadata(
+        self, params: Optional[ParamsType] = None
+    ) -> Mapping[str, Any]:
         """Similar to :method spreadsheets_get:`gspread.http_client.spreadsheets_get`,
         get the spreadsheet form the API but by default **does not get the cells data**.
         It only retrieve the the metadata from the spreadsheet.
@@ -209,7 +229,7 @@ class Spreadsheet:
         """
         return self.client.fetch_sheet_metadata(self.id, params=params)
 
-    def get_worksheet(self, index):
+    def get_worksheet(self, index: int) -> Worksheet:
         """Returns a worksheet with specified `index`.
 
         :param index: An index of a worksheet. Indexes start from zero.
@@ -233,7 +253,7 @@ class Spreadsheet:
         except (KeyError, IndexError):
             raise WorksheetNotFound("index {} not found".format(index))
 
-    def get_worksheet_by_id(self, id: Union[str, int]):
+    def get_worksheet_by_id(self, id: Union[str, int]) -> Worksheet:
         """Returns a worksheet with specified `worksheet id`.
 
         :param id: The id of a worksheet. it can be seen in the url as the value of the parameter 'gid'.
@@ -264,7 +284,7 @@ class Spreadsheet:
         except (StopIteration, KeyError):
             raise WorksheetNotFound("id {} not found".format(worksheet_id_int))
 
-    def worksheets(self, exclude_hidden: bool = False):
+    def worksheets(self, exclude_hidden: bool = False) -> List[Worksheet]:
         """Returns a list of all :class:`worksheets <gspread.worksheet.Worksheet>`
         in a spreadsheet.
 
@@ -284,7 +304,7 @@ class Spreadsheet:
             worksheets = [w for w in worksheets if not w.isSheetHidden]
         return worksheets
 
-    def worksheet(self, title):
+    def worksheet(self, title: str) -> Worksheet:
         """Returns a worksheet with specified `title`.
 
         :param title: A title of a worksheet. If there're multiple
@@ -312,7 +332,9 @@ class Spreadsheet:
         except (StopIteration, KeyError):
             raise WorksheetNotFound(title)
 
-    def add_worksheet(self, title, rows, cols, index=None):
+    def add_worksheet(
+        self, title: str, rows: int, cols: int, index: Optional[int] = None
+    ) -> Worksheet:
         """Adds a new worksheet to a spreadsheet.
 
         :param title: A title of a new worksheet.
@@ -326,7 +348,9 @@ class Spreadsheet:
 
         :returns: a newly created :class:`worksheets <gspread.worksheet.Worksheet>`.
         """
-        body = {
+        body: Dict[
+            str, List[Dict[str, Dict[str, Dict[str, Union[str, int, Dict[str, int]]]]]]
+        ] = {
             "requests": [
                 {
                     "addSheet": {
@@ -354,11 +378,11 @@ class Spreadsheet:
 
     def duplicate_sheet(
         self,
-        source_sheet_id,
-        insert_sheet_index=None,
-        new_sheet_id=None,
-        new_sheet_name=None,
-    ):
+        source_sheet_id: int,
+        insert_sheet_index: Optional[int] = None,
+        new_sheet_id: Optional[int] = None,
+        new_sheet_name: Optional[str] = None,
+    ) -> Worksheet:
         """Duplicates the contents of a sheet.
 
         :param int source_sheet_id: The sheet ID to duplicate.
@@ -388,7 +412,7 @@ class Spreadsheet:
             new_sheet_name=new_sheet_name,
         )
 
-    def del_worksheet(self, worksheet):
+    def del_worksheet(self, worksheet: Worksheet) -> Any:
         """Deletes a worksheet from a spreadsheet.
 
         :param worksheet: The worksheet to be deleted.
@@ -398,7 +422,7 @@ class Spreadsheet:
 
         return self.client.batch_update(self.id, body)
 
-    def del_worksheet_by_id(self, worksheet_id: Union[str, int]):
+    def del_worksheet_by_id(self, worksheet_id: Union[str, int]) -> Any:
         """
         Deletes a Worksheet by id
         """
@@ -411,7 +435,9 @@ class Spreadsheet:
 
         return self.client.batch_update(self.id, body)
 
-    def reorder_worksheets(self, worksheets_in_desired_order):
+    def reorder_worksheets(
+        self, worksheets_in_desired_order: Iterable[Worksheet]
+    ) -> Any:
         """Updates the ``index`` property of each Worksheet to reflect
         its index in the provided sequence of Worksheets.
 
@@ -448,13 +474,13 @@ class Spreadsheet:
 
     def share(
         self,
-        email_address,
-        perm_type,
-        role,
-        notify=True,
-        email_message=None,
-        with_link=False,
-    ):
+        email_address: str,
+        perm_type: str,
+        role: str,
+        notify: bool = True,
+        email_message: Optional[str] = None,
+        with_link: bool = False,
+    ) -> Response:
         """Share the spreadsheet with other accounts.
 
         :param email_address: user or group e-mail address, domain name
@@ -492,7 +518,7 @@ class Spreadsheet:
             with_link=with_link,
         )
 
-    def export(self, format=ExportFormat.PDF):
+    def export(self, format: ExportFormat = ExportFormat.PDF) -> bytes:
         """Export the spreadsheet in the given format.
 
         :param str file_id: A key of a spreadsheet to export
@@ -517,11 +543,11 @@ class Spreadsheet:
         """
         return self.client.export(self.id, format)
 
-    def list_permissions(self):
+    def list_permissions(self) -> List[Dict[str, Union[str, bool]]]:
         """Lists the spreadsheet's permissions."""
         return self.client.list_permissions(self.id)
 
-    def remove_permissions(self, value, role="any"):
+    def remove_permissions(self, value: str, role: str = "any") -> List[str]:
         """Remove permissions from a user or domain.
 
         :param value: User or domain to remove permissions from
@@ -542,8 +568,8 @@ class Spreadsheet:
 
         key = "emailAddress" if "@" in value else "domain"
 
-        filtered_id_list = [
-            p["id"]
+        filtered_id_list: List[str] = [
+            str(p["id"])
             for p in permission_list
             if p.get(key) == value and (p["role"] == role or role == "any")
         ]
@@ -553,7 +579,7 @@ class Spreadsheet:
 
         return filtered_id_list
 
-    def transfer_ownership(self, permission_id):
+    def transfer_ownership(self, permission_id: str) -> Response:
         """Transfer the ownership of this file to a new user.
 
         It is necessary to first create the permission with the new owner's email address,
@@ -581,7 +607,7 @@ class Spreadsheet:
 
         return self.client.request("patch", url, json=payload)
 
-    def accept_ownership(self, permission_id):
+    def accept_ownership(self, permission_id: str) -> Response:
         """Accept the pending ownership request on that file.
 
         It is necessary to edit the permission with the pending ownership.
@@ -601,13 +627,13 @@ class Spreadsheet:
             "role": "owner",
         }
 
-        params = {
+        params: ParamsType = {
             "transferOwnership": True,
         }
 
         return self.client.request("patch", url, json=payload, params=params)
 
-    def named_range(self, named_range):
+    def named_range(self, named_range: str) -> List[Cell]:
         """return a list of :class:`gspread.cell.Cell` objects from
         the specified named range.
 
@@ -619,13 +645,13 @@ class Spreadsheet:
         # This is only here to provide better user experience.
         return self.sheet1.range(named_range)
 
-    def list_named_ranges(self):
+    def list_named_ranges(self) -> List[Any]:
         """Lists the spreadsheet's named ranges."""
         return self.fetch_sheet_metadata(params={"fields": "namedRanges"}).get(
             "namedRanges", []
         )
 
-    def update_title(self, title):
+    def update_title(self, title: str) -> Any:
         """Renames the spreadsheet.
 
         :param str title: A new title.
@@ -645,7 +671,7 @@ class Spreadsheet:
         self._properties["title"] = title
         return res
 
-    def update_timezone(self, timezone):
+    def update_timezone(self, timezone: str) -> Any:
         """Updates the current spreadsheet timezone.
         Can be any timezone in CLDR format such as "America/New_York"
         or a custom time zone such as GMT-07:00.
@@ -666,7 +692,7 @@ class Spreadsheet:
         self._properties["timeZone"] = timezone
         return res
 
-    def update_locale(self, locale):
+    def update_locale(self, locale: str) -> Any:
         """Update the locale of the spreadsheet.
         Can be any of the ISO 639-1 language codes, such as: de, fr, en, ...
         Or an ISO 639-2 if no ISO 639-1 exists.
@@ -692,9 +718,9 @@ class Spreadsheet:
         self._properties["locale"] = locale
         return res
 
-    def list_protected_ranges(self, sheetid):
+    def list_protected_ranges(self, sheetid: int) -> List[Any]:
         """Lists the spreadsheet's protected named ranges"""
-        sheets = self.fetch_sheet_metadata(
+        sheets: List[Mapping[str, Any]] = self.fetch_sheet_metadata(
             params={"fields": "sheets.properties,sheets.protectedRanges"}
         )["sheets"]
 

@@ -244,7 +244,7 @@ def numericise(
 
 
 def numericise_all(
-    values: List[Optional[AnyStr]],
+    values: List[AnyStr],
     empty2zero: bool = False,
     default_blank: Any = "",
     allow_underscores_in_numeric_literals: bool = False,
@@ -521,7 +521,7 @@ def column_letter_to_index(column: str) -> int:
     return index
 
 
-def cast_to_a1_notation(method: Callable[..., Any]) -> Callable[..., Any]:
+def cast_to_a1_notation(method: Callable[..., T]) -> Callable[..., T]:
     """Decorator function casts wrapped arguments to A1 notation in range
     method calls.
     """
@@ -709,7 +709,12 @@ def is_scalar(x: Any) -> bool:
     return isinstance(x, str) or not isinstance(x, Sequence)
 
 
-def combined_merge_values(worksheet_metadata, values, start_row_index, start_col_index):
+def combined_merge_values(
+    worksheet_metadata: Mapping[str, Any],
+    values: List[List[Any]],
+    start_row_index: int,
+    start_col_index: int,
+) -> List[List[Any]]:
     """For each merged region, replace all values with the value of the top-left cell of the region.
     e.g., replaces
     [
@@ -733,6 +738,9 @@ def combined_merge_values(worksheet_metadata, values, start_row_index, start_col
 
     :param start_col_index: The index of the first column of the values in the worksheet.
         e.g., if the values are in columns C-E, this should be 2.
+
+    :returns: matrix of values with merged coordinates filled according to top-left value
+    :rtype: list(list(any))
     """
     merges = worksheet_metadata.get("merges", [])
     # each merge has "startRowIndex", "endRowIndex", "startColumnIndex", "endColumnIndex
