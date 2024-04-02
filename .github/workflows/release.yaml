@@ -3,10 +3,9 @@ name: Releases
 on:
   push:
     tags:
-    - 'v*'
+      - "v*"
 
 jobs:
-
   release:
     runs-on: ubuntu-latest
     permissions:
@@ -15,30 +14,23 @@ jobs:
       id-token: write
     environment: release
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Setup python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.9"
-    - name: Setup tox
-      run: pip install tox
-    - name: Run linter
-      run: tox -e lint
-    - name: Run tests
-      run: tox -e py
-    - name: Build package
-      run: tox -e build
-    - name: Create release
-      uses: ncipollo/release-action@v1
-      with:
-        artifacts: dist/gspread-*
-        token: ${{ secrets.GH_TOKEN }}
-        generateReleaseNotes: True
-        artifactErrorsFailBuild: True
-    - name: Publish to TestPyPi
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
-    - name: Publish to PyPi
-      uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Setup tox
+        run: pip install tox
+      - name: Run linter
+        run: tox -e lint
+      - name: Run tests
+        run: tox -e py
+      - name: Build package
+        run: tox -e build
+      - name: Publish to TestPyPi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+    #- name: Publish to PyPi
+    #  uses: pypa/gh-action-pypi-publish@release/v1
