@@ -27,9 +27,6 @@ class Spreadsheet:
         self._properties = properties
 
         metadata = self.fetch_sheet_metadata()
-        import pprint
-
-        pprint.pprint(metadata)
         self._properties.update(metadata["properties"])
 
     @property
