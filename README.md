@@ -94,7 +94,7 @@ file.sheet1.update_tab_color(tab_color)
 
 ### Replace method `Worksheet.get_records`
 
-In v6 you can now only get _all_ sheet records, using `Worksheet.get_all_records()`. The method `Worksheet.get_records()` has been removed. You can get some records using your own fetches and combine them with `gspread.utils.to_records()`.
+In v6 you can now only get *all* sheet records, using `Worksheet.get_all_records()`. The method `Worksheet.get_records()` has been removed. You can get some records using your own fetches and combine them with `gspread.utils.to_records()`.
 
 ```diff
 + from gspread import utils
@@ -278,7 +278,7 @@ worksheet.batch_update([{
 
 ### Get unformatted cell value or formula
 
-````python
+```python
 from gspread.utils import ValueRenderOption
 
 # Get formatted cell value as displayed in the UI
@@ -316,7 +316,7 @@ worksheet.add_validation(
    showCustomUi=True
 )
 
-````
+```
 
 ## Documentation
 
