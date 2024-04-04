@@ -261,7 +261,7 @@ cell_list = worksheet.findall(criteria_re)
 
 ```python
 # Update a single cell
-worksheet.update_acell('Bingo!', 'B1')
+worksheet.update_acell('B1', 'Bingo!')
 
 # Update a range
 worksheet.update([[1, 2], [3, 4]], 'A1:B2')
