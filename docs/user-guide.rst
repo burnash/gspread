@@ -302,7 +302,7 @@ Using `A1 notation <https://developers.google.com/sheets/api/guides/concepts#a1_
 
 .. code:: python
 
-   worksheet.update('B1', 'Bingo!')
+   worksheet.update_acell('B1', 'Bingo!')
 
 Or row and column coordinates:
 
@@ -314,7 +314,7 @@ Update a range
 
 .. code:: python
 
-   worksheet.update('A1:B2', [[1, 2], [3, 4]])
+   worksheet.update([[1, 2], [3, 4]], 'A1:B2')
 
 Formatting
 ~~~~~~~~~~
@@ -402,5 +402,5 @@ Write a NumPy array to a sheet:
    array = np.array([[1, 2, 3], [4, 5, 6]])
 
    # Write the array to worksheet starting from the A2 cell
-   worksheet.update('A2', array.tolist())
+   worksheet.update(array.tolist(), 'A2')
 
