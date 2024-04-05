@@ -292,6 +292,30 @@ from gspread.utils import ValueRenderOption
 # Get formula from a cell
 >>> worksheet.get("C2:D2", value_render_option=ValueRenderOption.formula)
 [['=1/1024']]
+### Add data validation to a range
+
+```python
+import gspread
+from gspread.utils import ValidationConditionType
+
+# Restrict the input to greater than 10 in a single cell
+worksheet.add_validation(
+  'A1',
+  ValidationConditionType.number_greater,
+  [10],
+  strict=True,
+  inputMessage='Value must be greater than 10',
+)
+
+# Restrict the input to Yes/No for a specific range with dropdown
+worksheet.add_validation(
+  'C2:C7',
+   ValidationConditionType.one_of_list,
+   ['Yes',
+   'No',]
+   showCustomUi=True
+)
+
 ```
 
 ## Documentation
