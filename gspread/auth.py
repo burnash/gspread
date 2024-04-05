@@ -163,7 +163,7 @@ def oauth(
         gc = gspread.oauth(scopes=gspread.auth.READONLY_SCOPES)
 
         sh = gc.open("A spreadsheet")
-        sh.sheet1.update('A1', '42')   # <-- this will not work
+        sh.sheet1.update_acell('A1', '42')   # <-- this will not work
 
     If you're storing your user credentials in a place other than the
     default, you may provide a path to that file like so::
@@ -246,7 +246,7 @@ def oauth_from_dict(
         gc = gspread.oauth_from_dict(scopes=gspread.auth.READONLY_SCOPES)
 
         sh = gc.open("A spreadsheet")
-        sh.sheet1.update('A1', '42')   # <-- this will not work
+        sh.sheet1.update_acell('A1', '42')   # <-- this will not work
 
     This function requires you to pass the credentials directly as
     a python dict. After the first authentication the function returns

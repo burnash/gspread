@@ -315,7 +315,7 @@ class WorksheetTest(GspreadTest):
             ["", "4", "", ""],
             ["", "5", "", ""],
         ]
-        self.sheet.update("A1:D4", sheet_data)
+        self.sheet.update(sheet_data, "A1:D4")
         self.sheet.merge_cells("A1:B2", utils.MergeType.merge_all)
         self.sheet.merge_cells("C1:D2", utils.MergeType.merge_columns)
         self.sheet.merge_cells("B3:C4", utils.MergeType.merge_rows)
