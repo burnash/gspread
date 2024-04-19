@@ -9,7 +9,6 @@ from .conftest import GspreadTest
 
 
 class SpreadsheetTest(GspreadTest):
-
     """Test for gspread.Spreadsheet."""
 
     @pytest.fixture(scope="function", autouse=True)

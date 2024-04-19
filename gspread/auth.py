@@ -86,8 +86,7 @@ class FlowCallable(Protocol):
 
     def __call__(
         self, client_config: Mapping[str, Any], scopes: Iterable[str], port: int = 0
-    ) -> Credentials:
-        ...
+    ) -> Credentials: ...
 
 
 def local_server_flow(
