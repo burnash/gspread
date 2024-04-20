@@ -1,7 +1,7 @@
 Release History
 ===============
 
-6.0.1 (2024-03-28)
+6.1.0 (2024-03-28)
 ------------------
 
 * Add py.typed marker by @lavigne958 in https://github.com/burnash/gspread/pull/1422
