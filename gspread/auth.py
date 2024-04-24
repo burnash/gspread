@@ -12,8 +12,10 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping, Optional, Protocol, Tuple, Union
 
 from google.auth.credentials import Credentials
+
 try:
     from google.auth.api_key import Credentials as APIKeyCredentials
+
     GOOGLE_AUTH_API_KEY_AVAILABLE = True
 except ImportError:
     GOOGLE_AUTH_API_KEY_AVAILABLE = False
@@ -384,6 +386,8 @@ def api_key(token: str, http_client: HTTPClientType = HTTPClient) -> Client:
 
     """
     if GOOGLE_AUTH_API_KEY_AVAILABLE is False:
-        raise NotImplementedError(f'api_key is only available with package google.auth>=2.4.0. Install it with "pip install google-auth>=2.4.0".')
+        raise NotImplementedError(
+            f'api_key is only available with package google.auth>=2.4.0. Install it with "pip install google-auth>=2.4.0".'
+        )
     creds = APIKeyCredentials(token)
     return Client(auth=creds, http_client=http_client)
