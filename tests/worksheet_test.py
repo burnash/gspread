@@ -1625,8 +1625,8 @@ class WorksheetTest(GspreadTest):
         w = self.spreadsheet.worksheets()[0]
         notes = {"A1": "read my note", "B2": "Or don't"}
         notes_array = [
-            [notes["A1"], None],
-            [None, notes["B2"]]
+            [notes["A1"]],
+            [None, notes["B2"]],
         ]
 
         w.insert_notes(notes)
