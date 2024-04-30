@@ -1621,6 +1621,21 @@ class WorksheetTest(GspreadTest):
             w.insert_note("A1", w)
 
     @pytest.mark.vcr()
+    def test_get_notes(self):
+        w = self.spreadsheet.worksheets()[0]
+        notes = {"A1": "read my note", "B2": "Or don't"}
+        notes_array = [
+            [notes["A1"], None],
+            [None, notes["B2"]]
+        ]
+
+        w.insert_notes(notes)
+
+        all_notes = w.get_notes()
+
+        self.assertEqual(all_notes, notes_array)
+
+    @pytest.mark.vcr()
     def test_batch_clear(self):
         w = self.spreadsheet.sheet1
 
