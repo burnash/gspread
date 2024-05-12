@@ -317,8 +317,18 @@ class Client:
                 if p.get("deleted"):
                     continue
 
+                # In case of domain type the domain extract the domain
+                # In case of user/group extract the emailAddress
+                # Otherwise use None for type 'Anyone'
+
+                email_or_domain = ""
+                if str(p["type"]) == "domain":
+                    email_or_domain = str(p["domain"])
+                elif str(p["type"]) in ("user", "group"):
+                    email_or_domain = str(p["emailAddress"])
+
                 new_spreadsheet.share(
-                    email_address=str(p["emailAddress"]),
+                    email_address=email_or_domain,
                     perm_type=str(p["type"]),
                     role=str(p["role"]),
                     notify=False,
