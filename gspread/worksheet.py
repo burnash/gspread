@@ -2635,12 +2635,12 @@ class Worksheet:
             >>> print(arr)
             [
                 ["A1"],
-                [None, "B2"]
+                ["", "B2"]
             ]
             >>> print(gspread.utils.fill_gaps(arr, len(arr), max(len(a) for a in arr), None))
             [
-                ["A1", None],
-                [None, "B2"]
+                ["A1", ""],
+                ["", "B2"]
             ]
         """
         params: ParamsType = {"fields": "sheets.data.rowData.values.note"}
