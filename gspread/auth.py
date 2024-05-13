@@ -11,8 +11,14 @@ import os
 from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping, Optional, Protocol, Tuple, Union
 
-from google.auth.api_key import Credentials as APIKeyCredentials
 from google.auth.credentials import Credentials
+
+try:
+    from google.auth.api_key import Credentials as APIKeyCredentials
+
+    GOOGLE_AUTH_API_KEY_AVAILABLE = True
+except ImportError:
+    GOOGLE_AUTH_API_KEY_AVAILABLE = False
 from google.oauth2.credentials import Credentials as OAuthCredentials
 from google.oauth2.service_account import Credentials as SACredentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -379,5 +385,10 @@ def api_key(token: str, http_client: HTTPClientType = HTTPClient) -> Client:
     :rtype: :class:`gspread.client.Client`
 
     """
+    if GOOGLE_AUTH_API_KEY_AVAILABLE is False:
+        raise NotImplementedError(
+            "api_key is only available with package google.auth>=2.4.0."
+            'Install it with "pip install google-auth>=2.4.0".'
+        )
     creds = APIKeyCredentials(token)
     return Client(auth=creds, http_client=http_client)
