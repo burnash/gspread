@@ -2623,7 +2623,7 @@ class Worksheet:
         """
         params: ParamsType = {"fields": "sheets.data.rowData.values.note"}
         res = self.client.spreadsheets_get(self.spreadsheet_id, params)
-        data = res["sheets"][self.index]["data"][0].get("rowData", [])
+        data = res["sheets"][self.index]["data"][0].get("rowData", [{}])
         notes: List[List[str]] = []
         for row in data:
             notes.append([])
