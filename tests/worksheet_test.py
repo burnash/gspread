@@ -1629,10 +1629,13 @@ class WorksheetTest(GspreadTest):
             [None, notes["B2"]],
         ]
 
+        empty_notes = w.get_notes()
+
         w.insert_notes(notes)
 
         all_notes = w.get_notes()
 
+        self.assertEqual(empty_notes, [[]])
         self.assertEqual(all_notes, notes_array)
 
     @pytest.mark.vcr()
