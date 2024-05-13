@@ -2620,6 +2620,21 @@ class Worksheet:
 
         :param str default_empty_value: (optional) Determines which value to use
             for cells without notes, defaults to None.
+
+        Examples::
+
+            # Note data:
+            #      A      B
+            #
+            # 1    A1     None
+            # 2    None   B2
+
+            # Read all notes from the sheet
+            >>> worksheet.get_notes()
+            [
+                ["A1"],
+                [None, "B2"]
+            ]
         """
         params: ParamsType = {"fields": "sheets.data.rowData.values.note"}
         res = self.client.spreadsheets_get(self.spreadsheet_id, params)
