@@ -1582,30 +1582,38 @@ class WorksheetTest(GspreadTest):
     def test_worksheet_notes(self):
         w = self.spreadsheet.worksheets()[0]
 
-        # will trigger a Exception in case of any issue
+        # test get_note when empty
         self.assertEqual(w.get_note("A1"), "")
+        # test insert_note and get_note
         test_note_string = "slim shaddy"
         w.insert_note("A1", test_note_string)
         self.assertEqual(w.get_note("A1"), test_note_string)
+        # test update_note
         update_note = "the real " + test_note_string
         w.update_note("A1", update_note)
         self.assertEqual(w.get_note("A1"), update_note)
+        # test clear_note
         w.clear_note("A1")
         self.assertEqual(w.get_note("A1"), "")
 
         notes = {"A1": "read my note", "B2": "Or don't"}
 
+        # test insert_notes
         w.insert_notes(notes)
         self.assertEqual(w.get_note("A1"), notes["A1"])
         self.assertEqual(w.get_note("B2"), notes["B2"])
 
+        # test update_notes
         notes["A1"] = "remember to clean bedroom"
         notes["B2"] = "do homeworks"
         w.update_notes(notes)
         self.assertEqual(w.get_note("A1"), notes["A1"])
         self.assertEqual(w.get_note("B2"), notes["B2"])
 
+        # test clear_notes
         w.clear_notes(["A1", "B2"])
+        self.assertEqual(w.get_note("A1"), "")
+        self.assertEqual(w.get_note("B2"), "")
 
         with self.assertRaises(TypeError) as _:
             w.insert_note("A1", 42)
