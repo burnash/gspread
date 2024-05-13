@@ -2606,7 +2606,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def get_notes(self, default_empty_value: Optional[str] = None) -> List[List[str]]:
+    def get_notes(self, default_empty_value: Optional[str] = "") -> List[List[str]]:
         """Returns a list of lists containing all notes in the sheet.
 
         .. note::
