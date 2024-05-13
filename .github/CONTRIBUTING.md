@@ -22,7 +22,7 @@
 To run tests, add your credentials to `tests/creds.json` and run
 
 ```bash
-GS_CREDS_FILENAME="tests/creds.json" GS_RECORD_MODE="all" tox -e py -- -k "<specific test to run>" -v -s
+GS_CREDS_FILENAME="tests/creds.json" GS_RECORD_MODE="all" tox -e py -- -k "<specific test to run>"
 ```
 
 For more information on tests, see below.
@@ -52,7 +52,16 @@ tox -e py
 ### Run a specific test
 
 ```bash
-tox -e py -- -k TEST_NAME -v -s
+tox -e py -- -k TEST_NAME
+```
+
+The CI uses tox. For faster local development, you can set up an environment and use `pytest`, where `-k TEST_NAME` is used to filter to tests matching `TEST_NAME`. For more info run `pytest --help`.
+
+```bash
+python -m venv env
+source /env/bin/activate
+pip install test-requirements.txt
+pytest -k TEST_NAME
 ```
 
 ## Format
