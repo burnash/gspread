@@ -1626,7 +1626,7 @@ class WorksheetTest(GspreadTest):
         notes = {"A1": "read my note", "B2": "Or don't"}
         notes_array = [
             [notes["A1"]],
-            [None, notes["B2"]],
+            ["", notes["B2"]],
         ]
 
         empty_notes = w.get_notes()
