@@ -1,6 +1,23 @@
 Release History
 ===============
 
+6.1.1 (2024-05-16)
+------------------
+
+* Add some missing typing in code by @lavigne958 in https://github.com/burnash/gspread/pull/1448
+* More fixes for `Worksheet.update` argument ordering & single cell updating (i.e. now `Worksheet.update_acell`) by @alexmalins in https://github.com/burnash/gspread/pull/1449
+* Added 'add_data_validation` to `Workhsheet` [Issue #1420] by @muddi900 in https://github.com/burnash/gspread/pull/1444
+* Bump typing-extensions from 4.10.0 to 4.11.0 by @dependabot in https://github.com/burnash/gspread/pull/1450
+* Bump black from 23.3.0 to 24.4.0 by @dependabot in https://github.com/burnash/gspread/pull/1452
+* Fix incorrect version number in HISTORY.rst from 6.0.1 to 6.1.0 by @yhay81 in https://github.com/burnash/gspread/pull/1455
+* add `get_notes` by @nbwzx in https://github.com/burnash/gspread/pull/1451
+* Bump mypy from 1.9.0 to 1.10.0 by @dependabot in https://github.com/burnash/gspread/pull/1459
+* Bump black from 24.4.0 to 24.4.2 by @dependabot in https://github.com/burnash/gspread/pull/1460
+* bugfix: handle domain name in spreadsheet copy permissions by @lavigne958 in https://github.com/burnash/gspread/pull/1458
+* Fix/api key auth version by @alifeee in https://github.com/burnash/gspread/pull/1463
+* Ignore pip vulnerabilities in CI. by @lavigne958 in https://github.com/burnash/gspread/pull/1464
+* Remove StrEnum dependency and added custom class[issue #1462] by @muddi900 in https://github.com/burnash/gspread/pull/1469
+
 6.1.0 (2024-03-28)
 ------------------
 
