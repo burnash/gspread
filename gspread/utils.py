@@ -6,6 +6,7 @@ This module contains utility functions.
 
 """
 
+import enum
 import re
 from collections import defaultdict
 from collections.abc import Sequence
@@ -26,12 +27,10 @@ from typing import (
     Union,
 )
 from urllib.parse import quote as uquote
-import enum
 
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
-
 
 from .exceptions import IncorrectCellLabel, InvalidInputValue, NoValidUrlKeyFound
 
