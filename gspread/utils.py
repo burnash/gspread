@@ -26,11 +26,12 @@ from typing import (
     Union,
 )
 from urllib.parse import quote as uquote
+import enum
 
 from google.auth.credentials import Credentials as Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
-from strenum import StrEnum
+
 
 from .exceptions import IncorrectCellLabel, InvalidInputValue, NoValidUrlKeyFound
 
@@ -45,6 +46,21 @@ A1_ADDR_FULL_RE = re.compile(r"[A-Za-z]+\d+:[A-Za-z]+\d+")  # e.g. A1:B2 not A1:
 
 URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
+
+
+class StrEnum(str, enum.Enum):
+    def __new__(cls, value, *args, **kwargs):
+        if not isinstance(value, (str, enum.auto)):
+            raise TypeError(
+                f"Values of StrEnums must be strings: {value!r} is a {type(value)}"
+            )
+        return super().__new__(cls, value, *args, **kwargs)
+
+    def __str__(self):
+        return str(self.value)
+
+    def _generate_next_value_(name, *_):
+        return name
 
 
 class Dimension(StrEnum):
