@@ -1,4 +1,4 @@
-google-auth==1.12.0
+google-auth==2.15.0
 google-auth-oauthlib==0.4.1
 vcrpy
 pytest
