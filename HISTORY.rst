@@ -1,6 +1,12 @@
 Release History
 ===============
 
+6.1.2 (2024-05-17)
+------------------
+
+* add note about runnings tests to contrib guide by @alifeee in https://github.com/burnash/gspread/pull/1465
+* Some updates on `get_notes` by @nbwzx in https://github.com/burnash/gspread/pull/1461
+
 6.1.1 (2024-05-16)
 ------------------
 
