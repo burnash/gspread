@@ -2606,24 +2606,46 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def get_notes(self, default_empty_value: Optional[str] = None) -> List[List[str]]:
-        """Returns a list of lists containing all notes in the sheet, or the empty list if the
-        sheet does not have a note.
+    def get_notes(self, default_empty_value: Optional[str] = "") -> List[List[str]]:
+        """Returns a list of lists containing all notes in the sheet.
 
         .. note::
 
-            The resulting matrix is as long as the last row holding a note
-                (could be smaller than the last data row)
+            The resulting matrix is not necessarily square.
+            The matrix is as tall as the last row with a note,
+            and each row is only as long as the last column in that row with a note.
 
-            The resulting matrix is as large as the last column holding a note
-                (could be smaller than the last data column)
+
+            Please see the example below.
+            To ensure it is square, use `gspread.utils.fill_gaps`,
+            for example like `utils.fill_gaps(arr, len(arr), max(len(a) for a in arr), None)`
 
         :param str default_empty_value: (optional) Determines which value to use
             for cells without notes, defaults to None.
+
+        Examples::
+
+            # Note data:
+            #      A      B
+            # 1    A1     -
+            # 2    -      B2
+
+            # Read all notes from the sheet
+            >>> arr = worksheet.get_notes()
+            >>> print(arr)
+            [
+                ["A1"],
+                ["", "B2"]
+            ]
+            >>> print(gspread.utils.fill_gaps(arr, len(arr), max(len(a) for a in arr), None))
+            [
+                ["A1", ""],
+                ["", "B2"]
+            ]
         """
         params: ParamsType = {"fields": "sheets.data.rowData.values.note"}
         res = self.client.spreadsheets_get(self.spreadsheet_id, params)
-        data = res["sheets"][self.index]["data"][0].get("rowData", [])
+        data = res["sheets"][self.index]["data"][0].get("rowData", [{}])
         notes: List[List[str]] = []
         for row in data:
             notes.append([])
