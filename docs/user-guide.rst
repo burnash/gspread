@@ -390,7 +390,7 @@ Color the background of **A2:B2** cell range in black, change horizontal alignme
 The second argument to :meth:`~gspread.models.Worksheet.format` is a dictionary containing the fields to update. A full specification of format options is available at `CellFormat <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat>`_ in Sheet API Reference.
 
 .. Tip::
-    for more complex formating see :ref:`gspread-formating-label`.
+    for more complex formatting see :ref:`gspread-formating-label`.
 
 
 Using gspread with pandas

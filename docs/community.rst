@@ -15,7 +15,7 @@ provided by ``gspread``.
 Using gspread with pandas
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can find the bellow libraries to use gsrpead with pandas:
+You can find the below libraries to use gsrpead with pandas:
 
  * `gspread-pandas <https://github.com/aiguofer/gspread-pandas>`_
  * `gspread-dataframe <https://github.com/robin900/gspread-dataframe>`_
