@@ -6,6 +6,7 @@ This module contains Client class responsible for managing spreadsheet files
 
 """
 
+from datetime import datetime
 from http import HTTPStatus
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -38,6 +39,18 @@ class Client:
         http_client: HTTPClientType = HTTPClient,
     ) -> None:
         self.http_client = http_client(auth, session)
+
+    @property
+    def expiry(self) -> Optional[datetime]:
+        """Returns the expiry date of the curenlty loaded credentials
+
+        :returns: (optional) datetime the expiry date time object.
+
+        .. note::
+
+           It only applies to gspread client created using oauth
+        """
+        return self.http_client.auth.expiry
 
     def set_timeout(
         self, timeout: Optional[Union[float, Tuple[float, float]]] = None
