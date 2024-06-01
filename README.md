@@ -292,6 +292,8 @@ from gspread.utils import ValueRenderOption
 # Get formula from a cell
 >>> worksheet.get("C2:D2", value_render_option=ValueRenderOption.formula)
 [['=1/1024']]
+```
+
 ### Add data validation to a range
 
 ```python
@@ -315,7 +317,6 @@ worksheet.add_validation(
    'No',]
    showCustomUi=True
 )
-
 ```
 
 ## Documentation
