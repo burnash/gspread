@@ -503,3 +503,54 @@ class UtilsTest(unittest.TestCase):
                 # given key are unordered
                 # but they must match a value from the given input values
                 self.assertIn(record[key], values[i])
+
+    def test_find_table(self):
+        """Test find table function"""
+
+        values = [
+            ["A1", "B1", "C1", "D1"],
+            ["", "B2", "C2", "", "D2"],
+            ["", "B3", "C3", "", "D3"],
+            ["", "", "", "", "D4"],
+        ]
+
+        table = utils.find_table(
+            values,
+            "B2",
+            utils.TableDirection.table,
+        )
+        right = utils.find_table(
+            values,
+            "B2",
+            utils.TableDirection.right,
+        )
+        down = utils.find_table(
+            values,
+            "B2",
+            utils.TableDirection.down,
+        )
+        single = utils.find_table(values, "C3", utils.TableDirection.table)
+        no_values = utils.find_table(values, "A2", utils.TableDirection.table)
+
+        table_values = [
+            ["B2", "C2"],
+            ["B3", "C3"],
+        ]
+        for row in range(len(table)):
+            self.assertListEqual(table[row], table_values[row])
+
+        right_values = [
+            ["B2", "C2"],
+        ]
+        for row in range(len(right)):
+            self.assertListEqual(right[row], right_values[row])
+
+        bottom_values = [
+            ["B2"],
+            ["B3"],
+        ]
+        for row in range(len(down)):
+            self.assertListEqual(down[row], bottom_values[row])
+
+        self.assertEqual(single[0][0], "C3")
+        self.assertEqual(no_values, [])
