@@ -5,4 +5,4 @@ flake8==7.0.0
 isort==5.12.0
 mypy==1.10.0
 mypy-extensions==1.0.0
-typing_extensions==4.12.0
+typing_extensions==4.12.1
