@@ -40,7 +40,7 @@ class APIError(GSpreadException):
     such as when we attempt to retrieve things that don't exist."""
 
     def __init__(self, response: Response):
-        super().__init__(self._extract_error(response))
+        super().__init__(response)
         self.response: Response = response
         self.error: Mapping[str, Any] = response.json()["error"]
         self.code: int = self.error["code"]
