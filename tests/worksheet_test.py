@@ -1,5 +1,5 @@
 import itertools
-import pickle
+import pickle  # nosec
 import random
 import re
 from inspect import signature
@@ -1916,4 +1916,4 @@ class WorksheetTest(GspreadTest):
             sheet.update(values="X", range_name="A1")
 
         # Ensure that the exception is able to be pickled
-        pickle.loads(pickle.dumps(ex.exception))
+        pickle.loads(pickle.dumps(ex.exception))  # nosec
