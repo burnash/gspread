@@ -1,4 +1,5 @@
 import itertools
+import pickle
 import random
 import re
 from inspect import signature
@@ -1911,4 +1912,8 @@ class WorksheetTest(GspreadTest):
             {"spreadsheetId": self.spreadsheet.id, "replies": [{}]},
         )
 
-        self.assertRaises(APIError, sheet.update, values="X", range_name="A1")
+        with self.assertRaises(APIError) as ex:
+            sheet.update(values="X", range_name="A1")
+
+        # Ensure that the exception is able to be pickled
+        pickle.loads(pickle.dumps(ex.exception))
