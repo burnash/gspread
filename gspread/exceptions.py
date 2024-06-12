@@ -6,7 +6,7 @@ Exceptions used in gspread.
 
 """
 
-from typing import Any, Dict, Mapping, Optional, Union
+from typing import Any, Mapping
 
 from requests import Response
 
@@ -44,15 +44,6 @@ class APIError(GSpreadException):
         self.response: Response = response
         self.error: Mapping[str, Any] = response.json()["error"]
         self.code: int = self.error["code"]
-
-    def _extract_error(
-        self, response: Response
-    ) -> Optional[Dict[str, Union[int, str]]]:
-        try:
-            errors = response.json()
-            return dict(errors["error"])
-        except (AttributeError, KeyError, ValueError):
-            return None
 
     def __str__(self) -> str:
         return "{}: [{}]: {}".format(
