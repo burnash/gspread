@@ -92,12 +92,12 @@ class FlowCallable(Protocol):
 
     def __call__(
         self, client_config: Mapping[str, Any], scopes: Iterable[str], port: int = 0
-    ) -> Credentials: ...
+    ) -> OAuthCredentials: ...
 
 
 def local_server_flow(
     client_config: Mapping[str, Any], scopes: Iterable[str], port: int = 0
-) -> Credentials:
+) -> OAuthCredentials:
     """Run an OAuth flow using a local server strategy.
 
     Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_local_server <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_local_server>`_.
@@ -121,7 +121,7 @@ def load_credentials(
 
 
 def store_credentials(
-    creds: Credentials,
+    creds: OAuthCredentials,
     filename: Path = DEFAULT_AUTHORIZED_USER_FILENAME,
     strip: str = "token",
 ) -> None:
@@ -282,7 +282,6 @@ def oauth_from_dict(
     :rtype: (:class:`gspread.client.Client`, str)
     """
 
-    creds: Credentials = None
     if authorized_user_info is not None:
         creds = OAuthCredentials.from_authorized_user_info(authorized_user_info, scopes)
 
