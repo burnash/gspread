@@ -1,8 +1,12 @@
 import time
+from typing import Generator
 
 import pytest
+from pytest import FixtureRequest
 
 import gspread
+from gspread.client import Client
+from gspread.spreadsheet import Spreadsheet
 
 from .conftest import GspreadTest
 
@@ -10,8 +14,13 @@ from .conftest import GspreadTest
 class ClientTest(GspreadTest):
     """Test for gspread.client."""
 
+    gc: Client
+    spreadsheet: Spreadsheet
+
     @pytest.fixture(scope="function", autouse=True)
-    def init(self, client, request):
+    def init(
+        self: "ClientTest", client: Client, request: FixtureRequest
+    ) -> Generator[None, None, None]:
         ClientTest.gc = client
         name = self.get_temporary_spreadsheet_title(request.node.name)
         ClientTest.spreadsheet = client.create(name)

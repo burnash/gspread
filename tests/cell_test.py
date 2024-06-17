@@ -1,6 +1,12 @@
+from typing import Generator
+
 import pytest
+from pytest import FixtureRequest
 
 import gspread
+from gspread.client import Client
+from gspread.spreadsheet import Spreadsheet
+from gspread.worksheet import Worksheet
 
 from .conftest import GspreadTest
 
@@ -8,8 +14,13 @@ from .conftest import GspreadTest
 class CellTest(GspreadTest):
     """Test for gspread.Cell."""
 
+    spreadsheet: Spreadsheet
+    sheet: Worksheet
+
     @pytest.fixture(scope="function", autouse=True)
-    def init(self, client, request):
+    def init(
+        self: "CellTest", client: Client, request: FixtureRequest
+    ) -> Generator[None, None, None]:
         # User current test name in spreadsheet name
         name = self.get_temporary_spreadsheet_title(request.node.name)
         CellTest.spreadsheet = client.create(name)
@@ -70,7 +81,12 @@ class CellTest(GspreadTest):
         cell = self.sheet.cell(4, 4)
         self.assertEqual(cell.address, "D4")
         self.sheet.update_acell("B1", "Dummy")
-        cell = self.sheet.find("Dummy")
+        result = self.sheet.find("Dummy")
+        if result is None:
+            self.fail("did not find cell with matching text 'Dummy'")
+        else:
+            cell = result
+
         self.assertEqual(cell.address, "B1")
         self.assertEqual(cell.value, "Dummy")
         cell = gspread.cell.Cell(1, 2, "Foo Bar")
