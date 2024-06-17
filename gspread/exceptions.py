@@ -40,9 +40,10 @@ class APIError(GSpreadException):
     such as when we attempt to retrieve things that don't exist."""
 
     def __init__(self, response: Response):
-        super().__init__(response)
+        error = dict(response.json()["error"])
+        super().__init__(error)
         self.response: Response = response
-        self.error: Mapping[str, Any] = response.json()["error"]
+        self.error: Mapping[str, Any] = error
         self.code: int = self.error["code"]
 
     def __str__(self) -> str:
@@ -52,6 +53,9 @@ class APIError(GSpreadException):
 
     def __repr__(self) -> str:
         return self.__str__()
+
+    def __reduce__(self) -> tuple:
+        return self.__class__, (self.response,)
 
 
 class SpreadsheetNotFound(GSpreadException):
