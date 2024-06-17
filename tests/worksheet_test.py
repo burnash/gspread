@@ -1915,5 +1915,7 @@ class WorksheetTest(GspreadTest):
         with self.assertRaises(APIError) as ex:
             sheet.update(values="X", range_name="A1")
 
-        # Ensure that the exception is able to be pickled
-        pickle.loads(pickle.dumps(ex.exception))  # nosec
+        # Ensure that the exception is able to be pickled and unpickled
+        # Further ensure we are able to access the exception's properties after pickling
+        reloaded_exception = pickle.loads(pickle.dumps(ex.exception))  # nosec
+        self.assertEqual(reloaded_exception.args[0]["status"], "INVALID_ARGUMENT")
