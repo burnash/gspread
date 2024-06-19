@@ -69,3 +69,14 @@ Using ``Authlib`` instead of ``google-auth``. Similar to `google.auth.transport.
 
     # Fetch a cell range
     cell_list = wks.range('A1:B7')
+
+
+
+
+Object Relational Mappers (ORMs)
+---------------------
+
+gspread-models
+~~~~~~~~~~~~~~~~~~~
+
+The `gspread-models <https://github.com/s2t2/gspread-models-py>` package provides a straightforward and intuitive model-based query interface, making it easy to interact with Google Sheets as if it were more like a database.
