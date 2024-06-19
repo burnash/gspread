@@ -2,12 +2,17 @@ import itertools
 import random
 import re
 from inspect import signature
+from typing import Generator
 
 import pytest
+from pytest import FixtureRequest
 
 import gspread
 from gspread import utils
+from gspread.client import Client
 from gspread.exceptions import APIError, GSpreadException
+from gspread.spreadsheet import Spreadsheet
+from gspread.worksheet import Worksheet
 
 from .conftest import I18N_STR, GspreadTest
 
@@ -15,13 +20,16 @@ from .conftest import I18N_STR, GspreadTest
 class WorksheetTest(GspreadTest):
     """Test for gspread.Worksheet."""
 
+    spreadsheet: Spreadsheet
+    sheet: Worksheet
+
     @pytest.fixture(scope="function", autouse=True)
-    def init(self, client, request):
+    def init(
+        self: "WorksheetTest", client: Client, request: FixtureRequest
+    ) -> Generator[None, None, None]:
         name = self.get_temporary_spreadsheet_title(request.node.name)
         WorksheetTest.spreadsheet = client.create(name)
-        WorksheetTest.sheet: gspread.worksheet.Worksheet = (
-            WorksheetTest.spreadsheet.sheet1
-        )
+        WorksheetTest.sheet = WorksheetTest.spreadsheet.sheet1
 
         yield
 

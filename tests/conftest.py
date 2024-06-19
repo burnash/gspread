@@ -1,9 +1,10 @@
 import itertools
 import os
 import unittest
-from typing import Any
+from typing import Any, Dict, Generator, Optional
 
 import pytest
+from google.auth.credentials import Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from requests import Response
@@ -26,21 +27,23 @@ DUMMY_ACCESS_TOKEN = "<ACCESS_TOKEN>"
 I18N_STR = "Iñtërnâtiônàlizætiøn"  # .encode('utf8')
 
 
-def read_credentials(filename):
+def read_credentials(filename: str) -> Credentials:
     return ServiceAccountCredentials.from_service_account_file(filename, scopes=SCOPE)
 
 
-def prefixed_counter(prefix, start=1):
+def prefixed_counter(prefix: str, start: int = 1) -> Generator[str, None, None]:
     c = itertools.count(start)
     for value in c:
         yield "{} {}".format(prefix, value)
 
 
-def get_method_name(self_id):
+def get_method_name(self_id: str) -> str:
     return self_id.split(".")[-1]
 
 
-def ignore_retry_requests(response):
+def ignore_retry_requests(
+    response: Dict[str, Dict[str, int]]
+) -> Optional[Dict[str, Dict[str, int]]]:
     SKIP_RECORD = [408, 429]
     if response["status"]["code"] in SKIP_RECORD:
         return None  # do not record
@@ -72,14 +75,14 @@ class DummyCredentials(UserCredentials):
 
 class GspreadTest(unittest.TestCase):
     @classmethod
-    def get_temporary_spreadsheet_title(cls, suffix=""):
+    def get_temporary_spreadsheet_title(cls, suffix: str = "") -> str:
         return "Test {} {}".format(cls.__name__, suffix)
 
     @classmethod
-    def get_cassette_name(cls):
+    def get_cassette_name(cls) -> str:
         return cls.__name__
 
-    def _sequence_generator(self):
+    def _sequence_generator(self) -> Generator[str, None, None]:
         return prefixed_counter(get_method_name(self.id()))
 
 
@@ -105,8 +108,8 @@ https://github.com/burnash/gspread/blob/master/.github/CONTRIBUTING.md
 
 
 @pytest.fixture(scope="module")
-def client():
-    if CREDS_FILENAME:
+def client() -> Client:
+    if CREDS_FILENAME is not None:
         auth_credentials = read_credentials(CREDS_FILENAME)
     else:
         auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
