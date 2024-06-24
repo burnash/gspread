@@ -2609,7 +2609,7 @@ class Worksheet:
     def get_notes(
         self, default_empty_value: Optional[str] = "", range: Optional[str] = None
     ) -> List[List[str]]:
-        """Returns a list of lists containing all notes in the sheet.
+        """Returns a list of lists containing all notes in the sheet or range.
 
         .. note::
 
