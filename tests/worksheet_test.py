@@ -1631,6 +1631,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_notes(self):
         w = self.spreadsheet.worksheets()[0]
+        w2 = self.spreadsheet.add_worksheet("worksheet 2", 3, 3)
         notes = {
             "A1": "read my note",
             "B2": "Or don't",
@@ -1650,9 +1651,12 @@ class WorksheetTest(GspreadTest):
         empty_notes = w.get_notes()
 
         w.insert_notes(notes)
+        w2.insert_notes(notes)
 
         all_notes = w.get_notes()
-        range_notes = w.get_notes(range="A2:C3")
+        w2.get_notes()
+        range_notes = w.get_notes(grid_range="A2:C3")
+        w2.get_notes(grid_range="A2:C3")
 
         self.assertEqual(empty_notes, [[]])
         self.assertEqual(all_notes, expected_notes)
