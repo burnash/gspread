@@ -2657,7 +2657,7 @@ class Worksheet:
         if grid_range is not None:
             params["ranges"] = absolute_range_name(self.title, grid_range)
         res = self.client.spreadsheets_get(self.spreadsheet_id, params)
-        data = res["sheets"][self.index]["data"][0].get("rowData", [{}])
+        data = res["sheets"][0]["data"][0].get("rowData", [{}])
         notes: List[List[str]] = []
         for row in data:
             notes.append([])
