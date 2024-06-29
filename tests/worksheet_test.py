@@ -1631,10 +1631,21 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_notes(self):
         w = self.spreadsheet.worksheets()[0]
-        notes = {"A1": "read my note", "B2": "Or don't"}
-        notes_array = [
-            [notes["A1"]],
-            ["", notes["B2"]],
+        notes = {
+            "A1": "read my note",
+            "B2": "Or don't",
+            "A3": "another note",
+            "C3": "test",
+        }
+        expected_notes = [
+            ["read my note"],
+            ["", "Or don't"],
+            ["another note", "", "test"],
+        ]
+
+        expected_range_notes = [
+            ["", "Or don't"],
+            ["another note", "", "test"],
         ]
 
         empty_notes = w.get_notes()
@@ -1642,9 +1653,42 @@ class WorksheetTest(GspreadTest):
         w.insert_notes(notes)
 
         all_notes = w.get_notes()
+        range_notes = w.get_notes(grid_range="A2:C3")
 
         self.assertEqual(empty_notes, [[]])
-        self.assertEqual(all_notes, notes_array)
+        self.assertEqual(all_notes, expected_notes)
+        self.assertEqual(range_notes, expected_range_notes)
+
+    @pytest.mark.vcr()
+    def test_get_notes_2nd_sheet(self):
+        self.spreadsheet.worksheets()[0]
+        w2 = self.spreadsheet.add_worksheet("worksheet 2", 3, 3)
+
+        notes = {
+            "A1": "the first time",
+            "B3": "two sheets",
+        }
+
+        expected_notes = [
+            ["the first time"],
+            [],
+            ["", "two sheets"],
+        ]
+        expected_range_notes = [
+            [],
+            ["", "two sheets"],
+        ]
+
+        empty_notes = w2.get_notes()
+
+        w2.insert_notes(notes)
+
+        all_notes = w2.get_notes()
+        range_notes = w2.get_notes(grid_range="A2:C3")
+
+        self.assertEqual(empty_notes, [[]])
+        self.assertEqual(all_notes, expected_notes)
+        self.assertEqual(range_notes, expected_range_notes)
 
     @pytest.mark.vcr()
     def test_batch_clear(self):
