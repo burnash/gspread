@@ -504,9 +504,8 @@ class UtilsTest(unittest.TestCase):
                 # but they must match a value from the given input values
                 self.assertIn(record[key], values[i])
 
-    def test_find_table(self):
-        """Test find table function"""
-
+    def test_find_table_simple(self):
+        """Test find table with basic case"""
         values = [
             ["A1", "B1", "C1", "D1"],
             ["", "B2", "C2", "", "D2"],
@@ -536,21 +535,111 @@ class UtilsTest(unittest.TestCase):
             ["B2", "C2"],
             ["B3", "C3"],
         ]
-        for row in range(len(table)):
-            self.assertListEqual(table[row], table_values[row])
+        for rowindex, row in enumerate(table):
+            self.assertListEqual(row, table_values[rowindex])
 
         right_values = [
             ["B2", "C2"],
         ]
-        for row in range(len(right)):
-            self.assertListEqual(right[row], right_values[row])
+        for rowindex, row in enumerate(right):
+            self.assertListEqual(row, right_values[rowindex])
 
         bottom_values = [
             ["B2"],
             ["B3"],
         ]
-        for row in range(len(down)):
-            self.assertListEqual(down[row], bottom_values[row])
+        for rowindex, row in enumerate(down):
+            self.assertListEqual(row, bottom_values[rowindex])
 
         self.assertEqual(single[0][0], "C3")
         self.assertEqual(no_values, [])
+
+    def test_find_table_header_gap(self):
+        """Test find table with gap in header"""
+        values = [
+            ["A1", "", "C1", ""],
+            ["A2", "B2", "C2", ""],
+            ["A3", "B3", "C3", ""],
+            ["", "", "", ""],
+        ]
+        expected_table = [
+            ["A1"],
+            ["A2"],
+            ["A3"],
+        ]
+
+        table = utils.find_table(
+            values,
+            "A1",
+            utils.TableDirection.table,
+        )
+
+        for rowindex, row in enumerate(table):
+            self.assertListEqual(row, expected_table[rowindex])
+
+    def test_find_table_empty_first_cell(self):
+        """Test find table with first cell empty"""
+        values = [
+            ["", "B1", "C1", ""],
+            ["A2", "B2", "C2", ""],
+            ["A3", "B3", "C3", ""],
+            ["", "", "", ""],
+        ]
+        expected_table = [
+            ["", "B1", "C1"],
+            ["A2", "B2", "C2"],
+            ["A3", "B3", "C3"],
+        ]
+
+        table = utils.find_table(
+            values,
+            "A1",
+            utils.TableDirection.table,
+        )
+
+        for rowindex, row in enumerate(table):
+            self.assertListEqual(row, expected_table[rowindex])
+
+    def test_find_table_first_column_gap(self):
+        """Test find table with a gap in first column"""
+        values = [
+            ["A1", "B1", "C1", ""],
+            ["", "B2", "C2", ""],
+            ["A3", "B3", "C3", ""],
+            ["", "", "", ""],
+        ]
+        expected_table = [
+            ["A1", "B1", "C1"],
+            ["", "B2", "C2"],
+            ["A3", "B3", "C3"],
+        ]
+
+        table = utils.find_table(
+            values,
+            "A1",
+            utils.TableDirection.table,
+        )
+
+        for rowindex, row in enumerate(table):
+            self.assertListEqual(row, expected_table[rowindex])
+
+    def test_find_table_last_column_gap(self):
+        """Test find table with a gap in last column"""
+        values = [
+            ["A1", "B1", "C1", ""],
+            ["A2", "B2", "", ""],
+            ["A3", "B3", "C3", ""],
+            ["", "", "", ""],
+        ]
+        expected_table = [
+            ["A1", "B1", "C1"],
+        ]
+
+        table = utils.find_table(
+            values,
+            "A1",
+            utils.TableDirection.table,
+        )
+
+        for rowindex, row in enumerate(table):
+            self.assertListEqual(row, expected_table[rowindex])
