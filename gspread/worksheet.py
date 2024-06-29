@@ -2653,10 +2653,18 @@ class Worksheet:
                 ["", "B2"]
             ]
         """
-        params: ParamsType = {"fields": "sheets.data.rowData.values.note"}
-        if grid_range is not None:
-            params["ranges"] = absolute_range_name(self.title, grid_range)
+        params: ParamsType = {
+            "fields": "sheets.data.rowData.values.note",
+            "ranges": (
+                self.title
+                if grid_range is None
+                else absolute_range_name(self.title, grid_range)
+            ),
+        }
+
         res = self.client.spreadsheets_get(self.spreadsheet_id, params)
+
+        # access 0th sheet because we specified a sheet with params["ranges"] above
         data = res["sheets"][0]["data"][0].get("rowData", [{}])
         notes: List[List[str]] = []
         for row in data:
