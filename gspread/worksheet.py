@@ -2655,11 +2655,7 @@ class Worksheet:
         """
         params: ParamsType = {
             "fields": "sheets.data.rowData.values.note",
-            "ranges": (
-                self.title
-                if grid_range is None
-                else absolute_range_name(self.title, grid_range)
-            ),
+            "ranges": absolute_range_name(self.title, grid_range),
         }
 
         res = self.client.spreadsheets_get(self.spreadsheet_id, params)
