@@ -6,13 +6,11 @@
 - Make sure unit tests pass. Please read how to run unit tests [below](#run-tests-offline).
 
 - If you are fixing a bug:
-
   - If you are resolving an existing issue, reference the issue ID in a commit message `(e.g., fixed #XXXX)`.
   - If the issue has not been reported, please add a detailed description of the bug in the Pull Request (PR).
   - Please add a regression test case to check the bug is fixed.
 
 - If you are adding a new feature:
-
   - Please open a suggestion issue first.
   - Provide a convincing reason to add this feature and have it greenlighted before working on it.
   - Add tests to cover the functionality.
@@ -112,7 +110,7 @@ In the following cases, you must record new HTTP requests:
 - an existing test is updated and does a new HTTP request
 - gspread is updated and does a new HTTP request
 
-### Run test, capturing _all_ HTTP requests
+### Run test, capturing *all* HTTP requests
 
 In some cases if the test suite can't record new episodes, or it can't replay them offline, you can run a complete update of the cassettes.
 
@@ -120,15 +118,15 @@ In some cases if the test suite can't record new episodes, or it can't replay th
 GS_CREDS_FILENAME=<./YOUR_CREDS.json> GS_RECORD_MODE=all tox -e py
 ```
 
-### Run test, capturing _only new_ HTTP requests
+### Run test, capturing *only new* HTTP requests
 
 To record new HTTP requests:
 
 1. Remove the file holding the recorded HTTP requests of the test(s).
-   e.g.,
-   1. for the file `tests/cell_test.py`:
-   2. for the test `test_a1_value`
-   3. remove the file `tests/cassettes/CellTest.test_a1_value.json`
+  e.g.,
+     1. for the file `tests/cell_test.py`:
+     2. for the test `test_a1_value`
+     3. remove the file `tests/cassettes/CellTest.test_a1_value.json`
 1. Run the tests with `GS_RECORD_MODE=new_episodes`.
 
 ```bash
