@@ -3350,31 +3350,31 @@ class Worksheet:
 
         * ``TableDirection.right``: expands right until the first empty cell
         * ``TableDirection.down``: expands down until the first empty cell
-        * ``TableDirection.table``: expands right until the first empty cell, then down until the first empty cell
+        * ``TableDirection.table``: expands right until the first empty cell and down until the first empty cell
 
-        Regardless of the direction this function always returns a matrix of data, even if it has
-        only one column.
+        In case of empty result an empty list is restuned.
+
+        When the given ``start_range`` is outside the given matrix of values the exception
+        `~gspread.exceptions.InvalidInputValue` is raised.
 
         Example::
 
             values = [
-                ['', '',   '',   ''  , ''  , ''],
-                ['', 'B2', 'C2', 'D2', ''  , 'F2'],
-                ['', 'B3', ''  , 'D3', ''  , 'F3'],
-                ['', 'B4', 'C4', 'D4', ''  , 'F4'],
-                ['', ''  , ''  , ''  , ''  , 'F5'],
+                ['', '',   '',   '', ''  ],
+                ['', 'B2', 'C2', '', 'E2'],
+                ['', 'B3', 'C3', '', 'E3'],
+                ['', ''  , ''  , '', 'E4'],
             ]
-            >>> worksheet.expand_table(TableDirection.table, 'B2')
+            >>> utils.find_table(TableDirection.table, 'B2')
             [
-                ['B2', 'C2', 'D2],
-                ['B3', ''  , 'D3'],
-                ['B4', 'C4', 'D4'],
+                ['B2', 'C2'],
+                ['B3', 'C3'],
             ]
 
 
         .. note::
 
-            the ``TableDirection.table`` will first look right, then look down.
+            the ``TableDirection.table`` will look right from starting cell then look down from starting cell.
             It will not check cells located inside the table. This could lead to
             potential empty values located in the middle of the table.
 

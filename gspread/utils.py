@@ -986,49 +986,37 @@ def to_records(
 
 
 def _expand_right(values: List[List[str]], start: int, end: int, row: int) -> int:
-    """This is a private function, returning the column index of the first empty cell
+    """This is a private function, returning the column index of the last non empty cell
     on the given row.
 
     Search starts from ``start`` index column.
     Search ends on ``end`` index column.
     Searches only in the row pointed by ``row``.
-
-    If no empty value is found, it will return the given ``end`` index.
     """
-    for column in range(start, end):
-        # in case the given row is smaller that what is being asked
-        if column >= len(values[row]):
-            return len(values[row]) - 1
-
-        if values[row][column] == "":
-            return column
-
-    return end
+    try:
+        return values[row].index("", start, end) - 1
+    except ValueError:
+        return end
 
 
 def _expand_bottom(values: List[List[str]], start: int, end: int, col: int) -> int:
-    """This is a private function, returning the row index of the first empty cell
+    """This is a private function, returning the row index of the last non empty cell
     on the given column.
 
     Search starts from ``start`` index row.
     Search ends on ``end`` index row.
     Searches only in the column pointed by ``col``.
-
-    If no empty value is found, it will return the given ``end`` index.
     """
     for rows in range(start, end):
         # in case we try to look further than last row
         if rows >= len(values):
             return len(values) - 1
 
-        # this row is smaller than the others, just keep looking
-        if col >= len(values[rows]):
-            continue
+        # check if cell is empty (or the row => empty cell)
+        if col >= len(values[rows]) or values[rows][col] == "":
+            return rows - 1
 
-        if values[rows][col] == "":
-            return rows
-
-    return end
+    return end - 1
 
 
 def find_table(
@@ -1042,10 +1030,12 @@ def find_table(
 
         * ``TableDirection.right``: expands right until the first empty cell
         * ``TableDirection.down``: expands down until the first empty cell
-        * ``TableDirection.table``: expands right until the first empty cell, then down until the first empty cell
+        * ``TableDirection.table``: expands right until the first empty cell and down until first empty cell
 
-    Regardless of the direction this function always returns a matrix of data, even if it has
-    only one column.
+    In case of empty result an empty list is restuned.
+
+    When the given ``start_range`` is outside the given matrix of values the exception
+    `~gspread.exceptions.InvalidInputValue` is raised.
 
     Example::
 
@@ -1064,7 +1054,7 @@ def find_table(
 
     .. note::
 
-       the ``TableDirection.table`` will first look right, then look down.
+       the ``TableDirection.table`` will look right from starting cell then look down from starting cell.
        It will not check cells located inside the table. This could lead to
        potential empty values located in the middle of the table.
 
@@ -1083,28 +1073,37 @@ def find_table(
     row -= 1
     col -= 1
 
+    if row >= len(values):
+        raise InvalidInputValue(
+            "given row for start_range is outside given values: start range row ({}) >= rows in values {}".format(
+                row, len(values)
+            )
+        )
+
+    if col >= len(values[row]):
+        raise InvalidInputValue(
+            "given column for start_range is outside given values: start range column ({}) >= columns in values {}".format(
+                col, len(values[row])
+            )
+        )
+
     if direction == TableDirection.down:
-        rightMost = col + 1
+        rightMost = col
         bottomMost = _expand_bottom(values, row, len(values), col)
 
     if direction == TableDirection.right:
+        bottomMost = row
         rightMost = _expand_right(values, col, len(values[row]), row)
-        bottomMost = row + 1
 
     if direction == TableDirection.table:
         rightMost = _expand_right(values, col, len(values[row]), row)
-
-        checkColumn = rightMost
-        if checkColumn != 0:
-            checkColumn -= 1
-
-        bottomMost = _expand_bottom(values, row, len(values), checkColumn)
+        bottomMost = _expand_bottom(values, row, len(values), col)
 
     result = []
 
     # build resulting array
-    for rows in values[row:bottomMost]:
-        result.append(rows[col:rightMost])
+    for rows in values[row : bottomMost + 1]:
+        result.append(rows[col : rightMost + 1])
 
     return result
 
