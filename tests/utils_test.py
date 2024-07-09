@@ -508,9 +508,9 @@ class UtilsTest(unittest.TestCase):
         """Test find table with basic case"""
         values = [
             ["A1", "B1", "C1", "D1"],
-            ["", "B2", "C2", "", "D2"],
-            ["", "B3", "C3", "", "D3"],
-            ["", "", "", "", "D4"],
+            ["", "B2", "C2", "", "E2"],
+            ["", "B3", "C3", "D3", "E3"],
+            ["A4", "", "C4", "D4", "E4"],
         ]
 
         table = utils.find_table(
@@ -610,8 +610,6 @@ class UtilsTest(unittest.TestCase):
         ]
         expected_table = [
             ["A1", "B1", "C1"],
-            ["", "B2", "C2"],
-            ["A3", "B3", "C3"],
         ]
 
         table = utils.find_table(
@@ -633,6 +631,8 @@ class UtilsTest(unittest.TestCase):
         ]
         expected_table = [
             ["A1", "B1", "C1"],
+            ["A2", "B2", ""],
+            ["A3", "B3", "C3"],
         ]
 
         table = utils.find_table(
