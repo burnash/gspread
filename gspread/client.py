@@ -250,6 +250,33 @@ class Client:
 
         return self.http_client.export(file_id=file_id, format=format)
 
+    def export_worksheet(self, file_id, sheet_id: str, format: str = ExportFormat.PDF) -> bytes:
+        """Export the spreadsheet in the given format.
+
+                :param str file_id: The key of the spreadsheet to export
+
+                :param str sheet_id: The key of the worksheet to export
+
+                :param str format: The format of the resulting file.
+                    Possible values are:
+
+                        * ``ExportFormat.PDF``
+                        * ``ExportFormat.EXCEL``
+                        * ``ExportFormat.CSV``
+                        * ``ExportFormat.OPEN_OFFICE_SHEET``
+                        * ``ExportFormat.TSV``
+                        * ``ExportFormat.ZIPPED_HTML``
+
+                    See `ExportFormat`_ in the Drive API.
+
+                :type format: :class:`~gspread.utils.ExportFormat`
+
+                :returns bytes: The content of the exported file.
+
+                .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
+                """
+        return self.http_client.export_worksheet(file_id, sheet_id, format)
+
     def copy(
         self,
         file_id: str,

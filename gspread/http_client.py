@@ -39,6 +39,7 @@ from .urls import (
     SPREADSHEET_VALUES_BATCH_URL,
     SPREADSHEET_VALUES_CLEAR_URL,
     SPREADSHEET_VALUES_URL,
+    SPREADSHEET_DRIVE_URL,
 )
 from .utils import ExportFormat, convert_credentials, quote
 
@@ -352,6 +353,57 @@ class HTTPClient:
             raise UnSupportedExportFormat
 
         url = "{}/{}/export".format(DRIVE_FILES_API_V3_URL, file_id)
+
+        params: ParamsType = {"mimeType": format}
+
+        r = self.request("get", url, params=params)
+        return r.content
+
+    def export_worksheet(self, file_id, sheet_id: str, format: str = ExportFormat.PDF) -> bytes:
+        """Export the worksheet in the given format.
+
+        :param str file_id: The key of the spreadsheet to export
+
+        :param str sheet_id: The key of the worksheet to export
+
+        :param str format: The format of the resulting file.
+            Possible values are:
+
+                * ``ExportFormat.PDF``
+                * ``ExportFormat.EXCEL``
+                * ``ExportFormat.CSV``
+                * ``ExportFormat.OPEN_OFFICE_SHEET``
+                * ``ExportFormat.TSV``
+                * ``ExportFormat.ZIPPED_HTML``
+
+            See `ExportFormat`_ in the Drive API.
+
+        :type format: :class:`~gspread.utils.ExportFormat`
+
+        :returns bytes: The content of the exported file.
+
+        .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
+        """
+
+        if format not in ExportFormat:
+            raise UnSupportedExportFormat
+
+        if format not in ExportFormat:
+            raise UnSupportedExportFormat
+
+        format_str = "pdf"
+        if format == ExportFormat.PDF:
+            format_str = "pdf"
+        elif format == ExportFormat.CSV:
+            format_str = "csv"
+        elif format == ExportFormat.ZIPPED_HTML:
+            format_str = "zip"
+        elif format == ExportFormat.EXCEL:
+            format_str = "xlsx"
+        elif format == ExportFormat.TSV:
+            format_str = "tsv"
+
+        url = "{}/export?gid={}&format={}".format(SPREADSHEET_DRIVE_URL % file_id, sheet_id, format_str)
 
         params: ParamsType = {"mimeType": format}
 
