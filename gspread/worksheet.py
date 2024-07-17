@@ -199,6 +199,17 @@ class Worksheet:
         # kept for backward compatibility - publicly available
         # do not use if possible.
         self._spreadsheet = spreadsheet
+        self._column_headers = []
+
+    @property
+    def column_headers(self) -> List[str]:
+        if not self._column_headers:
+            self._column_headers = self.row_values(1)
+        return self._column_headers
+
+    @column_headers.setter
+    def column_headers(self, value: List[str]) -> None:
+        self._column_headers = value
 
     def __repr__(self) -> str:
         return "<{} {} id:{}>".format(
