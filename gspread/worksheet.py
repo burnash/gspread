@@ -579,6 +579,7 @@ class Worksheet:
             return []
 
         keys = entire_sheet[head - 1]
+        self.column_headers = keys
         values = entire_sheet[head:]
 
         if expected_headers is None:
@@ -618,6 +619,20 @@ class Worksheet:
             ]
 
         return to_records(keys, values)
+
+    def set_records(self, rows: List[Dict[str, Any]]) -> None:
+        cols = self.column_headers
+        insert_rows = []
+        for row in rows:
+            insert_row = []
+            for col in cols:
+                insert_row.append(row[col])
+            insert_rows.append(insert_row)
+
+        self.update(insert_rows)
+
+    def set_record(self, row: Dict[str, Any]) -> None:
+        self.set_records([row])
 
     def get_all_cells(self) -> List[Cell]:
         """Returns a list of all `Cell` of the current sheet."""
