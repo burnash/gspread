@@ -388,9 +388,6 @@ class HTTPClient:
         if format not in ExportFormat:
             raise UnSupportedExportFormat
 
-        if format not in ExportFormat:
-            raise UnSupportedExportFormat
-
         format_str = "pdf"
         if format == ExportFormat.PDF:
             format_str = "pdf"
