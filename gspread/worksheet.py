@@ -629,7 +629,7 @@ class Worksheet:
                 insert_row.append(row[col])
             insert_rows.append(insert_row)
 
-        self.update(insert_rows)
+        self.insert_rows(insert_rows, row=self.row_count + 1)
 
     def set_record(self, row: Dict[str, Any]) -> None:
         self.set_records([row])
