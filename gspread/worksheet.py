@@ -31,7 +31,7 @@ from typing import (
 from .cell import Cell
 from .exceptions import GSpreadException
 from .http_client import HTTPClient, ParamsType
-from .urls import WORKSHEET_DRIVE_URL
+from .urls import WORKSHEET_DRIVE_URL, SPREADSHEET_VALUES_APPEND_URL
 from .utils import (
     DateTimeOption,
     Dimension,
@@ -629,7 +629,10 @@ class Worksheet:
                 insert_row.append(row[col])
             insert_rows.append(insert_row)
 
-        self.insert_rows(insert_rows, row=self.row_count + 1)
+        self.append_rows(
+            insert_rows,
+            value_input_option=ValueInputOption.user_entered,
+        )
 
     def set_record(self, row: Dict[str, Any]) -> None:
         self.set_records([row])
