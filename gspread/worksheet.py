@@ -626,6 +626,15 @@ class Worksheet:
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
     ) -> None:
+        """Update the sheet via records(list of dicts). The keys for the dicts must be the headers for the column.
+
+        Missing columns are filled with `default blank` in the row.
+
+        Keyword arguments:
+        argument -- description
+        Return: return_description
+        """
+
         cols = self.column_headers
         insert_rows = []
         for row in rows:
