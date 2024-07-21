@@ -1757,20 +1757,28 @@ class WorksheetTest(GspreadTest):
         w = self.spreadsheet.sheet1
         values = [["name", "age"], ["jean", 44]]
         w.update(values, "A1:B2")
-        self.assertEqual(w.get_all_values(), values)
+        self.assertEqual(
+            w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
+            values,
+        )
         update_values = [{"name": "john", "age": 11}, {"name": "abdullah"}]
         w.set_records(update_values)
         values = [*values, ["john", 11], ["abdullah", ""]]
-        self.assertEqual(w.get_all_values(), values)
-        with self.assertRaises(GSpreadException) as ar:
+        self.assertEqual(
+            w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
+            values,
+        )
+        with pytest.raises(GSpreadException):
             w.set_record({"name": "lin", "location": "helsinki"})
 
-        self.assertEqual(ar.exception, GSpreadException)
         w.set_record(
             {"name": "juanita", "status": "active", "age": 33},
             ignore_extra_headers=True,
         )
-        self.assertEqual(w.get_all_values(), [*values, ["juanita", 33]])
+        self.assertEqual(
+            w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
+            [*values, ["juanita", 33]],
+        )
 
     @pytest.mark.vcr()
     def test_group_columns(self):
