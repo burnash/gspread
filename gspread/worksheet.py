@@ -620,13 +620,21 @@ class Worksheet:
 
         return to_records(keys, values)
 
-    def set_records(self, rows: List[Dict[str, Any]]) -> None:
+    def set_records(
+        self,
+        rows: List[Dict[str, Any]],
+        ignore_extra_headers: bool = False,
+        default_blank: Any = "",
+    ) -> None:
         cols = self.column_headers
         insert_rows = []
         for row in rows:
+            if set(row.keys()).issubset(set(cols)) and not ignore_extra_headers:
+                raise GSpreadException("Extra headers found in the data set")
+
             insert_row = []
             for col in cols:
-                insert_row.append(row[col])
+                insert_row.append(row.get(col, default_blank))
             insert_rows.append(insert_row)
 
         self.append_rows(
@@ -634,8 +642,17 @@ class Worksheet:
             value_input_option=ValueInputOption.user_entered,
         )
 
-    def set_record(self, row: Dict[str, Any]) -> None:
-        self.set_records([row])
+    def set_record(
+        self,
+        row: Dict[str, Any],
+        ignore_extra_headers: bool = False,
+        default_blank: Any = "",
+    ) -> None:
+        self.set_records(
+            [row],
+            ignore_extra_headers=ignore_extra_headers,
+            default_blank=default_blank,
+        )
 
     def get_all_cells(self) -> List[Cell]:
         """Returns a list of all `Cell` of the current sheet."""
