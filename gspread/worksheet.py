@@ -629,7 +629,7 @@ class Worksheet:
         cols = self.column_headers
         insert_rows = []
         for row in rows:
-            if set(row.keys()).issubset(set(cols)) and not ignore_extra_headers:
+            if set(row).issubset(set(cols)) and not ignore_extra_headers:
                 raise GSpreadException("Extra headers found in the data set")
 
             insert_row = []
