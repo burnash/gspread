@@ -1755,29 +1755,46 @@ class WorksheetTest(GspreadTest):
     def test_set_records(self):
 
         w = self.spreadsheet.sheet1
-        values = [["name", "age"], ["jean", 44]]
+        values = [
+            ["header1", "header2"],
+            ["value1", "value2"],
+        ]
         w.update(values, "A1:B2")
         self.assertEqual(
             w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
             values,
         )
-        update_values = [{"name": "john", "age": 11}, {"name": "abdullah"}]
+        update_values = [
+            {"header1": "new value1", "header2": "new value2"},
+            {"header1": "new value3"},
+        ]
         w.set_records(update_values)
-        values = [*values, ["john", 11], ["abdullah", ""]]
+        new_values = [
+            *values,
+            ["new value1", "new value2"],
+            ["new value3", ""],
+        ]
         self.assertEqual(
             w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
-            values,
+            new_values,
         )
         with pytest.raises(GSpreadException):
-            w.set_record({"name": "lin", "location": "helsinki"})
+            w.set_record({"header1": "error value1", "location": "error value2"})
 
         w.set_record(
-            {"name": "juanita", "status": "active", "age": 33},
+            {
+                "header1": "single entry1",
+                "status": "active",
+                "header2": "single entry2",
+            },
             ignore_extra_headers=True,
         )
         self.assertEqual(
             w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
-            [*values, ["juanita", 33]],
+            [
+                *new_values,
+                ["single entry1", "single entry2"],
+            ],
         )
 
     @pytest.mark.vcr()
