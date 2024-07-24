@@ -626,7 +626,7 @@ class Worksheet:
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
     ) -> None:
-        """Update the sheet via records(list of dicts). The keys for the dicts must be the headers for the column.
+        """Adds rows to the end of data range via records(list of dicts). The keys for the dicts must be the headers for the column.
 
         Missing columns are filled with `default blank` in the row.
 
@@ -660,6 +660,44 @@ class Worksheet:
         self.append_records(
             [row],
             ignore_extra_headers=ignore_extra_headers,
+            default_blank=default_blank,
+        )
+
+    def insert_records(
+        self,
+        rows: List[Dict[str, Any]],
+        ignore_extra_headers: bool = False,
+        default_blank: Any = "",
+        insert_row: int = 2,
+    ) -> None:
+        cols = self.column_headers
+        insert_rows = []
+        for row in rows:
+            if not set(row).issubset(set(cols)) and not ignore_extra_headers:
+                raise GSpreadException("Extra headers found in the data set")
+
+            ins_row = []
+            for col in cols:
+                ins_row.append(row.get(col, default_blank))
+            insert_rows.append(ins_row)
+
+        self.insert_rows(
+            insert_rows,
+            row=insert_row,
+            value_input_option=ValueInputOption.user_entered,
+        )
+
+    def insert_record(
+        self,
+        row: Dict[str, Any],
+        ignore_extra_headers: bool = False,
+        default_blank: Any = "",
+        insert_row: int = 2,
+    ) -> None:
+        self.insert_records(
+            [row],
+            ignore_extra_headers=ignore_extra_headers,
+            insert_row=insert_row,
             default_blank=default_blank,
         )
 
