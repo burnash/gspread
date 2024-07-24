@@ -620,7 +620,7 @@ class Worksheet:
 
         return to_records(keys, values)
 
-    def set_records(
+    def append_records(
         self,
         rows: List[Dict[str, Any]],
         ignore_extra_headers: bool = False,
@@ -651,13 +651,13 @@ class Worksheet:
             value_input_option=ValueInputOption.user_entered,
         )
 
-    def set_record(
+    def append_record(
         self,
         row: Dict[str, Any],
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
     ) -> None:
-        self.set_records(
+        self.append_records(
             [row],
             ignore_extra_headers=ignore_extra_headers,
             default_blank=default_blank,

@@ -1752,7 +1752,7 @@ class WorksheetTest(GspreadTest):
         self.assertListEqual(w.get_values("C2:E2"), [[]])
 
     @pytest.mark.vcr()
-    def test_set_records(self):
+    def test_append_records(self):
 
         w = self.spreadsheet.sheet1
         values = [
@@ -1768,7 +1768,7 @@ class WorksheetTest(GspreadTest):
             {"header1": "new value1", "header2": "new value2"},
             {"header1": "new value3"},
         ]
-        w.set_records(update_values)
+        w.append_records(update_values)
         new_values = [
             *values,
             ["new value1", "new value2"],
@@ -1779,9 +1779,9 @@ class WorksheetTest(GspreadTest):
             new_values,
         )
         with pytest.raises(GSpreadException):
-            w.set_record({"header1": "error value1", "location": "error value2"})
+            w.append_record({"header1": "error value1", "location": "error value2"})
 
-        w.set_record(
+        w.append_record(
             {
                 "header1": "single entry1",
                 "status": "active",
