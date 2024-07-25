@@ -14,8 +14,11 @@ from gspread.client import Client
 from gspread.exceptions import APIError, GSpreadException
 from gspread.spreadsheet import Spreadsheet
 from gspread.worksheet import Worksheet
+from dotenv import load_dotenv
 
 from .conftest import I18N_STR, GspreadTest
+
+load_dotenv()
 
 
 class WorksheetTest(GspreadTest):
@@ -1805,6 +1808,7 @@ class WorksheetTest(GspreadTest):
             ["value1", "value2"],
         ]
         w.update(values, "A1:B2")
+        new_values = [values[0], ["value3", "value4"], ["", "value5"], *values[1:]]
         self.assertEqual(
             w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
             values,
@@ -1817,20 +1821,17 @@ class WorksheetTest(GspreadTest):
             ]
         )
 
-        new_values = [
-            values[0],
-            ["value3", "value4"],
-            ["", "value5"],
-        ]
-
-        self.assertEqual(w.get_all_values(), new_values)
+        self.assertEqual(
+            w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
+            new_values,
+        )
 
         with pytest.raises(GSpreadException):
             w.insert_record({"header1": "error value1", "location": "error value2"})
 
         w.insert_record(
             {"header4": "ignore value", "header1": "value6", "header2": "value7"},
-            insert_row=4,
+            insert_row=5,
             ignore_extra_headers=True,
         )
 
