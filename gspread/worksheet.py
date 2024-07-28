@@ -626,7 +626,7 @@ class Worksheet:
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
     ) -> None:
-        """Appends rows to you data range.
+        """Appends records as rows to your data range.
 
         :param rows: A list of dictionaries, where each dictionary represents a row to be appended.
                     The keys of the dictionaries should correspond to the column headers of the spreadsheet.
@@ -662,6 +662,20 @@ class Worksheet:
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
     ) -> None:
+        """Appends a dict as a row to your data range.
+
+        :param row: A dict. The keys of the dict should
+            correspond to the column headers of the spreadsheet.
+        :type row: Dict[str, Any]
+        :param ignore_extra_headers: If True, extra headers found in the data set will be ignored. Otherwise,
+                                    a `GSpreadException` will be raised. Defaults to False.
+        :type ignore_extra_headers: bool
+        :param default_blank: The value to use for missing columns in the data. Defaults to an empty string.
+        :type default_blank: Any
+
+        :raises GSpreadException: If extra headers are found in the data set and `ignore_extra_headers` is False.
+        """
+
         self.append_records(
             [row],
             ignore_extra_headers=ignore_extra_headers,
@@ -675,6 +689,28 @@ class Worksheet:
         default_blank: Any = "",
         insert_row: int = 2,
     ) -> None:
+        """Insert records as rows to your data range at the stated row.
+
+        :param rows: A list of dictionaries, where
+            each dictionary represents a row to be inserted.
+            The keys of the dictionaries should correspond
+            to the column headers of the spreadsheet.
+        :type rows: List[Dict[str, Any]]
+        :param ignore_extra_headers: If True, extra headers found
+            in the data set will be ignored. Otherwise,
+            a `GSpreadException` will be raised. Defaults to False.
+        :type ignore_extra_headers: bool
+        :param default_blank: The value to use for missing
+            columns in the data. Defaults to an empty string.
+        :type default_blank: Any
+        :param insert_row: Row number(1-indexed) where the
+            data would be inserted. Defaults to 2.
+        :type insert_row: int
+
+        :raises GSpreadException: If extra headers are found
+            in the data set and `ignore_extra_headers` is False.
+        """
+
         cols = self.column_headers
         insert_rows = []
         for row in rows:
@@ -699,6 +735,28 @@ class Worksheet:
         default_blank: Any = "",
         insert_row: int = 2,
     ) -> None:
+        """Insert a dict as rows to your data range at the stated row.
+
+        :param row: A dict, where
+            each dictionary represents a row to be inserted.
+            The keys of the dictionaries should correspond
+            to the column headers of the spreadsheet.
+        :type rows: List[Dict[str, Any]]
+        :param ignore_extra_headers: If True, extra headers found
+            in the data set will be ignored. Otherwise,
+            a `GSpreadException` will be raised. Defaults to False.
+        :type ignore_extra_headers: bool
+        :param default_blank: The value to use for missing
+            columns in the data. Defaults to an empty string.
+        :type default_blank: Any
+        :param insert_row: Row number(1-indexed) where the
+            data would be inserted. Defaults to 2.
+        :type insert_row: int
+
+        :raises GSpreadException: If extra headers are found
+            in the data set and `ignore_extra_headers` is False.
+        """
+
         self.insert_records(
             [row],
             ignore_extra_headers=ignore_extra_headers,
