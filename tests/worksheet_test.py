@@ -14,7 +14,6 @@ from gspread.client import Client
 from gspread.exceptions import APIError, GSpreadException
 from gspread.spreadsheet import Spreadsheet
 from gspread.worksheet import Worksheet
-from dotenv import load_dotenv
 
 from .conftest import I18N_STR, GspreadTest
 

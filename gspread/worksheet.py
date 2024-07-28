@@ -626,13 +626,18 @@ class Worksheet:
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
     ) -> None:
-        """Adds rows to the end of data range via records(list of dicts). The keys for the dicts must be the headers for the column.
+        """Appends rows to you data range.
 
-        Missing columns are filled with `default blank` in the row.
+        :param rows: A list of dictionaries, where each dictionary represents a row to be appended.
+                    The keys of the dictionaries should correspond to the column headers of the spreadsheet.
+        :type rows: List[Dict[str, Any]]
+        :param ignore_extra_headers: If True, extra headers found in the data set will be ignored. Otherwise,
+                                    a `GSpreadException` will be raised. Defaults to False.
+        :type ignore_extra_headers: bool
+        :param default_blank: The value to use for missing columns in the data. Defaults to an empty string.
+        :type default_blank: Any
 
-        Keyword arguments:
-        argument -- description
-        Return: return_description
+        :raises GSpreadException: If extra headers are found in the data set and `ignore_extra_headers` is False.
         """
 
         cols = self.column_headers
