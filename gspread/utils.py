@@ -986,30 +986,26 @@ def to_records(
 
 
 def _expand_right(values: List[List[str]], start: int, end: int, row: int) -> int:
-    """This is a private function, returning the column index of the first empty cell
+    """This is a private function, returning the column index of the last non empty cell
     on the given row.
 
     Search starts from ``start`` index column.
     Search ends on ``end`` index column.
     Searches only in the row pointed by ``row``.
-
-    If no empty value is found, it will return the given ``end`` index.
     """
     try:
-        return values[row].index('""', start, end)
+        return values[row].index("", start, end) - 1
     except ValueError:
         return end
 
 
 def _expand_bottom(values: List[List[str]], start: int, end: int, col: int) -> int:
-    """This is a private function, returning the row index of the first empty cell
+    """This is a private function, returning the row index of the last non empty cell
     on the given column.
 
     Search starts from ``start`` index row.
     Search ends on ``end`` index row.
     Searches only in the column pointed by ``col``.
-
-    If no empty value is found, it will return the given ``end`` index.
     """
     for rows in range(start, end):
         # in case we try to look further than last row
@@ -1018,9 +1014,9 @@ def _expand_bottom(values: List[List[str]], start: int, end: int, col: int) -> i
 
         # check if cell is empty (or the row => empty cell)
         if col >= len(values[rows]) or values[rows][col] == "":
-            return rows
+            return rows - 1
 
-    return end
+    return end - 1
 
 
 def find_table(
@@ -1076,12 +1072,15 @@ def find_table(
     col -= 1
 
     if direction == TableDirection.down:
-        rightMost = col + 1
+        rightMost = col
         bottomMost = _expand_bottom(values, row, len(values), col)
 
     if direction == TableDirection.right:
-        rightMost = _expand_right(values, col, len(values[row]), row)
-        bottomMost = row + 1
+        if row >= len(values):
+            rightMost = len(values) - 1
+        else:
+            rightMost = _expand_right(values, col, len(values[row]), row)
+        bottomMost = row
 
     if direction == TableDirection.table:
         bottomMost = _expand_bottom(values, row, len(values), col)
@@ -1090,8 +1089,8 @@ def find_table(
     result = []
 
     # build resulting array
-    for rows in values[row:bottomMost]:
-        result.append(rows[col:rightMost])
+    for rows in values[row : bottomMost + 1]:
+        result.append(rows[col : rightMost + 1])
 
     return result
 

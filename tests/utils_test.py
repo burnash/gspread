@@ -532,8 +532,8 @@ class UtilsTest(unittest.TestCase):
         no_values = utils.find_table(values, "A2", utils.TableDirection.table)
 
         table_values = [
-            ["B2", "C2"],
-            ["B3", "C3"],
+            ["B2", "C2", "", "E2"],
+            ["B3", "C3", "D3", "E3"],
         ]
         for rowindex, row in enumerate(table):
             self.assertListEqual(row, table_values[rowindex])
@@ -563,9 +563,9 @@ class UtilsTest(unittest.TestCase):
             ["", "", "", ""],
         ]
         expected_table = [
-            ["A1"],
-            ["A2"],
-            ["A3"],
+            ["A1", "", "C1"],
+            ["A2", "B2", "C2"],
+            ["A3", "B3", "C3"],
         ]
 
         table = utils.find_table(
