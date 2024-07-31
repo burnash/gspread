@@ -1661,7 +1661,6 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_get_notes_2nd_sheet(self):
-        self.spreadsheet.worksheets()[0]
         w2 = self.spreadsheet.add_worksheet("worksheet 2", 3, 3)
 
         notes = {
