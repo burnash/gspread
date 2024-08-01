@@ -2606,6 +2606,23 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
+    def batch_merge(
+        self,
+        merges: List[Dict[Literal["range", "mergeType"], Union[str | MergeType]]],
+        merge_type: MergeType = MergeType.all,
+    ) -> Any:
+        requests = [
+            {
+                "merges": {
+                    "range": a1_range_to_grid_range(i["range"], self.id),
+                    "mergeType": i.get("mergeType", merge_type),
+                }
+            }
+            for i in merges
+        ]
+
+        return self.client.batch_update(self.spreadsheet_id, {"requests": requests})
+
     def get_notes(self, default_empty_value: Optional[str] = "") -> List[List[str]]:
         """Returns a list of lists containing all notes in the sheet.
 
