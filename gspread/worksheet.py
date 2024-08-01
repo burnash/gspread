@@ -2611,6 +2611,20 @@ class Worksheet:
         merges: List[Dict[Literal["range", "mergeType"], Union[str | MergeType]]],
         merge_type: MergeType = MergeType.all,
     ) -> Any:
+        """Merge multiple ranges at the same time.
+
+        :param merges: list of dictionaries with the ranges(is A1-notation), and
+            an optional ``MergeType`` field.
+            See `MergeType`_ in the Sheets API reference.
+        :type merges: List[Dict[Literal["range", "mergeType"], Union[str | MergeType]]]
+        :params merge_type: (optional) default ``MergeType`` for all merges missing the merges.
+            defaults to ``MergeType.all``.
+        :type merge_type: ``MergeType``
+
+        :returns: The body of the request repsonse.
+        :rtype: dict
+        """
+
         requests = [
             {
                 "merges": {
