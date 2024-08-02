@@ -2609,7 +2609,7 @@ class Worksheet:
     def batch_merge(
         self,
         merges: List[Dict[Literal["range", "mergeType"], Union[str | MergeType]]],
-        merge_type: MergeType = MergeType.all,
+        merge_type: MergeType = MergeType.merge_all,
     ) -> Any:
         """Merge multiple ranges at the same time.
 
@@ -2618,7 +2618,7 @@ class Worksheet:
             See `MergeType`_ in the Sheets API reference.
         :type merges: List[Dict[Literal["range", "mergeType"], Union[str | MergeType]]]
         :params merge_type: (optional) default ``MergeType`` for all merges missing the merges.
-            defaults to ``MergeType.all``.
+            defaults to ``MergeType.merge_row``.
         :type merge_type: ``MergeType``
 
         :returns: The body of the request repsonse.
@@ -2627,7 +2627,7 @@ class Worksheet:
 
         requests = [
             {
-                "merges": {
+                "mergeCells": {
                     "range": a1_range_to_grid_range(i["range"], self.id),
                     "mergeType": i.get("mergeType", merge_type),
                 }
