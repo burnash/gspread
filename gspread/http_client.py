@@ -514,7 +514,7 @@ class HTTPClient:
 
 
 class BackOffHTTPClient(HTTPClient):
-    """BackoffClient is a gspread client with exponential
+    """BackOffHTTPClient is a http client with exponential
     backoff retries.
 
     In case a request fails due to some API rate limits,
@@ -524,12 +524,12 @@ class BackOffHTTPClient(HTTPClient):
     prevent the application from failing (by raising an APIError exception).
 
     .. Warning::
-        This Client is not production ready yet.
+        This HTTPClient is not production ready yet.
         Use it at your own risk !
 
     .. note::
         To use with the `auth` module, make sure to pass this backoff
-        client factory using the ``client_factory`` parameter of the
+        http client using the ``http_client`` parameter of the
         method used.
 
     .. note::
