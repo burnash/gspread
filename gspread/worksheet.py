@@ -59,6 +59,7 @@ from .utils import (
     numericise_all,
     rowcol_to_a1,
     to_records,
+    ExportFormat,
 )
 
 if TYPE_CHECKING is True:
@@ -294,6 +295,29 @@ class Worksheet:
         )
 
         return sheet.get(property, default_value)
+
+    def export(self, format=ExportFormat.PDF):
+        """Export the worksheet in the given format.
+
+        :param format: The format of the resulting file.
+            Possible values are:
+
+                ``ExportFormat.PDF``,
+                ``ExportFormat.EXCEL``,
+                ``ExportFormat.CSV``,
+                ``ExportFormat.OPEN_OFFICE_SHEET``,
+                ``ExportFormat.TSV``,
+                and ``ExportFormat.ZIPPED_HTML``.
+
+            See `ExportFormat`_ in the Drive API.
+            Default value is ``ExportFormat.PDF``.
+        :type format: :class:`~gspread.utils.ExportFormat`
+
+        :returns bytes: The content of the exported file.
+
+        .. _ExportFormat: https://developers.google.com/drive/api/guides/ref-export-formats
+        """
+        return self.client.export_worksheet(self.spreadsheet_id, str(self.id), format)
 
     def acell(
         self,
