@@ -21,3 +21,10 @@ You can find the below libraries to use gsrpead with pandas:
  * `gspread-dataframe <https://github.com/robin900/gspread-dataframe>`_
 
 .. _gspread-orm-label:
+
+Object Relational Mappers (ORMs)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `gspread-models <https://github.com/s2t2/gspread-models-py>`_ package provides a straightforward and intuitive model-based
+query interface, making it easy to interact with Google Sheets as if it were more like a database.
+
