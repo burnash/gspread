@@ -70,6 +70,14 @@ Advanced
 
     advanced
 
+Community extensions
+--------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    community
+
 
 API Documentation
 ---------------------------

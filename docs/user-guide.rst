@@ -390,7 +390,7 @@ Color the background of **A2:B2** cell range in black, change horizontal alignme
 The second argument to :meth:`~gspread.models.Worksheet.format` is a dictionary containing the fields to update. A full specification of format options is available at `CellFormat <https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#cellformat>`_ in Sheet API Reference.
 
 .. Tip::
-    `gspread-formatting <https://github.com/robin900/gspread-formatting>`_ offers extensive functionality to help you when you go beyond basics.
+    for more complex formating see :ref:`gspread-formating-label`.
 
 
 Using gspread with pandas
@@ -412,10 +412,7 @@ Here's a basic example for writing a dataframe to a sheet. With :meth:`~gspread.
 
    worksheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
 
-For advanced pandas use cases check out these libraries:
-
- * `gspread-pandas <https://github.com/aiguofer/gspread-pandas>`_
- * `gspread-dataframe <https://github.com/robin900/gspread-dataframe>`_
+For advanced pandas use cases check out community section :ref:`gspread-pandas-label`
 
 Using gspread with NumPy
 ~~~~~~~~~~~~~~~~~~~~~~~~
