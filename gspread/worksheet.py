@@ -496,7 +496,7 @@ class Worksheet:
         head: int = 1,
         expected_headers: Optional[List[str]] = None,
         value_render_option: Optional[ValueRenderOption] = None,
-        default_blank: str = "",
+        default_blank: Any = "",
         numericise_ignore: Iterable[Union[str, int]] = [],
         allow_underscores_in_numeric_literals: bool = False,
         empty2zero: bool = False,
