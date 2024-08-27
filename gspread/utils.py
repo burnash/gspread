@@ -306,7 +306,7 @@ def numericise_all(
     :param list values: Input row
     :param bool empty2zero: (optional) Whether or not to return empty cells
         as 0 (zero). Defaults to ``False``.
-    :param str default_blank: Which value to use for blank cells,
+    :param Any default_blank: Which value to use for blank cells,
         defaults to empty string.
     :param bool allow_underscores_in_numeric_literals: Whether or not to allow
         visual underscores in numeric literals

@@ -529,7 +529,7 @@ class Worksheet:
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
         :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
-        :param str default_blank: (optional) Determines which value to use for
+        :param Any default_blank: (optional) Determines which value to use for
             blank cells, defaults to empty string.
         :param list numericise_ignore: (optional) List of ints of indices of
             the columns (starting at 1) to ignore numericising, special use
