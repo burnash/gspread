@@ -2127,7 +2127,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
     
-    def delete_conditional_formatting(self, index: int) -> JSONResponse:
+    def delete_conditional_formatting_rule(self, index: int) -> JSONResponse:
         """Delete conditional formatting rule identified by the index ``index``.
 
         To retrieve the ID of a conditional formatting rule use the following method

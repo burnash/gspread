@@ -1927,3 +1927,27 @@ class WorksheetTest(GspreadTest):
         # Further ensure we are able to access the exception's properties after pickling
         reloaded_exception = pickle.loads(pickle.dumps(ex.exception))  # nosec
         self.assertEqual(reloaded_exception.args[0]["status"], "INVALID_ARGUMENT")
+
+    @pytest.mark.vcr()
+    def test_delete_conditional_formatting_rule(self):
+        sheet = self.sheet
+        spreadsheet = self.spreadsheet
+
+        # add a conditional format rule to the spreadsheet
+        spreadsheet.format(
+            "A1:A2",
+            {
+                "backgroundColor": {"green": 1, "blue": 1},
+            },
+        )
+
+        # list the conditions on the spreadsheet
+        rules  = spreadsheet.list_conditional_formatting_rules(0)
+        self.assertEqual(len(rules), 1)
+
+        # delete the first rule by index
+        sheet.delete_conditional_formatting_rule(0)
+
+        # verify rule was removed
+        rules  = spreadsheet.list_conditional_formatting_rules(0)
+        self.assertEqual(len(rules), 0)
