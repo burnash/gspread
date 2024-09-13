@@ -9,6 +9,7 @@ Exceptions used in gspread.
 from typing import Any, Mapping
 
 from requests import Response
+from requests.exceptions import JSONDecodeError
 
 
 class UnSupportedExportFormat(Exception):
@@ -40,7 +41,19 @@ class APIError(GSpreadException):
     such as when we attempt to retrieve things that don't exist."""
 
     def __init__(self, response: Response):
-        error = dict(response.json()["error"])
+        try:
+            error = response.json()["error"]
+        except JSONDecodeError:
+            # in case we failed to parse the error from the API
+            # build an empty error object to notify the caller
+            # and keep the exception raise flow running
+
+            error = {
+                "code": -1,
+                "message": response.text,
+                "status": "invalid JSON",
+            }
+
         super().__init__(error)
         self.response: Response = response
         self.error: Mapping[str, Any] = error
