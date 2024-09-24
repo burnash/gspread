@@ -329,7 +329,7 @@ class Client:
             for p in permissions:
                 if p.get("deleted"):
                     continue
-                
+
                 # .list_permissions() returns a list of permissions,
                 # even the folder permissions if the file is in a shared folder.
                 # We only want the permissions that are directly applied to the
