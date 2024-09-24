@@ -2621,7 +2621,7 @@ class Worksheet:
             defaults to ``MergeType.merge_row``.
         :type merge_type: ``MergeType``
 
-        :returns: The body of the request repsonse.
+        :returns: The body of the request response.
         :rtype: dict
         """
 
