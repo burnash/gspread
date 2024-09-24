@@ -2616,9 +2616,9 @@ class Worksheet:
         :param merges: list of dictionaries with the ranges(is A1-notation), and
             an optional ``MergeType`` field.
             See `MergeType`_ in the Sheets API reference.
-        :type merges: List[Dict[Literal["range", "mergeType"], Union[str | MergeType]]]
+        :type merges: List[Dict[Literal["range", "mergeType"], Union[str, MergeType]]]
         :params merge_type: (optional) default ``MergeType`` for all merges missing the merges.
-            defaults to ``MergeType.merge_row``.
+            defaults to ``MergeType.merge_all``.
         :type merge_type: ``MergeType``
 
         :returns: The body of the request response.
@@ -2628,11 +2628,11 @@ class Worksheet:
         requests = [
             {
                 "mergeCells": {
-                    "range": a1_range_to_grid_range(i["range"], self.id),
-                    "mergeType": i.get("mergeType", merge_type),
+                    "range": a1_range_to_grid_range(merge["range"], self.id),
+                    "mergeType": merge.get("mergeType", merge_type),
                 }
             }
-            for i in merges
+            for merge in merges
         ]
 
         return self.client.batch_update(self.spreadsheet_id, {"requests": requests})
