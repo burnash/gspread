@@ -2608,7 +2608,7 @@ class Worksheet:
 
     def batch_merge(
         self,
-        merges: List[Dict[Literal["range", "mergeType"], Union[str | MergeType]]],
+        merges: List[Dict[Literal["range", "mergeType"], Union[str, MergeType]]],
         merge_type: MergeType = MergeType.merge_all,
     ) -> Any:
         """Merge multiple ranges at the same time.
