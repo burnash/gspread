@@ -329,6 +329,19 @@ class Client:
             for p in permissions:
                 if p.get("deleted"):
                     continue
+                
+                # .list_permissions() returns a list of permissions,
+                # even the folder permissions if the file is in a shared folder.
+                # We only want the permissions that are directly applied to the
+                # spreadsheet file, i.e. 'writer', 'commenter' and 'reader'.
+                perm_details = {
+                    p_details.get("permissionType"): p_details.get("inherited")
+                    for p_details in p.get("permissionDetails")
+                }
+                if p.get("role") in ("organizer", "fileOrganizer") and (
+                    perm_details.get("file") or perm_details.get("member")
+                ):
+                    continue
 
                 # In case of domain type the domain extract the domain
                 # In case of user/group extract the emailAddress
