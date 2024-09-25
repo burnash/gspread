@@ -1035,7 +1035,7 @@ def find_table(
     In case of empty result an empty list is restuned.
 
     When the given ``start_range`` is outside the given matrix of values the exception
-    `~gspread.exceptions.InvalidInputValue` is raised.
+    :class:`~gspread.exceptions.InvalidInputValue` is raised.
 
     Example::
 
