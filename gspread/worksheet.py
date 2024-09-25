@@ -41,6 +41,7 @@ from .utils import (
     PasteOrientation,
     PasteType,
     T,
+    TableDirection,
     ValidationConditionType,
     ValueInputOption,
     ValueRenderOption,
@@ -53,6 +54,7 @@ from .utils import (
     convert_colors_to_hex_value,
     convert_hex_to_colors_dict,
     fill_gaps,
+    find_table,
     finditem,
     get_a1_from_absolute_range,
     is_full_a1_notation,
@@ -3336,3 +3338,56 @@ class Worksheet:
         }
 
         return self.client.batch_update(self.spreadsheet_id, body)
+
+    def expand(
+        self,
+        top_left_range_name: str = "A1",
+        direction: TableDirection = TableDirection.table,
+    ) -> List[List[str]]:
+        """Expands a cell range based on non-null adjacent cells.
+
+        Expand can be done in 3 directions defined in :class:`~gspread.utils.TableDirection`
+
+        * ``TableDirection.right``: expands right until the first empty cell
+        * ``TableDirection.down``: expands down until the first empty cell
+        * ``TableDirection.table``: expands right until the first empty cell and down until the first empty cell
+
+        In case of empty result an empty list is restuned.
+
+        When the given ``start_range`` is outside the given matrix of values the exception
+        :class:`~gspread.exceptions.InvalidInputValue` is raised.
+
+        Example::
+
+            values = [
+                ['', '',   '',   '', ''  ],
+                ['', 'B2', 'C2', '', 'E2'],
+                ['', 'B3', 'C3', '', 'E3'],
+                ['', ''  , ''  , '', 'E4'],
+            ]
+            >>> utils.find_table(TableDirection.table, 'B2')
+            [
+                ['B2', 'C2'],
+                ['B3', 'C3'],
+            ]
+
+
+        .. note::
+
+            the ``TableDirection.table`` will look right from starting cell then look down from starting cell.
+            It will not check cells located inside the table. This could lead to
+            potential empty values located in the middle of the table.
+
+        .. note::
+
+            when it is necessary to use non-default options for :meth:`~gspread.worksheet.Worksheet.get`,
+            please get the data first using desired options then use the function
+            :func:`gspread.utils.find_table` to extract the desired table.
+
+        :param str top_left_range_name: the top left corner of the table to expand.
+        :param gspread.utils.TableDirection direction: the expand direction
+        :rtype list(list): the resulting matrix
+        """
+
+        values = self.get(pad_values=True)
+        return find_table(values, top_left_range_name, direction)
