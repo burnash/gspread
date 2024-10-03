@@ -2,7 +2,7 @@ import io
 import itertools
 import os
 import unittest
-from typing import Any, Dict, Generator, Optional, Tuple
+from typing import Any, Tuple
 
 import pytest
 from google.oauth2.credentials import Credentials as UserCredentials
