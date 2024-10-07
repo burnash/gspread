@@ -1,4 +1,5 @@
 import itertools
+import pickle  # nosec
 import random
 import re
 from inspect import signature
@@ -193,6 +194,43 @@ class WorksheetTest(GspreadTest):
         self.sheet.merge_cells("A1:B2")
         self.sheet.merge_cells("C2:D2")
         self.sheet.merge_cells("C3:C4")
+
+        expected_merge = [
+            ["1", "1", "", ""],
+            ["1", "1", "title", "title"],
+            ["", "", "2", ""],
+            ["num", "val", "2", "0"],
+        ]
+
+        values = self.sheet.get_values()
+        values_with_merged = self.sheet.get_values(combine_merged_cells=True)
+
+        self.assertEqual(values, sheet_data)
+        self.assertEqual(values_with_merged, expected_merge)
+
+        # test with cell address
+        values_with_merged = self.sheet.get_values("A1:D4", combine_merged_cells=True)
+        self.assertEqual(values_with_merged, expected_merge)
+
+    @pytest.mark.vcr()
+    def test_batch_merged_cells(self):
+        self.sheet.resize(4, 4)
+        sheet_data = [
+            ["1", "", "", ""],
+            ["", "", "title", ""],
+            ["", "", "2", ""],
+            ["num", "val", "", "0"],
+        ]
+
+        self.sheet.update(sheet_data, "A1:D4")
+
+        self.sheet.batch_merge(
+            [
+                {"range": "A1:B2"},
+                {"range": "C2:D2"},
+                {"range": "C3:C4"},
+            ]
+        )
 
         expected_merge = [
             ["1", "1", "", ""],
@@ -1962,4 +2000,10 @@ class WorksheetTest(GspreadTest):
             {"spreadsheetId": self.spreadsheet.id, "replies": [{}]},
         )
 
-        self.assertRaises(APIError, sheet.update, values="X", range_name="A1")
+        with self.assertRaises(APIError) as ex:
+            sheet.update(values="X", range_name="A1")
+
+        # Ensure that the exception is able to be pickled and unpickled
+        # Further ensure we are able to access the exception's properties after pickling
+        reloaded_exception = pickle.loads(pickle.dumps(ex.exception))  # nosec
+        self.assertEqual(reloaded_exception.args[0]["status"], "INVALID_ARGUMENT")

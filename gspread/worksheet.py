@@ -41,6 +41,7 @@ from .utils import (
     PasteOrientation,
     PasteType,
     T,
+    TableDirection,
     ValidationConditionType,
     ValueInputOption,
     ValueRenderOption,
@@ -53,6 +54,7 @@ from .utils import (
     convert_colors_to_hex_value,
     convert_hex_to_colors_dict,
     fill_gaps,
+    find_table,
     finditem,
     get_a1_from_absolute_range,
     is_full_a1_notation,
@@ -496,7 +498,7 @@ class Worksheet:
         head: int = 1,
         expected_headers: Optional[List[str]] = None,
         value_render_option: Optional[ValueRenderOption] = None,
-        default_blank: str = "",
+        default_blank: Any = "",
         numericise_ignore: Iterable[Union[str, int]] = [],
         allow_underscores_in_numeric_literals: bool = False,
         empty2zero: bool = False,
@@ -529,7 +531,7 @@ class Worksheet:
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
         :type value_render_option: :class:`~gspread.utils.ValueRenderOption`
-        :param str default_blank: (optional) Determines which value to use for
+        :param Any default_blank: (optional) Determines which value to use for
             blank cells, defaults to empty string.
         :param list numericise_ignore: (optional) List of ints of indices of
             the columns (starting at 1) to ignore numericising, special use
@@ -2606,6 +2608,37 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
+    def batch_merge(
+        self,
+        merges: List[Dict[Literal["range", "mergeType"], Union[str, MergeType]]],
+        merge_type: MergeType = MergeType.merge_all,
+    ) -> Any:
+        """Merge multiple ranges at the same time.
+
+        :param merges: list of dictionaries with the ranges(is A1-notation), and
+            an optional ``MergeType`` field.
+            See `MergeType`_ in the Sheets API reference.
+        :type merges: List[Dict[Literal["range", "mergeType"], Union[str, MergeType]]]
+        :params merge_type: (optional) default ``MergeType`` for all merges missing the merges.
+            defaults to ``MergeType.merge_all``.
+        :type merge_type: ``MergeType``
+
+        :returns: The body of the request response.
+        :rtype: dict
+        """
+
+        requests = [
+            {
+                "mergeCells": {
+                    "range": a1_range_to_grid_range(merge["range"], self.id),
+                    "mergeType": merge.get("mergeType", merge_type),
+                }
+            }
+            for merge in merges
+        ]
+
+        return self.client.batch_update(self.spreadsheet_id, {"requests": requests})
+
     def get_notes(
         self,
         default_empty_value: Optional[str] = "",
@@ -3352,3 +3385,56 @@ class Worksheet:
         }
 
         return self.client.batch_update(self.spreadsheet_id, body)
+
+    def expand(
+        self,
+        top_left_range_name: str = "A1",
+        direction: TableDirection = TableDirection.table,
+    ) -> List[List[str]]:
+        """Expands a cell range based on non-null adjacent cells.
+
+        Expand can be done in 3 directions defined in :class:`~gspread.utils.TableDirection`
+
+        * ``TableDirection.right``: expands right until the first empty cell
+        * ``TableDirection.down``: expands down until the first empty cell
+        * ``TableDirection.table``: expands right until the first empty cell and down until the first empty cell
+
+        In case of empty result an empty list is restuned.
+
+        When the given ``start_range`` is outside the given matrix of values the exception
+        :class:`~gspread.exceptions.InvalidInputValue` is raised.
+
+        Example::
+
+            values = [
+                ['', '',   '',   '', ''  ],
+                ['', 'B2', 'C2', '', 'E2'],
+                ['', 'B3', 'C3', '', 'E3'],
+                ['', ''  , ''  , '', 'E4'],
+            ]
+            >>> utils.find_table(TableDirection.table, 'B2')
+            [
+                ['B2', 'C2'],
+                ['B3', 'C3'],
+            ]
+
+
+        .. note::
+
+            the ``TableDirection.table`` will look right from starting cell then look down from starting cell.
+            It will not check cells located inside the table. This could lead to
+            potential empty values located in the middle of the table.
+
+        .. note::
+
+            when it is necessary to use non-default options for :meth:`~gspread.worksheet.Worksheet.get`,
+            please get the data first using desired options then use the function
+            :func:`gspread.utils.find_table` to extract the desired table.
+
+        :param str top_left_range_name: the top left corner of the table to expand.
+        :param gspread.utils.TableDirection direction: the expand direction
+        :rtype list(list): the resulting matrix
+        """
+
+        values = self.get(pad_values=True)
+        return find_table(values, top_left_range_name, direction)

@@ -6,9 +6,10 @@ Exceptions used in gspread.
 
 """
 
-from typing import Any, Dict, Mapping, Optional, Union
+from typing import Any, Mapping
 
 from requests import Response
+from requests.exceptions import JSONDecodeError
 
 
 class UnSupportedExportFormat(Exception):
@@ -40,19 +41,23 @@ class APIError(GSpreadException):
     such as when we attempt to retrieve things that don't exist."""
 
     def __init__(self, response: Response):
-        super().__init__(self._extract_error(response))
-        self.response: Response = response
-        self.error: Mapping[str, Any] = response.json()["error"]
-        self.code: int = self.error["code"]
-
-    def _extract_error(
-        self, response: Response
-    ) -> Optional[Dict[str, Union[int, str]]]:
         try:
-            errors = response.json()
-            return dict(errors["error"])
-        except (AttributeError, KeyError, ValueError):
-            return None
+            error = response.json()["error"]
+        except JSONDecodeError:
+            # in case we failed to parse the error from the API
+            # build an empty error object to notify the caller
+            # and keep the exception raise flow running
+
+            error = {
+                "code": -1,
+                "message": response.text,
+                "status": "invalid JSON",
+            }
+
+        super().__init__(error)
+        self.response: Response = response
+        self.error: Mapping[str, Any] = error
+        self.code: int = self.error["code"]
 
     def __str__(self) -> str:
         return "{}: [{}]: {}".format(
@@ -61,6 +66,9 @@ class APIError(GSpreadException):
 
     def __repr__(self) -> str:
         return self.__str__()
+
+    def __reduce__(self) -> tuple:
+        return self.__class__, (self.response,)
 
 
 class SpreadsheetNotFound(GSpreadException):

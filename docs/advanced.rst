@@ -47,7 +47,7 @@ Using ``Authlib`` instead of ``google-auth``. Similar to `google.auth.transport.
         claims = {'scope': ' '.join(scopes)}
         return AssertionSession(
             grant_type=AssertionSession.JWT_BEARER_GRANT_TYPE,
-            token_url=token_url,
+            token_endpoint=token_url,
             issuer=issuer,
             audience=token_url,
             claims=claims,
