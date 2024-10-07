@@ -2639,8 +2639,12 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, {"requests": requests})
 
-    def get_notes(self, default_empty_value: Optional[str] = "") -> List[List[str]]:
-        """Returns a list of lists containing all notes in the sheet.
+    def get_notes(
+        self,
+        default_empty_value: Optional[str] = "",
+        grid_range: Optional[str] = None,
+    ) -> List[List[str]]:
+        """Returns a list of lists containing all notes in the sheet or range.
 
         .. note::
 
@@ -2655,6 +2659,7 @@ class Worksheet:
 
         :param str default_empty_value: (optional) Determines which value to use
             for cells without notes, defaults to None.
+        :param str grid_range: (optional) Range name in A1 notation, e.g. 'A1:A5'.
 
         Examples::
 
@@ -2664,21 +2669,32 @@ class Worksheet:
             # 2    -      B2
 
             # Read all notes from the sheet
-            >>> arr = worksheet.get_notes()
-            >>> print(arr)
+            >>> worksheet.get_notes()
             [
                 ["A1"],
                 ["", "B2"]
             ]
-            >>> print(gspread.utils.fill_gaps(arr, len(arr), max(len(a) for a in arr), None))
+            >>> arr = worksheet.get_notes()
+            >>> gspread.utils.fill_gaps(arr, len(arr), max(len(a) for a in arr), None)
             [
                 ["A1", ""],
                 ["", "B2"]
             ]
+            # Read notes from a specific range
+            >>> worksheet.get_notes(grid_range="A2:B2")
+            [
+                ["", "B2"]
+            ]
         """
-        params: ParamsType = {"fields": "sheets.data.rowData.values.note"}
+        params: ParamsType = {
+            "fields": "sheets.data.rowData.values.note",
+            "ranges": absolute_range_name(self.title, grid_range),
+        }
+
         res = self.client.spreadsheets_get(self.spreadsheet_id, params)
-        data = res["sheets"][self.index]["data"][0].get("rowData", [{}])
+
+        # access 0th sheet because we specified a sheet with params["ranges"] above
+        data = res["sheets"][0]["data"][0].get("rowData", [{}])
         notes: List[List[str]] = []
         for row in data:
             notes.append([])
