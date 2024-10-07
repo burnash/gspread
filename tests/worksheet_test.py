@@ -213,6 +213,43 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values_with_merged, expected_merge)
 
     @pytest.mark.vcr()
+    def test_batch_merged_cells(self):
+        self.sheet.resize(4, 4)
+        sheet_data = [
+            ["1", "", "", ""],
+            ["", "", "title", ""],
+            ["", "", "2", ""],
+            ["num", "val", "", "0"],
+        ]
+
+        self.sheet.update(sheet_data, "A1:D4")
+
+        self.sheet.batch_merge(
+            [
+                {"range": "A1:B2"},
+                {"range": "C2:D2"},
+                {"range": "C3:C4"},
+            ]
+        )
+
+        expected_merge = [
+            ["1", "1", "", ""],
+            ["1", "1", "title", "title"],
+            ["", "", "2", ""],
+            ["num", "val", "2", "0"],
+        ]
+
+        values = self.sheet.get_values()
+        values_with_merged = self.sheet.get_values(combine_merged_cells=True)
+
+        self.assertEqual(values, sheet_data)
+        self.assertEqual(values_with_merged, expected_merge)
+
+        # test with cell address
+        values_with_merged = self.sheet.get_values("A1:D4", combine_merged_cells=True)
+        self.assertEqual(values_with_merged, expected_merge)
+
+    @pytest.mark.vcr()
     def test_get_values_with_args_or_kwargs(self):
         # test that get_values accepts args and kwargs
         self.sheet.resize(4, 4)
