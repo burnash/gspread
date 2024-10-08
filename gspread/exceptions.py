@@ -8,8 +8,7 @@ Exceptions used in gspread.
 
 from typing import Any, Mapping
 
-from requests import Response
-from requests import JSONDecodeError
+from requests import JSONDecodeError, Response
 
 
 class UnSupportedExportFormat(Exception):
