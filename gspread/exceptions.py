@@ -9,7 +9,7 @@ Exceptions used in gspread.
 from typing import Any, Mapping
 
 from requests import Response
-from requests.exceptions import JSONDecodeError
+from requests import JSONDecodeError
 
 
 class UnSupportedExportFormat(Exception):
