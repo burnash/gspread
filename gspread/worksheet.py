@@ -629,7 +629,12 @@ class Worksheet:
         :type ignore_extra_headers: bool
         :param default_blank: The value to use for missing columns in the data. Defaults to an empty string.
         :type default_blank: Any
-
+        :param header_row: (optional) Row number(1-indexed) of column titles. Defualts to 1.
+        :type header_row: int
+        :param value_input_option: (optional) Determines how the input data
+            should be interpreted. See `ValueInputOption`_ in the Sheets API
+            reference.
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
 
         :raises GSpreadException: If extra headers are found in the data set and `ignore_extra_headers` is False.
         """
@@ -665,6 +670,12 @@ class Worksheet:
         :type ignore_extra_headers: bool
         :param default_blank: The value to use for missing columns in the data. Defaults to an empty string.
         :type default_blank: Any
+        :param header_row: (optional) Row number(1-indexed) of column titles. Defualts to 1.
+        :type header_row: int
+        :param value_input_option: (optional) Determines how the input data
+            should be interpreted. See `ValueInputOption`_ in the Sheets API
+            reference.
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
 
         :raises GSpreadException: If extra headers are found in the data set and `ignore_extra_headers` is False.
         """
@@ -703,6 +714,12 @@ class Worksheet:
         :param insert_row: Row number(1-indexed) where the
             data would be inserted. Defaults to 2.
         :type insert_row: int
+        :param header_row: (optional) Row number(1-indexed) of column titles. Defualts to 1.
+        :type header_row: int
+        :param value_input_option: (optional) Determines how the input data
+            should be interpreted. See `ValueInputOption`_ in the Sheets API
+            reference.
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
 
         :raises GSpreadException: If extra headers are found
             in the data set and `ignore_extra_headers` is False.
@@ -752,6 +769,12 @@ class Worksheet:
         :param insert_row: Row number(1-indexed) where the
             data would be inserted. Defaults to 2.
         :type insert_row: int
+        :param header_row: (optional) Row number(1-indexed) of column titles. Defualts to 1.
+        :type header_row: int
+        :param value_input_option: (optional) Determines how the input data
+            should be interpreted. See `ValueInputOption`_ in the Sheets API
+            reference.
+        :type value_input_option: :class:`~gspread.utils.ValueInputOption`
 
         :raises GSpreadException: If extra headers are found
             in the data set and `ignore_extra_headers` is False.
