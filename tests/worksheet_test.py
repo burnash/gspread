@@ -17,8 +17,6 @@ from gspread.worksheet import Worksheet
 
 from .conftest import I18N_STR, GspreadTest
 
-load_dotenv()
-
 
 class WorksheetTest(GspreadTest):
     """Test for gspread.Worksheet."""
