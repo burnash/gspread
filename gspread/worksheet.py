@@ -571,7 +571,6 @@ class Worksheet:
             return []
 
         keys = entire_sheet[head - 1]
-        self.column_headers = keys
         values = entire_sheet[head:]
 
         if expected_headers is None:
@@ -617,6 +616,8 @@ class Worksheet:
         rows: List[Dict[str, Any]],
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
+        header_row: Optional[int] = None,
+        value_input_option: Optional[ValueInputOption] = None,
     ) -> None:
         """Appends records as rows to your data range.
 
@@ -629,10 +630,11 @@ class Worksheet:
         :param default_blank: The value to use for missing columns in the data. Defaults to an empty string.
         :type default_blank: Any
 
+
         :raises GSpreadException: If extra headers are found in the data set and `ignore_extra_headers` is False.
         """
 
-        cols = self.column_headers
+        cols = self.get_column_headers(header_row)
         insert_rows = []
         for row in rows:
             if not set(row).issubset(set(cols)) and not ignore_extra_headers:
@@ -643,16 +645,15 @@ class Worksheet:
                 insert_row.append(row.get(col, default_blank))
             insert_rows.append(insert_row)
 
-        self.append_rows(
-            insert_rows,
-            value_input_option=ValueInputOption.user_entered,
-        )
+        self.append_rows(insert_rows, value_input_option=value_input_option)
 
     def append_record(
         self,
         row: Dict[str, Any],
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
+        header_row: Optional[int] = None,
+        value_input_option: Optional[ValueInputOption] = None,
     ) -> None:
         """Appends a dict as a row to your data range.
 
@@ -672,6 +673,8 @@ class Worksheet:
             [row],
             ignore_extra_headers=ignore_extra_headers,
             default_blank=default_blank,
+            header_row=header_row,
+            value_input_option=value_input_option,
         )
 
     def insert_records(
@@ -680,6 +683,8 @@ class Worksheet:
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
         insert_row: int = 2,
+        header_row: Optional[int] = None,
+        value_input_option: Optional[ValueInputOption] = None,
     ) -> None:
         """Insert records as rows to your data range at the stated row.
 
@@ -717,7 +722,8 @@ class Worksheet:
         self.insert_rows(
             insert_rows,
             row=insert_row,
-            value_input_option=ValueInputOption.user_entered,
+            value_input_option=value_input_option,
+            header_row=header_row,
         )
 
     def insert_record(
@@ -726,6 +732,8 @@ class Worksheet:
         ignore_extra_headers: bool = False,
         default_blank: Any = "",
         insert_row: int = 2,
+        header_row: Optional[int] = None,
+        value_input_option: Optional[ValueInputOption] = None,
     ) -> None:
         """Insert a dict as rows to your data range at the stated row.
 
@@ -754,6 +762,8 @@ class Worksheet:
             ignore_extra_headers=ignore_extra_headers,
             insert_row=insert_row,
             default_blank=default_blank,
+            header_row=header_row,
+            value_input_option=value_input_option,
         )
 
     def get_all_cells(self) -> List[Cell]:
