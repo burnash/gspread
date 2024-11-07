@@ -509,12 +509,12 @@ class Worksheet:
         values.
 
         This method uses the function :func:`gspread.utils.to_records` to build the resulting
-        records. It mainly wraps around the function and handle the simplest use case
-        using a header row (default = 1) and the the reste of the entire sheet.
+        records. It mainly wraps around the function and handles the simplest use case
+        using a header row (default = 1) and the rest of the entire sheet.
 
         .. note::
 
-           for any particular use-case, please get your dataset, your headers
+           For more particular use-cases, please get your dataset, your headers and
            then use the function :func:`gspread.utils.to_records` to build the records.
 
         Cell values are numericised (strings that can be read as ints or floats
@@ -526,7 +526,7 @@ class Worksheet:
 
             .. note::
 
-                returned dictionaries will contain all headers even if not included in this list
+                Returned dictionaries will contain all headers even if not included in this list.
         :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
