@@ -735,7 +735,7 @@ class Worksheet:
             in the data set and `ignore_extra_headers` is False.
         """
 
-        cols = self.column_headers
+        cols = self.get_column_headers()
         insert_rows = []
         for row in rows:
             if not set(row).issubset(set(cols)) and not ignore_extra_headers:
