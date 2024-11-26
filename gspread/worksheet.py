@@ -657,7 +657,10 @@ class Worksheet:
                 insert_row.append(row.get(col, default_blank))
             insert_rows.append(insert_row)
 
-        self.append_rows(insert_rows, value_input_option=value_input_option)
+        self.append_rows(
+            insert_rows,
+            value_input_option=value_input_option or ValueInputOption.raw,
+        )
 
     def append_record(
         self,
