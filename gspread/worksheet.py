@@ -749,7 +749,7 @@ class Worksheet:
         self.insert_rows(
             insert_rows,
             row=insert_row,
-            value_input_option=value_input_option,
+            value_input_option=value_input_option or ValueInputOption.raw,
             header_row=header_row,
         )
 
