@@ -201,6 +201,13 @@ class Worksheet:
         self._spreadsheet = spreadsheet
 
     def get_column_headers(self, header_row: Optional[int] = None) -> List[str]:
+        """Get the column headers a list of strings.
+
+        :param header_row: (optional) Row number(1-indexed) of column titles. Defualts to 1.
+        :type header_row: int
+
+        """
+
         return self.row_values(header_row or 1)
 
     def __repr__(self) -> str:
