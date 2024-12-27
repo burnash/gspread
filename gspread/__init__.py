@@ -24,3 +24,25 @@ from .exceptions import (
 from .http_client import BackOffHTTPClient, HTTPClient
 from .spreadsheet import Spreadsheet
 from .worksheet import ValueRange, Worksheet
+
+# https://peps.python.org/pep-0008/#public-and-internal-interfaces
+__all__ = [
+    "api_key",
+    "authorize",
+    "oauth",
+    "oauth_from_dict",
+    "service_account",
+    "service_account_from_dict",
+    "Cell",
+    "Client",
+    "GSpreadException",
+    "IncorrectCellLabel",
+    "NoValidUrlKeyFound",
+    "SpreadsheetNotFound",
+    "WorksheetNotFound",
+    "BackOffHTTPClient",
+    "HTTPClient",
+    "Spreadsheet",
+    "ValueRange",
+    "Worksheet",
+]
