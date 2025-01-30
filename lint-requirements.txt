@@ -3,6 +3,6 @@ black==25.1.0
 codespell==2.2.5
 flake8==7.1.1
 isort==6.0.0
-mypy==1.11.2
+mypy==1.14.1
 mypy-extensions==1.0.0
 typing_extensions==4.12.2
