@@ -1,6 +1,11 @@
 Release History
 ===============
 
+6.1.4 (2024-10-21)
+------------------
+
+* Full Changelog: https://github.com/burnash/gspread/compare/v6.1.3...v6.1.4
+
 6.1.3 (2024-10-04)
 ------------------
 
