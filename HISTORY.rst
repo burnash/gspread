@@ -1,6 +1,14 @@
 Release History
 ===============
 
+6.1.3 (2024-10-04)
+------------------
+
+* ignore jinja CVE by @lavigne958 in https://github.com/burnash/gspread/pull/1481
+* Remove passing exception as args to super in APIError by @mike-flowers-airbnb in https://github.com/burnash/gspread/pull/1477
+* better handler API error parsing. by @lavigne958 in https://github.com/burnash/gspread/pull/1510
+* Add test on receiving an invalid JSON in the APIError exception handler. by @lavigne958 in https://github.com/burnash/gspread/pull/1512
+
 6.1.2 (2024-05-17)
 ------------------
 
