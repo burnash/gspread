@@ -43,7 +43,7 @@ def get_method_name(self_id: str) -> str:
 
 
 def ignore_retry_requests(
-    response: Dict[str, Dict[str, int]]
+    response: Dict[str, Dict[str, int]],
 ) -> Optional[Dict[str, Dict[str, int]]]:
     SKIP_RECORD = [408, 429]
     if response["status"]["code"] in SKIP_RECORD:
