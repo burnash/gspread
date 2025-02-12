@@ -23,7 +23,7 @@ Features:
 pip install gspread
 ```
 
-Requirements: Python 3.8+.
+Requirements: Python 3.9+.
 
 ## Basic Usage
 
@@ -53,7 +53,7 @@ wks.format('A1:B1', {'textFormat': {'bold': True}})
 
 ### Upgrade from Python 3.7
 
-Python 3.7 is [end-of-life](https://devguide.python.org/versions/). gspread v6 requires a minimum of Python 3.8.
+Python 3.8 is [end-of-life](https://devguide.python.org/versions/). gspread v6 requires a minimum of Python 3.9.
 
 ### Change `Worksheet.update` arguments
 

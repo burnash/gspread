@@ -1,6 +1,7 @@
-google-auth==1.12.0
-google-auth-oauthlib==0.4.1
-vcrpy
+google-auth==2.38.0
+google-auth-oauthlib==1.2.1
+vcrpy==7.0.0
 pytest
 pytest-vcr
-urllib3==1.26.15
+urllib3==1.26.20; python_version == "3.9"
+urllib3==2.3.0; python_version >= "3.10"

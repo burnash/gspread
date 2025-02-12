@@ -9,6 +9,7 @@ tests/creds.json
 
 # virtualenv
 env/
+.venv*/
 
 # tox
 .tox/

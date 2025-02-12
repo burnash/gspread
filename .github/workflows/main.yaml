@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.8", "3.9", "3.10", "3.11", "3.x"]
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.x"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,7 +26,7 @@ jobs:
       - run: pip install -U pip
       - run: pip install -U bandit mypy pyupgrade safety tox setuptools
       - run: bandit --recursive --skip B105,B110,B311,B605,B607 --exclude ./.tox .
-        if: ${{ matrix.python >= '3.8' }}
+        if: ${{ matrix.python >= '3.9' }}
       - run: tox -e lint
       - run: tox -e py
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py # --py36-plus
