@@ -2623,6 +2623,15 @@ class Worksheet:
             defaults to ``MergeType.merge_all``.
         :type merge_type: ``MergeType``
 
+        example::
+
+            worksheet.batch_merge(
+                [
+                    {"range": "A1:M1"},
+                    {"range": "D2:H2", "mergeType": utils.MergeType.merge_rows}
+                ]
+            )
+
         :returns: The body of the request response.
         :rtype: dict
         """
