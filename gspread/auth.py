@@ -284,9 +284,10 @@ def oauth_from_dict(
 
     if authorized_user_info is not None:
         creds = OAuthCredentials.from_authorized_user_info(authorized_user_info, scopes)
-
-    if not creds and credentials is not None:
+    elif credentials is not None:
         creds = flow(client_config=credentials, scopes=scopes)
+    else:
+        raise ValueError("no credentials object supplied")
 
     client = Client(auth=creds, http_client=http_client)
 
