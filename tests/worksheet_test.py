@@ -1752,6 +1752,110 @@ class WorksheetTest(GspreadTest):
         self.assertListEqual(w.get_values("C2:E2"), [[]])
 
     @pytest.mark.vcr()
+    def test_append_records(self):
+
+        w = self.spreadsheet.sheet1
+        values_before = [
+            ["header1", "header2"],
+            ["value1", "value2"],
+        ]
+        w.update(values_before, "A1:B2")
+        self.assertEqual(
+            w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
+            values_before,
+        )
+        update_values = [
+            {"header1": "new value1", "header2": "new value2"},
+            {"header1": "new value3"},
+        ]
+        w.append_records(update_values)
+        values_after = [
+            ["header1", "header2"],
+            ["value1", "value2"],
+            ["new value1", "new value2"],
+            ["new value3", ""],
+        ]
+        self.assertEqual(
+            w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
+            values_after,
+        )
+        with pytest.raises(GSpreadException):
+            w.append_record({"header1": "error value1", "location": "error value2"})
+
+        w.append_record(
+            {
+                "header1": "single entry1",
+                "status": "active",
+                "header2": "single entry2",
+            },
+            ignore_extra_headers=True,
+        )
+        values_after_single_entry = [
+            ["header1", "header2"],
+            ["value1", "value2"],
+            ["new value1", "new value2"],
+            ["new value3", ""],
+            ["single entry1", "single entry2"],
+        ]
+        self.assertEqual(
+            w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
+            values_after_single_entry,
+        )
+
+    @pytest.mark.vcr()
+    def test_insert_records(self):
+        w = self.spreadsheet.sheet1
+        values_before = [
+            ["header1", "header2"],
+            ["value1", "value2"],
+        ]
+        w.update(values_before, "A1:B2")
+        values_after = [
+            ["header1", "header2"],
+            ["value3", "value4"],
+            ["", "value5"],
+            ["value1", "value2"],
+        ]
+        self.assertEqual(
+            w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
+            values_before,
+        )
+
+        w.insert_records(
+            [
+                {"header1": "value3", "header2": "value4"},
+                {"header2": "value5"},
+            ]
+        )
+
+        self.assertEqual(
+            w.get_all_values(value_render_option=utils.ValueRenderOption.unformatted),
+            values_after,
+        )
+
+        with pytest.raises(GSpreadException):
+            w.insert_record({"header1": "error value1", "location": "error value2"})
+
+        w.insert_record(
+            {"header4": "ignore value", "header1": "value6", "header2": "value7"},
+            insert_row=4,
+            ignore_extra_headers=True,
+        )
+
+        values_after_single_entry = [
+            ["header1", "header2"],
+            ["value3", "value4"],
+            ["", "value5"],
+            ["value6", "value7"],
+            ["value1", "value2"],
+        ]
+
+        self.assertEqual(
+            w.get_all_values(),
+            values_after_single_entry,
+        )
+
+    @pytest.mark.vcr()
     def test_group_columns(self):
         w = self.sheet
         w.add_dimension_group_columns(0, 2)
