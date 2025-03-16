@@ -34,6 +34,8 @@ Requirements: Python 3.8+.
 ```python
 import gspread
 
+# First you need access to the Google API. Based on the route you
+# chose in Step 1, call either service_account(), oauth() or api_key().
 gc = gspread.service_account()
 
 # Open a sheet from a spreadsheet in one go
