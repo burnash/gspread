@@ -168,6 +168,12 @@ class ValidationConditionType(StrEnum):
     filter_expression = "FILTER_EXPRESSION"
 
 
+class TableDirection(StrEnum):
+    table = "TABLE"
+    down = "DOWN"
+    right = "RIGHT"
+
+
 def convert_credentials(credentials: Credentials) -> Credentials:
     module = credentials.__module__
     cls = credentials.__class__.__name__
@@ -977,6 +983,129 @@ def to_records(
     """
 
     return [dict(zip(headers, row)) for row in values]
+
+
+def _expand_right(values: List[List[str]], start: int, end: int, row: int) -> int:
+    """This is a private function, returning the column index of the last non empty cell
+    on the given row.
+
+    Search starts from ``start`` index column.
+    Search ends on ``end`` index column.
+    Searches only in the row pointed by ``row``.
+    """
+    try:
+        return values[row].index("", start, end) - 1
+    except ValueError:
+        return end
+
+
+def _expand_bottom(values: List[List[str]], start: int, end: int, col: int) -> int:
+    """This is a private function, returning the row index of the last non empty cell
+    on the given column.
+
+    Search starts from ``start`` index row.
+    Search ends on ``end`` index row.
+    Searches only in the column pointed by ``col``.
+    """
+    for rows in range(start, end):
+        # in case we try to look further than last row
+        if rows >= len(values):
+            return len(values) - 1
+
+        # check if cell is empty (or the row => empty cell)
+        if col >= len(values[rows]) or values[rows][col] == "":
+            return rows - 1
+
+    return end - 1
+
+
+def find_table(
+    values: List[List[str]],
+    start_range: str,
+    direction: TableDirection = TableDirection.table,
+) -> List[List[str]]:
+    """Expands a list of values based on non-null adjacent cells.
+
+    Expand can be done in 3 directions defined in :class:`~gspread.utils.TableDirection`
+
+        * ``TableDirection.right``: expands right until the first empty cell
+        * ``TableDirection.down``: expands down until the first empty cell
+        * ``TableDirection.table``: expands right until the first empty cell and down until first empty cell
+
+    In case of empty result an empty list is restuned.
+
+    When the given ``start_range`` is outside the given matrix of values the exception
+    :class:`~gspread.exceptions.InvalidInputValue` is raised.
+
+    Example::
+
+        values = [
+            ['', '',   '',   '', ''  ],
+            ['', 'B2', 'C2', '', 'E2'],
+            ['', 'B3', 'C3', '', 'E3'],
+            ['', ''  , ''  , '', 'E4'],
+        ]
+        >>> utils.find_table(TableDirection.table, 'B2')
+        [
+            ['B2', 'C2'],
+            ['B3', 'C3'],
+        ]
+
+
+    .. note::
+
+       the ``TableDirection.table`` will look right from starting cell then look down from starting cell.
+       It will not check cells located inside the table. This could lead to
+       potential empty values located in the middle of the table.
+
+    .. warning::
+
+       Given values must be padded with `''` empty values.
+
+    :param list[list] values: values where to find the table.
+    :param gspread.utils.TableDirection direction: the expand direction.
+    :param str start_range: the starting cell range.
+    :rtype list(list): the resulting matrix
+    """
+    row, col = a1_to_rowcol(start_range)
+
+    # a1_to_rowcol returns coordinates starting form 1
+    row -= 1
+    col -= 1
+
+    if row >= len(values):
+        raise InvalidInputValue(
+            "given row for start_range is outside given values: start range row ({}) >= rows in values {}".format(
+                row, len(values)
+            )
+        )
+
+    if col >= len(values[row]):
+        raise InvalidInputValue(
+            "given column for start_range is outside given values: start range column ({}) >= columns in values {}".format(
+                col, len(values[row])
+            )
+        )
+
+    if direction == TableDirection.down:
+        rightMost = col
+        bottomMost = _expand_bottom(values, row, len(values), col)
+
+    if direction == TableDirection.right:
+        bottomMost = row
+        rightMost = _expand_right(values, col, len(values[row]), row)
+
+    if direction == TableDirection.table:
+        rightMost = _expand_right(values, col, len(values[row]), row)
+        bottomMost = _expand_bottom(values, row, len(values), col)
+
+    result = []
+
+    # build resulting array
+    for rows in values[row : bottomMost + 1]:
+        result.append(rows[col : rightMost + 1])
+
+    return result
 
 
 # SHOULD NOT BE NEEDED UNTIL NEXT MAJOR VERSION

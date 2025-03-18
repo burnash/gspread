@@ -213,6 +213,43 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(values_with_merged, expected_merge)
 
     @pytest.mark.vcr()
+    def test_batch_merged_cells(self):
+        self.sheet.resize(4, 4)
+        sheet_data = [
+            ["1", "", "", ""],
+            ["", "", "title", ""],
+            ["", "", "2", ""],
+            ["num", "val", "", "0"],
+        ]
+
+        self.sheet.update(sheet_data, "A1:D4")
+
+        self.sheet.batch_merge(
+            [
+                {"range": "A1:B2"},
+                {"range": "C2:D2"},
+                {"range": "C3:C4"},
+            ]
+        )
+
+        expected_merge = [
+            ["1", "1", "", ""],
+            ["1", "1", "title", "title"],
+            ["", "", "2", ""],
+            ["num", "val", "2", "0"],
+        ]
+
+        values = self.sheet.get_values()
+        values_with_merged = self.sheet.get_values(combine_merged_cells=True)
+
+        self.assertEqual(values, sheet_data)
+        self.assertEqual(values_with_merged, expected_merge)
+
+        # test with cell address
+        values_with_merged = self.sheet.get_values("A1:D4", combine_merged_cells=True)
+        self.assertEqual(values_with_merged, expected_merge)
+
+    @pytest.mark.vcr()
     def test_get_values_with_args_or_kwargs(self):
         # test that get_values accepts args and kwargs
         self.sheet.resize(4, 4)
@@ -1632,20 +1669,63 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_get_notes(self):
         w = self.spreadsheet.worksheets()[0]
-        notes = {"A1": "read my note", "B2": "Or don't"}
-        notes_array = [
+        notes = {
+            "A1": "read my note",
+            "B2": "Or don't",
+            "A3": "another note",
+            "C3": "test",
+        }
+        expected_notes = [
             [notes["A1"]],
             ["", notes["B2"]],
+            ["another note", "", "test"],
+        ]
+
+        expected_range_notes = [
+            ["", "Or don't"],
+            ["another note", "", "test"],
         ]
 
         empty_notes = w.get_notes()
 
         w.insert_notes(notes)
+        range_notes = w.get_notes(grid_range="A2:C3")
 
         all_notes = w.get_notes()
 
         self.assertEqual(empty_notes, [[]])
-        self.assertEqual(all_notes, notes_array)
+        self.assertEqual(all_notes, expected_notes)
+        self.assertEqual(range_notes, expected_range_notes)
+
+    @pytest.mark.vcr()
+    def test_get_notes_2nd_sheet(self):
+        w2 = self.spreadsheet.add_worksheet("worksheet 2", 3, 3)
+
+        notes = {
+            "A1": "the first time",
+            "B3": "two sheets",
+        }
+
+        expected_notes = [
+            ["the first time"],
+            [],
+            ["", "two sheets"],
+        ]
+        expected_range_notes = [
+            [],
+            ["", "two sheets"],
+        ]
+
+        empty_notes = w2.get_notes()
+
+        w2.insert_notes(notes)
+
+        all_notes = w2.get_notes()
+        range_notes = w2.get_notes(grid_range="A2:C3")
+
+        self.assertEqual(empty_notes, [[]])
+        self.assertEqual(all_notes, expected_notes)
+        self.assertEqual(range_notes, expected_range_notes)
 
     @pytest.mark.vcr()
     def test_batch_clear(self):
