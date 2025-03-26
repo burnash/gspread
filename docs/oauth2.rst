@@ -280,7 +280,7 @@ Here's how to get one:
 
     import gspread
 
-    gc = gspread.api_key("<your newly create key>"")
+    gc = gspread.api_key("<your newly create key>")
 
     sh = gc.open_by_key("1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms")
 
