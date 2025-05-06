@@ -573,7 +573,7 @@ class Worksheet:
 
         def get_dupes(items):
             counts = Counter(items)
-            return [k for k in keys if counts[k] > 1]
+            return [item for item in counts if counts[item] > 1]
 
         if expected_headers is None:
             duplicates = get_dupes(keys)
