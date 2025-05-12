@@ -8,6 +8,7 @@ This module contains common worksheets' models.
 
 import re
 import warnings
+from collections import Counter
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -570,21 +571,24 @@ class Worksheet:
         keys = entire_sheet[head - 1]
         values = entire_sheet[head:]
 
+        def get_dupes(items):
+            counts = Counter(items)
+            return [item for item in counts if counts[item] > 1]
+
         if expected_headers is None:
-            # all headers must be unique
-            header_row_is_unique = len(keys) == len(set(keys))
-            if not header_row_is_unique:
+            duplicates = get_dupes(keys)
+            if duplicates:
                 raise GSpreadException(
-                    "the header row in the worksheet is not unique, "
-                    "try passing 'expected_headers' to get_all_records"
+                    f"the header row in the worksheet contains duplicates: {duplicates}"
+                    "To manually set the header row, use the `expected_headers` "
+                    "parameter of `get_all_records()`"
                 )
         else:
-            # all expected headers must be unique
-            expected_headers_are_unique = len(expected_headers) == len(
-                set(expected_headers)
-            )
-            if not expected_headers_are_unique:
-                raise GSpreadException("the given 'expected_headers' are not uniques")
+            duplicates = get_dupes(expected_headers)
+            if duplicates:
+                raise GSpreadException(
+                    f"the given 'expected_headers' contains duplicates: {duplicates}"
+                )
             # expected headers must be a subset of the actual headers
             if not all(header in keys for header in expected_headers):
                 raise GSpreadException(

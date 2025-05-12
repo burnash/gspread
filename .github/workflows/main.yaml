@@ -24,9 +24,8 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -U pip
-      - run: pip install -U bandit mypy pyupgrade pip-audit tox setuptools
+      - run: pip install -U bandit pyupgrade pip-audit tox setuptools
       - run: bandit --recursive --skip B105,B110,B311,B605,B607 --exclude ./.tox .
-        if: ${{ matrix.python >= '3.8' }}
       - run: tox -e lint
       - run: tox -e py
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py # --py36-plus
