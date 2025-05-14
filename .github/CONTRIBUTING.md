@@ -152,3 +152,4 @@ New release system:
 - Push the commit. Wait for the CI to pass.
 - Add a tag `vX.Y.Z` to the commit locally. This will trigger a new release on PyPi, and make a release on GitHub.
 - View the release on [GitHub](https://github.com/burnash/gspread/releases) and [PyPi](https://pypi.org/project/gspread/)!
+- Sync or add the latest version to the [Gspread ReadTheDocs](https://app.readthedocs.org/projects/gspread/)
