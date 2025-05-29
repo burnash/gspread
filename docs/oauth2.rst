@@ -145,6 +145,63 @@ There is also the option to pass credentials as a dictionary:
 
 .. _oauth-client-id:
 
+For Bots Running inside GCP (Cloud Run, Cloud Functions, Cloud Build): Using Application-Default Credentials
+------------------------------------------------------------------------------------------------------------
+
+When your code runs *inside* Google Cloud, every container, function, or build already
+has an **identity**—the service account the runtime is configured to use.  
+Google injects a short-lived OAuth 2.0 access token for that service account, so you
+don’t need to ship or mount a JSON key file.  All you have to do is:
+
+1. :ref:`enable-api-access` if you haven’t done it yet (Sheets API **and** Drive API).
+
+2. Attach a service account to the Cloud Run service / Cloud Function / Cloud Build step.  
+   Share the target spreadsheet with the service account’s **email address**  
+   (e.g. `my-run-sa@project.iam.gserviceaccount.com`) just as you would with a colleague.
+
+3. Use `google.auth.default()` to pick up the in-runtime credentials and hand them to gspread:
+
+   ::
+
+       import google.auth
+       import gspread
+
+       SCOPES = [
+           "https://www.googleapis.com/auth/spreadsheets",
+           "https://www.googleapis.com/auth/drive",
+       ]
+
+       creds, _ = google.auth.default(scopes=SCOPES)
+       gc = gspread.authorize(creds)
+
+       sh = gc.open_by_key("1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms")
+       print(sh.sheet1.get("A1"))
+
+   * No `GOOGLE_APPLICATION_CREDENTIALS` environment variable.  
+   * No JSON key copied into the container.  
+   * Tokens are rotated automatically by the platform.
+
+4. **Local testing:** run
+
+   ::
+
+       gcloud auth application-default login \
+         --scopes=https://www.googleapis.com/auth/drive,\
+https://www.googleapis.com/auth/spreadsheets
+
+   to emulate the same Application-Default Credentials flow on your laptop.
+
+.. note::
+   If you forget to pass the Sheets **and** Drive scopes when calling
+   ``google.auth.default(scopes=...)`` you will get a *403: insufficient
+   permissions* error even though the code is running on GCP.  Always include
+   both scopes.
+
+.. warning::
+   ADC proves *who* your code is, but Sheets access is still controlled by the
+   spreadsheet’s share list.  Make sure the service account is listed there,
+   otherwise you’ll see ``gspread.exceptions.SpreadsheetNotFound``.
+
 For End Users: Using OAuth Client ID
 ------------------------------------
 
