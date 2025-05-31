@@ -186,8 +186,8 @@ don’t need to ship or mount a JSON key file.  All you have to do is:
    ::
 
        gcloud auth application-default login \
-         --scopes=https://www.googleapis.com/auth/drive,\
-https://www.googleapis.com/auth/spreadsheets
+           --scopes=https://www.googleapis.com/auth/drive,\
+           https://www.googleapis.com/auth/spreadsheets
 
    to emulate the same Application-Default Credentials flow on your laptop.
 
