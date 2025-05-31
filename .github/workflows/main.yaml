@@ -24,11 +24,11 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -U pip
-      - run: pip install -U bandit pyupgrade pip-audit tox setuptools
+      - run: pip install -U bandit pyupgrade pip-audit tox
       - run: bandit --recursive --skip B105,B110,B311,B605,B607 --exclude ./.tox .
       - run: tox -e lint
       - run: tox -e py
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py # --py36-plus
-      - run: pip-audit --ignore-vuln PYSEC-2023-228 --ignore-vuln PYSEC-2022-43012 # pip:PYSEC-2023-228 setuptools:PYSEC-2022-43012
+      - run: pip-audit --ignore-vuln PYSEC-2023-228 # pip:PYSEC-2023-228
       - run: tox -e build
       - run: tox -e doc
