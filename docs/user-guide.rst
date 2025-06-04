@@ -350,7 +350,73 @@ Check out the api docs for `DataValidationRule`_ and `CondtionType`_ for more de
 
 .. _CondtionType: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/other#ConditionType
 
-.. _DataValidationRule: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#DataValidationRule 
+.. _DataValidationRule: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#DataValidationRule
+
+Extract table
+~~~~~~~~~~~~~
+
+Gspread provides a function to extract a data table.
+A data table is defined as a rectangular table that stops either on the **first empty** cell or
+the **enge of the sheet**.
+
+You can extract table from any address by providing the top left corner of the desired table.
+
+Gspread provides 3 directions for searching the end of the table:
+
+   * :attr:`~gspread.utils.TableDirection.right`: extract a single row searching on the right of the starting cell
+   * :attr:`~gspread.utils.TableDirection.down`: extract a single column searching on the bottom of the starting cell
+   * :attr:`~gspread.utils.TableDirection.table`: extract a rectangular table by first searching right from starting cell,
+     then searching down from starting cell.
+
+      .. note::
+
+        Gspread will not look for empty cell inside the table. it only look at the top row and first column.
+
+Example extracting a table from the below sample sheet:
+
+.. list-table:: Find table
+   :header-rows: 1
+
+   * - ID
+     - Name
+     - Universe
+     - Super power
+   * - 1
+     - Batman
+     - DC
+     - Very rich
+   * - 2
+     - DeadPool
+     - Marvel
+     - self healing
+   * - 3
+     - Superman
+     - DC
+     - super human
+   * -
+     - \-
+     - \-
+     - \-
+   * - 5
+     - Lavigne958
+     -
+     - maintains Gspread
+   * - 6
+     - Alifee
+     -
+     - maintains Gspread
+
+Using the below code will result in rows 2 to 4:
+
+.. code:: python
+
+   worksheet.expand("A2")
+
+   [
+      ["Batman", "DC", "Very rich"],
+      ["DeadPool", "Marvel", "self healing"],
+      ["Superman", "DC", "super human"],
+   ]
 
 
 

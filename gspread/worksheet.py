@@ -8,6 +8,7 @@ This module contains common worksheets' models.
 
 import re
 import warnings
+from collections import Counter
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -41,6 +42,7 @@ from .utils import (
     PasteOrientation,
     PasteType,
     T,
+    TableDirection,
     ValidationConditionType,
     ValueInputOption,
     ValueRenderOption,
@@ -53,6 +55,7 @@ from .utils import (
     convert_colors_to_hex_value,
     convert_hex_to_colors_dict,
     fill_gaps,
+    find_table,
     finditem,
     get_a1_from_absolute_range,
     is_full_a1_notation,
@@ -507,12 +510,12 @@ class Worksheet:
         values.
 
         This method uses the function :func:`gspread.utils.to_records` to build the resulting
-        records. It mainly wraps around the function and handle the simplest use case
-        using a header row (default = 1) and the the reste of the entire sheet.
+        records. It mainly wraps around the function and handles the simplest use case
+        using a header row (default = 1) and the rest of the entire sheet.
 
         .. note::
 
-           for any particular use-case, please get your dataset, your headers
+           For more particular use-cases, please get your dataset, your headers and
            then use the function :func:`gspread.utils.to_records` to build the records.
 
         Cell values are numericised (strings that can be read as ints or floats
@@ -524,7 +527,7 @@ class Worksheet:
 
             .. note::
 
-                returned dictionaries will contain all headers even if not included in this list
+                Returned dictionaries will contain all headers even if not included in this list.
         :param value_render_option: (optional) Determines how values should
             be rendered in the output. See `ValueRenderOption`_ in
             the Sheets API.
@@ -568,21 +571,24 @@ class Worksheet:
         keys = entire_sheet[head - 1]
         values = entire_sheet[head:]
 
+        def get_dupes(items):
+            counts = Counter(items)
+            return [item for item in counts if counts[item] > 1]
+
         if expected_headers is None:
-            # all headers must be unique
-            header_row_is_unique = len(keys) == len(set(keys))
-            if not header_row_is_unique:
+            duplicates = get_dupes(keys)
+            if duplicates:
                 raise GSpreadException(
-                    "the header row in the worksheet is not unique, "
-                    "try passing 'expected_headers' to get_all_records"
+                    f"the header row in the worksheet contains duplicates: {duplicates}"
+                    "To manually set the header row, use the `expected_headers` "
+                    "parameter of `get_all_records()`"
                 )
         else:
-            # all expected headers must be unique
-            expected_headers_are_unique = len(expected_headers) == len(
-                set(expected_headers)
-            )
-            if not expected_headers_are_unique:
-                raise GSpreadException("the given 'expected_headers' are not uniques")
+            duplicates = get_dupes(expected_headers)
+            if duplicates:
+                raise GSpreadException(
+                    f"the given 'expected_headers' contains duplicates: {duplicates}"
+                )
             # expected headers must be a subset of the actual headers
             if not all(header in keys for header in expected_headers):
                 raise GSpreadException(
@@ -2626,8 +2632,52 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def get_notes(self, default_empty_value: Optional[str] = "") -> List[List[str]]:
-        """Returns a list of lists containing all notes in the sheet.
+    def batch_merge(
+        self,
+        merges: List[Dict[Literal["range", "mergeType"], Union[str, MergeType]]],
+        merge_type: MergeType = MergeType.merge_all,
+    ) -> Any:
+        """Merge multiple ranges at the same time.
+
+        :param merges: list of dictionaries with the ranges(is A1-notation), and
+            an optional ``MergeType`` field.
+            See `MergeType`_ in the Sheets API reference.
+        :type merges: List[Dict[Literal["range", "mergeType"], Union[str, MergeType]]]
+        :params merge_type: (optional) default ``MergeType`` for all merges missing the merges.
+            defaults to ``MergeType.merge_all``.
+        :type merge_type: ``MergeType``
+
+        example::
+
+            worksheet.batch_merge(
+                [
+                    {"range": "A1:M1"},
+                    {"range": "D2:H2", "mergeType": utils.MergeType.merge_rows}
+                ]
+            )
+
+        :returns: The body of the request response.
+        :rtype: dict
+        """
+
+        requests = [
+            {
+                "mergeCells": {
+                    "range": a1_range_to_grid_range(merge["range"], self.id),
+                    "mergeType": merge.get("mergeType", merge_type),
+                }
+            }
+            for merge in merges
+        ]
+
+        return self.client.batch_update(self.spreadsheet_id, {"requests": requests})
+
+    def get_notes(
+        self,
+        default_empty_value: Optional[str] = "",
+        grid_range: Optional[str] = None,
+    ) -> List[List[str]]:
+        """Returns a list of lists containing all notes in the sheet or range.
 
         .. note::
 
@@ -2642,6 +2692,7 @@ class Worksheet:
 
         :param str default_empty_value: (optional) Determines which value to use
             for cells without notes, defaults to None.
+        :param str grid_range: (optional) Range name in A1 notation, e.g. 'A1:A5'.
 
         Examples::
 
@@ -2651,21 +2702,32 @@ class Worksheet:
             # 2    -      B2
 
             # Read all notes from the sheet
-            >>> arr = worksheet.get_notes()
-            >>> print(arr)
+            >>> worksheet.get_notes()
             [
                 ["A1"],
                 ["", "B2"]
             ]
-            >>> print(gspread.utils.fill_gaps(arr, len(arr), max(len(a) for a in arr), None))
+            >>> arr = worksheet.get_notes()
+            >>> gspread.utils.fill_gaps(arr, len(arr), max(len(a) for a in arr), None)
             [
                 ["A1", ""],
                 ["", "B2"]
             ]
+            # Read notes from a specific range
+            >>> worksheet.get_notes(grid_range="A2:B2")
+            [
+                ["", "B2"]
+            ]
         """
-        params: ParamsType = {"fields": "sheets.data.rowData.values.note"}
+        params: ParamsType = {
+            "fields": "sheets.data.rowData.values.note",
+            "ranges": absolute_range_name(self.title, grid_range),
+        }
+
         res = self.client.spreadsheets_get(self.spreadsheet_id, params)
-        data = res["sheets"][self.index]["data"][0].get("rowData", [{}])
+
+        # access 0th sheet because we specified a sheet with params["ranges"] above
+        data = res["sheets"][0]["data"][0].get("rowData", [{}])
         notes: List[List[str]] = []
         for row in data:
             notes.append([])
@@ -3356,3 +3418,56 @@ class Worksheet:
         }
 
         return self.client.batch_update(self.spreadsheet_id, body)
+
+    def expand(
+        self,
+        top_left_range_name: str = "A1",
+        direction: TableDirection = TableDirection.table,
+    ) -> List[List[str]]:
+        """Expands a cell range based on non-null adjacent cells.
+
+        Expand can be done in 3 directions defined in :class:`~gspread.utils.TableDirection`
+
+        * ``TableDirection.right``: expands right until the first empty cell
+        * ``TableDirection.down``: expands down until the first empty cell
+        * ``TableDirection.table``: expands right until the first empty cell and down until the first empty cell
+
+        In case of empty result an empty list is restuned.
+
+        When the given ``start_range`` is outside the given matrix of values the exception
+        :class:`~gspread.exceptions.InvalidInputValue` is raised.
+
+        Example::
+
+            values = [
+                ['', '',   '',   '', ''  ],
+                ['', 'B2', 'C2', '', 'E2'],
+                ['', 'B3', 'C3', '', 'E3'],
+                ['', ''  , ''  , '', 'E4'],
+            ]
+            >>> utils.find_table(TableDirection.table, 'B2')
+            [
+                ['B2', 'C2'],
+                ['B3', 'C3'],
+            ]
+
+
+        .. note::
+
+            the ``TableDirection.table`` will look right from starting cell then look down from starting cell.
+            It will not check cells located inside the table. This could lead to
+            potential empty values located in the middle of the table.
+
+        .. note::
+
+            when it is necessary to use non-default options for :meth:`~gspread.worksheet.Worksheet.get`,
+            please get the data first using desired options then use the function
+            :func:`gspread.utils.find_table` to extract the desired table.
+
+        :param str top_left_range_name: the top left corner of the table to expand.
+        :param gspread.utils.TableDirection direction: the expand direction
+        :rtype list(list): the resulting matrix
+        """
+
+        values = self.get(pad_values=True)
+        return find_table(values, top_left_range_name, direction)

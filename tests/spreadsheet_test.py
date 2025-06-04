@@ -5,7 +5,7 @@ import pytest
 
 import gspread
 
-from .conftest import GspreadTest
+from .conftest import GspreadTest, invalid_json_client
 
 
 class SpreadsheetTest(GspreadTest):
@@ -19,6 +19,16 @@ class SpreadsheetTest(GspreadTest):
         yield
 
         client.del_spreadsheet(SpreadsheetTest.spreadsheet.id)
+
+    @pytest.mark.vcr()
+    def test_bad_json_api_error(self):
+        # no need to pass auth tokens we use a custom HTTP Client that always fail
+        bad_client, error_msg = invalid_json_client()
+
+        with pytest.raises(gspread.exceptions.APIError) as e:
+            bad_client.get_file_drive_metadata("abcdef0123456789")
+
+        self.assertTrue(e.match(error_msg.decode()))
 
     @pytest.mark.vcr()
     def test_properties(self):

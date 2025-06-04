@@ -1,6 +1,61 @@
 Release History
 ===============
 
+6.2.1 (2025-05-14)
+------------------
+
+* Fix public API auth snippet by @Jayy001 in https://github.com/burnash/gspread/pull/1545
+* Clarify the first step: authentication by @hraftery in https://github.com/burnash/gspread/pull/1546
+* Fix typo in community.rst by @s2t2 in https://github.com/burnash/gspread/pull/1547
+* rearrange flow to remove reference to `creds` by @alifeee in https://github.com/burnash/gspread/pull/1525
+* switch safety for pip-audit by @alifeee in https://github.com/burnash/gspread/pull/1551
+* Include the duplicate column names in error message by @NickCrews in https://github.com/burnash/gspread/pull/1548
+
+6.2.0 (2025-02-27)
+------------------
+
+* Add property expiry in gspread client by @lavigne958 in https://github.com/burnash/gspread/pull/1453
+* Bump typing-extensions from 4.11.0 to 4.12.0 by @dependabot in https://github.com/burnash/gspread/pull/1471
+* Fix code block formatting typo in README by @agrvz in https://github.com/burnash/gspread/pull/1474
+* ignore jinja CVE by @lavigne958 in https://github.com/burnash/gspread/pull/1481
+* Type part of test suite utils by @lavigne958 in https://github.com/burnash/gspread/pull/1483
+* Remove passing exception as args to super in APIError by @mike-flowers-airbnb in https://github.com/burnash/gspread/pull/1477
+* Bump mypy from 1.10.0 to 1.10.1 by @dependabot in https://github.com/burnash/gspread/pull/1488
+* Update advanced.rst by @yatender-rjliving in https://github.com/burnash/gspread/pull/1492
+* Bump bandit from 1.7.8 to 1.7.9 by @dependabot in https://github.com/burnash/gspread/pull/1485
+* Bump flake8 from 7.0.0 to 7.1.0 by @dependabot in https://github.com/burnash/gspread/pull/1486
+* Bump typing-extensions from 4.12.0 to 4.12.2 by @dependabot in https://github.com/burnash/gspread/pull/1480
+* Bump mypy from 1.10.1 to 1.11.1 by @dependabot in https://github.com/burnash/gspread/pull/1497
+* Bump black from 24.4.2 to 24.8.0 by @dependabot in https://github.com/burnash/gspread/pull/1499
+* Bump flake8 from 7.1.0 to 7.1.1 by @dependabot in https://github.com/burnash/gspread/pull/1501
+* Fix docstring about BackOffHTTPClient by @pataiji in https://github.com/burnash/gspread/pull/1502
+* Fix comment to reflect correct google-auth package version requirement by @ikmals in https://github.com/burnash/gspread/pull/1503
+* Doc/community addons orm package by @lavigne958 in https://github.com/burnash/gspread/pull/1506
+* fix: fix type annotation for default_blank by @hiro-o918 in https://github.com/burnash/gspread/pull/1505
+* Bump mypy from 1.11.1 to 1.11.2 by @dependabot in https://github.com/burnash/gspread/pull/1508
+* better handler API error parsing. by @lavigne958 in https://github.com/burnash/gspread/pull/1510
+* Add test on receiving an invalid JSON in the APIError exception handler. by @lavigne958 in https://github.com/burnash/gspread/pull/1512
+* [feature] Add 'expand_table' feature by @lavigne958 in https://github.com/burnash/gspread/pull/1475
+* Bump bandit from 1.7.9 to 1.7.10 by @dependabot in https://github.com/burnash/gspread/pull/1514
+* Created a `batch_merge` function [Issue #1473] by @muddi900 in https://github.com/burnash/gspread/pull/1498
+* Added a range option to `Worksheet.get_notes` [Issue #1482] by @muddi900 in https://github.com/burnash/gspread/pull/1487
+* Documentation update for gspread.worksheet.Worksheet.get_all_records by @levon003 in https://github.com/burnash/gspread/pull/1529
+* add example for `batch_merge` by @alifeee in https://github.com/burnash/gspread/pull/1542
+* explicitly list exported package symbols by @alinsavix in https://github.com/burnash/gspread/pull/1531
+
+6.1.4 (2024-10-21)
+------------------
+
+* remove dependency on requests-2.27.0
+
+6.1.3 (2024-10-03)
+------------------
+
+* ignore jinja CVE by @lavigne958 in https://github.com/burnash/gspread/pull/1481
+* Remove passing exception as args to super in APIError by @mike-flowers-airbnb in https://github.com/burnash/gspread/pull/1477
+* better handler API error parsing. by @lavigne958 in https://github.com/burnash/gspread/pull/1510
+* Add test on receiving an invalid JSON in the APIError exception handler. by @lavigne958 in https://github.com/burnash/gspread/pull/1512
+
 6.1.2 (2024-05-17)
 ------------------
 
@@ -63,7 +118,7 @@ Release History
 
 6.0.0 (2024-01-28)
 ------------------
-
+New Contributor
 * Remove deprecated method delete_row by @cgkoutzigiannis in https://github.com/burnash/gspread/pull/1062
 * Initial typing in client.py by @OskarBrzeski in https://github.com/burnash/gspread/pull/1159
 * Split client http client by @lavigne958 in https://github.com/burnash/gspread/pull/1190

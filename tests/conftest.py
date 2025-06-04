@@ -1,7 +1,8 @@
+import io
 import itertools
 import os
 import unittest
-from typing import Any, Dict, Generator, Optional
+from typing import Any, Dict, Generator, Optional, Tuple
 
 import pytest
 from google.auth.credentials import Credentials
@@ -107,6 +108,26 @@ https://github.com/burnash/gspread/blob/master/.github/CONTRIBUTING.md
             raise e
 
 
+class InvalidJsonApiErrorClient(VCRHTTPClient):
+    """Special HTTP client that always raises an exception due to 500 error with
+    an invalid JSON body.
+    In this case for now it returns some HTML to simulate the use of the wrong HTTP endpoint.
+    """
+
+    ERROR_MSG = bytes("<html><body><h1>Failed</h1></body></html>", "utf-8")
+
+    def request(self, *args: Any, **kwargs: Any) -> Response:
+        resp = Response()
+        # fake an HTML response instead of a valid JSON response.
+        # urllib3 expect 'raw' to be bytes.
+        resp.raw = io.BytesIO(self.ERROR_MSG)
+        resp.status_code = 500
+        resp.encoding = "text/html"
+
+        # now raise the APIError exception as the regular HTTP client would
+        raise gspread.exceptions.APIError(resp)
+
+
 @pytest.fixture(scope="module")
 def client() -> Client:
     if CREDS_FILENAME is not None:
@@ -119,3 +140,16 @@ def client() -> Client:
         raise AssertionError
 
     return gc
+
+
+def invalid_json_client() -> Tuple[Client, bytes]:
+    """Returns an HTTP client that always returns an invalid JSON payload
+    and the expected error message from the raised exception.
+    """
+    return (
+        Client(
+            auth=DummyCredentials(DUMMY_ACCESS_TOKEN),
+            http_client=InvalidJsonApiErrorClient,
+        ),
+        InvalidJsonApiErrorClient.ERROR_MSG,
+    )
