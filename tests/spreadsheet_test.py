@@ -253,6 +253,6 @@ class SpreadsheetTest(GspreadTest):
         worksheet = self.spreadsheet.sheet1
         worksheet.format("A1", {"backgroundColor": {"red": 1.0}})
 
-        rules = self.spreadsheet.list_conditional_format_rules(worksheet.id)
+        rules = self.spreadsheet.list_conditional_formatting_rules(worksheet.id)
 
         self.assertEqual(len(rules), 1)

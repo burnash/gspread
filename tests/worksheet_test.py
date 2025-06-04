@@ -2012,9 +2012,10 @@ class WorksheetTest(GspreadTest):
     def test_delete_conditional_formatting_rule(self):
         sheet = self.sheet
         spreadsheet = self.spreadsheet
+        worksheet = self.spreadsheet.sheet1
 
         # add a conditional format rule to the spreadsheet
-        spreadsheet.format(
+        worksheet.format(
             "A1:A2",
             {
                 "backgroundColor": {"green": 1, "blue": 1},
@@ -2022,12 +2023,12 @@ class WorksheetTest(GspreadTest):
         )
 
         # list the conditions on the spreadsheet
-        rules  = spreadsheet.list_conditional_formatting_rules(0)
+        rules = spreadsheet.list_conditional_formatting_rules(0)
         self.assertEqual(len(rules), 1)
 
         # delete the first rule by index
         sheet.delete_conditional_formatting_rule(0)
 
         # verify rule was removed
-        rules  = spreadsheet.list_conditional_formatting_rules(0)
+        rules = spreadsheet.list_conditional_formatting_rules(0)
         self.assertEqual(len(rules), 0)
