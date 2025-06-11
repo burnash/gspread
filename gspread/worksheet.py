@@ -3501,4 +3501,42 @@ class Worksheet:
         delimiter_type: DelimiterType = DelimiterType.comma,
         custom_delimiter: Optional[str] = None,
     ) -> JSONResponse:
+        """
+        Split text from a single column into multiple columns based on a delimiter.
+        
+        :param str source_range: A string with range value in A1 notation (e.g., 'A:A', 'B2:B10').
+            The range must span exactly one column.
+        
+        :param delimiter_type: The type of delimiter to use for splitting.
+            Possible values are:
+        
+            ``DelimiterType.comma`` - Split on commas ","
+            ``DelimiterType.semicolon`` - Split on semicolons ";"
+            ``DelimiterType.period`` - Split on periods "."
+            ``DelimiterType.space`` - Split on spaces " "
+            ``DelimiterType.custom`` - Split on a custom delimiter (requires `custom_delimiter`)
+            ``DelimiterType.autodetect`` - Automatically detect the delimiter
+        
+        :type delimiter_type: :class:`~gspread.utils.DelimiterType`
+        
+        :param str custom_delimiter: (optional) The custom delimiter to use.
+            Required when `delimiter_type` is `DelimiterType.custom`.
+        
+        :returns: The response body from the request
+        :rtype: JSONResponse
+        
+        :raises ValueError: If the source range spans more than one column, or if 
+            `delimiter_type` is CUSTOM but no `custom_delimiter` is provided.
+        
+        Example::
+        
+            # Split column A on commas
+            worksheet.text_to_column('A:A', DelimiterType.comma)
+            
+            # Split range B2:B10 using a custom delimiter
+            worksheet.text_to_column('B2:B10', DelimiterType.custom, custom_delimiter='|')
+            
+            # Auto-detect delimiter for column C
+            worksheet.text_to_column('C:C', DelimiterType.autodetect)
+        """
         return self._text_to_column(source_range, delimiter_type, custom_delimiter)
