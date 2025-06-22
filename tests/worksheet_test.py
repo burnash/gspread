@@ -2007,3 +2007,207 @@ class WorksheetTest(GspreadTest):
         # Further ensure we are able to access the exception's properties after pickling
         reloaded_exception = pickle.loads(pickle.dumps(ex.exception))  # nosec
         self.assertEqual(reloaded_exception.args[0]["status"], "INVALID_ARGUMENT")
+
+    @pytest.mark.vcr()
+    def test_text_to_column_comma_delimiter(self):
+        test_data = [
+            ["apple,banana,cherry"],
+            ["red,blue,green"],
+            ["one,two,three,four"]
+        ]
+
+        self.sheet.update(test_data, "A1:A3")
+
+        response = self.sheet.text_to_column("A1:A3", utils.DelimiterType.comma)
+
+        self.assertIn("spreadsheetId", response)
+        self.assertIn("replies", response)
+        self.assertEqual(response["spreadsheetId"], self.spreadsheet.id)
+
+        result_data = self.sheet.get("A1:D3")
+
+        expected_data = [
+            ["apple", "banana", "cherry"],
+            ["red", "blue", "green"],
+            ["one", "two", "three", "four"]
+        ]
+
+        self.assertEqual(result_data, expected_data)
+    
+
+    @pytest.mark.vcr()
+    def test_text_to_column_custom_delimiter_pipe(self):
+        test_data = [
+            ["apple|banana|cherry"],
+            ["red|blue|green"],
+            ["one|two|three|four"]
+        ]
+
+        self.sheet.update(test_data, "A1:A3")
+
+        response = self.sheet.text_to_column("A1:A3", utils.DelimiterType.custom, custom_delimiter="|")
+
+        self.assertIn("spreadsheetId", response)
+        self.assertIn("replies", response)
+        self.assertEqual(response["spreadsheetId"], self.spreadsheet.id)
+
+        result_data = self.sheet.get("A1:D3", pad_values=True)
+
+        expected_data = [
+            ["apple", "banana", "cherry", ""],
+            ["red", "blue", "green", ""],
+            ["one", "two", "three", "four"]
+        ]
+
+        self.assertEqual(result_data, expected_data)
+
+    @pytest.mark.vcr()
+    def test_text_to_column_autodetect_delimiter(self):
+        # Test autodetect with consistent comma delimiters
+        test_data = [
+            ["apple,banana,cherry"],
+            ["red,blue,green"],
+            ["one,two,three"]
+        ]
+
+        self.sheet.update(test_data, "A1:A3")
+
+        response = self.sheet.text_to_column("A1:A3", utils.DelimiterType.autodetect)
+
+        # Check response structure
+        self.assertIn("spreadsheetId", response)
+        self.assertIn("replies", response)
+        self.assertEqual(response["spreadsheetId"], self.spreadsheet.id)
+
+        # The autodetect should detect comma as the delimiter and split all rows
+        result_data = self.sheet.get("A1:C3", pad_values=True)
+
+        expected_data = [
+            ["apple", "banana", "cherry"],
+            ["red", "blue", "green"],
+            ["one", "two", "three"]
+        ]
+
+        self.assertEqual(result_data, expected_data)
+
+    @pytest.mark.vcr()
+    def test_text_to_column_with_cast_to_a1_notation(self):
+        test_data = [
+            ["apple,banana"],
+            ["red,blue"]
+        ]
+
+        self.sheet.update(test_data, "A1:A2")
+
+        # Test using numeric coordinates (should be converted to A1 notation)
+        response = self.sheet.text_to_column(1, 1, 2, 1, utils.DelimiterType.comma)
+
+        # Check response structure
+        self.assertIn("spreadsheetId", response)
+        self.assertIn("replies", response)
+        self.assertEqual(response["spreadsheetId"], self.spreadsheet.id)
+
+        # Verify the split worked
+        result_data = self.sheet.get("A1:B2", pad_values=True)
+        expected_data = [
+            ["apple", "banana"],
+            ["red", "blue"]
+        ]
+
+        self.assertEqual(result_data, expected_data)
+
+    def test_text_to_column_invalid_range_multiple_columns(self):
+        # Test without @pytest.mark.vcr() since this should raise an error before API call
+        with self.assertRaises(ValueError) as context:
+            self.sheet.text_to_column("A1:B1", utils.DelimiterType.comma)
+
+        self.assertIn("Source range must span exactly one column", str(context.exception))
+        self.assertIn("Got range spanning 2 columns", str(context.exception))
+
+    def test_text_to_column_custom_delimiter_missing(self):
+        # Test without @pytest.mark.vcr() since this should raise an error before API call
+        with self.assertRaises(ValueError) as context:
+            self.sheet.text_to_column("A1:A1", utils.DelimiterType.custom)
+
+        self.assertIn("custom_delimiter parameter is required", str(context.exception))
+
+    @pytest.mark.vcr()
+    def test_text_to_column_empty_cells(self):
+        test_data = [
+            ["apple,banana"],
+            [""],  # Empty cell
+            ["red,blue"]
+        ]
+
+        self.sheet.update(test_data, "A1:A3")
+
+        response = self.sheet.text_to_column("A1:A3", utils.DelimiterType.comma)
+
+        # Check response structure
+        self.assertIn("spreadsheetId", response)
+        self.assertIn("replies", response)
+
+        # Get result data
+        result_data = self.sheet.get("A1:B3", pad_values=True)
+
+        expected_data = [
+            ["apple", "banana"],
+            ["", ""],  # Empty cell should remain empty
+            ["red", "blue"]
+        ]
+
+        self.assertEqual(result_data, expected_data)
+
+    @pytest.mark.vcr()
+    def test_text_to_column_no_delimiter_found(self):
+        test_data = [
+            ["apple"],  # No delimiter
+            ["banana"],  # No delimiter
+            ["cherry"]  # No delimiter
+        ]
+
+        self.sheet.update(test_data, "A1:A3")
+
+        response = self.sheet.text_to_column("A1:A3", utils.DelimiterType.comma)
+
+        # Check response structure
+        self.assertIn("spreadsheetId", response)
+        self.assertIn("replies", response)
+
+        # When no delimiter is found, text should remain in original column
+        result_data = self.sheet.get("A1:A3")
+
+        expected_data = [
+            ["apple"],
+            ["banana"],
+            ["cherry"]
+        ]
+
+        self.assertEqual(result_data, expected_data)
+
+    @pytest.mark.vcr()
+    def test_text_to_column_with_unicode_text(self):
+        test_data = [
+            ["café,naïve,résumé"],
+            ["北京,東京,서울"],
+            ["🍎,🍌,🍒"]
+        ]
+
+        self.sheet.update(test_data, "A1:A3")
+
+        response = self.sheet.text_to_column("A1:A3", utils.DelimiterType.comma)
+
+        # Check response structure
+        self.assertIn("spreadsheetId", response)
+        self.assertIn("replies", response)
+
+        # Get result data
+        result_data = self.sheet.get("A1:C3", pad_values=True)
+
+        expected_data = [
+            ["café", "naïve", "résumé"],
+            ["北京", "東京", "서울"],
+            ["🍎", "🍌", "🍒"]
+        ]
+
+        self.assertEqual(result_data, expected_data)

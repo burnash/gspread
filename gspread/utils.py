@@ -178,7 +178,7 @@ class DelimiterType(StrEnum):
     unspecified = "DELIMITER_TYPE_UNSPECIFIED"
     comma = "COMMA"
     semicolon = "SEMICOLON"
-    peroid = "PERIOD"
+    period = "PERIOD"
     space = "SPACE"
     custom = "CUSTOM"
     autodetect = "AUTODETECT"
