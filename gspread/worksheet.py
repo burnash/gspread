@@ -35,6 +35,7 @@ from .http_client import HTTPClient, ParamsType
 from .urls import WORKSHEET_DRIVE_URL
 from .utils import (
     DateTimeOption,
+    DelimiterType,
     Dimension,
     GridRangeType,
     InsertDataOption,
@@ -62,7 +63,6 @@ from .utils import (
     numericise_all,
     rowcol_to_a1,
     to_records,
-    DelimiterType,
 )
 
 if TYPE_CHECKING is True:

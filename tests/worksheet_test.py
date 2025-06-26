@@ -2013,7 +2013,7 @@ class WorksheetTest(GspreadTest):
         test_data = [
             ["apple,banana,cherry"],
             ["red,blue,green"],
-            ["one,two,three,four"]
+            ["one,two,three,four"],
         ]
 
         self.sheet.update(test_data, "A1:A3")
@@ -2029,23 +2029,24 @@ class WorksheetTest(GspreadTest):
         expected_data = [
             ["apple", "banana", "cherry"],
             ["red", "blue", "green"],
-            ["one", "two", "three", "four"]
+            ["one", "two", "three", "four"],
         ]
 
         self.assertEqual(result_data, expected_data)
-    
 
     @pytest.mark.vcr()
     def test_text_to_column_custom_delimiter_pipe(self):
         test_data = [
             ["apple|banana|cherry"],
             ["red|blue|green"],
-            ["one|two|three|four"]
+            ["one|two|three|four"],
         ]
 
         self.sheet.update(test_data, "A1:A3")
 
-        response = self.sheet.text_to_column("A1:A3", utils.DelimiterType.custom, custom_delimiter="|")
+        response = self.sheet.text_to_column(
+            "A1:A3", utils.DelimiterType.custom, custom_delimiter="|"
+        )
 
         self.assertIn("spreadsheetId", response)
         self.assertIn("replies", response)
@@ -2056,7 +2057,7 @@ class WorksheetTest(GspreadTest):
         expected_data = [
             ["apple", "banana", "cherry", ""],
             ["red", "blue", "green", ""],
-            ["one", "two", "three", "four"]
+            ["one", "two", "three", "four"],
         ]
 
         self.assertEqual(result_data, expected_data)
@@ -2064,11 +2065,7 @@ class WorksheetTest(GspreadTest):
     @pytest.mark.vcr()
     def test_text_to_column_autodetect_delimiter(self):
         # Test autodetect with consistent comma delimiters
-        test_data = [
-            ["apple,banana,cherry"],
-            ["red,blue,green"],
-            ["one,two,three"]
-        ]
+        test_data = [["apple,banana,cherry"], ["red,blue,green"], ["one,two,three"]]
 
         self.sheet.update(test_data, "A1:A3")
 
@@ -2085,17 +2082,14 @@ class WorksheetTest(GspreadTest):
         expected_data = [
             ["apple", "banana", "cherry"],
             ["red", "blue", "green"],
-            ["one", "two", "three"]
+            ["one", "two", "three"],
         ]
 
         self.assertEqual(result_data, expected_data)
 
     @pytest.mark.vcr()
     def test_text_to_column_with_cast_to_a1_notation(self):
-        test_data = [
-            ["apple,banana"],
-            ["red,blue"]
-        ]
+        test_data = [["apple,banana"], ["red,blue"]]
 
         self.sheet.update(test_data, "A1:A2")
 
@@ -2109,10 +2103,7 @@ class WorksheetTest(GspreadTest):
 
         # Verify the split worked
         result_data = self.sheet.get("A1:B2", pad_values=True)
-        expected_data = [
-            ["apple", "banana"],
-            ["red", "blue"]
-        ]
+        expected_data = [["apple", "banana"], ["red", "blue"]]
 
         self.assertEqual(result_data, expected_data)
 
@@ -2121,7 +2112,9 @@ class WorksheetTest(GspreadTest):
         with self.assertRaises(ValueError) as context:
             self.sheet.text_to_column("A1:B1", utils.DelimiterType.comma)
 
-        self.assertIn("Source range must span exactly one column", str(context.exception))
+        self.assertIn(
+            "Source range must span exactly one column", str(context.exception)
+        )
         self.assertIn("Got range spanning 2 columns", str(context.exception))
 
     def test_text_to_column_custom_delimiter_missing(self):
@@ -2133,11 +2126,7 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_text_to_column_empty_cells(self):
-        test_data = [
-            ["apple,banana"],
-            [""],  # Empty cell
-            ["red,blue"]
-        ]
+        test_data = [["apple,banana"], [""], ["red,blue"]]  # Empty cell
 
         self.sheet.update(test_data, "A1:A3")
 
@@ -2153,7 +2142,7 @@ class WorksheetTest(GspreadTest):
         expected_data = [
             ["apple", "banana"],
             ["", ""],  # Empty cell should remain empty
-            ["red", "blue"]
+            ["red", "blue"],
         ]
 
         self.assertEqual(result_data, expected_data)
@@ -2163,7 +2152,7 @@ class WorksheetTest(GspreadTest):
         test_data = [
             ["apple"],  # No delimiter
             ["banana"],  # No delimiter
-            ["cherry"]  # No delimiter
+            ["cherry"],  # No delimiter
         ]
 
         self.sheet.update(test_data, "A1:A3")
@@ -2177,21 +2166,13 @@ class WorksheetTest(GspreadTest):
         # When no delimiter is found, text should remain in original column
         result_data = self.sheet.get("A1:A3")
 
-        expected_data = [
-            ["apple"],
-            ["banana"],
-            ["cherry"]
-        ]
+        expected_data = [["apple"], ["banana"], ["cherry"]]
 
         self.assertEqual(result_data, expected_data)
 
     @pytest.mark.vcr()
     def test_text_to_column_with_unicode_text(self):
-        test_data = [
-            ["café,naïve,résumé"],
-            ["北京,東京,서울"],
-            ["🍎,🍌,🍒"]
-        ]
+        test_data = [["café,naïve,résumé"], ["北京,東京,서울"], ["🍎,🍌,🍒"]]
 
         self.sheet.update(test_data, "A1:A3")
 
@@ -2207,7 +2188,7 @@ class WorksheetTest(GspreadTest):
         expected_data = [
             ["café", "naïve", "résumé"],
             ["北京", "東京", "서울"],
-            ["🍎", "🍌", "🍒"]
+            ["🍎", "🍌", "🍒"],
         ]
 
         self.assertEqual(result_data, expected_data)
