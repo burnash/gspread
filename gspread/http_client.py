@@ -288,8 +288,8 @@ class HTTPClient:
         self, id: str, params: Optional[ParamsType] = None
     ) -> Mapping[str, Any]:
         """Similar to :method spreadsheets_get:`gspread.http_client.spreadsheets_get`,
-        get the spreadsheet form the API but by default **does not get the cells data**.
-        It only retrieve the the metadata from the spreadsheet.
+        get the spreadsheet from the API but by default **does not get the cells data**.
+        It only retrieves the metadata from the spreadsheet.
 
         :param str id: the spreadsheet ID key
         :param dict params: (optional) the HTTP params for the GET request.
