@@ -576,7 +576,7 @@ class BackOffHTTPClient(HTTPClient):
 
         try:
             return super().request(*args, **kwargs)
-        except APIError as err:
+        except (APIError, google.auth.exceptions.RefreshError) as err:
             code = err.code
             error = err.error
 
