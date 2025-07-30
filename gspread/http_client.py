@@ -24,6 +24,7 @@ from typing import (
 
 from google.auth.credentials import Credentials
 from google.auth.transport.requests import AuthorizedSession
+from google.auth.exceptions import RefreshError
 from requests import Response, Session
 
 from .exceptions import APIError, UnSupportedExportFormat
@@ -576,7 +577,7 @@ class BackOffHTTPClient(HTTPClient):
 
         try:
             return super().request(*args, **kwargs)
-        except (APIError, google.auth.exceptions.RefreshError) as err:
+        except (APIError, RefreshError) as err:
             code = err.code
             error = err.error
 
