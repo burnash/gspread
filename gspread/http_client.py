@@ -577,7 +577,7 @@ class BackOffHTTPClient(HTTPClient):
 
         try:
             return super().request(*args, **kwargs)
-        except (APIError, RefreshError) as err:
+        except APIError as err:
             code = err.code
             error = err.error
 
@@ -586,6 +586,23 @@ class BackOffHTTPClient(HTTPClient):
 
             # check if error should retry
             if _should_retry(code, error, wait) is True:
+                time.sleep(wait)
+
+                # make the request again
+                response = self.request(*args, **kwargs)
+
+                # reset counters for next time
+                self._NR_BACKOFF = 0
+
+                return response
+
+            # failed too many times, raise APIEerror
+            raise err
+        except RefreshError as err:
+            self._NR_BACKOFF += 1
+            wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
+
+            if wait <= self._MAX_BACKOFF:
                 time.sleep(wait)
 
                 # make the request again
