@@ -23,8 +23,8 @@ from typing import (
 )
 
 from google.auth.credentials import Credentials
-from google.auth.transport.requests import AuthorizedSession
 from google.auth.exceptions import RefreshError
+from google.auth.transport.requests import AuthorizedSession
 from requests import Response, Session
 
 from .exceptions import APIError, UnSupportedExportFormat
