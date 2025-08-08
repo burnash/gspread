@@ -23,6 +23,7 @@ from typing import (
 )
 
 from google.auth.credentials import Credentials
+from google.auth.exceptions import RefreshError
 from google.auth.transport.requests import AuthorizedSession
 from requests import Response, Session
 
@@ -585,6 +586,23 @@ class BackOffHTTPClient(HTTPClient):
 
             # check if error should retry
             if _should_retry(code, error, wait) is True:
+                time.sleep(wait)
+
+                # make the request again
+                response = self.request(*args, **kwargs)
+
+                # reset counters for next time
+                self._NR_BACKOFF = 0
+
+                return response
+
+            # failed too many times, raise APIEerror
+            raise err
+        except RefreshError as err:
+            self._NR_BACKOFF += 1
+            wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
+
+            if wait <= self._MAX_BACKOFF:
                 time.sleep(wait)
 
                 # make the request again

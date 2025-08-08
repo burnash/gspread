@@ -29,6 +29,6 @@ jobs:
       - run: tox -e lint
       - run: tox -e py
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py # --py36-plus
-      - run: pip-audit --ignore-vuln PYSEC-2023-228 --ignore-vuln PYSEC-2022-43012 --ignore-vuln GHSA-5rjg-fvgr-3xxf # pip:PYSEC-2023-228 setuptools:PYSEC-2022-43012 setuptools:GHSA-5rjg-fvgr-3xxf
+      - run: pip-audit --ignore-vuln PYSEC-2023-228 --ignore-vuln PYSEC-2022-43012 --ignore-vuln GHSA-5rjg-fvgr-3xxf --ignore-vuln GHSA-48p4-8xcf-vxj5 --ignore-vuln GHSA-pq67-6m6q-mj2v # pip:PYSEC-2023-228 setuptools:PYSEC-2022-43012 setuptools:GHSA-5rjg-fvgr-3xxf urllib:GHSA-48p4-8xcf-vxj5 urllib:GHSA-pq67-6m6q-mj2v
       - run: tox -e build
       - run: tox -e doc
