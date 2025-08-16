@@ -679,31 +679,63 @@ def fill_gaps(
         return [[]]
 
 
-def cell_list_to_rect(cell_list: List["Cell"]) -> List[List[Optional[str]]]:
+def cell_list_to_rect(
+    cell_list: List["Cell"]
+) -> Tuple[List[List[Optional[str]]], List[List[Optional[int]]]]:
+    """Convert a list of Cells into a rectangular 2D grid of values.
+    
+    :param cell_list: List of Cells.
+    :type cell_list: list[Cell]
+
+    :return: Tuple of (values_rect, reverse_map) where:
+        - values_rect is a 2D list of strings or None for missing cells.
+        - reverse_map is a 2D list of indices into the original cell_list,
+        or None for missing cells.
+    :rtype: tuple[list[list[Optional[str]]], list[list[Optional[int]]]]
+
+    Example::
+        >>> cells = [
+        ...     Cell(row=1, col=1, value="A"),
+        ...     Cell(row=2, col=1, value="C"),
+        ...     Cell(row=1, col=2, value="B"),
+        ... ]
+        >>> values_rect, reverse_map = cell_list_to_rect(cells)
+        >>> values_rect
+        [['A', 'B'],
+         ['C', None]]
+        >>> reverse_map
+        [[0, 2],
+         [1, None]]
+    """
     if not cell_list:
-        return []
+        return [[]], [[]]
 
     rows: Dict[int, Dict[int, Optional[str]]] = defaultdict(dict)
 
     row_offset = min(c.row for c in cell_list)
     col_offset = min(c.col for c in cell_list)
 
-    for cell in cell_list:
-        row = rows.setdefault(int(cell.row) - row_offset, {})
-        row[cell.col - col_offset] = cell.value
+    for idx, cell in enumerate(cell_list):
+        rows[int(cell.row) - row_offset][cell.col - col_offset] = idx
 
     if not rows:
-        return []
+        return [[]], [[]]
 
     all_row_keys = chain.from_iterable(row.keys() for row in rows.values())
     rect_cols = range(max(all_row_keys) + 1)
     rect_rows = range(max(rows.keys()) + 1)
 
-    # Return the values of the cells as a list of lists where each sublist
-    # contains all of the values for one row. The Google API requires a rectangle
-    # of updates, so if a cell isn't present in the input cell_list, then the
-    # value will be None and will not be updated.
-    return [[rows[i].get(j) for j in rect_cols] for i in rect_rows]
+    values_rect, reverse_map = [], []
+    for i in rect_rows:
+        val_row, map_row = [], []
+        for j in rect_cols:
+            idx = rows[i].get(j)
+            val_row.append(cell_list[idx].value if idx is not None else None)
+            map_row.append(idx)
+        values_rect.append(val_row)
+        reverse_map.append(map_row)
+
+    return values_rect, reverse_map
 
 
 def quote(value: str, safe: str = "", encoding: str = "utf-8") -> str:

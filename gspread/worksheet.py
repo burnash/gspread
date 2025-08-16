@@ -770,7 +770,8 @@ class Worksheet:
         self,
         cell_list: List[Cell],
         value_input_option: ValueInputOption = ValueInputOption.raw,
-    ) -> Mapping[str, Any]:
+        include_values_in_response: Optional[bool] = None,
+    ) -> JSONResponse:
         """Updates many cells at once.
 
         :param list cell_list: List of :class:`gspread.cell.Cell` objects to update.
@@ -792,6 +793,9 @@ class Worksheet:
 
         :type value_input_option: :namedtuple:`~gspread.utils.ValueInputOption`
 
+        :param bool include_values_in_response: (optional) Determines if the update response
+            should include the values of the cells that were updated.
+
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
 
         Example::
@@ -805,7 +809,7 @@ class Worksheet:
             # Update in batch
             worksheet.update_cells(cell_list)
         """
-        values_rect = cell_list_to_rect(cell_list)
+        values_rect, reverse_map = cell_list_to_rect(cell_list)
 
         start = rowcol_to_a1(
             min(c.row for c in cell_list), min(c.col for c in cell_list)
@@ -814,12 +818,26 @@ class Worksheet:
 
         range_name = absolute_range_name(self.title, "{}:{}".format(start, end))
 
+        params: ParamsType = {
+            "valueInputOption": value_input_option,
+            "includeValuesInResponse": include_values_in_response,
+        }
+
         data = self.client.values_update(
             self.spreadsheet_id,
             range_name,
-            params={"valueInputOption": value_input_option},
+            params=params,
             body={"values": values_rect},
         )
+
+        if include_values_in_response:
+            # reformat values to original cell_list order
+            result = [None] * len(cell_list)
+            for r, row in enumerate(reverse_map):
+                for c, idx in enumerate(row):
+                    if idx is not None:
+                        result[idx] = data["updatedData"]["values"][r][c]
+            data["updatedData"]["values"] = result
 
         return data
 
