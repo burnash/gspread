@@ -680,10 +680,10 @@ def fill_gaps(
 
 
 def cell_list_to_rect(
-    cell_list: List["Cell"]
+    cell_list: List["Cell"],
 ) -> Tuple[List[List[Optional[str]]], List[List[Optional[int]]]]:
     """Convert a list of Cells into a rectangular 2D grid of values.
-    
+
     :param cell_list: List of Cells.
     :type cell_list: list[Cell]
 
