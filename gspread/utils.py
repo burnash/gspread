@@ -710,7 +710,7 @@ def cell_list_to_rect(
     if not cell_list:
         return [[]], [[]]
 
-    rows: Dict[int, Dict[int, Optional[str]]] = defaultdict(dict)
+    rows: Dict[int, Dict[int, int]] = defaultdict(dict)
 
     row_offset = min(c.row for c in cell_list)
     col_offset = min(c.col for c in cell_list)
@@ -729,9 +729,9 @@ def cell_list_to_rect(
     for i in rect_rows:
         val_row, map_row = [], []
         for j in rect_cols:
-            idx = rows[i].get(j)
-            val_row.append(cell_list[idx].value if idx is not None else None)
-            map_row.append(idx)
+            cur_idx = rows[i].get(j)
+            val_row.append(cell_list[cur_idx].value if cur_idx is not None else None)
+            map_row.append(cur_idx)
         values_rect.append(val_row)
         reverse_map.append(map_row)
 
