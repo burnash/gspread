@@ -3,12 +3,12 @@ from typing import Generator
 
 import pytest
 from pytest import FixtureRequest
+from requests import Response
 
 import gspread
 from gspread.client import Client
 from gspread.http_client import RETRYABLE_HTTP_CODES, SERVER_ERROR_THRESHOLD
 from gspread.spreadsheet import Spreadsheet
-from requests import Response
 
 from .conftest import GspreadTest
 
