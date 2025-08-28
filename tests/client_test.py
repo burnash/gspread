@@ -47,7 +47,6 @@ class ClientTest(GspreadTest):
             self.assertIn("createdTime", f)
             self.assertIn("modifiedTime", f)
 
-    @pytest.mark.skip("openall NOPE")
     @pytest.mark.vcr()
     def test_openall(self):
         spreadsheet_list = self.gc.openall()
@@ -100,7 +99,6 @@ class ClientTest(GspreadTest):
         with self.assertRaises(gspread.exceptions.SpreadsheetNotFound):
             self.gc.open_by_url("https://docs.google.com/spreadsheets/d/test")
 
-    @pytest.mark.skip("openall NOPE")
     @pytest.mark.vcr()
     def test_open_all_has_metadata(self):
         """tests all spreadsheets are opened
