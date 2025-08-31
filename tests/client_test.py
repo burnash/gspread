@@ -536,4 +536,3 @@ class ClientTest(GspreadTest):
         # Make another request to ensure hooks don't interfere
         result2 = self.spreadsheet.fetch_sheet_metadata()
         self.assertIsNotNone(result2, "Second request should also succeed")
-
