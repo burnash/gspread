@@ -63,7 +63,7 @@ FileType = Optional[
 ]
 
 
-class Hookable:
+class RequestHookMixin:
     """A mixin class that provides hook functionality for method execution.
 
     This class allows methods to be decorated with hooks that execute at different
@@ -165,7 +165,7 @@ class Hookable:
                 pass
 
 
-def hookable(method):
+def with_hooks(method):
     """Decorator that adds hook functionality to a method.
 
     This decorator wraps a method to execute hooks at different points:
@@ -176,7 +176,7 @@ def hookable(method):
     - When retryable errors occur (http codes that signal retryable errors)
     - After execution regardless of success/failure
 
-    The decorated method must be part of a class that inherits from Hookable.
+    The decorated method must be part of a class that inherits from RequestHookMixin.
 
     Args:
         method (callable): The method to be decorated
@@ -185,7 +185,7 @@ def hookable(method):
         callable: The wrapped method with hook functionality
 
     Example:
-        class MyClass(Hookable):
+        class MyClass(RequestHookMixin):
             @hookable
             def my_method(self, arg1, arg2):
                 # Method implementation
@@ -251,7 +251,7 @@ def hookable(method):
     return wrapper
 
 
-class HTTPClient(Hookable):
+class HTTPClient(RequestHookMixin):
     """An instance of this class communicates with Google API.
 
     :param Credentials auth: An instance of google.auth.Credentials used to authenticate requests
@@ -299,7 +299,7 @@ class HTTPClient(Hookable):
         """
         self.timeout = timeout
 
-    @hookable
+    @with_hooks
     def request(
         self,
         method: str,
