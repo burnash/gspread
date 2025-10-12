@@ -7,7 +7,6 @@ from typing import Any, Dict, Generator, Optional, Tuple
 import pytest
 from google.auth.credentials import Credentials
 from google.oauth2.credentials import Credentials as UserCredentials
-from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from requests import Response
 from vcr import VCR
 from vcr.errors import CannotOverwriteExistingCassetteException
@@ -20,7 +19,7 @@ CREDS_FILENAME = os.getenv("GS_CREDS_FILENAME")
 RECORD_MODE = os.getenv("GS_RECORD_MODE", "none")
 
 SCOPE = [
-    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
 ]
 DUMMY_ACCESS_TOKEN = "<ACCESS_TOKEN>"
@@ -29,7 +28,7 @@ I18N_STR = "Iñtërnâtiônàlizætiøn"  # .encode('utf8')
 
 
 def read_credentials(filename: str) -> Credentials:
-    return ServiceAccountCredentials.from_service_account_file(filename, scopes=SCOPE)
+    return UserCredentials.from_authorized_user_file(filename, scopes=SCOPE)
 
 
 def prefixed_counter(prefix: str, start: int = 1) -> Generator[str, None, None]:
