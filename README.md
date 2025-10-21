@@ -8,6 +8,15 @@
 ![PyPi version](https://img.shields.io/pypi/v/gspread?logo=pypi)
 ![python version](https://img.shields.io/pypi/pyversions/gspread?style=pypi)
 
+## Maintainer needed
+
+We are sorry to announce that we are currently unable to maintain Gspread.
+
+We are looking for new maintainers to keep up the good work.
+Feel free to reach out to us using this issue #1570
+
+## Overview
+
 Simple interface for working with Google Sheets.
 
 Features:
