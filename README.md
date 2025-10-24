@@ -13,7 +13,7 @@
 We are sorry to announce that we are currently unable to maintain Gspread.
 
 We are looking for new maintainers to keep up the good work.
-Feel free to reach out to us using this issue #1570
+Feel free to reach out to us using this issue [#1570](https://github.com/burnash/gspread/issues/1570)
 
 ## Overview
 
