@@ -607,6 +607,23 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(test_values, read_values)
 
     @pytest.mark.vcr()
+    def test_update_cells_response_values(self):
+        sg = self._sequence_generator()
+
+        cell_list = [
+            gspread.cell.Cell(row=1, col=1, value=next(sg)),
+            gspread.cell.Cell(row=3, col=3, value=next(sg)),
+            gspread.cell.Cell(row=2, col=2, value=next(sg)),
+        ]
+
+        res = self.sheet.update_cells(cell_list, include_values_in_response=True)
+        res_values = res["updatedData"]["values"]
+
+        self.assertEqual(len(cell_list), len(res_values))
+        for c, v in zip(cell_list, res_values):
+            self.assertEqual(c.value, v)
+
+    @pytest.mark.vcr()
     def test_update_cell_objects(self):
         test_values = ["cell row 1, col 2", "cell row 2 col 1"]
 
