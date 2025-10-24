@@ -35,6 +35,7 @@ from .http_client import HTTPClient, ParamsType
 from .urls import WORKSHEET_DRIVE_URL
 from .utils import (
     DateTimeOption,
+    DelimiterType,
     Dimension,
     GridRangeType,
     InsertDataOption,
@@ -3451,3 +3452,85 @@ class Worksheet:
 
         values = self.get(pad_values=True)
         return find_table(values, top_left_range_name, direction)
+
+    def _text_to_column(
+        self,
+        src_range: str,
+        delimiter_type: DelimiterType = DelimiterType.comma,
+        custom_delimiter: Optional[str] = None,
+    ) -> JSONResponse:
+        grid_range = a1_range_to_grid_range(src_range, self.id)
+
+        start = grid_range.get("startColumnIndex")
+        end = grid_range.get("endColumnIndex")
+
+        if start is not None and end is not None:
+            if end - start != 1:
+                raise ValueError(
+                    f"Source range must span exactly one column. "
+                    f"Got range spanning {end - start} columns."
+                )
+
+        if delimiter_type == DelimiterType.custom and custom_delimiter is None:
+            raise ValueError(
+                "custom_delimiter parameter is required when delimiter_type is DelimiterType.custom"
+            )
+
+        text_to_columns_request: Dict[str, Any] = {
+            "source": grid_range,
+            "delimiterType": delimiter_type,
+        }
+
+        if delimiter_type == DelimiterType.custom and custom_delimiter is not None:
+            text_to_columns_request["delimiter"] = custom_delimiter
+
+        body = {"requests": [{"textToColumns": text_to_columns_request}]}
+
+        return self.client.batch_update(self.spreadsheet_id, body)
+
+    @cast_to_a1_notation
+    def text_to_column(
+        self,
+        source_range: str,
+        delimiter_type: DelimiterType = DelimiterType.comma,
+        custom_delimiter: Optional[str] = None,
+    ) -> JSONResponse:
+        """
+        Split text from a single column into multiple columns based on a delimiter.
+
+        :param str source_range: A string with range value in A1 notation (e.g., 'A:A', 'B2:B10').
+            The range must span exactly one column.
+
+        :param delimiter_type: The type of delimiter to use for splitting.
+            Possible values are:
+
+            ``DelimiterType.comma`` - Split on commas ","
+            ``DelimiterType.semicolon`` - Split on semicolons ";"
+            ``DelimiterType.period`` - Split on periods "."
+            ``DelimiterType.space`` - Split on spaces " "
+            ``DelimiterType.custom`` - Split on a custom delimiter (requires `custom_delimiter`)
+            ``DelimiterType.autodetect`` - Automatically detect the delimiter
+
+        :type delimiter_type: :class:`~gspread.utils.DelimiterType`
+
+        :param str custom_delimiter: (optional) The custom delimiter to use.
+            Required when `delimiter_type` is `DelimiterType.custom`.
+
+        :returns: The response body from the request
+        :rtype: JSONResponse
+
+        :raises ValueError: If the source range spans more than one column, or if
+            `delimiter_type` is CUSTOM but no `custom_delimiter` is provided.
+
+        Example::
+
+            # Split column A on commas
+            worksheet.text_to_column('A:A', DelimiterType.comma)
+
+            # Split range B2:B10 using a custom delimiter
+            worksheet.text_to_column('B2:B10', DelimiterType.custom, custom_delimiter='|')
+
+            # Auto-detect delimiter for column C
+            worksheet.text_to_column('C:C', DelimiterType.autodetect)
+        """
+        return self._text_to_column(source_range, delimiter_type, custom_delimiter)
