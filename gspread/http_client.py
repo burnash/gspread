@@ -26,6 +26,7 @@ from google.auth.credentials import Credentials
 from google.auth.exceptions import RefreshError
 from google.auth.transport.requests import AuthorizedSession
 from requests import Response, Session
+from requests import exceptions as requests_exceptions
 
 from .exceptions import APIError, UnSupportedExportFormat
 from .urls import (
@@ -43,6 +44,13 @@ from .urls import (
 )
 from .utils import ExportFormat, convert_credentials, quote
 
+# Constants for retryable HTTP error codes
+RETRYABLE_HTTP_CODES = [
+    HTTPStatus.REQUEST_TIMEOUT,  # 408
+    HTTPStatus.TOO_MANY_REQUESTS,  # 429
+]
+SERVER_ERROR_THRESHOLD = HTTPStatus.INTERNAL_SERVER_ERROR  # 500
+
 ParamsType = MutableMapping[str, Optional[Union[str, int, bool, float, List[str]]]]
 
 FileType = Optional[
@@ -55,7 +63,195 @@ FileType = Optional[
 ]
 
 
-class HTTPClient:
+class RequestHookMixin:
+    """A mixin class that provides hook functionality for method execution.
+
+    This class allows methods to be decorated with hooks that execute at different
+    points during method execution: before execution, after successful execution,
+    when exceptions occur, when retryable errors occur, when timeouts occur,
+    and after execution regardless of success/failure.
+
+    Hooks are stored as dictionaries mapping method names to lists of hook functions.
+    Each hook function receives the method name, arguments, keyword arguments,
+    and either the result (for success/after hooks) or the exception (for error hooks).
+    """
+
+    def __init__(self):
+        # Dicts mapping method_name → list of hooks
+        self.before_hooks = {}
+        self.after_hooks = {}
+        self.exception_hooks = {}
+        self.retry_hooks = {}
+        self.success_hooks = {}
+        self.timeout_hooks = {}
+
+    def add_before_hook(self, method_name, func):
+        """Add a hook that executes before a method is called.
+
+        Args:
+            method_name (str): The name of the method to hook into
+            func (callable): The hook function to execute
+        """
+        self.before_hooks.setdefault(method_name, []).append(func)
+
+    def add_after_hook(self, method_name, func):
+        """Add a hook that executes after a method completes (regardless of success/failure).
+
+        Args:
+            method_name (str): The name of the method to hook into
+            func (callable): The hook function to execute
+        """
+        self.after_hooks.setdefault(method_name, []).append(func)
+
+    def add_exception_hook(self, method_name, func):
+        """Add a hook that executes when an exception occurs during method execution.
+
+        Args:
+            method_name (str): The name of the method to hook into
+            func (callable): The hook function to execute
+        """
+        self.exception_hooks.setdefault(method_name, []).append(func)
+
+    def add_retry_hook(self, method_name, func):
+        """Add a hook that executes when a retryable error occurs.
+
+        Args:
+            method_name (str): The name of the method to hook into
+            func (callable): The hook function to execute
+        """
+        self.retry_hooks.setdefault(method_name, []).append(func)
+
+    def add_success_hook(self, method_name, func):
+        """Add a hook that executes when a method completes successfully.
+
+        Args:
+            method_name (str): The name of the method to hook into
+            func (callable): The hook function to execute
+        """
+        self.success_hooks.setdefault(method_name, []).append(func)
+
+    def add_timeout_hook(self, method_name, func):
+        """Add a hook that executes when a timeout occurs.
+
+        Args:
+            method_name (str): The name of the method to hook into
+            func (callable): The hook function to execute
+        """
+        self.timeout_hooks.setdefault(method_name, []).append(func)
+
+    def _run_hooks(self, hooks, method_name, args, kwargs, result=None, exception=None):
+        """Execute all hooks for a given method name.
+
+        Args:
+            hooks (dict): Dictionary mapping method names to lists of hook functions
+            method_name (str): Name of the method being executed
+            args (tuple): Positional arguments passed to the method
+            kwargs (dict): Keyword arguments passed to the method
+            result: The result returned by the method (if successful)
+            exception: The exception that occurred (if any)
+
+        Note:
+            Exceptions in hooks are silently caught to prevent breaking the main
+            gspread execution flow.
+        """
+        for hook in hooks.get(method_name, []):
+            try:
+                if exception is not None:
+                    hook(method_name, args, kwargs, exception)
+                else:
+                    hook(method_name, args, kwargs, result)
+            except Exception:
+                # an exception here should not break the main gspread execution!
+                pass
+
+
+def with_hooks(method):
+    """Decorator that adds hook functionality to a method.
+
+    This decorator wraps a method to execute hooks at different points:
+    - Before the method executes
+    - After successful execution
+    - When exceptions occur
+    - When timeouts occur
+    - When retryable errors occur (http codes that signal retryable errors)
+    - After execution regardless of success/failure
+
+    The decorated method must be part of a class that inherits from RequestHookMixin.
+
+    Args:
+        method (callable): The method to be decorated
+
+    Returns:
+        callable: The wrapped method with hook functionality
+
+    Example:
+        class MyClass(RequestHookMixin):
+            @hookable
+            def my_method(self, arg1, arg2):
+                # Method implementation
+                return result
+
+        def before_hook(method_name, args, kwargs):
+            print(f"Before {method_name}")
+
+        def success_hook(method_name, args, kwargs, result):
+            print(f"Success: {result}")
+
+        # Add hooks
+        obj = MyClass()
+        obj.add_before_hook('my_method', before_hook)
+        obj.add_success_hook('my_method', success_hook)
+    """
+
+    def wrapper(self, *args, **kwargs):
+        try:
+            # Run before hooks
+            self._run_hooks(self.before_hooks, method.__name__, args, kwargs)
+
+            # Execute the method
+            result = method(self, *args, **kwargs)
+
+            # Run success hooks
+            self._run_hooks(self.success_hooks, method.__name__, args, kwargs, result)
+
+            # Run after hooks
+            self._run_hooks(self.after_hooks, method.__name__, args, kwargs, result)
+
+            return result
+
+        except Exception as e:
+            # Run exception hooks
+            self._run_hooks(
+                self.exception_hooks, method.__name__, args, kwargs, exception=e
+            )
+
+            # Check if it's a retryable error and run retry hooks
+            if isinstance(
+                e, (requests_exceptions.Timeout, requests_exceptions.ConnectionError)
+            ):
+                self._run_hooks(
+                    self.timeout_hooks, method.__name__, args, kwargs, exception=e
+                )
+
+            # Check for other retryable errors and run retry hooks
+            elif isinstance(e, APIError) and (
+                e.code in RETRYABLE_HTTP_CODES or e.code >= SERVER_ERROR_THRESHOLD
+            ):
+                self._run_hooks(
+                    self.retry_hooks, method.__name__, args, kwargs, exception=e
+                )
+            elif isinstance(e, RefreshError):
+                self._run_hooks(
+                    self.retry_hooks, method.__name__, args, kwargs, exception=e
+                )
+
+            # Re-raise the exception
+            raise
+
+    return wrapper
+
+
+class HTTPClient(RequestHookMixin):
     """An instance of this class communicates with Google API.
 
     :param Credentials auth: An instance of google.auth.Credentials used to authenticate requests
@@ -76,6 +272,7 @@ class HTTPClient:
     """
 
     def __init__(self, auth: Credentials, session: Optional[Session] = None) -> None:
+        super().__init__()
         if session is not None:
             self.session = session
         else:
@@ -102,6 +299,7 @@ class HTTPClient:
         """
         self.timeout = timeout
 
+    @with_hooks
     def request(
         self,
         method: str,
@@ -541,10 +739,7 @@ class BackOffHTTPClient(HTTPClient):
           403 (Forbidden) errors for forbidden access and
           for api rate limit exceeded."""
 
-    _HTTP_ERROR_CODES: List[HTTPStatus] = [
-        HTTPStatus.REQUEST_TIMEOUT,  # in case of a timeout
-        HTTPStatus.TOO_MANY_REQUESTS,  # sheet API usage rate limit exceeded
-    ]
+    _HTTP_ERROR_CODES: List[HTTPStatus] = RETRYABLE_HTTP_CODES
     _NR_BACKOFF: int = 0
     _MAX_BACKOFF: int = 128  # arbitrary maximum backoff
 
@@ -571,8 +766,7 @@ class BackOffHTTPClient(HTTPClient):
             #     - >= 500: some server error
             #   - AND we did not reach the max retry limit
             return (
-                code in self._HTTP_ERROR_CODES
-                or code >= HTTPStatus.INTERNAL_SERVER_ERROR
+                code in self._HTTP_ERROR_CODES or code >= SERVER_ERROR_THRESHOLD
             ) and wait <= self._MAX_BACKOFF
 
         try:
