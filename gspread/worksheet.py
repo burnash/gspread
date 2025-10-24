@@ -2132,6 +2132,26 @@ class Worksheet:
         }
 
         return self.client.batch_update(self.spreadsheet_id, body)
+    
+    def delete_conditional_formatting_rule(self, index: int) -> JSONResponse:
+        """Delete conditional formatting rule identified by the index ``index``.
+
+        To retrieve the ID of a conditional formatting rule use the following method
+        to list them all: :func:`~gspread.Spreadsheet.list_conditional_formatting_rules`
+        """
+
+        body = {
+            "requests": [
+                {
+                    "deleteConditionalFormatRule": {
+                        "sheetId": self.id,
+                        "index": index,
+                    }
+                }
+            ]
+        }
+
+        return self.client.batch_update(self.spreadsheet_id, body)
 
     def delete_dimension(
         self, dimension: Dimension, start_index: int, end_index: Optional[int] = None

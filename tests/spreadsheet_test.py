@@ -245,3 +245,14 @@ class SpreadsheetTest(GspreadTest):
         self.assertEqual(
             values[0], res_values, "exported values are not the value initially set"
         )
+
+    @pytest.mark.vcr()
+    def test_listing_conditional_format_rules(self):
+        """Test listing conditional format rules of a spreadsheet"""
+
+        worksheet = self.spreadsheet.sheet1
+        worksheet.format("A1", {"backgroundColor": {"red": 1.0}})
+
+        rules = self.spreadsheet.list_conditional_formatting_rules(worksheet.id)
+
+        self.assertEqual(len(rules), 1)
