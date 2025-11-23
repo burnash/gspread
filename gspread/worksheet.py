@@ -2923,6 +2923,31 @@ class Worksheet:
         }
         return self.client.batch_update(self.spreadsheet_id, body)
 
+    @cast_to_a1_notation
+    def update_named_range(self, named_range_id: str, new_name: str) -> JSONResponse:
+        """
+        :param str named_range_id: The ID of the named range to update.
+            Can be obtained with Spreadsheet.list_named_ranges()
+        :param str new_name: The new range to assign in A1 notation.
+
+        :returns: the response body from the request
+        :rtype: dict
+        """
+        body = {
+            "requests": [
+                {
+                    "updateNamedRange": {
+                        "namedRange": {
+                            "namedRangeId": named_range_id,
+                            "range": a1_range_to_grid_range(new_name, self.id),
+                        },
+                        "fields": "range",
+                    }
+                }
+            ]
+        }
+        return self.client.batch_update(self.spreadsheet_id, body)
+
     def _add_dimension_group(
         self, start: int, end: int, dimension: Dimension
     ) -> JSONResponse:
