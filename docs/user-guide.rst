@@ -352,6 +352,120 @@ Check out the api docs for `DataValidationRule`_ and `CondtionType`_ for more de
 
 .. _DataValidationRule: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#DataValidationRule
 
+Working with Charts
+~~~~~~~~~~~~~~~~~~~
+
+You can create, update, and delete charts in your worksheets.
+
+**Listing charts:**
+
+.. code:: python
+
+   # Get all charts in the worksheet
+   charts = worksheet.list_charts()
+   for chart in charts:
+       print(f"Chart ID: {chart['chartId']}")
+       print(f"Title: {chart['spec'].get('title', 'Untitled')}")
+
+**Creating a simple chart:**
+
+.. code:: python
+
+   from gspread import ChartType
+
+   # Create a column chart from data range A1:B10
+   # Single range: data is used for series, x-axis labels are auto-generated (1, 2, 3...)
+   worksheet.add_chart(
+       'A1:B10',
+       chart_type=ChartType.column,
+       title='Sales Data',
+       anchor_cell='D2'
+   )
+
+**Creating a chart with multiple series:**
+
+.. code:: python
+
+   from gspread import ChartType, ChartLegendPosition
+
+   # Create a line chart with multiple data series
+   # Multiple ranges: first range (A1:A10) is the domain (x-axis labels),
+   # remaining ranges (B1:B10, C1:C10) are the series (y-axis values)
+   worksheet.add_chart(
+       ['A1:A10', 'B1:B10', 'C1:C10'],
+       chart_type=ChartType.line,
+       title='Monthly Trends',
+       legend_position=ChartLegendPosition.bottom,
+       x_axis_title='Month',
+       y_axis_title='Value',
+       anchor_cell='E5'
+   )
+
+**Updating a chart:**
+
+.. code:: python
+
+   # Get the chart ID from list_charts()
+   charts = worksheet.list_charts()
+   chart_id = charts[0]['chartId']
+
+   # Update the chart's title and type
+   worksheet.update_chart(
+       chart_id,
+       title='Updated Sales Data',
+       chart_type=ChartType.area,
+       legend_position=ChartLegendPosition.top
+   )
+
+**Deleting a chart:**
+
+.. code:: python
+
+   # Delete a chart by its ID
+   chart_id = charts[0]['chartId']
+   worksheet.delete_chart(chart_id)
+
+**Available chart types:**
+
+* :attr:`~gspread.utils.ChartType.column` - Column chart
+* :attr:`~gspread.utils.ChartType.bar` - Bar chart
+* :attr:`~gspread.utils.ChartType.line` - Line chart
+* :attr:`~gspread.utils.ChartType.area` - Area chart
+* :attr:`~gspread.utils.ChartType.scatter` - Scatter plot
+* :attr:`~gspread.utils.ChartType.combo` - Combination chart
+* :attr:`~gspread.utils.ChartType.stepped_area` - Stepped area chart
+
+**Additional chart options:**
+
+When creating or updating charts, you can use additional options:
+
+* ``subtitle`` - Chart subtitle
+* ``font_name`` - Font name for chart text (e.g., 'Arial', 'Roboto')
+* ``x_axis_title`` - Title for the x-axis (domain)
+* ``y_axis_title`` - Title for the y-axis
+* ``three_dimensional`` - Set to True for 3D rendering
+* ``stacked`` - Set to True to stack series
+* ``width_pixels`` - Width of the chart in pixels (default: 600)
+* ``height_pixels`` - Height of the chart in pixels (default: 371)
+
+Example with options:
+
+.. code:: python
+
+   worksheet.add_chart(
+       'A1:C10',
+       chart_type=ChartType.column,
+       title='Q1 Sales',
+       subtitle='All Regions',
+       font_name='Arial',
+       x_axis_title='Product',
+       y_axis_title='Revenue ($)',
+       three_dimensional=True,
+       width_pixels=800,
+       height_pixels=500,
+       anchor_cell='E2'
+   )
+
 Extract table
 ~~~~~~~~~~~~~
 

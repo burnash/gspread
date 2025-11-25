@@ -34,6 +34,9 @@ from .exceptions import GSpreadException
 from .http_client import HTTPClient, ParamsType
 from .urls import WORKSHEET_DRIVE_URL
 from .utils import (
+    ChartAxisPosition,
+    ChartLegendPosition,
+    ChartType,
     DateTimeOption,
     Dimension,
     GridRangeType,
@@ -3396,6 +3399,361 @@ class Worksheet:
                 }
             ],
         }
+
+        return self.client.batch_update(self.spreadsheet_id, body)
+
+    def list_charts(self) -> List[Dict[str, Any]]:
+        """List all charts in this worksheet.
+
+        :returns: A list of chart objects with their IDs, specifications, and positions.
+        :rtype: list
+
+        Example::
+
+            >>> charts = worksheet.list_charts()
+            >>> for chart in charts:
+            ...     print(f"Chart ID: {chart['chartId']}")
+            ...     print(f"Title: {chart['spec'].get('title', 'Untitled')}")
+
+        .. versionadded:: 6.2.2
+        """
+        metadata = self.spreadsheet.fetch_sheet_metadata()
+
+        for sheet in metadata.get("sheets", []):
+            properties = sheet.get("properties", {})
+            if properties.get("sheetId") == self.id:
+                return sheet.get("charts", [])
+
+        return []
+
+    def add_chart(
+        self,
+        data_ranges: Union[str, List[str]],
+        chart_type: Union[str, ChartType] = ChartType.column,
+        title: Optional[str] = None,
+        anchor_cell: Optional[str] = None,
+        legend_position: Union[str, ChartLegendPosition] = ChartLegendPosition.bottom,
+        **kwargs: Any,
+    ) -> JSONResponse:
+        """Add a chart to this worksheet.
+
+        :param data_ranges: The range(s) of data to chart. Can be a single A1 notation string
+            (e.g., 'A1:B10') or a list of ranges for multiple series.
+
+            - Single range: Used for series data, domain (x-axis) is auto-generated as 1, 2, 3...
+            - Multiple ranges: First range is the domain (x-axis), remaining ranges are series (y-axis)
+
+        :type data_ranges: str or list
+        :param chart_type: The type of chart. Use ChartType enum or string like 'COLUMN', 'LINE', etc.
+            Defaults to ChartType.column.
+        :type chart_type: ChartType or str
+        :param title: (optional) The title of the chart.
+        :type title: str
+        :param anchor_cell: (optional) The cell where the chart will be anchored (e.g., 'E5').
+            If not specified, the chart will be placed automatically.
+        :type anchor_cell: str
+        :param legend_position: (optional) Position of the legend. Use ChartLegendPosition enum
+            or string like 'BOTTOM_LEGEND', 'TOP_LEGEND', etc. Defaults to ChartLegendPosition.bottom.
+        :type legend_position: ChartLegendPosition or str
+        :param kwargs: Additional chart specification options. Supported options include:
+
+            - ``subtitle`` (str): Chart subtitle
+            - ``font_name`` (str): Font name for chart text
+            - ``x_axis_title`` (str): Title for the x-axis (domain)
+            - ``y_axis_title`` (str): Title for the y-axis
+            - ``three_dimensional`` (bool): Whether to render the chart in 3D
+            - ``stacked`` (bool): Whether to stack the series
+            - ``width_pixels`` (int): Width of the chart in pixels (default: 600)
+            - ``height_pixels`` (int): Height of the chart in pixels (default: 371)
+
+        :returns: The response body from the API request
+        :rtype: dict
+
+        Example::
+
+            >>> # Simple column chart
+            >>> worksheet.add_chart(
+            ...     'A1:B10',
+            ...     chart_type=ChartType.column,
+            ...     title='Sales Data',
+            ...     anchor_cell='D2'
+            ... )
+
+            >>> # Line chart with multiple series
+            >>> worksheet.add_chart(
+            ...     ['A1:A10', 'B1:B10', 'C1:C10'],
+            ...     chart_type=ChartType.line,
+            ...     title='Trends Over Time',
+            ...     x_axis_title='Date',
+            ...     y_axis_title='Value'
+            ... )
+
+        .. versionadded:: 6.2.2
+        """
+        # Convert chart_type to string if it's an enum
+        if isinstance(chart_type, ChartType):
+            chart_type = str(chart_type)
+
+        # Convert legend_position to string if it's an enum
+        if isinstance(legend_position, ChartLegendPosition):
+            legend_position = str(legend_position)
+
+        # Normalize data_ranges to a list
+        if isinstance(data_ranges, str):
+            data_ranges = [data_ranges]
+
+        # Validate input
+        if not data_ranges:
+            raise ValueError("data_ranges cannot be empty")
+
+        # Validate pixel dimensions if provided
+        width = kwargs.get("width_pixels", 600)
+        height = kwargs.get("height_pixels", 371)
+        if width <= 0:
+            raise ValueError("width_pixels must be greater than 0")
+        if height <= 0:
+            raise ValueError("height_pixels must be greater than 0")
+
+        # Build series data
+        series = []
+        domains = []
+
+        # Handle domain and series based on number of ranges provided
+        if len(data_ranges) == 1:
+            # Single range: use it for series only, domain will be auto-generated (1, 2, 3...)
+            series_range = a1_range_to_grid_range(data_ranges[0], self.id)
+            series.append(
+                {
+                    "series": {"sourceRange": {"sources": [series_range]}},
+                    "targetAxis": str(ChartAxisPosition.left_axis),
+                }
+            )
+        else:
+            # Multiple ranges: first is domain, rest are series
+            domain_range = a1_range_to_grid_range(data_ranges[0], self.id)
+            domains.append({"domain": {"sourceRange": {"sources": [domain_range]}}})
+
+            # Remaining ranges are series (y-axis data)
+            for range_str in data_ranges[1:]:
+                series_range = a1_range_to_grid_range(range_str, self.id)
+                series.append(
+                    {
+                        "series": {"sourceRange": {"sources": [series_range]}},
+                        "targetAxis": str(ChartAxisPosition.left_axis),
+                    }
+                )
+
+        # Validate that we have at least one series
+        if not series:
+            raise ValueError("Chart must have at least one data series")
+
+        # Build basic chart specification
+        basic_chart_spec: Dict[str, Any] = {
+            "chartType": chart_type,
+            "legendPosition": legend_position,
+            "series": series,
+        }
+
+        # Add domains if we have them
+        if domains:
+            basic_chart_spec["domains"] = domains
+
+        # Add axes configuration
+        axes = []
+        if kwargs.get("x_axis_title"):
+            axes.append(
+                {
+                    "position": ChartAxisPosition.bottom_axis,
+                    "title": kwargs["x_axis_title"],
+                }
+            )
+        if kwargs.get("y_axis_title"):
+            axes.append(
+                {
+                    "position": ChartAxisPosition.left_axis,
+                    "title": kwargs["y_axis_title"],
+                }
+            )
+        if axes:
+            basic_chart_spec["axis"] = axes
+
+        # Add optional 3D and stacking
+        if kwargs.get("three_dimensional"):
+            basic_chart_spec["threeDimensional"] = True
+        if kwargs.get("stacked"):
+            basic_chart_spec["stackedType"] = "STACKED"
+
+        # Build chart specification
+        chart_spec: Dict[str, Any] = {"basicChart": basic_chart_spec}
+
+        if title:
+            chart_spec["title"] = title
+        if kwargs.get("subtitle"):
+            chart_spec["subtitle"] = kwargs["subtitle"]
+        if kwargs.get("font_name"):
+            chart_spec["fontName"] = kwargs["font_name"]
+
+        # Build position
+        position: Dict[str, Any] = {}
+        if anchor_cell:
+            row, col = a1_to_rowcol(anchor_cell)
+            position = {
+                "overlayPosition": {
+                    "anchorCell": {
+                        "sheetId": self.id,
+                        "rowIndex": row - 1,  # API uses 0-based indexing
+                        "columnIndex": col - 1,
+                    },
+                    "widthPixels": width,
+                    "heightPixels": height,
+                }
+            }
+
+        # Build the embedded chart object
+        chart: Dict[str, Any] = {
+            "spec": chart_spec,
+        }
+
+        if position:
+            chart["position"] = position
+
+        # Build the request
+        body = {"requests": [{"addChart": {"chart": chart}}]}
+
+        return self.client.batch_update(self.spreadsheet_id, body)
+
+    def update_chart(
+        self,
+        chart_id: int,
+        chart_type: Optional[Union[str, ChartType]] = None,
+        title: Optional[str] = None,
+        legend_position: Optional[Union[str, ChartLegendPosition]] = None,
+        **kwargs: Any,
+    ) -> JSONResponse:
+        """Update an existing chart's specification.
+
+        :param chart_id: The ID of the chart to update. Get this from list_charts().
+        :type chart_id: int
+        :param chart_type: (optional) New chart type. Use ChartType enum or string.
+        :type chart_type: ChartType or str
+        :param title: (optional) New title for the chart.
+        :type title: str
+        :param legend_position: (optional) New legend position. Use ChartLegendPosition enum or string.
+        :type legend_position: ChartLegendPosition or str
+        :param kwargs: Additional chart specification updates. Supported options include:
+
+            - ``subtitle`` (str): Chart subtitle
+            - ``font_name`` (str): Font name for chart text
+            - ``x_axis_title`` (str): Title for the x-axis
+            - ``y_axis_title`` (str): Title for the y-axis
+            - ``three_dimensional`` (bool): Whether to render the chart in 3D
+            - ``stacked`` (bool): Whether to stack the series
+
+        :returns: The response body from the API request
+        :rtype: dict
+
+        Example::
+
+            >>> # Get chart ID from list_charts()
+            >>> charts = worksheet.list_charts()
+            >>> chart_id = charts[0]['chartId']
+            >>>
+            >>> # Update the chart
+            >>> worksheet.update_chart(
+            ...     chart_id,
+            ...     title='Updated Sales Data',
+            ...     chart_type=ChartType.line,
+            ...     legend_position=ChartLegendPosition.top
+            ... )
+
+        .. versionadded:: 6.2.2
+        """
+        # Build chart specification with only provided fields
+        chart_spec: Dict[str, Any] = {}
+
+        if title is not None:
+            chart_spec["title"] = title
+        if kwargs.get("subtitle") is not None:
+            chart_spec["subtitle"] = kwargs["subtitle"]
+        if kwargs.get("font_name") is not None:
+            chart_spec["fontName"] = kwargs["font_name"]
+
+        # Build basic chart spec if any basic chart properties are provided
+        basic_chart_spec: Dict[str, Any] = {}
+
+        if chart_type is not None:
+            if isinstance(chart_type, ChartType):
+                chart_type = str(chart_type)
+            basic_chart_spec["chartType"] = chart_type
+
+        if legend_position is not None:
+            if isinstance(legend_position, ChartLegendPosition):
+                legend_position = str(legend_position)
+            basic_chart_spec["legendPosition"] = legend_position
+
+        # Add axes configuration
+        axes = []
+        if kwargs.get("x_axis_title"):
+            axes.append(
+                {
+                    "position": ChartAxisPosition.bottom_axis,
+                    "title": kwargs["x_axis_title"],
+                }
+            )
+        if kwargs.get("y_axis_title"):
+            axes.append(
+                {
+                    "position": ChartAxisPosition.left_axis,
+                    "title": kwargs["y_axis_title"],
+                }
+            )
+        if axes:
+            basic_chart_spec["axis"] = axes
+
+        if kwargs.get("three_dimensional") is not None:
+            basic_chart_spec["threeDimensional"] = kwargs["three_dimensional"]
+        if kwargs.get("stacked") is not None:
+            basic_chart_spec["stackedType"] = (
+                "STACKED" if kwargs["stacked"] else "NOT_STACKED"
+            )
+
+        if basic_chart_spec:
+            chart_spec["basicChart"] = basic_chart_spec
+
+        # Build the request
+        body = {
+            "requests": [
+                {
+                    "updateChartSpec": {
+                        "chartId": chart_id,
+                        "spec": chart_spec,
+                    }
+                }
+            ]
+        }
+
+        return self.client.batch_update(self.spreadsheet_id, body)
+
+    def delete_chart(self, chart_id: int) -> JSONResponse:
+        """Delete a chart from this worksheet.
+
+        :param chart_id: The ID of the chart to delete. Get this from list_charts().
+        :type chart_id: int
+        :returns: The response body from the API request
+        :rtype: dict
+
+        Example::
+
+            >>> # Get chart ID from list_charts()
+            >>> charts = worksheet.list_charts()
+            >>> chart_id = charts[0]['chartId']
+            >>>
+            >>> # Delete the chart
+            >>> worksheet.delete_chart(chart_id)
+
+        .. versionadded:: 6.2.2
+        """
+        body = {"requests": [{"deleteEmbeddedObject": {"objectId": chart_id}}]}
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
