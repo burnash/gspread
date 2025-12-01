@@ -3553,3 +3553,82 @@ class Worksheet:
 
         # Return original create response if no column properties to update
         return create_response
+
+    def _update_table(
+        self,
+        table_id: str,
+        table_name: Optional[str] = None,
+        column_properties: Optional[List[Dict[str, Any]]] = None,
+        fields: str = "*"
+    ) -> JSONResponse:
+        """Internal method to update an existing table.
+
+        This method updates properties of an existing table using the updateTable request.
+        It's primarily used as a workaround for the Google Sheets API column offset bug.
+
+        Args:
+            table_id (str): The ID of the table to update
+            table_name (str, optional): New name for the table
+            column_properties (List[Dict], optional): List of column properties to update
+            fields (str): Field mask for which properties to update (default: "*")
+
+        Returns:
+            dict: API response from the update operation
+
+        .. note::
+            This is an internal method used by create_table as a workaround for the
+            Google Sheets API column offset bug (as of Nov 2025).
+        """
+        table_updates = {}
+
+        if table_name is not None:
+            table_updates["name"] = table_name
+
+        if column_properties is not None:
+            table_updates["columnProperties"] = column_properties
+
+        body = {
+            "requests": [
+                {
+                    "updateTable": {
+                        "table": {
+                            "tableId": table_id,
+                            **table_updates
+                        },
+                        "fields": fields
+                    }
+                }
+            ]
+        }
+
+        return self.client.batch_update(self.spreadsheet_id, body)
+
+    def _find_table_by_name(
+        self,
+        table_name: str,
+    ) -> Optional[Dict[str, Any]]:
+        """Find a table by its name in the worksheet.
+
+        Args:
+            table_name (str): The name of the table to find
+
+        Returns:
+            dict: Table information if found, None otherwise
+        """
+        spreadsheet_metadata = self.client.fetch_sheet_metadata(self.spreadsheet_id)
+
+        # Find the table by name in this worksheet
+        for sheet in spreadsheet_metadata.get("sheets", []):
+            if sheet.get("properties", {}).get("sheetId") == self.id:
+                tables = sheet.get("tables", [])
+                if isinstance(tables, dict) and "tables" in tables:
+                    tables = tables["tables"]
+
+                for table in tables:
+                    # Table name is directly in the table object, not under tableProperties
+                    if table.get("name") == table_name:
+                        return table
+                break
+
+        return None
+
