@@ -49,6 +49,7 @@ from .utils import (
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
+    rowcol_to_a1,
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
@@ -3451,3 +3452,104 @@ class Worksheet:
 
         values = self.get(pad_values=True)
         return find_table(values, top_left_range_name, direction)
+
+    def create_table(
+        self,
+        range_name: str,
+        table_name: Optional[str] = None,
+        column_names: Optional[Sequence[str]] = None,
+        column_types: Optional[Sequence[str]] = None,
+    ) -> JSONResponse:
+        """Create a table in the worksheet.
+
+        This method creates a Google Sheets table entity in the specified range.
+        Tables provide enhanced functionality like automatic filtering, sorting,
+        and styling options.
+
+        .. note::
+            **IMPORTANT**: As of November 2025, there is a known bug in the Google Sheets API
+            where column names in `addTableRequest` are positioned with an incorrect offset,
+            causing headers to not align with their intended columns. This method implements
+            a two-step workaround:
+
+            1. Create the table first without column properties
+            2. Update the table separately with the correct column properties
+
+            This bug has been reported to Google and may be fixed in a future API update.
+            See: https://stackoverflow.com/questions/79726262/how-to-fix-offset-column-names-in-addtable-request
+
+        Args:
+            range_name (str): A1 notation range for the table (e.g., 'A1:D10')
+            table_name (str, optional): Name for the table. If not provided,
+                Google Sheets will generate a default name.
+            column_names (Sequence[str], optional): List of column names.
+                If not provided, existing values in the first row will be used as headers.
+            column_types (Sequence[str], optional): List of column types for each column.
+
+        Returns:
+            dict: API response containing the created table information
+
+        Raises:
+            GSpreadException: If the table creation fails
+
+        Examples:
+            >>> worksheet.create_table("A1:D10", "MyTable", ["Name", "Age", "City", "Country"])
+            >>> worksheet.create_table("A1:C5")
+
+        .. versionadded:: 6.1.0
+        """
+        # Step 1: Create table without column properties (workaround for Google Sheets API bug as of Nov 2025)
+        grid_range = a1_range_to_grid_range(range_name, self.id)
+
+        # Create basic table without column properties first
+        basic_table = {
+            "range": grid_range
+        }
+
+        if table_name:
+            basic_table["name"] = table_name
+
+        create_body = {
+            "requests": [
+                {
+                    "addTable": {
+                        "table": basic_table
+                    }
+                }
+            ]
+        }
+
+        # Create table and get its ID
+        create_response = self.client.batch_update(self.spreadsheet_id, create_body)
+
+        # Extract table ID from response
+        table_id = None
+        if "replies" in create_response and create_response["replies"]:
+            add_table_reply = create_response["replies"][0].get("addTable", {})
+            table_id = add_table_reply.get("table", {}).get("tableId")
+
+        if not table_id:
+            raise GSpreadException("Failed to create table or extract table ID")
+
+        # Step 2: Update table with column properties (if provided)
+        if column_names:
+            column_properties = []
+            for i, name in enumerate(column_names):
+                col_prop = {
+                    "columnIndex": i,
+                    "columnName": name
+                }
+                if column_types and i < len(column_types):
+                    col_prop["columnType"] = column_types[i]
+                column_properties.append(col_prop)
+
+            # Update table with correct column properties
+            update_response = self._update_table(
+                table_id=table_id,
+                column_properties=column_properties,
+                fields="columnProperties"
+            )
+            return update_response
+
+        # Return original create response if no column properties to update
+        return create_response
