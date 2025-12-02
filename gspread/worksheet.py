@@ -3632,3 +3632,140 @@ class Worksheet:
 
         return None
 
+
+    def delete_table_row(
+        self,
+        table_name: str,
+        row_index: int,
+    ) -> JSONResponse:
+        """Delete a row from a table by its index within the table's data rows.
+
+        This method deletes a specific data row from a Google Sheets table entity
+        without affecting the rest of the spreadsheet. The table structure and 
+        other data rows are preserved, and the table range is adjusted accordingly.
+
+        Args:
+            table_name (str): The name of the table containing the row to delete
+            row_index (int): The index of the row to delete within the table's data rows
+                           (0-based, where 0 is the first data row after the header row)
+
+        Returns:
+            dict: API response from the delete operation
+
+        Raises:
+            GSpreadException: If the table is not found or the row index is invalid
+
+        Examples:
+            >>> # Delete the first data row (index 0) from a table named "Users"
+            >>> worksheet.delete_table_row("Users", 0)
+            
+            >>> # Delete the third data row (index 2) from a table named "Inventory"  
+            >>> worksheet.delete_table_row("Inventory", 2)
+        """
+        # Find the table by name
+        table_info = self._find_table_by_name(table_name)
+        if not table_info:
+            raise GSpreadException(f"Table '{table_name}' not found in worksheet")
+
+        # Get table range information
+        table_range = table_info.get("range", {})
+        if not table_range:
+            raise GSpreadException(f"Table '{table_name}' has no range information")
+
+        # Extract table coordinates
+        start_row = table_range.get("startRowIndex", 0)
+        end_row = table_range.get("endRowIndex", 0)
+        start_col = table_range.get("startColumnIndex", 0)  
+        end_col = table_range.get("endColumnIndex", 0)
+
+        # Calculate table dimensions
+        total_rows = end_row - start_row
+        total_cols = end_col - start_col
+        
+        # Validate we have at least one data row (after header)
+        if total_rows <= 1:
+            raise GSpreadException(f"Table '{table_name}' has no data rows to delete")
+
+        # Validate row index is within data rows bounds (excluding header)
+        # Data rows are from start_row + 1 to end_row - 1 (for 3-column example: rows 20-22)
+        data_row_count = total_rows - 1  # Subtract header row
+        if row_index < 0 or row_index >= data_row_count:
+            raise GSpreadException(
+                f"Row index {row_index} is out of bounds for table '{table_name}'. "
+                f"Table has data rows 0-{data_row_count - 1}"
+            )
+
+        # Read current table data
+        range_start = rowcol_to_a1(start_row + 1, start_col + 1)
+        range_end = rowcol_to_a1(end_row, end_col)
+        current_data = self.get(f"{range_start}:{range_end}")
+
+        if not current_data or len(current_data) == 0:
+            raise GSpreadException(f"Could not read data from table '{table_name}'")
+
+        # Remove the specified data row (index 0 means remove row after header)
+        # Current data structure: [header_row, data_row_0, data_row_1, ...]
+        updated_data = current_data.copy()
+        del updated_data[row_index + 1]  # +1 to skip header row
+
+        # Clear the entire table range first
+        clear_range_start = range_start
+        clear_range_end = rowcol_to_a1(end_row, end_col)
+        self.batch_clear([f"{clear_range_start}:{clear_range_end}"])
+
+        # Write the updated data back (with one less row)
+        if updated_data:
+            self.update(updated_data, f"{range_start}:{rowcol_to_a1(start_row + len(updated_data), end_col)}")
+
+        # Update the table definition with new range (one row shorter)
+        table_id = table_info.get("tableId")
+        if table_id:
+            # Calculate new end row (one row less)
+            new_end_row = end_row - 1
+            
+            # Only update if we actually removed a row
+            if new_end_row > start_row:
+                new_range = {
+                    "sheetId": self.id,
+                    "startRowIndex": start_row,
+                    "endRowIndex": new_end_row,
+                    "startColumnIndex": start_col,
+                    "endColumnIndex": end_col
+                }
+                
+                update_table_request = {
+                    "table": {
+                        "tableId": table_id,
+                        "range": new_range
+                    },
+                    "fields": "range"
+                }
+                
+                body = {
+                    "requests": [
+                        {
+                            "updateTable": update_table_request
+                        }
+                    ]
+                }
+                
+                response = self.client.batch_update(self.spreadsheet_id, body)
+                return response
+            else:
+                # If table would become too small, delete the entire table
+                delete_request = {
+                    "tableId": table_id
+                }
+                
+                body = {
+                    "requests": [
+                        {
+                            "deleteTable": delete_request
+                        }
+                    ]
+                }
+                
+                response = self.client.batch_update(self.spreadsheet_id, body)
+                return response
+        
+        return {"status": "completed", "message": "Row deleted successfully"}
