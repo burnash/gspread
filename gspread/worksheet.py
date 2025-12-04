@@ -3769,3 +3769,177 @@ class Worksheet:
                 return response
         
         return {"status": "completed", "message": "Row deleted successfully"}
+
+    def append_table_rows(
+        self,
+        table_name: str,
+        rows_data: Dict[str, List[Any]],
+    ) -> JSONResponse:
+        """Append multiple rows to a table from a dictionary of column data.
+
+        This method appends new rows to a Google Sheets table entity from a dictionary 
+        where keys are column names and values are lists of data for that column.
+        The method handles table expansion if needed and validates that all provided
+        columns have the same length.
+
+        Args:
+            table_name (str): The name of the table to append rows to
+            rows_data (Dict[str, List[Any]]): Dictionary where keys are column names 
+                and values are lists of data to append to each column. All lists must
+                have the same length. Not all table columns need to be provided.
+
+        Returns:
+            dict: API response from the append operation
+
+        Raises:
+            GSpreadException: If table is not found, columns are invalid, or data lengths differ
+
+        Examples:
+            >>> # Append two rows to a table with Name, Age, and City columns
+            >>> worksheet.append_table_rows("Users", {
+            ...     "Name": ["Alice", "Bob"],
+            ...     "Age": [25, 30],
+            ...     "City": ["New York", "San Francisco"]
+            ... })
+            
+            >>> # Append one row with only some columns
+            >>> worksheet.append_table_rows("Inventory", {
+            ...     "Product": ["Widget"],
+            ...     "Price": [19.99]
+            ... })
+        """
+        if not rows_data:
+            raise GSpreadException("No data provided to append")
+
+        # Validate that all lists have the same length
+        list_lengths = [len(values) for values in rows_data.values()]
+        if len(set(list_lengths)) > 1:
+            raise GSpreadException(
+                f"All column lists must have the same length. "
+                f"Found lengths: {dict(zip(rows_data.keys(), list_lengths))}"
+            )
+        
+        num_rows_to_add = list_lengths[0] if list_lengths else 0
+        if num_rows_to_add == 0:
+            return {"status": "completed", "message": "No rows to append"}
+
+        # Find the table by name
+        table_info = self._find_table_by_name(table_name)
+        if not table_info:
+            raise GSpreadException(f"Table '{table_name}' not found in worksheet")
+
+        # Get table range and column information
+        table_range = table_info.get("range", {})
+        if not table_range:
+            raise GSpreadException(f"Table '{table_name}' has no range information")
+
+        # Extract table coordinates
+        start_row = table_range.get("startRowIndex", 0)
+        end_row = table_range.get("endRowIndex", 0)
+        start_col = table_range.get("startColumnIndex", 0)
+        end_col = table_range.get("endColumnIndex", 0)
+
+        # Calculate table dimensions
+        total_rows = end_row - start_row
+        total_cols = end_col - start_col
+
+        # Get table column properties to map column names to indices
+        table_columns = table_info.get("columnProperties", [])
+        column_name_to_index = {}
+        table_column_names = set()
+        
+        for col_prop in table_columns:
+            col_name = col_prop.get("columnName", "")
+            col_index = col_prop.get("columnIndex", 0)
+            column_name_to_index[col_name] = col_index
+            table_column_names.add(col_name)
+
+        # Validate provided column names exist in the table
+        invalid_columns = set(rows_data.keys()) - table_column_names
+        if invalid_columns:
+            raise GSpreadException(
+                f"Invalid column names: {invalid_columns}. "
+                f"Available columns: {sorted(table_column_names)}"
+            )
+
+        # Read current table data including headers
+        range_start = rowcol_to_a1(start_row + 1, start_col + 1)
+        range_end = rowcol_to_a1(end_row, end_col)
+        current_data = self.get(f"{range_start}:{range_end}")
+
+        if not current_data or len(current_data) == 0:
+            raise GSpreadException(f"Could not read data from table '{table_name}'")
+
+        # Extract headers from first row
+        headers = current_data[0] if current_data else []
+        data_rows = current_data[1:] if len(current_data) > 1 else []
+
+        # Calculate how many empty rows are available in the current table
+        current_data_rows_count = len(data_rows)
+        available_empty_rows = total_rows - 1 - current_data_rows_count  # -1 for header
+
+        # Determine if we need to expand the table
+        rows_to_create = max(0, num_rows_to_add - available_empty_rows)
+
+        # Expand table range if needed
+        if rows_to_create > 0:
+            new_end_row = end_row + rows_to_create
+            new_range = {
+                "sheetId": self.id,
+                "startRowIndex": start_row,
+                "endRowIndex": new_end_row,
+                "startColumnIndex": start_col,
+                "endColumnIndex": end_col
+            }
+            
+            table_id = table_info.get("tableId")
+            if table_id:
+                update_table_request = {
+                    "table": {
+                        "tableId": table_id,
+                        "range": new_range
+                    },
+                    "fields": "range"
+                }
+                
+                body = {
+                    "requests": [
+                        {
+                            "updateTable": update_table_request
+                        }
+                    ]
+                }
+                
+                self.client.batch_update(self.spreadsheet_id, body)
+                end_row = new_end_row  # Update end_row for further operations
+
+        # Prepare the new rows to append
+        new_rows = []
+        for row_idx in range(num_rows_to_add):
+            new_row = [""] * total_cols  # Initialize with empty strings for all columns
+            
+            # Fill in the data for provided columns
+            for column_name, values in rows_data.items():
+                col_index = column_name_to_index[column_name]
+                if col_index < total_cols:
+                    new_row[col_index] = values[row_idx]
+            
+            new_rows.append(new_row)
+
+
+        # Calculate where to start writing the new rows
+        if available_empty_rows > 0:
+            # Use the first empty row within existing table range
+            first_new_row_index = start_row + 1 + current_data_rows_count
+        else:
+            # Need to expand table, write to the new row
+            first_new_row_index = start_row + 1 + current_data_rows_count
+
+        range_start_write = rowcol_to_a1(first_new_row_index + 1, start_col + 1)
+        range_end_write = rowcol_to_a1(first_new_row_index + num_rows_to_add, end_col)
+
+        # Write the new rows to the table
+        if new_rows:
+            self.update(new_rows, f"{range_start_write}:{range_end_write}")
+
+        return {"status": "completed", "message": f"Successfully appended {num_rows_to_add} rows to table '{table_name}'"}
