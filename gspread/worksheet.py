@@ -3681,18 +3681,23 @@ class Worksheet:
         # Calculate table dimensions
         total_rows = end_row - start_row
         total_cols = end_col - start_col
+
+        # Check if table has a footer row
+        has_footer = bool(table_info.get("rowsProperties", {}).get("footerColorStyle"))
+        footer_rows = 1 if has_footer else 0
         
         # Validate we have at least one data row (after header)
-        if total_rows <= 1:
-            raise GSpreadException(f"Table '{table_name}' has no data rows to delete")
+        min_rows_needed = 1 + footer_rows  # Header + footer
+        if total_rows <= min_rows_needed:
+            raise GSpreadException(f"Table '{table_name}' has no data rows to delete (header + footer only)")
 
         # Validate row index is within data rows bounds (excluding header)
         # Data rows are from start_row + 1 to end_row - 1 (for 3-column example: rows 20-22)
-        data_row_count = total_rows - 1  # Subtract header row
+        data_row_count = total_rows - 1 - footer_rows  # Subtract header and footer rows
         if row_index < 0 or row_index >= data_row_count:
             raise GSpreadException(
                 f"Row index {row_index} is out of bounds for table '{table_name}'. "
-                f"Table has data rows 0-{data_row_count - 1}"
+                f"Table has data rows 0-{data_row_count - 1} (excluding footer rows)"
             )
 
         # Read current table data
@@ -3701,10 +3706,17 @@ class Worksheet:
         current_data = self.get(f"{range_start}:{range_end}")
 
         if not current_data or len(current_data) == 0:
-            raise GSpreadException(f"Could not read data from table '{table_name}'")
+            raise GSpreadException(f"Could not read data from table '{table_name}'")# Protect footer from accidental deletion
+        if has_footer:
+            max_data_index = len(current_data) - 2  # -2 for header and footer
+            if row_index >= max_data_index:
+                raise GSpreadException(
+                    f"Cannot delete row index {row_index} - it would delete the footer row. "
+                    f"Maximum deletable data row index: {max_data_index - 1}"
+                )
 
         # Remove the specified data row (index 0 means remove row after header)
-        # Current data structure: [header_row, data_row_0, data_row_1, ...]
+        # Current data structure: [header_row, data_row_0, data_row_1, ..., footer_row]
         updated_data = current_data.copy()
         del updated_data[row_index + 1]  # +1 to skip header row
 
@@ -3874,9 +3886,18 @@ class Worksheet:
         headers = current_data[0] if current_data else []
         data_rows = current_data[1:] if len(current_data) > 1 else []
 
+        # Check if table has a footer row
+        has_footer = bool(table_info.get("rowsProperties", {}).get("footerColorStyle"))
+        footer_rows = 1 if has_footer else 0
+
+        # Remove footer row from data rows if it exists
+        if has_footer and data_rows:
+            data_rows = data_rows[:-1]  # Remove the last row (footer)
+
+
         # Calculate how many empty rows are available in the current table
         current_data_rows_count = len(data_rows)
-        available_empty_rows = total_rows - 1 - current_data_rows_count  # -1 for header
+        available_empty_rows = total_rows - 1 - footer_rows - current_data_rows_count  # -1 for header, -footer_rows for footer
 
         # Determine if we need to expand the table
         rows_to_create = max(0, num_rows_to_add - available_empty_rows)
@@ -3943,3 +3964,169 @@ class Worksheet:
             self.update(new_rows, f"{range_start_write}:{range_end_write}")
 
         return {"status": "completed", "message": f"Successfully appended {num_rows_to_add} rows to table '{table_name}'"}
+
+    def update_table_rows(
+        self,
+        table_name: str,
+        columns_to_match: Dict[str, List[Any]],
+        columns_to_modify: Dict[str, Any],
+        or_logical: bool = False,
+    ) -> JSONResponse:
+        """Update rows in a table based on matching conditions.
+
+        This method finds rows in a Google Sheets table that match the specified conditions
+        and updates the specified columns with new values. The method supports flexible
+        matching logic between columns.
+
+        Args:
+            table_name (str): The name of the table to update
+            columns_to_match (Dict[str, List[Any]]): Dictionary containing match conditions
+                where keys are column names and values are lists of possible matching values.
+                For each column, a row matches if the cell value matches ANY value in the list.
+                Example: {'Type': ['A', 'B'], 'Status': ['Active', 'Pending']}
+            columns_to_modify (Dict[str, Any]): Dictionary containing column names as keys
+                and the values to set in those columns for matching rows.
+                Example: {'Status': 'Inactive', 'Notes': 'Updated automatically'}
+            or_logical (bool, optional): Determines how multiple column conditions are combined.
+                If False (default), ALL specified columns must match (AND logic).
+                If True, ANY specified column matching is sufficient (OR logic).
+                Defaults to False.
+
+        Returns:
+            dict: API response containing the number of rows updated
+
+        Raises:
+            GSpreadException: If the table is not found or columns are invalid
+
+        Examples:
+            >>> # Update Status to 'Inactive' for rows where Type is 'A' AND Status is 'Active'
+            >>> worksheet.update_table_rows(
+            ...     "Users",
+            ...     {'Type': ['A'], 'Status': ['Active']},
+            ...     {'Status': 'Inactive'}
+            ... )
+
+            >>> # Update with OR logic - rows where Type is 'A' OR Status is 'Active'
+            >>> worksheet.update_table_rows(
+            ...     "Users",
+            ...     {'Type': ['A'], 'Status': ['Active']},
+            ...     {'Status': 'Updated'},
+            ...     or_logical=True
+            ... )
+
+            >>> # Update multiple columns with multiple possible values per column
+            >>> worksheet.update_table_rows(
+            ...     "Inventory",
+            ...     {'Category': ['Electronics', 'Books'], 'Priority': ['High', 'Urgent']},
+            ...     {'Notes': 'Review needed'}
+            ... )
+
+            >>> # Update with single column match
+            >>> worksheet.update_table_rows(
+            ...     "Employees",
+            ...     {'Department': ['Sales']},
+            ...     {'Bonus': 5000, 'Status': 'Eligible'}
+            ... )
+        """
+        # Find the table by name
+        table_info = self._find_table_by_name(table_name)
+        if not table_info:
+            raise GSpreadException(f"Table '{table_name}' not found in worksheet")
+
+        # Get table range information
+        table_range = table_info.get("range", {})
+        if not table_range:
+            raise GSpreadException(f"Table '{table_name}' has no range information")
+
+        # Extract table coordinates
+        start_row = table_range.get("startRowIndex", 0)
+        end_row = table_range.get("endRowIndex", 0)
+        start_col = table_range.get("startColumnIndex", 0)
+        end_col = table_range.get("endColumnIndex", 0)
+
+        # Calculate table dimensions
+        total_rows = end_row - start_row
+        total_cols = end_col - start_col
+
+        # Read current table data including headers
+        range_start = rowcol_to_a1(start_row + 1, start_col + 1)
+        range_end = rowcol_to_a1(end_row, end_col)
+        current_data = self.get(f"{range_start}:{range_end}")
+
+        if not current_data or len(current_data) == 0:
+            raise GSpreadException(f"Could not read data from table '{table_name}'")
+
+        # Extract header row and create column mapping
+        header_row = current_data[0]
+        column_name_to_index = {col.strip(): idx for idx, col in enumerate(header_row)}
+        data_rows = current_data[1:]  # All rows except header
+
+        # Validate all columns exist in the table
+        all_columns = set(columns_to_match.keys())
+        all_columns.update(columns_to_modify.keys())
+
+        for col in all_columns:
+            if col not in column_name_to_index:
+                raise GSpreadException(f"Column '{col}' not found in table '{table_name}'")
+
+        # Find matching rows
+        matching_row_indices = []
+        for row_idx, row in enumerate(data_rows):
+            row_matches = False
+
+            if not columns_to_match:
+                # If no match conditions, all rows match
+                row_matches = True
+            else:
+                # Check column conditions based on or_logical parameter
+                matching_columns = 0
+                total_columns = len(columns_to_match)
+
+                for col_name, match_values in columns_to_match.items():
+                    col_index = column_name_to_index[col_name]
+                    cell_value = row[col_index] if col_index < len(row) else ""
+
+                    # Check if cell value matches any of the provided values for this column
+                    if str(cell_value).strip() in [str(v).strip() for v in match_values]:
+                        matching_columns += 1
+
+                        # For OR logic, one match is enough
+                        if or_logical:
+                            row_matches = True
+                            break
+
+                # For AND logic, all columns must match
+                if not or_logical and matching_columns == total_columns:
+                    row_matches = True
+
+            if row_matches:
+                matching_row_indices.append(row_idx)
+
+        if not matching_row_indices:
+            return {"status": "completed", "message": f"No rows matched the specified conditions in table '{table_name}'", "rows_updated": 0}
+
+        # Prepare updates for matching rows
+        updates = []
+        for row_idx in matching_row_indices:
+            for col_name, new_value in columns_to_modify.items():
+                col_index = column_name_to_index[col_name]
+                actual_row = start_row + 1 + row_idx  # +1 for header, +row_idx for data row
+                actual_col = start_col + col_index
+
+                # Create A1 notation for the cell
+                cell_range = rowcol_to_a1(actual_row + 1, actual_col + 1)  # +1 for A1 conversion
+
+                updates.append({
+                    'range': cell_range,
+                    'values': [[new_value]]
+                })
+
+        # Apply all updates in a batch
+        if updates:
+            self.batch_update(updates)
+
+        return {
+            "status": "completed",
+            "message": f"Successfully updated {len(matching_row_indices)} rows in table '{table_name}'",
+            "rows_updated": len(matching_row_indices)
+        }
