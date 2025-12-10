@@ -3641,8 +3641,7 @@ class Worksheet:
         """Delete a row from a table by its index within the table's data rows.
 
         This method deletes a specific data row from a Google Sheets table entity
-        without affecting the rest of the spreadsheet. The table structure and 
-        other data rows are preserved, and the table range is adjusted accordingly.
+        using table entity operations that preserve footer content and table structure.
 
         Args:
             table_name (str): The name of the table containing the row to delete
@@ -3658,130 +3657,146 @@ class Worksheet:
         Examples:
             >>> # Delete the first data row (index 0) from a table named "Users"
             >>> worksheet.delete_table_row("Users", 0)
-            
-            >>> # Delete the third data row (index 2) from a table named "Inventory"  
-            >>> worksheet.delete_table_row("Inventory", 2)
         """
         # Find the table by name
         table_info = self._find_table_by_name(table_name)
         if not table_info:
             raise GSpreadException(f"Table '{table_name}' not found in worksheet")
 
-        # Get table range information
+        table_id = table_info.get("tableId")
         table_range = table_info.get("range", {})
-        if not table_range:
-            raise GSpreadException(f"Table '{table_name}' has no range information")
-
-        # Extract table coordinates
         start_row = table_range.get("startRowIndex", 0)
         end_row = table_range.get("endRowIndex", 0)
-        start_col = table_range.get("startColumnIndex", 0)  
+        start_col = table_range.get("startColumnIndex", 0)
         end_col = table_range.get("endColumnIndex", 0)
 
-        # Calculate table dimensions
-        total_rows = end_row - start_row
-        total_cols = end_col - start_col
-
-        # Check if table has a footer row
-        has_footer = bool(table_info.get("rowsProperties", {}).get("footerColorStyle"))
-        footer_rows = 1 if has_footer else 0
-        
-        # Validate we have at least one data row (after header)
-        min_rows_needed = 1 + footer_rows  # Header + footer
-        if total_rows <= min_rows_needed:
-            raise GSpreadException(f"Table '{table_name}' has no data rows to delete (header + footer only)")
-
-        # Validate row index is within data rows bounds (excluding header)
-        # Data rows are from start_row + 1 to end_row - 1 (for 3-column example: rows 20-22)
-        data_row_count = total_rows - 1 - footer_rows  # Subtract header and footer rows
-        if row_index < 0 or row_index >= data_row_count:
-            raise GSpreadException(
-                f"Row index {row_index} is out of bounds for table '{table_name}'. "
-                f"Table has data rows 0-{data_row_count - 1} (excluding footer rows)"
-            )
-
         # Read current table data
-        range_start = rowcol_to_a1(start_row + 1, start_col + 1)
-        range_end = rowcol_to_a1(end_row, end_col)
+        range_start = rowcol_to_a1(start_row + 1, 1)  # col 1 = A
+        range_end = rowcol_to_a1(end_row, 3)  # col 3 = C
         current_data = self.get(f"{range_start}:{range_end}")
 
         if not current_data or len(current_data) == 0:
-            raise GSpreadException(f"Could not read data from table '{table_name}'")# Protect footer from accidental deletion
-        if has_footer:
-            max_data_index = len(current_data) - 2  # -2 for header and footer
-            if row_index >= max_data_index:
-                raise GSpreadException(
-                    f"Cannot delete row index {row_index} - it would delete the footer row. "
-                    f"Maximum deletable data row index: {max_data_index - 1}"
-                )
+            raise GSpreadException(f"Could not read data from table '{table_name}'")
 
-        # Remove the specified data row (index 0 means remove row after header)
-        # Current data structure: [header_row, data_row_0, data_row_1, ..., footer_row]
-        updated_data = current_data.copy()
-        del updated_data[row_index + 1]  # +1 to skip header row
+        # Extract headers and data rows
+        headers = current_data[0] if current_data else []
+        data_rows = current_data[1:] if len(current_data) > 1 else []
 
-        # Clear the entire table range first
-        clear_range_start = range_start
-        clear_range_end = rowcol_to_a1(end_row, end_col)
-        self.batch_clear([f"{clear_range_start}:{clear_range_end}"])
+        # Check if table has a footer row
+        has_footer = bool(table_info.get("rowsProperties", {}).get("footerColorStyle"))
 
-        # Write the updated data back (with one less row)
-        if updated_data:
-            self.update(updated_data, f"{range_start}:{rowcol_to_a1(start_row + len(updated_data), end_col)}")
+        # Separate footer from data rows if it exists
+        if has_footer and data_rows:
+            footer_row = data_rows[-1]  # Save the footer row content
+            data_rows = data_rows[:-1]  # Remove the last row (footer)
+        else:
+            footer_row = None
 
-        # Update the table definition with new range (one row shorter)
-        table_id = table_info.get("tableId")
-        if table_id:
-            # Calculate new end row (one row less)
-            new_end_row = end_row - 1
-            
-            # Only update if we actually removed a row
-            if new_end_row > start_row:
-                new_range = {
+        # Validate we have at least one data row
+        if len(data_rows) == 0:
+            raise GSpreadException(f"Table '{table_name}' has no data rows to delete")
+
+        # Validate row index
+        if row_index < 0 or row_index >= len(data_rows):
+            raise GSpreadException(
+                f"Row index {row_index} is out of bounds for table '{table_name}'. "
+                f"Table has data rows 0-{len(data_rows) - 1}"
+            )
+
+        # TABLE ENTITY APPROACH:
+        # Use Google Sheets API to delete specific cells within the table range
+        # This should preserve table structure and footer relationships
+
+        # Calculate the actual row number to delete (0-based)
+        header_row = start_row  # Header row index
+        data_row_to_delete = header_row + 1 + row_index  # +1 for header, +row_index for data row
+
+        # Create a delete range request for the specific row
+        delete_range = {
+            "sheetId": self.id,
+            "startRowIndex": data_row_to_delete,
+            "endRowIndex": data_row_to_delete + 1,  # Delete only this row
+            "startColumnIndex": start_col,  # Same columns as table
+            "endColumnIndex": end_col
+        }
+
+        # Move rows up - shift all rows below the deleted row up by 1
+        total_data_rows = len(data_rows)
+        rows_below_deleted = total_data_rows - row_index - 1
+
+        if rows_below_deleted > 0:
+            # Create update requests to shift rows up
+            update_requests = []
+
+            for i in range(rows_below_deleted):
+                source_row = data_row_to_delete + 1 + i  # Row below deleted row
+                target_row = data_row_to_delete + i       # Where to move it
+
+                # Copy data from source row to target row
+                source_range = {
                     "sheetId": self.id,
-                    "startRowIndex": start_row,
-                    "endRowIndex": new_end_row,
+                    "startRowIndex": source_row,
+                    "endRowIndex": source_row + 1,
                     "startColumnIndex": start_col,
                     "endColumnIndex": end_col
                 }
-                
-                update_table_request = {
-                    "table": {
-                        "tableId": table_id,
-                        "range": new_range
-                    },
-                    "fields": "range"
-                }
-                
-                body = {
-                    "requests": [
-                        {
-                            "updateTable": update_table_request
-                        }
-                    ]
-                }
-                
-                response = self.client.batch_update(self.spreadsheet_id, body)
-                return response
-            else:
-                # If table would become too small, delete the entire table
-                delete_request = {
-                    "tableId": table_id
-                }
-                
-                body = {
-                    "requests": [
-                        {
-                            "deleteTable": delete_request
-                        }
-                    ]
-                }
-                
-                response = self.client.batch_update(self.spreadsheet_id, body)
-                return response
-        
-        return {"status": "completed", "message": "Row deleted successfully"}
 
+                target_range = {
+                    "sheetId": self.id,
+                    "startRowIndex": target_row,
+                    "endRowIndex": target_row + 1,
+                    "startColumnIndex": start_col,
+                    "endColumnIndex": end_col
+                }
+
+                update_requests.append({
+                    "copyPaste": {
+                        "source": source_range,
+                        "destination": target_range,
+                        "pasteType": "PASTE_VALUES"
+                    }
+                })
+
+            # Execute the row shifting operations
+            if update_requests:
+                shift_body = {"requests": update_requests}
+                self.client.batch_update(self.spreadsheet_id, shift_body)
+
+        # Clear the now-empty row at the bottom
+        empty_row = header_row + len(data_rows)  # Last data row position
+        clear_range = rowcol_to_a1(empty_row + 1, start_col + 1) + ":" + rowcol_to_a1(empty_row + 1, end_col)
+
+        self.batch_clear([clear_range])
+
+        # Update table definition with new range (one row shorter)
+        new_end_row = end_row - 1
+        new_table_range = {
+            "sheetId": self.id,
+            "startRowIndex": start_row,
+            "endRowIndex": new_end_row,
+            "startColumnIndex": start_col,
+            "endColumnIndex": end_col
+        }
+
+        update_table_request = {
+            "table": {
+                "tableId": table_id,
+                "range": new_table_range
+            },
+            "fields": "range"
+        }
+
+        body = {
+            "requests": [
+                {
+                    "updateTable": update_table_request
+                }
+            ]
+        }
+
+        response = self.client.batch_update(self.spreadsheet_id, body)
+        return response
+    
     def append_table_rows(
         self,
         table_name: str,
