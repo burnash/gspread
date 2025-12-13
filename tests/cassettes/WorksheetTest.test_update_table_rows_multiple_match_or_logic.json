@@ -1,0 +1,810 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "body": "{\"name\": \"Test WorksheetTest test_update_table_rows_multiple_match_or_logic\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "132"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:13 GMT"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "219"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"kind\": \"drive#file\",\n  \"id\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n  \"name\": \"Test WorksheetTest test_update_table_rows_multiple_match_or_logic\",\n  \"mimeType\": \"application/vnd.google-apps.spreadsheet\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:14 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "3363"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_update_table_rows_multiple_match_or_logic\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU/edit\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:14 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "3363"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_update_table_rows_multiple_match_or_logic\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26\n        }\n      }\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU/edit\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU/values/%27Sheet1%27:clear",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:15 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "107"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n  \"clearedRange\": \"Sheet1!A1:Z1000\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "PUT",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW",
+                "body": "{\"values\": [[\"Name\", \"Status\", \"Age\", \"Priority\"], [\"Alice\", \"Active\", 25, \"High\"], [\"Bob\", \"Inactive\", 30, \"Low\"], [\"Charlie\", \"Active\", 35, \"Medium\"], [\"Diana\", \"Pending\", 28, \"High\"], [\"Eve\", \"Inactive\", 32, \"Critical\"]], \"majorDimension\": null}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "248"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:15 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "169"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n  \"updatedRange\": \"Sheet1!A1:D6\",\n  \"updatedRows\": 6,\n  \"updatedColumns\": 4,\n  \"updatedCells\": 24\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU:batchUpdate",
+                "body": "{\"requests\": [{\"addTable\": {\"table\": {\"range\": {\"startRowIndex\": 0, \"endRowIndex\": 6, \"startColumnIndex\": 0, \"endColumnIndex\": 4, \"sheetId\": 0}, \"name\": \"OrLogicTable\"}}}]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "172"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:16 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "1409"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n  \"replies\": [\n    {\n      \"addTable\": {\n        \"table\": {\n          \"tableId\": \"1830274244\",\n          \"name\": \"OrLogicTable\",\n          \"range\": {\n            \"startRowIndex\": 0,\n            \"endRowIndex\": 6,\n            \"startColumnIndex\": 0,\n            \"endColumnIndex\": 4\n          },\n          \"rowsProperties\": {\n            \"headerColorStyle\": {\n              \"rgbColor\": {\n                \"red\": 0.20784314,\n                \"green\": 0.40784314,\n                \"blue\": 0.32941177\n              }\n            },\n            \"firstBandColorStyle\": {\n              \"rgbColor\": {\n                \"red\": 1,\n                \"green\": 1,\n                \"blue\": 1\n              }\n            },\n            \"secondBandColorStyle\": {\n              \"rgbColor\": {\n                \"red\": 0.9647059,\n                \"green\": 0.972549,\n                \"blue\": 0.9764706\n              }\n            }\n          },\n          \"columnProperties\": [\n            {\n              \"columnName\": \"Name\"\n            },\n            {\n              \"columnIndex\": 1,\n              \"columnName\": \"Status\"\n            },\n            {\n              \"columnIndex\": 2,\n              \"columnName\": \"Age\"\n            },\n            {\n              \"columnIndex\": 3,\n              \"columnName\": \"Priority\"\n            }\n          ]\n        }\n      }\n    }\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU?includeGridData=false",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:16 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "6021"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n  \"properties\": {\n    \"title\": \"Test WorksheetTest test_update_table_rows_multiple_match_or_logic\",\n    \"locale\": \"en_US\",\n    \"autoRecalc\": \"ON_CHANGE\",\n    \"timeZone\": \"Etc/GMT\",\n    \"defaultFormat\": {\n      \"backgroundColor\": {\n        \"red\": 1,\n        \"green\": 1,\n        \"blue\": 1\n      },\n      \"padding\": {\n        \"top\": 2,\n        \"right\": 3,\n        \"bottom\": 2,\n        \"left\": 3\n      },\n      \"verticalAlignment\": \"BOTTOM\",\n      \"wrapStrategy\": \"OVERFLOW_CELL\",\n      \"textFormat\": {\n        \"foregroundColor\": {},\n        \"fontFamily\": \"arial,sans,sans-serif\",\n        \"fontSize\": 10,\n        \"bold\": false,\n        \"italic\": false,\n        \"strikethrough\": false,\n        \"underline\": false,\n        \"foregroundColorStyle\": {\n          \"rgbColor\": {}\n        }\n      },\n      \"backgroundColorStyle\": {\n        \"rgbColor\": {\n          \"red\": 1,\n          \"green\": 1,\n          \"blue\": 1\n        }\n      }\n    },\n    \"spreadsheetTheme\": {\n      \"primaryFontFamily\": \"Arial\",\n      \"themeColors\": [\n        {\n          \"colorType\": \"TEXT\",\n          \"color\": {\n            \"rgbColor\": {}\n          }\n        },\n        {\n          \"colorType\": \"BACKGROUND\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT1\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.25882354,\n              \"green\": 0.52156866,\n              \"blue\": 0.95686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT2\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.91764706,\n              \"green\": 0.2627451,\n              \"blue\": 0.20784314\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT3\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.9843137,\n              \"green\": 0.7372549,\n              \"blue\": 0.015686275\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT4\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.20392157,\n              \"green\": 0.65882355,\n              \"blue\": 0.3254902\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT5\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 1,\n              \"green\": 0.42745098,\n              \"blue\": 0.003921569\n            }\n          }\n        },\n        {\n          \"colorType\": \"ACCENT6\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.27450982,\n              \"green\": 0.7411765,\n              \"blue\": 0.7764706\n            }\n          }\n        },\n        {\n          \"colorType\": \"LINK\",\n          \"color\": {\n            \"rgbColor\": {\n              \"red\": 0.06666667,\n              \"green\": 0.33333334,\n              \"blue\": 0.8\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"sheets\": [\n    {\n      \"properties\": {\n        \"sheetId\": 0,\n        \"title\": \"Sheet1\",\n        \"index\": 0,\n        \"sheetType\": \"GRID\",\n        \"gridProperties\": {\n          \"rowCount\": 1000,\n          \"columnCount\": 26,\n          \"frozenRowCount\": 1\n        }\n      },\n      \"bandedRanges\": [\n        {\n          \"bandedRangeId\": 1830274244,\n          \"range\": {\n            \"startRowIndex\": 0,\n            \"endRowIndex\": 6,\n            \"startColumnIndex\": 0,\n            \"endColumnIndex\": 4\n          },\n          \"rowProperties\": {\n            \"headerColor\": {\n              \"red\": 0.20784314,\n              \"green\": 0.40784314,\n              \"blue\": 0.32941177\n            },\n            \"firstBandColor\": {\n              \"red\": 1,\n              \"green\": 1,\n              \"blue\": 1\n            },\n            \"secondBandColor\": {\n              \"red\": 0.9647059,\n              \"green\": 0.972549,\n              \"blue\": 0.9764706\n            },\n            \"headerColorStyle\": {\n              \"rgbColor\": {\n                \"red\": 0.20784314,\n                \"green\": 0.40784314,\n                \"blue\": 0.32941177\n              }\n            },\n            \"firstBandColorStyle\": {\n              \"rgbColor\": {\n                \"red\": 1,\n                \"green\": 1,\n                \"blue\": 1\n              }\n            },\n            \"secondBandColorStyle\": {\n              \"rgbColor\": {\n                \"red\": 0.9647059,\n                \"green\": 0.972549,\n                \"blue\": 0.9764706\n              }\n            }\n          },\n          \"bandedRangeReference\": \"1830274244\"\n        }\n      ],\n      \"tables\": [\n        {\n          \"tableId\": \"1830274244\",\n          \"name\": \"OrLogicTable\",\n          \"range\": {\n            \"startRowIndex\": 0,\n            \"endRowIndex\": 6,\n            \"startColumnIndex\": 0,\n            \"endColumnIndex\": 4\n          },\n          \"rowsProperties\": {\n            \"headerColorStyle\": {\n              \"rgbColor\": {\n                \"red\": 0.20784314,\n                \"green\": 0.40784314,\n                \"blue\": 0.32941177\n              }\n            },\n            \"firstBandColorStyle\": {\n              \"rgbColor\": {\n                \"red\": 1,\n                \"green\": 1,\n                \"blue\": 1\n              }\n            },\n            \"secondBandColorStyle\": {\n              \"rgbColor\": {\n                \"red\": 0.9647059,\n                \"green\": 0.972549,\n                \"blue\": 0.9764706\n              }\n            }\n          },\n          \"columnProperties\": [\n            {\n              \"columnName\": \"Name\"\n            },\n            {\n              \"columnIndex\": 1,\n              \"columnName\": \"Status\"\n            },\n            {\n              \"columnIndex\": 2,\n              \"columnName\": \"Age\"\n            },\n            {\n              \"columnIndex\": 3,\n              \"columnName\": \"Priority\"\n            }\n          ]\n        }\n      ]\n    }\n  ],\n  \"spreadsheetUrl\": \"https://docs.google.com/spreadsheets/d/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU/edit\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU/values/%27Sheet1%27%21A1%3AD6",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:17 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "502"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"Name\",\n      \"Status\",\n      \"Age\",\n      \"Priority\"\n    ],\n    [\n      \"Alice\",\n      \"Active\",\n      \"25\",\n      \"High\"\n    ],\n    [\n      \"Bob\",\n      \"Inactive\",\n      \"30\",\n      \"Low\"\n    ],\n    [\n      \"Charlie\",\n      \"Active\",\n      \"35\",\n      \"Medium\"\n    ],\n    [\n      \"Diana\",\n      \"Pending\",\n      \"28\",\n      \"High\"\n    ],\n    [\n      \"Eve\",\n      \"Inactive\",\n      \"32\",\n      \"Critical\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU/values:batchUpdate",
+                "body": "{\"valueInputOption\": \"RAW\", \"includeValuesInResponse\": null, \"responseValueRenderOption\": null, \"responseDateTimeRenderOption\": null, \"data\": [{\"range\": \"'Sheet1'!B2\", \"values\": [[\"Reviewed\"]]}, {\"range\": \"'Sheet1'!D2\", \"values\": [[\"Updated\"]]}, {\"range\": \"'Sheet1'!B3\", \"values\": [[\"Reviewed\"]]}, {\"range\": \"'Sheet1'!D3\", \"values\": [[\"Updated\"]]}, {\"range\": \"'Sheet1'!B5\", \"values\": [[\"Reviewed\"]]}, {\"range\": \"'Sheet1'!D5\", \"values\": [[\"Updated\"]]}, {\"range\": \"'Sheet1'!B6\", \"values\": [[\"Reviewed\"]]}, {\"range\": \"'Sheet1'!D6\", \"values\": [[\"Updated\"]]}]}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "555"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:17 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "1749"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n  \"totalUpdatedRows\": 4,\n  \"totalUpdatedColumns\": 2,\n  \"totalUpdatedCells\": 8,\n  \"totalUpdatedSheets\": 1,\n  \"responses\": [\n    {\n      \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n      \"updatedRange\": \"Sheet1!B2\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 1,\n      \"updatedCells\": 1\n    },\n    {\n      \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n      \"updatedRange\": \"Sheet1!D2\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 1,\n      \"updatedCells\": 1\n    },\n    {\n      \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n      \"updatedRange\": \"Sheet1!B3\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 1,\n      \"updatedCells\": 1\n    },\n    {\n      \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n      \"updatedRange\": \"Sheet1!D3\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 1,\n      \"updatedCells\": 1\n    },\n    {\n      \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n      \"updatedRange\": \"Sheet1!B5\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 1,\n      \"updatedCells\": 1\n    },\n    {\n      \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n      \"updatedRange\": \"Sheet1!D5\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 1,\n      \"updatedCells\": 1\n    },\n    {\n      \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n      \"updatedRange\": \"Sheet1!B6\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 1,\n      \"updatedCells\": 1\n    },\n    {\n      \"spreadsheetId\": \"1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU\",\n      \"updatedRange\": \"Sheet1!D6\",\n      \"updatedRows\": 1,\n      \"updatedColumns\": 1,\n      \"updatedCells\": 1\n    }\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU/values/%27Sheet1%27%21A1%3AD6",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:17 GMT"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "x-l2-request-path": [
+                        "l2-managed-6"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "content-length": [
+                        "514"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"range\": \"Sheet1!A1:D6\",\n  \"majorDimension\": \"ROWS\",\n  \"values\": [\n    [\n      \"Name\",\n      \"Status\",\n      \"Age\",\n      \"Priority\"\n    ],\n    [\n      \"Alice\",\n      \"Reviewed\",\n      \"25\",\n      \"Updated\"\n    ],\n    [\n      \"Bob\",\n      \"Reviewed\",\n      \"30\",\n      \"Updated\"\n    ],\n    [\n      \"Charlie\",\n      \"Active\",\n      \"35\",\n      \"Medium\"\n    ],\n    [\n      \"Diana\",\n      \"Reviewed\",\n      \"28\",\n      \"Updated\"\n    ],\n    [\n      \"Eve\",\n      \"Reviewed\",\n      \"32\",\n      \"Updated\"\n    ]\n  ]\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "DELETE",
+                "uri": "https://www.googleapis.com/drive/v3/files/1IfVUHayaOgL5pjKJ1YGFdLvB9mRurFTku1KTjM-vfKU?supportsAllDrives=True",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 204,
+                    "message": "No Content"
+                },
+                "headers": {
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Date": [
+                        "Sat, 13 Dec 2025 00:58:18 GMT"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Vary": [
+                        "Origin, X-Origin"
+                    ],
+                    "Content-Type": [
+                        "text/html"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "Expires": [
+                        "Mon, 01 Jan 1990 00:00:00 GMT"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ]
+                },
+                "body": {
+                    "string": ""
+                }
+            }
+        }
+    ]
+}

@@ -17,6 +17,7 @@ from gspread.client import Client
 from gspread.http_client import BackOffHTTPClient
 
 CREDS_FILENAME = os.getenv("GS_CREDS_FILENAME")
+CREDS_OAUTH_FILENAME = os.getenv("GS_CREDS_OAUTH_FILENAME")
 RECORD_MODE = os.getenv("GS_RECORD_MODE", "none")
 
 SCOPE = [
@@ -30,6 +31,11 @@ I18N_STR = "Iñtërnâtiônàlizætiøn"  # .encode('utf8')
 
 def read_credentials(filename: str) -> Credentials:
     return ServiceAccountCredentials.from_service_account_file(filename, scopes=SCOPE)
+
+
+def read_oauth_credentials(filename: str) -> Client:
+    """Read OAuth credentials and return authenticated client."""
+    return gspread.oauth(credentials_filename=filename)
 
 
 def prefixed_counter(prefix: str, start: int = 1) -> Generator[str, None, None]:
@@ -130,12 +136,16 @@ class InvalidJsonApiErrorClient(VCRHTTPClient):
 
 @pytest.fixture(scope="module")
 def client() -> Client:
-    if CREDS_FILENAME is not None:
+    # Try OAuth credentials first, then fall back to service account
+    if CREDS_OAUTH_FILENAME is not None:
+        gc = read_oauth_credentials(CREDS_OAUTH_FILENAME)
+    elif CREDS_FILENAME is not None:
         auth_credentials = read_credentials(CREDS_FILENAME)
+        gc = Client(auth=auth_credentials, http_client=VCRHTTPClient)
     else:
         auth_credentials = DummyCredentials(DUMMY_ACCESS_TOKEN)
+        gc = Client(auth=auth_credentials, http_client=VCRHTTPClient)
 
-    gc = Client(auth=auth_credentials, http_client=VCRHTTPClient)
     if not isinstance(gc, gspread.client.Client) is True:
         raise AssertionError
 

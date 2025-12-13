@@ -49,7 +49,6 @@ from .utils import (
     a1_range_to_grid_range,
     a1_to_rowcol,
     absolute_range_name,
-    rowcol_to_a1,
     cast_to_a1_notation,
     cell_list_to_rect,
     combined_merge_values,
@@ -3502,22 +3501,12 @@ class Worksheet:
         grid_range = a1_range_to_grid_range(range_name, self.id)
 
         # Create basic table without column properties first
-        basic_table = {
-            "range": grid_range
-        }
+        basic_table = {"range": grid_range}
 
         if table_name:
             basic_table["name"] = table_name
 
-        create_body = {
-            "requests": [
-                {
-                    "addTable": {
-                        "table": basic_table
-                    }
-                }
-            ]
-        }
+        create_body = {"requests": [{"addTable": {"table": basic_table}}]}
 
         # Create table and get its ID
         create_response = self.client.batch_update(self.spreadsheet_id, create_body)
@@ -3535,10 +3524,7 @@ class Worksheet:
         if column_names:
             column_properties = []
             for i, name in enumerate(column_names):
-                col_prop = {
-                    "columnIndex": i,
-                    "columnName": name
-                }
+                col_prop = {"columnIndex": i, "columnName": name}
                 if column_types and i < len(column_types):
                     col_prop["columnType"] = column_types[i]
                 column_properties.append(col_prop)
@@ -3547,7 +3533,7 @@ class Worksheet:
             update_response = self._update_table(
                 table_id=table_id,
                 column_properties=column_properties,
-                fields="columnProperties"
+                fields="columnProperties",
             )
             return update_response
 
@@ -3559,7 +3545,7 @@ class Worksheet:
         table_id: str,
         table_name: Optional[str] = None,
         column_properties: Optional[List[Dict[str, Any]]] = None,
-        fields: str = "*"
+        fields: str = "*",
     ) -> JSONResponse:
         """Internal method to update an existing table.
 
@@ -3591,11 +3577,8 @@ class Worksheet:
             "requests": [
                 {
                     "updateTable": {
-                        "table": {
-                            "tableId": table_id,
-                            **table_updates
-                        },
-                        "fields": fields
+                        "table": {"tableId": table_id, **table_updates},
+                        "fields": fields,
                     }
                 }
             ]
@@ -3631,7 +3614,6 @@ class Worksheet:
                 break
 
         return None
-
 
     def delete_table_row(
         self,
@@ -3709,7 +3691,9 @@ class Worksheet:
 
         # Calculate the actual row number to delete (0-based)
         header_row = start_row  # Header row index
-        data_row_to_delete = header_row + 1 + row_index  # +1 for header, +row_index for data row
+        data_row_to_delete = (
+            header_row + 1 + row_index
+        )  # +1 for header, +row_index for data row
 
         # Create a delete range request for the specific row
         delete_range = {
@@ -3717,7 +3701,7 @@ class Worksheet:
             "startRowIndex": data_row_to_delete,
             "endRowIndex": data_row_to_delete + 1,  # Delete only this row
             "startColumnIndex": start_col,  # Same columns as table
-            "endColumnIndex": end_col
+            "endColumnIndex": end_col,
         }
 
         # Move rows up - shift all rows below the deleted row up by 1
@@ -3730,7 +3714,7 @@ class Worksheet:
 
             for i in range(rows_below_deleted):
                 source_row = data_row_to_delete + 1 + i  # Row below deleted row
-                target_row = data_row_to_delete + i       # Where to move it
+                target_row = data_row_to_delete + i  # Where to move it
 
                 # Copy data from source row to target row
                 source_range = {
@@ -3738,7 +3722,7 @@ class Worksheet:
                     "startRowIndex": source_row,
                     "endRowIndex": source_row + 1,
                     "startColumnIndex": start_col,
-                    "endColumnIndex": end_col
+                    "endColumnIndex": end_col,
                 }
 
                 target_range = {
@@ -3746,16 +3730,18 @@ class Worksheet:
                     "startRowIndex": target_row,
                     "endRowIndex": target_row + 1,
                     "startColumnIndex": start_col,
-                    "endColumnIndex": end_col
+                    "endColumnIndex": end_col,
                 }
 
-                update_requests.append({
-                    "copyPaste": {
-                        "source": source_range,
-                        "destination": target_range,
-                        "pasteType": "PASTE_VALUES"
+                update_requests.append(
+                    {
+                        "copyPaste": {
+                            "source": source_range,
+                            "destination": target_range,
+                            "pasteType": "PASTE_VALUES",
+                        }
                     }
-                })
+                )
 
             # Execute the row shifting operations
             if update_requests:
@@ -3764,7 +3750,11 @@ class Worksheet:
 
         # Clear the now-empty row at the bottom
         empty_row = header_row + len(data_rows)  # Last data row position
-        clear_range = rowcol_to_a1(empty_row + 1, start_col + 1) + ":" + rowcol_to_a1(empty_row + 1, end_col)
+        clear_range = (
+            rowcol_to_a1(empty_row + 1, start_col + 1)
+            + ":"
+            + rowcol_to_a1(empty_row + 1, end_col)
+        )
 
         self.batch_clear([clear_range])
 
@@ -3775,28 +3765,19 @@ class Worksheet:
             "startRowIndex": start_row,
             "endRowIndex": new_end_row,
             "startColumnIndex": start_col,
-            "endColumnIndex": end_col
+            "endColumnIndex": end_col,
         }
 
         update_table_request = {
-            "table": {
-                "tableId": table_id,
-                "range": new_table_range
-            },
-            "fields": "range"
+            "table": {"tableId": table_id, "range": new_table_range},
+            "fields": "range",
         }
 
-        body = {
-            "requests": [
-                {
-                    "updateTable": update_table_request
-                }
-            ]
-        }
+        body = {"requests": [{"updateTable": update_table_request}]}
 
         response = self.client.batch_update(self.spreadsheet_id, body)
         return response
-    
+
     def append_table_rows(
         self,
         table_name: str,
@@ -3804,14 +3785,14 @@ class Worksheet:
     ) -> JSONResponse:
         """Append multiple rows to a table from a dictionary of column data.
 
-        This method appends new rows to a Google Sheets table entity from a dictionary 
+        This method appends new rows to a Google Sheets table entity from a dictionary
         where keys are column names and values are lists of data for that column.
         The method handles table expansion if needed and validates that all provided
         columns have the same length.
 
         Args:
             table_name (str): The name of the table to append rows to
-            rows_data (Dict[str, List[Any]]): Dictionary where keys are column names 
+            rows_data (Dict[str, List[Any]]): Dictionary where keys are column names
                 and values are lists of data to append to each column. All lists must
                 have the same length. Not all table columns need to be provided.
 
@@ -3828,7 +3809,7 @@ class Worksheet:
             ...     "Age": [25, 30],
             ...     "City": ["New York", "San Francisco"]
             ... })
-            
+
             >>> # Append one row with only some columns
             >>> worksheet.append_table_rows("Inventory", {
             ...     "Product": ["Widget"],
@@ -3845,7 +3826,7 @@ class Worksheet:
                 f"All column lists must have the same length. "
                 f"Found lengths: {dict(zip(rows_data.keys(), list_lengths))}"
             )
-        
+
         num_rows_to_add = list_lengths[0] if list_lengths else 0
         if num_rows_to_add == 0:
             return {"status": "completed", "message": "No rows to append"}
@@ -3874,7 +3855,7 @@ class Worksheet:
         table_columns = table_info.get("columnProperties", [])
         column_name_to_index = {}
         table_column_names = set()
-        
+
         for col_prop in table_columns:
             col_name = col_prop.get("columnName", "")
             col_index = col_prop.get("columnIndex", 0)
@@ -3909,10 +3890,11 @@ class Worksheet:
         if has_footer and data_rows:
             data_rows = data_rows[:-1]  # Remove the last row (footer)
 
-
         # Calculate how many empty rows are available in the current table
         current_data_rows_count = len(data_rows)
-        available_empty_rows = total_rows - 1 - footer_rows - current_data_rows_count  # -1 for header, -footer_rows for footer
+        available_empty_rows = (
+            total_rows - 1 - footer_rows - current_data_rows_count
+        )  # -1 for header, -footer_rows for footer
 
         # Determine if we need to expand the table
         rows_to_create = max(0, num_rows_to_add - available_empty_rows)
@@ -3925,27 +3907,18 @@ class Worksheet:
                 "startRowIndex": start_row,
                 "endRowIndex": new_end_row,
                 "startColumnIndex": start_col,
-                "endColumnIndex": end_col
+                "endColumnIndex": end_col,
             }
-            
+
             table_id = table_info.get("tableId")
             if table_id:
                 update_table_request = {
-                    "table": {
-                        "tableId": table_id,
-                        "range": new_range
-                    },
-                    "fields": "range"
+                    "table": {"tableId": table_id, "range": new_range},
+                    "fields": "range",
                 }
-                
-                body = {
-                    "requests": [
-                        {
-                            "updateTable": update_table_request
-                        }
-                    ]
-                }
-                
+
+                body = {"requests": [{"updateTable": update_table_request}]}
+
                 self.client.batch_update(self.spreadsheet_id, body)
                 end_row = new_end_row  # Update end_row for further operations
 
@@ -3953,15 +3926,14 @@ class Worksheet:
         new_rows = []
         for row_idx in range(num_rows_to_add):
             new_row = [""] * total_cols  # Initialize with empty strings for all columns
-            
+
             # Fill in the data for provided columns
             for column_name, values in rows_data.items():
                 col_index = column_name_to_index[column_name]
                 if col_index < total_cols:
                     new_row[col_index] = values[row_idx]
-            
-            new_rows.append(new_row)
 
+            new_rows.append(new_row)
 
         # Calculate where to start writing the new rows
         if available_empty_rows > 0:
@@ -3978,7 +3950,10 @@ class Worksheet:
         if new_rows:
             self.update(new_rows, f"{range_start_write}:{range_end_write}")
 
-        return {"status": "completed", "message": f"Successfully appended {num_rows_to_add} rows to table '{table_name}'"}
+        return {
+            "status": "completed",
+            "message": f"Successfully appended {num_rows_to_add} rows to table '{table_name}'",
+        }
 
     def update_table_rows(
         self,
@@ -4082,7 +4057,9 @@ class Worksheet:
 
         for col in all_columns:
             if col not in column_name_to_index:
-                raise GSpreadException(f"Column '{col}' not found in table '{table_name}'")
+                raise GSpreadException(
+                    f"Column '{col}' not found in table '{table_name}'"
+                )
 
         # Find matching rows
         matching_row_indices = []
@@ -4102,7 +4079,9 @@ class Worksheet:
                     cell_value = row[col_index] if col_index < len(row) else ""
 
                     # Check if cell value matches any of the provided values for this column
-                    if str(cell_value).strip() in [str(v).strip() for v in match_values]:
+                    if str(cell_value).strip() in [
+                        str(v).strip() for v in match_values
+                    ]:
                         matching_columns += 1
 
                         # For OR logic, one match is enough
@@ -4118,23 +4097,28 @@ class Worksheet:
                 matching_row_indices.append(row_idx)
 
         if not matching_row_indices:
-            return {"status": "completed", "message": f"No rows matched the specified conditions in table '{table_name}'", "rows_updated": 0}
+            return {
+                "status": "completed",
+                "message": f"No rows matched the specified conditions in table '{table_name}'",
+                "rows_updated": 0,
+            }
 
         # Prepare updates for matching rows
         updates = []
         for row_idx in matching_row_indices:
             for col_name, new_value in columns_to_modify.items():
                 col_index = column_name_to_index[col_name]
-                actual_row = start_row + 1 + row_idx  # +1 for header, +row_idx for data row
+                actual_row = (
+                    start_row + 1 + row_idx
+                )  # +1 for header, +row_idx for data row
                 actual_col = start_col + col_index
 
                 # Create A1 notation for the cell
-                cell_range = rowcol_to_a1(actual_row + 1, actual_col + 1)  # +1 for A1 conversion
+                cell_range = rowcol_to_a1(
+                    actual_row + 1, actual_col + 1
+                )  # +1 for A1 conversion
 
-                updates.append({
-                    'range': cell_range,
-                    'values': [[new_value]]
-                })
+                updates.append({"range": cell_range, "values": [[new_value]]})
 
         # Apply all updates in a batch
         if updates:
@@ -4143,5 +4127,5 @@ class Worksheet:
         return {
             "status": "completed",
             "message": f"Successfully updated {len(matching_row_indices)} rows in table '{table_name}'",
-            "rows_updated": len(matching_row_indices)
+            "rows_updated": len(matching_row_indices),
         }
