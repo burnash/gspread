@@ -3586,7 +3586,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def _find_table_by_name(
+    def find_table_by_name(
         self,
         table_name: str,
     ) -> Optional[Dict[str, Any]]:
@@ -3641,7 +3641,7 @@ class Worksheet:
             >>> worksheet.delete_table_row("Users", 0)
         """
         # Find the table by name
-        table_info = self._find_table_by_name(table_name)
+        table_info = self.find_table_by_name(table_name)
         if not table_info:
             raise GSpreadException(f"Table '{table_name}' not found in worksheet")
 
@@ -3832,7 +3832,7 @@ class Worksheet:
             return {"status": "completed", "message": "No rows to append"}
 
         # Find the table by name
-        table_info = self._find_table_by_name(table_name)
+        table_info = self.find_table_by_name(table_name)
         if not table_info:
             raise GSpreadException(f"Table '{table_name}' not found in worksheet")
 
@@ -4019,7 +4019,7 @@ class Worksheet:
             ... )
         """
         # Find the table by name
-        table_info = self._find_table_by_name(table_name)
+        table_info = self.find_table_by_name(table_name)
         if not table_info:
             raise GSpreadException(f"Table '{table_name}' not found in worksheet")
 
