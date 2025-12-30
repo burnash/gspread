@@ -3586,7 +3586,7 @@ class Worksheet:
 
         return self.client.batch_update(self.spreadsheet_id, body)
 
-    def find_table_by_name(
+    def _get_table_info(
         self,
         table_name: str,
     ) -> Optional[Dict[str, Any]]:
@@ -3615,6 +3615,95 @@ class Worksheet:
 
         return None
 
+    def get_table_by_name(
+        self,
+        table_name: str,
+    ) -> Dict[str, Any]:
+        """Get table data by its name in the worksheet.
+
+        Returns a dictionary containing the table data organized by column names
+        and the table footer if present.
+
+        Args:
+            table_name (str): The name of the table to get
+
+        Returns:
+            dict: A dictionary with the following structure:
+                {
+                    "data": {
+                        "column_1_name": [value1, value2, ...],
+                        "column_2_name": [value1, value2, ...],
+                        ...
+                    },
+                    "table_footer": [footer_value1, footer_value2, ...] or None
+                }
+
+        Raises:
+            GSpreadException: If the table is not found
+
+        Examples:
+            >>> table_data = worksheet.get_table_by_name("MyTable")
+            >>> print(table_data["data"]["Name"])  # List of values in Name column
+            >>> print(table_data["table_footer"])  # Footer row values or None
+
+        .. versionadded:: 6.2.0
+        """
+        # Get table info using internal method
+        table_info = self._get_table_info(table_name)
+        if not table_info:
+            raise GSpreadException(f"Table '{table_name}' not found in worksheet")
+
+        # Get the range of the table
+        table_range = table_info.get("range", {})
+        start_row = table_range.get("startRowIndex", 0)
+        start_col = table_range.get("startColumnIndex", 0)
+        end_row = table_range.get("endRowIndex", 0)
+        end_col = table_range.get("endColumnIndex", 0)
+
+        # Convert grid range to A1 notation
+        range_a1 = f"{rowcol_to_a1(start_row + 1, start_col + 1)}:{rowcol_to_a1(end_row, end_col)}"
+
+        # Fetch all values in the table range
+        all_values = self.get_values(range_a1, pad_values=True)
+
+        if not all_values:
+            return {
+                "data": {},
+                "table_footer": None,
+            }
+
+        # Check for footer
+        has_footer = bool(table_info.get("rowsProperties", {}).get("footerColorStyle"))
+
+        # Extract headers (first row)
+        headers = all_values[0]
+
+        # Extract data rows (excluding header)
+        data_rows = all_values[1:]
+
+        # Separate footer from data rows if it exists
+        if has_footer and data_rows:
+            footer_row = data_rows[-1]
+            data_rows = data_rows[:-1]
+        else:
+            footer_row = None
+
+        # Construct the result dictionary
+        result = {
+            "data": {},
+            "table_footer": footer_row
+        }
+
+        # Populate data by columns
+        for col_idx, header in enumerate(headers):
+            col_values = []
+            for row in data_rows:
+                if col_idx < len(row):
+                    col_values.append(row[col_idx])
+            result["data"][header] = col_values
+
+        return result
+
     def delete_table_row(
         self,
         table_name: str,
@@ -3641,7 +3730,7 @@ class Worksheet:
             >>> worksheet.delete_table_row("Users", 0)
         """
         # Find the table by name
-        table_info = self.find_table_by_name(table_name)
+        table_info = self._get_table_info(table_name)
         if not table_info:
             raise GSpreadException(f"Table '{table_name}' not found in worksheet")
 
@@ -3832,7 +3921,7 @@ class Worksheet:
             return {"status": "completed", "message": "No rows to append"}
 
         # Find the table by name
-        table_info = self.find_table_by_name(table_name)
+        table_info = self._get_table_info(table_name)
         if not table_info:
             raise GSpreadException(f"Table '{table_name}' not found in worksheet")
 
@@ -4019,7 +4108,7 @@ class Worksheet:
             ... )
         """
         # Find the table by name
-        table_info = self.find_table_by_name(table_name)
+        table_info = self._get_table_info(table_name)
         if not table_info:
             raise GSpreadException(f"Table '{table_name}' not found in worksheet")
 

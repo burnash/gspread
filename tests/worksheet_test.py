@@ -2357,3 +2357,67 @@ class WorksheetTest(GspreadTest):
             ],  # Active + Engineering (matched)
         ]
         self.assertEqual(values, expected)
+
+    @pytest.mark.vcr()
+    def test_get_table_by_name_basic(self):
+        """Test getting table data by name without footer."""
+        # Create a table with data
+        self.sheet.update(
+            [
+                ["Name", "Age", "City"],
+                ["Alice", 25, "New York"],
+                ["Bob", 30, "San Francisco"],
+                ["Charlie", 35, "Boston"],
+            ],
+            "A1:C4",
+        )
+
+        # Create table
+        self.sheet.create_table(range_name="A1:C4", table_name="TestTable")
+
+        # Get table data
+        table_data = self.sheet.get_table_by_name("TestTable")
+
+        # Verify structure
+        self.assertIn("data", table_data)
+        self.assertIn("table_footer", table_data)
+
+        # Verify data is organized by columns
+        self.assertEqual(table_data["data"]["Name"], ["Alice", "Bob", "Charlie"])
+        self.assertEqual(table_data["data"]["Age"], ["25", "30", "35"])
+        self.assertEqual(table_data["data"]["City"], ["New York", "San Francisco", "Boston"])
+
+        # Verify no footer
+        self.assertIsNone(table_data["table_footer"])
+
+    @pytest.mark.vcr()
+    def test_get_table_by_name_with_footer(self):
+        """Test getting table data by name with footer."""
+        # Create a table with data
+        self.sheet.update(
+            [
+                ["Name", "Age", "City"],
+                ["Alice", 25, "New York"],
+                ["Bob", 30, "San Francisco"],
+                ["Charlie", 35, "Boston"],
+            ],
+            "A1:C4",
+        )
+
+        # Create table
+        self.sheet.create_table(range_name="A1:C4", table_name="TableWithFooter")
+
+        # Get table data
+        table_data = self.sheet.get_table_by_name("TableWithFooter")
+
+        # Verify structure
+        self.assertIn("data", table_data)
+        self.assertIn("table_footer", table_data)
+
+        # Verify data is organized by columns
+        self.assertEqual(table_data["data"]["Name"], ["Alice", "Bob", "Charlie"])
+        self.assertEqual(table_data["data"]["Age"], ["25", "30", "35"])
+        self.assertEqual(table_data["data"]["City"], ["New York", "San Francisco", "Boston"])
+
+        # Verify no footer (since we can't easily add a footer via API in tests)
+        self.assertIsNone(table_data["table_footer"])
