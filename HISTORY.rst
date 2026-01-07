@@ -1,6 +1,16 @@
 Release History
 ===============
 
+6.2.1 (2025-05-14)
+------------------
+
+* Fix public API auth snippet by @Jayy001 in https://github.com/burnash/gspread/pull/1545
+* Clarify the first step: authentication by @hraftery in https://github.com/burnash/gspread/pull/1546
+* Fix typo in community.rst by @s2t2 in https://github.com/burnash/gspread/pull/1547
+* rearrange flow to remove reference to `creds` by @alifeee in https://github.com/burnash/gspread/pull/1525
+* switch safety for pip-audit by @alifeee in https://github.com/burnash/gspread/pull/1551
+* Include the duplicate column names in error message by @NickCrews in https://github.com/burnash/gspread/pull/1548
+
 6.2.0 (2025-02-27)
 ------------------
 
