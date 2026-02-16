@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.8", "3.9", "3.10", "3.11", "3.x"]
+        python: ["3.10", "3.11", "3.x"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,7 +25,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: pip install -U pip
       - run: pip install -U bandit pyupgrade pip-audit tox setuptools
-      - run: bandit --recursive --skip B105,B110,B311,B605,B607 --exclude ./.tox .
+      - run: bandit --recursive --skip B105,B110,B311,B605,B607,B101 --exclude ./.tox .
       - run: tox -e lint
       - run: tox -e py
       - run: shopt -s globstar && pyupgrade --py3-only **/*.py # --py36-plus

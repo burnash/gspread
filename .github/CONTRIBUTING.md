@@ -19,7 +19,9 @@
 
 ## Tests
 
-To run tests, add your credentials to `tests/creds.json` and run
+To run tests, add your credentials to `tests/creds.json`. The credentials JSON block can be auto-generated from your Google Cloud console.
+
+then run:
 
 ```bash
 GS_CREDS_FILENAME="tests/creds.json" GS_RECORD_MODE="all" tox -e py -- -k "<specific test to run>"

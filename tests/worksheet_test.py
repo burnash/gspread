@@ -37,7 +37,6 @@ class WorksheetTest(GspreadTest):
         client.del_spreadsheet(WorksheetTest.spreadsheet.id)
 
     @pytest.fixture(autouse=True)
-    @pytest.mark.vcr()
     def reset_sheet(self):
         WorksheetTest.sheet.clear()
 
