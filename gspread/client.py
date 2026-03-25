@@ -330,6 +330,9 @@ class Client:
                 if p.get("deleted"):
                     continue
 
+                if p.get("role") == "owner":
+                    continue
+
                 # In case of domain type the domain extract the domain
                 # In case of user/group extract the emailAddress
                 # Otherwise use None for type 'Anyone'
