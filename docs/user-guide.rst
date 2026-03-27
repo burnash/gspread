@@ -111,7 +111,7 @@ Updating a Worksheet's name and color
 .. code:: python
 
    worksheet.update_title("December Transactions")
-   worksheet.update_tab_color({"red": 1, "green": 0.5, "blue": 0.5})
+   worksheet.update_tab_color("#FF0000")
 
 
 Getting a Cell Value
