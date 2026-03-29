@@ -459,6 +459,33 @@ The second argument to :meth:`~gspread.models.Worksheet.format` is a dictionary 
     for more complex formatting see :ref:`gspread-formating-label`.
 
 
+Named Ranges
+~~~~~~~~~~~~
+
+List all named ranges in a spreadsheet:
+
+.. code:: python
+
+   named_ranges = spreadsheet.list_named_ranges()
+
+Update an existing named range (rename it, change its range, or both):
+
+.. code:: python
+
+   worksheet.update_named_range("named_range_id", new_name="new_name")
+   worksheet.update_named_range("named_range_id", new_range="A1:B10")
+   worksheet.update_named_range("named_range_id", new_name="new_name", new_range="A1:B10")
+
+Delete a named range:
+
+.. code:: python
+
+   worksheet.delete_named_range("named_range_id")
+
+.. Note::
+    The ``named_range_id`` can be obtained from :meth:`~gspread.Spreadsheet.list_named_ranges`.
+
+
 Using gspread with pandas
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
