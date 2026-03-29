@@ -2947,7 +2947,7 @@ class Worksheet:
             raise ValueError("At least one of new_name or new_range must be provided.")
 
         named_range: dict = {"namedRangeId": named_range_id}
-        fields: list[str] = []
+        fields: List[str] = []
 
         if new_name is not None:
             named_range["name"] = new_name
