@@ -227,9 +227,36 @@ Getting All Values From a Worksheet as a List of Lists
 Getting All Values From a Worksheet as a List of Dictionaries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Using ``get_all_records()`` (assumes first row contains headers):
+
 .. code:: python
 
    list_of_dicts = worksheet.get_all_records()
+
+Alternatively, use ``gspread.utils.to_records()`` for more control over headers:
+
+.. code:: python
+
+   # Define custom headers
+   headers = ["fruit", "alternate name", "tastiness"]
+   values = worksheet.get()
+   records = gspread.utils.to_records(headers, values)
+
+   for record in records:
+       print(record)
+       # {'fruit': 'apple', 'alternate name': 'red circle', 'tastiness': 'very'}
+       # {'fruit': 'banana', 'alternate name': 'yellow stick', 'tastiness': 'quite'}
+
+
+Loading Worksheet Data into a DataFrame
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Using pandas (or polars):**
+
+.. code:: python
+
+   records = worksheet.get_all_records()
+   df = pd.DataFrame(records)
 
 
 Finding a Cell
