@@ -367,8 +367,7 @@ Or add validation with a drop down.
    worksheet.add_validation(
       'C2:C7',
       ValidationConditionType.one_of_list,
-      ['Yes',
-      'No',]
+      ['Yes','No',],
       showCustomUi=True
    )
 
