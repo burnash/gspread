@@ -174,6 +174,16 @@ class TableDirection(StrEnum):
     right = "RIGHT"
 
 
+class DelimiterType(StrEnum):
+    unspecified = "DELIMITER_TYPE_UNSPECIFIED"
+    comma = "COMMA"
+    semicolon = "SEMICOLON"
+    period = "PERIOD"
+    space = "SPACE"
+    custom = "CUSTOM"
+    autodetect = "AUTODETECT"
+
+
 def convert_credentials(credentials: Credentials) -> Credentials:
     module = credentials.__module__
     cls = credentials.__class__.__name__
