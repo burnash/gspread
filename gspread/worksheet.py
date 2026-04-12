@@ -3497,3 +3497,770 @@ class Worksheet:
 
         values = self.get(pad_values=True)
         return find_table(values, top_left_range_name, direction)
+
+    def create_table(
+        self,
+        range_name: str,
+        table_name: Optional[str] = None,
+        column_names: Optional[Sequence[str]] = None,
+        column_types: Optional[Sequence[str]] = None,
+    ) -> JSONResponse:
+        """Create a table in the worksheet.
+
+        This method creates a Google Sheets table entity in the specified range.
+        Tables provide enhanced functionality like automatic filtering, sorting,
+        and styling options.
+
+        .. note::
+            **IMPORTANT**: As of November 2025, there is a known bug in the Google Sheets API
+            where column names in `addTableRequest` are positioned with an incorrect offset,
+            causing headers to not align with their intended columns. This method implements
+            a two-step workaround:
+
+            1. Create the table first without column properties
+            2. Update the table separately with the correct column properties
+
+            This bug has been reported to Google and may be fixed in a future API update.
+            See: https://stackoverflow.com/questions/79726262/how-to-fix-offset-column-names-in-addtable-request
+
+        Args:
+            range_name (str): A1 notation range for the table (e.g., 'A1:D10')
+            table_name (str, optional): Name for the table. If not provided,
+                Google Sheets will generate a default name.
+            column_names (Sequence[str], optional): List of column names.
+                If not provided, existing values in the first row will be used as headers.
+            column_types (Sequence[str], optional): List of column types for each column.
+
+        Returns:
+            dict: API response containing the created table information
+
+        Raises:
+            GSpreadException: If the table creation fails
+
+        Examples:
+            >>> worksheet.create_table("A1:D10", "MyTable", ["Name", "Age", "City", "Country"])
+            >>> worksheet.create_table("A1:C5")
+
+        .. versionadded:: 6.1.0
+        """
+        # Step 1: Create table without column properties (workaround for Google Sheets API bug as of Nov 2025)
+        grid_range = a1_range_to_grid_range(range_name, self.id)
+
+        # Create basic table without column properties first
+        basic_table = {"range": grid_range}
+
+        if table_name:
+            basic_table["name"] = table_name
+
+        create_body = {"requests": [{"addTable": {"table": basic_table}}]}
+
+        # Create table and get its ID
+        create_response = self.client.batch_update(self.spreadsheet_id, create_body)
+
+        # Extract table ID from response
+        table_id = None
+        if "replies" in create_response and create_response["replies"]:
+            add_table_reply = create_response["replies"][0].get("addTable", {})
+            table_id = add_table_reply.get("table", {}).get("tableId")
+
+        if not table_id:
+            raise GSpreadException("Failed to create table or extract table ID")
+
+        # Step 2: Update table with column properties (if provided)
+        if column_names:
+            column_properties = []
+            for i, name in enumerate(column_names):
+                col_prop = {"columnIndex": i, "columnName": name}
+                if column_types and i < len(column_types):
+                    col_prop["columnType"] = column_types[i]
+                column_properties.append(col_prop)
+
+            # Update table with correct column properties
+            update_response = self._update_table(
+                table_id=table_id,
+                column_properties=column_properties,
+                fields="columnProperties",
+            )
+            return update_response
+
+        # Return original create response if no column properties to update
+        return create_response
+
+    def _update_table(
+        self,
+        table_id: str,
+        table_name: Optional[str] = None,
+        column_properties: Optional[List[Dict[str, Any]]] = None,
+        fields: str = "*",
+    ) -> JSONResponse:
+        """Internal method to update an existing table.
+
+        This method updates properties of an existing table using the updateTable request.
+        It's primarily used as a workaround for the Google Sheets API column offset bug.
+
+        Args:
+            table_id (str): The ID of the table to update
+            table_name (str, optional): New name for the table
+            column_properties (List[Dict], optional): List of column properties to update
+            fields (str): Field mask for which properties to update (default: "*")
+
+        Returns:
+            dict: API response from the update operation
+
+        .. note::
+            This is an internal method used by create_table as a workaround for the
+            Google Sheets API column offset bug (as of Nov 2025).
+        """
+        table_updates = {}
+
+        if table_name is not None:
+            table_updates["name"] = table_name
+
+        if column_properties is not None:
+            table_updates["columnProperties"] = column_properties
+
+        body = {
+            "requests": [
+                {
+                    "updateTable": {
+                        "table": {"tableId": table_id, **table_updates},
+                        "fields": fields,
+                    }
+                }
+            ]
+        }
+
+        return self.client.batch_update(self.spreadsheet_id, body)
+
+    def _get_table_info(
+        self,
+        table_name: str,
+    ) -> Optional[Dict[str, Any]]:
+        """Find a table by its name in the worksheet.
+
+        Args:
+            table_name (str): The name of the table to find
+
+        Returns:
+            dict: Table information if found, None otherwise
+        """
+        spreadsheet_metadata = self.client.fetch_sheet_metadata(self.spreadsheet_id)
+
+        # Find the table by name in this worksheet
+        for sheet in spreadsheet_metadata.get("sheets", []):
+            if sheet.get("properties", {}).get("sheetId") == self.id:
+                tables = sheet.get("tables", [])
+                if isinstance(tables, dict) and "tables" in tables:
+                    tables = tables["tables"]
+
+                for table in tables:
+                    # Table name is directly in the table object, not under tableProperties
+                    if table.get("name") == table_name:
+                        return table
+                break
+
+        return None
+
+    def get_table_by_name(
+        self,
+        table_name: str,
+    ) -> Dict[str, Any]:
+        """Get table data by its name in the worksheet.
+
+        Returns a dictionary containing the table data organized by column names
+        and the table footer if present.
+
+        Args:
+            table_name (str): The name of the table to get
+
+        Returns:
+            dict: A dictionary with the following structure:
+                {
+                    "data": {
+                        "column_1_name": [value1, value2, ...],
+                        "column_2_name": [value1, value2, ...],
+                        ...
+                    },
+                    "table_footer": [footer_value1, footer_value2, ...] or None
+                }
+
+        Raises:
+            GSpreadException: If the table is not found
+
+        Examples:
+            >>> table_data = worksheet.get_table_by_name("MyTable")
+            >>> print(table_data["data"]["Name"])  # List of values in Name column
+            >>> print(table_data["table_footer"])  # Footer row values or None
+
+        .. versionadded:: 6.2.0
+        """
+        # Get table info using internal method
+        table_info = self._get_table_info(table_name)
+        if not table_info:
+            raise GSpreadException(f"Table '{table_name}' not found in worksheet")
+
+        # Get the range of the table
+        table_range = table_info.get("range", {})
+        start_row = table_range.get("startRowIndex", 0)
+        start_col = table_range.get("startColumnIndex", 0)
+        end_row = table_range.get("endRowIndex", 0)
+        end_col = table_range.get("endColumnIndex", 0)
+
+        # Convert grid range to A1 notation
+        range_a1 = f"{rowcol_to_a1(start_row + 1, start_col + 1)}:{rowcol_to_a1(end_row, end_col)}"
+
+        # Fetch all values in the table range
+        all_values = self.get_values(range_a1, pad_values=True)
+
+        if not all_values:
+            return {
+                "data": {},
+                "table_footer": None,
+            }
+
+        # Check for footer
+        has_footer = bool(table_info.get("rowsProperties", {}).get("footerColorStyle"))
+
+        # Extract headers (first row)
+        headers = all_values[0]
+
+        # Extract data rows (excluding header)
+        data_rows = all_values[1:]
+
+        # Separate footer from data rows if it exists
+        if has_footer and data_rows:
+            footer_row = data_rows[-1]
+            data_rows = data_rows[:-1]
+        else:
+            footer_row = None
+
+        # Construct the result dictionary
+        result = {
+            "data": {},
+            "table_footer": footer_row
+        }
+
+        # Populate data by columns
+        for col_idx, header in enumerate(headers):
+            col_values = []
+            for row in data_rows:
+                if col_idx < len(row):
+                    col_values.append(row[col_idx])
+            result["data"][header] = col_values
+
+        return result
+
+    def delete_table_row(
+        self,
+        table_name: str,
+        row_index: int,
+    ) -> JSONResponse:
+        """Delete a row from a table by its index within the table's data rows.
+
+        This method deletes a specific data row from a Google Sheets table entity
+        using table entity operations that preserve footer content and table structure.
+
+        Args:
+            table_name (str): The name of the table containing the row to delete
+            row_index (int): The index of the row to delete within the table's data rows
+                           (0-based, where 0 is the first data row after the header row)
+
+        Returns:
+            dict: API response from the delete operation
+
+        Raises:
+            GSpreadException: If the table is not found or the row index is invalid
+
+        Examples:
+            >>> # Delete the first data row (index 0) from a table named "Users"
+            >>> worksheet.delete_table_row("Users", 0)
+        """
+        # Find the table by name
+        table_info = self._get_table_info(table_name)
+        if not table_info:
+            raise GSpreadException(f"Table '{table_name}' not found in worksheet")
+
+        table_id = table_info.get("tableId")
+        table_range = table_info.get("range", {})
+        start_row = table_range.get("startRowIndex", 0)
+        end_row = table_range.get("endRowIndex", 0)
+        start_col = table_range.get("startColumnIndex", 0)
+        end_col = table_range.get("endColumnIndex", 0)
+
+        # Read current table data
+        range_start = rowcol_to_a1(start_row + 1, 1)  # col 1 = A
+        range_end = rowcol_to_a1(end_row, 3)  # col 3 = C
+        current_data = self.get(f"{range_start}:{range_end}")
+
+        if not current_data or len(current_data) == 0:
+            raise GSpreadException(f"Could not read data from table '{table_name}'")
+
+        # Extract headers and data rows
+        headers = current_data[0] if current_data else []
+        data_rows = current_data[1:] if len(current_data) > 1 else []
+
+        # Check if table has a footer row
+        has_footer = bool(table_info.get("rowsProperties", {}).get("footerColorStyle"))
+
+        # Separate footer from data rows if it exists
+        if has_footer and data_rows:
+            footer_row = data_rows[-1]  # Save the footer row content
+            data_rows = data_rows[:-1]  # Remove the last row (footer)
+        else:
+            footer_row = None
+
+        # Validate we have at least one data row
+        if len(data_rows) == 0:
+            raise GSpreadException(f"Table '{table_name}' has no data rows to delete")
+
+        # Validate row index
+        if row_index < 0 or row_index >= len(data_rows):
+            raise GSpreadException(
+                f"Row index {row_index} is out of bounds for table '{table_name}'. "
+                f"Table has data rows 0-{len(data_rows) - 1}"
+            )
+
+        # TABLE ENTITY APPROACH:
+        # Use Google Sheets API to delete specific cells within the table range
+        # This should preserve table structure and footer relationships
+
+        # Calculate the actual row number to delete (0-based)
+        header_row = start_row  # Header row index
+        data_row_to_delete = (
+            header_row + 1 + row_index
+        )  # +1 for header, +row_index for data row
+
+        # Create a delete range request for the specific row
+        delete_range = {
+            "sheetId": self.id,
+            "startRowIndex": data_row_to_delete,
+            "endRowIndex": data_row_to_delete + 1,  # Delete only this row
+            "startColumnIndex": start_col,  # Same columns as table
+            "endColumnIndex": end_col,
+        }
+
+        # Move rows up - shift all rows below the deleted row up by 1
+        total_data_rows = len(data_rows)
+        rows_below_deleted = total_data_rows - row_index - 1
+
+        if rows_below_deleted > 0:
+            # Create update requests to shift rows up
+            update_requests = []
+
+            for i in range(rows_below_deleted):
+                source_row = data_row_to_delete + 1 + i  # Row below deleted row
+                target_row = data_row_to_delete + i  # Where to move it
+
+                # Copy data from source row to target row
+                source_range = {
+                    "sheetId": self.id,
+                    "startRowIndex": source_row,
+                    "endRowIndex": source_row + 1,
+                    "startColumnIndex": start_col,
+                    "endColumnIndex": end_col,
+                }
+
+                target_range = {
+                    "sheetId": self.id,
+                    "startRowIndex": target_row,
+                    "endRowIndex": target_row + 1,
+                    "startColumnIndex": start_col,
+                    "endColumnIndex": end_col,
+                }
+
+                update_requests.append(
+                    {
+                        "copyPaste": {
+                            "source": source_range,
+                            "destination": target_range,
+                            "pasteType": "PASTE_VALUES",
+                        }
+                    }
+                )
+
+            # Execute the row shifting operations
+            if update_requests:
+                shift_body = {"requests": update_requests}
+                self.client.batch_update(self.spreadsheet_id, shift_body)
+
+        # Clear the now-empty row at the bottom
+        empty_row = header_row + len(data_rows)  # Last data row position
+        clear_range = (
+            rowcol_to_a1(empty_row + 1, start_col + 1)
+            + ":"
+            + rowcol_to_a1(empty_row + 1, end_col)
+        )
+
+        self.batch_clear([clear_range])
+
+        # Update table definition with new range (one row shorter)
+        new_end_row = end_row - 1
+        new_table_range = {
+            "sheetId": self.id,
+            "startRowIndex": start_row,
+            "endRowIndex": new_end_row,
+            "startColumnIndex": start_col,
+            "endColumnIndex": end_col,
+        }
+
+        update_table_request = {
+            "table": {"tableId": table_id, "range": new_table_range},
+            "fields": "range",
+        }
+
+        body = {"requests": [{"updateTable": update_table_request}]}
+
+        response = self.client.batch_update(self.spreadsheet_id, body)
+        return response
+
+    def append_table_rows(
+        self,
+        table_name: str,
+        rows_data: Dict[str, List[Any]],
+    ) -> JSONResponse:
+        """Append multiple rows to a table from a dictionary of column data.
+
+        This method appends new rows to a Google Sheets table entity from a dictionary
+        where keys are column names and values are lists of data for that column.
+        The method handles table expansion if needed and validates that all provided
+        columns have the same length.
+
+        Args:
+            table_name (str): The name of the table to append rows to
+            rows_data (Dict[str, List[Any]]): Dictionary where keys are column names
+                and values are lists of data to append to each column. All lists must
+                have the same length. Not all table columns need to be provided.
+
+        Returns:
+            dict: API response from the append operation
+
+        Raises:
+            GSpreadException: If table is not found, columns are invalid, or data lengths differ
+
+        Examples:
+            >>> # Append two rows to a table with Name, Age, and City columns
+            >>> worksheet.append_table_rows("Users", {
+            ...     "Name": ["Alice", "Bob"],
+            ...     "Age": [25, 30],
+            ...     "City": ["New York", "San Francisco"]
+            ... })
+
+            >>> # Append one row with only some columns
+            >>> worksheet.append_table_rows("Inventory", {
+            ...     "Product": ["Widget"],
+            ...     "Price": [19.99]
+            ... })
+        """
+        if not rows_data:
+            raise GSpreadException("No data provided to append")
+
+        # Validate that all lists have the same length
+        list_lengths = [len(values) for values in rows_data.values()]
+        if len(set(list_lengths)) > 1:
+            raise GSpreadException(
+                f"All column lists must have the same length. "
+                f"Found lengths: {dict(zip(rows_data.keys(), list_lengths))}"
+            )
+
+        num_rows_to_add = list_lengths[0] if list_lengths else 0
+        if num_rows_to_add == 0:
+            return {"status": "completed", "message": "No rows to append"}
+
+        # Find the table by name
+        table_info = self._get_table_info(table_name)
+        if not table_info:
+            raise GSpreadException(f"Table '{table_name}' not found in worksheet")
+
+        # Get table range and column information
+        table_range = table_info.get("range", {})
+        if not table_range:
+            raise GSpreadException(f"Table '{table_name}' has no range information")
+
+        # Extract table coordinates
+        start_row = table_range.get("startRowIndex", 0)
+        end_row = table_range.get("endRowIndex", 0)
+        start_col = table_range.get("startColumnIndex", 0)
+        end_col = table_range.get("endColumnIndex", 0)
+
+        # Calculate table dimensions
+        total_rows = end_row - start_row
+        total_cols = end_col - start_col
+
+        # Get table column properties to map column names to indices
+        table_columns = table_info.get("columnProperties", [])
+        column_name_to_index = {}
+        table_column_names = set()
+
+        for col_prop in table_columns:
+            col_name = col_prop.get("columnName", "")
+            col_index = col_prop.get("columnIndex", 0)
+            column_name_to_index[col_name] = col_index
+            table_column_names.add(col_name)
+
+        # Validate provided column names exist in the table
+        invalid_columns = set(rows_data.keys()) - table_column_names
+        if invalid_columns:
+            raise GSpreadException(
+                f"Invalid column names: {invalid_columns}. "
+                f"Available columns: {sorted(table_column_names)}"
+            )
+
+        # Read current table data including headers
+        range_start = rowcol_to_a1(start_row + 1, start_col + 1)
+        range_end = rowcol_to_a1(end_row, end_col)
+        current_data = self.get(f"{range_start}:{range_end}")
+
+        if not current_data or len(current_data) == 0:
+            raise GSpreadException(f"Could not read data from table '{table_name}'")
+
+        # Extract headers from first row
+        headers = current_data[0] if current_data else []
+        data_rows = current_data[1:] if len(current_data) > 1 else []
+
+        # Check if table has a footer row
+        has_footer = bool(table_info.get("rowsProperties", {}).get("footerColorStyle"))
+        footer_rows = 1 if has_footer else 0
+
+        # Remove footer row from data rows if it exists
+        if has_footer and data_rows:
+            data_rows = data_rows[:-1]  # Remove the last row (footer)
+
+        # Calculate how many empty rows are available in the current table
+        current_data_rows_count = len(data_rows)
+        available_empty_rows = (
+            total_rows - 1 - footer_rows - current_data_rows_count
+        )  # -1 for header, -footer_rows for footer
+
+        # Determine if we need to expand the table
+        rows_to_create = max(0, num_rows_to_add - available_empty_rows)
+
+        # Expand table range if needed
+        if rows_to_create > 0:
+            new_end_row = end_row + rows_to_create
+            new_range = {
+                "sheetId": self.id,
+                "startRowIndex": start_row,
+                "endRowIndex": new_end_row,
+                "startColumnIndex": start_col,
+                "endColumnIndex": end_col,
+            }
+
+            table_id = table_info.get("tableId")
+            if table_id:
+                update_table_request = {
+                    "table": {"tableId": table_id, "range": new_range},
+                    "fields": "range",
+                }
+
+                body = {"requests": [{"updateTable": update_table_request}]}
+
+                self.client.batch_update(self.spreadsheet_id, body)
+                end_row = new_end_row  # Update end_row for further operations
+
+        # Prepare the new rows to append
+        new_rows = []
+        for row_idx in range(num_rows_to_add):
+            new_row = [""] * total_cols  # Initialize with empty strings for all columns
+
+            # Fill in the data for provided columns
+            for column_name, values in rows_data.items():
+                col_index = column_name_to_index[column_name]
+                if col_index < total_cols:
+                    new_row[col_index] = values[row_idx]
+
+            new_rows.append(new_row)
+
+        # Calculate where to start writing the new rows
+        if available_empty_rows > 0:
+            # Use the first empty row within existing table range
+            first_new_row_index = start_row + 1 + current_data_rows_count
+        else:
+            # Need to expand table, write to the new row
+            first_new_row_index = start_row + 1 + current_data_rows_count
+
+        range_start_write = rowcol_to_a1(first_new_row_index + 1, start_col + 1)
+        range_end_write = rowcol_to_a1(first_new_row_index + num_rows_to_add, end_col)
+
+        # Write the new rows to the table
+        if new_rows:
+            self.update(new_rows, f"{range_start_write}:{range_end_write}")
+
+        return {
+            "status": "completed",
+            "message": f"Successfully appended {num_rows_to_add} rows to table '{table_name}'",
+        }
+
+    def update_table_rows(
+        self,
+        table_name: str,
+        columns_to_match: Dict[str, List[Any]],
+        columns_to_modify: Dict[str, Any],
+        or_logical: bool = False,
+    ) -> JSONResponse:
+        """Update rows in a table based on matching conditions.
+
+        This method finds rows in a Google Sheets table that match the specified conditions
+        and updates the specified columns with new values. The method supports flexible
+        matching logic between columns.
+
+        Args:
+            table_name (str): The name of the table to update
+            columns_to_match (Dict[str, List[Any]]): Dictionary containing match conditions
+                where keys are column names and values are lists of possible matching values.
+                For each column, a row matches if the cell value matches ANY value in the list.
+                Example: {'Type': ['A', 'B'], 'Status': ['Active', 'Pending']}
+            columns_to_modify (Dict[str, Any]): Dictionary containing column names as keys
+                and the values to set in those columns for matching rows.
+                Example: {'Status': 'Inactive', 'Notes': 'Updated automatically'}
+            or_logical (bool, optional): Determines how multiple column conditions are combined.
+                If False (default), ALL specified columns must match (AND logic).
+                If True, ANY specified column matching is sufficient (OR logic).
+                Defaults to False.
+
+        Returns:
+            dict: API response containing the number of rows updated
+
+        Raises:
+            GSpreadException: If the table is not found or columns are invalid
+
+        Examples:
+            >>> # Update Status to 'Inactive' for rows where Type is 'A' AND Status is 'Active'
+            >>> worksheet.update_table_rows(
+            ...     "Users",
+            ...     {'Type': ['A'], 'Status': ['Active']},
+            ...     {'Status': 'Inactive'}
+            ... )
+
+            >>> # Update with OR logic - rows where Type is 'A' OR Status is 'Active'
+            >>> worksheet.update_table_rows(
+            ...     "Users",
+            ...     {'Type': ['A'], 'Status': ['Active']},
+            ...     {'Status': 'Updated'},
+            ...     or_logical=True
+            ... )
+
+            >>> # Update multiple columns with multiple possible values per column
+            >>> worksheet.update_table_rows(
+            ...     "Inventory",
+            ...     {'Category': ['Electronics', 'Books'], 'Priority': ['High', 'Urgent']},
+            ...     {'Notes': 'Review needed'}
+            ... )
+
+            >>> # Update with single column match
+            >>> worksheet.update_table_rows(
+            ...     "Employees",
+            ...     {'Department': ['Sales']},
+            ...     {'Bonus': 5000, 'Status': 'Eligible'}
+            ... )
+        """
+        # Find the table by name
+        table_info = self._get_table_info(table_name)
+        if not table_info:
+            raise GSpreadException(f"Table '{table_name}' not found in worksheet")
+
+        # Get table range information
+        table_range = table_info.get("range", {})
+        if not table_range:
+            raise GSpreadException(f"Table '{table_name}' has no range information")
+
+        # Extract table coordinates
+        start_row = table_range.get("startRowIndex", 0)
+        end_row = table_range.get("endRowIndex", 0)
+        start_col = table_range.get("startColumnIndex", 0)
+        end_col = table_range.get("endColumnIndex", 0)
+
+        # Calculate table dimensions
+        total_rows = end_row - start_row
+        total_cols = end_col - start_col
+
+        # Read current table data including headers
+        range_start = rowcol_to_a1(start_row + 1, start_col + 1)
+        range_end = rowcol_to_a1(end_row, end_col)
+        current_data = self.get(f"{range_start}:{range_end}")
+
+        if not current_data or len(current_data) == 0:
+            raise GSpreadException(f"Could not read data from table '{table_name}'")
+
+        # Extract header row and create column mapping
+        header_row = current_data[0]
+        column_name_to_index = {col.strip(): idx for idx, col in enumerate(header_row)}
+        data_rows = current_data[1:]  # All rows except header
+
+        # Validate all columns exist in the table
+        all_columns = set(columns_to_match.keys())
+        all_columns.update(columns_to_modify.keys())
+
+        for col in all_columns:
+            if col not in column_name_to_index:
+                raise GSpreadException(
+                    f"Column '{col}' not found in table '{table_name}'"
+                )
+
+        # Find matching rows
+        matching_row_indices = []
+        for row_idx, row in enumerate(data_rows):
+            row_matches = False
+
+            if not columns_to_match:
+                # If no match conditions, all rows match
+                row_matches = True
+            else:
+                # Check column conditions based on or_logical parameter
+                matching_columns = 0
+                total_columns = len(columns_to_match)
+
+                for col_name, match_values in columns_to_match.items():
+                    col_index = column_name_to_index[col_name]
+                    cell_value = row[col_index] if col_index < len(row) else ""
+
+                    # Check if cell value matches any of the provided values for this column
+                    if str(cell_value).strip() in [
+                        str(v).strip() for v in match_values
+                    ]:
+                        matching_columns += 1
+
+                        # For OR logic, one match is enough
+                        if or_logical:
+                            row_matches = True
+                            break
+
+                # For AND logic, all columns must match
+                if not or_logical and matching_columns == total_columns:
+                    row_matches = True
+
+            if row_matches:
+                matching_row_indices.append(row_idx)
+
+        if not matching_row_indices:
+            return {
+                "status": "completed",
+                "message": f"No rows matched the specified conditions in table '{table_name}'",
+                "rows_updated": 0,
+            }
+
+        # Prepare updates for matching rows
+        updates = []
+        for row_idx in matching_row_indices:
+            for col_name, new_value in columns_to_modify.items():
+                col_index = column_name_to_index[col_name]
+                actual_row = (
+                    start_row + 1 + row_idx
+                )  # +1 for header, +row_idx for data row
+                actual_col = start_col + col_index
+
+                # Create A1 notation for the cell
+                cell_range = rowcol_to_a1(
+                    actual_row + 1, actual_col + 1
+                )  # +1 for A1 conversion
+
+                updates.append({"range": cell_range, "values": [[new_value]]})
+
+        # Apply all updates in a batch
+        if updates:
+            self.batch_update(updates)
+
+        return {
+            "status": "completed",
+            "message": f"Successfully updated {len(matching_row_indices)} rows in table '{table_name}'",
+            "rows_updated": len(matching_row_indices),
+        }
