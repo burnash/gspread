@@ -2926,6 +2926,52 @@ class Worksheet:
         }
         return self.client.batch_update(self.spreadsheet_id, body)
 
+    def update_named_range(
+        self,
+        named_range_id: str,
+        new_name: Optional[str] = None,
+        new_range: Optional[str] = None,
+    ) -> JSONResponse:
+        """Update the name and/or range of an existing named range.
+
+        At least one of ``new_name`` or ``new_range`` must be provided.
+
+        :param str named_range_id: The ID of the named range to update.
+            Can be obtained with :meth:`~gspread.Spreadsheet.list_named_ranges`.
+        :param str new_name: The new name to assign to the named range.
+        :param str new_range: The new cell range in A1 notation (e.g. ``"A1:B10"``).
+
+        :returns: the response body from the request
+        :rtype: dict
+
+        :raises ValueError: if neither ``new_name`` nor ``new_range`` is provided.
+        """
+        if new_name is None and new_range is None:
+            raise ValueError("At least one of new_name or new_range must be provided.")
+
+        named_range: dict = {"namedRangeId": named_range_id}
+        fields: List[str] = []
+
+        if new_name is not None:
+            named_range["name"] = new_name
+            fields.append("name")
+
+        if new_range is not None:
+            named_range["range"] = a1_range_to_grid_range(new_range, self.id)
+            fields.append("range")
+
+        body = {
+            "requests": [
+                {
+                    "updateNamedRange": {
+                        "namedRange": named_range,
+                        "fields": ",".join(fields),
+                    }
+                }
+            ]
+        }
+        return self.client.batch_update(self.spreadsheet_id, body)
+
     def _add_dimension_group(
         self, start: int, end: int, dimension: Dimension
     ) -> JSONResponse:

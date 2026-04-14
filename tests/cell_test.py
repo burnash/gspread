@@ -193,3 +193,42 @@ class CellTest(GspreadTest):
 
         # make sure that no ranges were returned
         self.assertEqual(named_range_dict, {})
+
+    @pytest.mark.vcr()
+    def test_update_named_range(self):
+        # define a named range
+        result = self.sheet.define_named_range("A1:B2", "TestUpdateNamedRange")
+
+        named_range_id = result["replies"][0]["addNamedRange"]["namedRange"][
+            "namedRangeId"
+        ]
+
+        # update the name
+        self.sheet.update_named_range(named_range_id, new_name="UpdatedName")
+
+        named_range_dict = self.spreadsheet.fetch_sheet_metadata(
+            params={"fields": "namedRanges"}
+        )
+        self.assertIn("namedRanges", named_range_dict)
+        named_range = named_range_dict["namedRanges"][0]
+        self.assertEqual(named_range["name"], "UpdatedName")
+
+        # update the range
+        self.sheet.update_named_range(named_range_id, new_range="C3:D4")
+
+        named_range_dict = self.spreadsheet.fetch_sheet_metadata(
+            params={"fields": "namedRanges"}
+        )
+        named_range = named_range_dict["namedRanges"][0]
+        self.assertEqual(named_range["range"]["startRowIndex"], 2)
+        self.assertEqual(named_range["range"]["endRowIndex"], 4)
+        self.assertEqual(named_range["range"]["startColumnIndex"], 2)
+        self.assertEqual(named_range["range"]["endColumnIndex"], 4)
+
+        # clean up
+        self.sheet.delete_named_range(named_range_id)
+
+    @pytest.mark.vcr()
+    def test_update_named_range_no_args(self):
+        with self.assertRaises(ValueError):
+            self.sheet.update_named_range("some_id")

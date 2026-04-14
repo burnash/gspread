@@ -111,7 +111,7 @@ Updating a Worksheet's name and color
 .. code:: python
 
    worksheet.update_title("December Transactions")
-   worksheet.update_tab_color({"red": 1, "green": 0.5, "blue": 0.5})
+   worksheet.update_tab_color("#FF0000")
 
 
 Getting a Cell Value
@@ -227,9 +227,36 @@ Getting All Values From a Worksheet as a List of Lists
 Getting All Values From a Worksheet as a List of Dictionaries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Using ``get_all_records()`` (assumes first row contains headers):
+
 .. code:: python
 
    list_of_dicts = worksheet.get_all_records()
+
+Alternatively, use ``gspread.utils.to_records()`` for more control over headers:
+
+.. code:: python
+
+   # Define custom headers
+   headers = ["fruit", "alternate name", "tastiness"]
+   values = worksheet.get()
+   records = gspread.utils.to_records(headers, values)
+
+   for record in records:
+       print(record)
+       # {'fruit': 'apple', 'alternate name': 'red circle', 'tastiness': 'very'}
+       # {'fruit': 'banana', 'alternate name': 'yellow stick', 'tastiness': 'quite'}
+
+
+Loading Worksheet Data into a DataFrame
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Using pandas (or polars):**
+
+.. code:: python
+
+   records = worksheet.get_all_records()
+   df = pd.DataFrame(records)
 
 
 Finding a Cell
@@ -571,6 +598,33 @@ The second argument to :meth:`~gspread.models.Worksheet.format` is a dictionary 
 
 .. Tip::
     for more complex formatting see :ref:`gspread-formating-label`.
+
+
+Named Ranges
+~~~~~~~~~~~~
+
+List all named ranges in a spreadsheet:
+
+.. code:: python
+
+   named_ranges = spreadsheet.list_named_ranges()
+
+Update an existing named range (rename it, change its range, or both):
+
+.. code:: python
+
+   worksheet.update_named_range("named_range_id", new_name="new_name")
+   worksheet.update_named_range("named_range_id", new_range="A1:B10")
+   worksheet.update_named_range("named_range_id", new_name="new_name", new_range="A1:B10")
+
+Delete a named range:
+
+.. code:: python
+
+   worksheet.delete_named_range("named_range_id")
+
+.. Note::
+    The ``named_range_id`` can be obtained from :meth:`~gspread.Spreadsheet.list_named_ranges`.
 
 
 Using gspread with pandas
