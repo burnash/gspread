@@ -174,6 +174,36 @@ class TableDirection(StrEnum):
     right = "RIGHT"
 
 
+class ChartType(StrEnum):
+    """Chart types for basic charts."""
+
+    bar = "BAR"
+    line = "LINE"
+    area = "AREA"
+    column = "COLUMN"
+    scatter = "SCATTER"
+    combo = "COMBO"
+    stepped_area = "STEPPED_AREA"
+
+
+class ChartLegendPosition(StrEnum):
+    """Legend position options for charts."""
+
+    bottom = "BOTTOM_LEGEND"
+    left = "LEFT_LEGEND"
+    right = "RIGHT_LEGEND"
+    top = "TOP_LEGEND"
+    no_legend = "NO_LEGEND"
+
+
+class ChartAxisPosition(StrEnum):
+    """Axis position options for charts."""
+
+    bottom_axis = "BOTTOM_AXIS"
+    left_axis = "LEFT_AXIS"
+    right_axis = "RIGHT_AXIS"
+
+
 def convert_credentials(credentials: Credentials) -> Credentials:
     module = credentials.__module__
     cls = credentials.__class__.__name__
