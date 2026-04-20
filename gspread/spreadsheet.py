@@ -718,6 +718,22 @@ class Spreadsheet:
         self._properties["locale"] = locale
         return res
 
+    def list_conditional_formatting_rules(self, sheetid: int) -> List[Any]:
+        """Lists the spreadsheet's conditional formats"""
+        sheets: List[Mapping[str, Any]] = self.fetch_sheet_metadata(
+            params={"fields": "sheets.properties,sheets.conditionalFormats"}
+        )["sheets"]
+
+        try:
+            sheet = finditem(
+                lambda sheet: sheet["properties"]["sheetId"] == sheetid, sheets
+            )
+
+        except StopIteration:
+            raise WorksheetNotFound("worksheet id {} not found".format(sheetid))
+
+        return sheet.get("conditionalFormats", [])
+
     def list_protected_ranges(self, sheetid: int) -> List[Any]:
         """Lists the spreadsheet's protected named ranges"""
         sheets: List[Mapping[str, Any]] = self.fetch_sheet_metadata(
