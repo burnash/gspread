@@ -9,7 +9,7 @@ Simple authentication with OAuth.
 import json
 import os
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional, Protocol, Tuple, Union
+from typing import Any, Dict, Iterable, Mapping, Optional, Tuple, Union
 
 from google.auth.credentials import Credentials
 
@@ -87,14 +87,6 @@ def authorize(
     return Client(auth=credentials, session=session, http_client=http_client)
 
 
-class FlowCallable(Protocol):
-    """Protocol for OAuth flow callables."""
-
-    def __call__(
-        self, client_config: Mapping[str, Any], scopes: Iterable[str], port: int = 0
-    ) -> OAuthCredentials: ...
-
-
 def local_server_flow(
     client_config: Mapping[str, Any], scopes: Iterable[str], port: int = 0
 ) -> OAuthCredentials:
@@ -103,9 +95,6 @@ def local_server_flow(
     Creates an OAuth flow and runs `google_auth_oauthlib.flow.InstalledAppFlow.run_local_server <https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html#google_auth_oauthlib.flow.InstalledAppFlow.run_local_server>`_.
     This will start a local web server and open the authorization URL in
     the user's browser.
-
-    Pass this function to ``flow`` parameter of :meth:`~gspread.oauth` to run
-    a local server flow.
     """
     flow = InstalledAppFlow.from_client_config(client_config, scopes)
     return flow.run_local_server(port=port)
@@ -132,25 +121,16 @@ def store_credentials(
 
 def oauth(
     scopes: Iterable[str] = DEFAULT_SCOPES,
-    flow: FlowCallable = local_server_flow,
     credentials_filename: Union[str, Path] = DEFAULT_CREDENTIALS_FILENAME,
     authorized_user_filename: Union[str, Path] = DEFAULT_AUTHORIZED_USER_FILENAME,
     http_client: HTTPClientType = HTTPClient,
 ) -> Client:
     r"""Authenticate with OAuth Client ID.
 
-    By default this function will use the local server strategy and open
-    the authorization URL in the user's browser::
+    This function will use the local server strategy and open the authorization
+    URL in the user's browser::
 
         gc = gspread.oauth()
-
-    Another option is to run a console strategy. This way, the user is
-    instructed to open the authorization URL in their browser. Once the
-    authorization is complete, the user must then copy & paste the
-    authorization code into the application::
-
-        gc = gspread.oauth(flow=gspread.auth.console_flow)
-
 
     ``scopes`` parameter defaults to read/write scope available in
     ``gspread.auth.DEFAULT_SCOPES``. It's read/write for Sheets
@@ -179,8 +159,6 @@ def oauth(
         )
 
     :param list scopes: The scopes used to obtain authorization.
-    :param function flow: OAuth flow to use for authentication.
-        Defaults to :meth:`~gspread.auth.local_server_flow`
     :param str credentials_filename: Filepath (including name) pointing to a
         credentials `.json` file.
         Defaults to DEFAULT_CREDENTIALS_FILENAME:
@@ -207,7 +185,7 @@ def oauth(
     if not isinstance(creds, Credentials):
         with open(credentials_filename) as json_file:
             client_config = json.load(json_file)
-        creds = flow(client_config=client_config, scopes=scopes)
+        creds = local_server_flow(client_config=client_config, scopes=scopes)
         store_credentials(creds, filename=authorized_user_filename)
 
     return Client(auth=creds, http_client=http_client)
@@ -217,23 +195,14 @@ def oauth_from_dict(
     credentials: Optional[Mapping[str, Any]] = None,
     authorized_user_info: Optional[Mapping[str, Any]] = None,
     scopes: Iterable[str] = DEFAULT_SCOPES,
-    flow: FlowCallable = local_server_flow,
     http_client: HTTPClientType = HTTPClient,
 ) -> Tuple[Client, Dict[str, Any]]:
     r"""Authenticate with OAuth Client ID.
 
-    By default this function will use the local server strategy and open
-    the authorization URL in the user's browser::
+    This function will use the local server strategy and open the authorization
+    URL in the user's browser::
 
         gc = gspread.oauth_from_dict()
-
-    Another option is to run a console strategy. This way, the user is
-    instructed to open the authorization URL in their browser. Once the
-    authorization is complete, the user must then copy & paste the
-    authorization code into the application::
-
-        gc = gspread.oauth_from_dict(flow=gspread.auth.console_flow)
-
 
     ``scopes`` parameter defaults to read/write scope available in
     ``gspread.auth.DEFAULT_SCOPES``. It's read/write for Sheets
@@ -272,8 +241,6 @@ def oauth_from_dict(
     :param dict authorized_user_info: The authenticated user
         if already authenticated.
     :param list scopes: The scopes used to obtain authorization.
-    :param function flow: OAuth flow to use for authentication.
-        Defaults to :meth:`~gspread.auth.local_server_flow`
     :type http_client: :class:`gspread.http_client.HTTPClient`
     :param http_client: A factory function that returns a client class.
         Defaults to :class:`gspread.http_client.HTTPClient` (but could also use
@@ -285,7 +252,7 @@ def oauth_from_dict(
     if authorized_user_info is not None:
         creds = OAuthCredentials.from_authorized_user_info(authorized_user_info, scopes)
     elif credentials is not None:
-        creds = flow(client_config=credentials, scopes=scopes)
+        creds = local_server_flow(client_config=credentials, scopes=scopes)
     else:
         raise ValueError("no credentials object supplied")
 
