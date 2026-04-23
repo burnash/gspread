@@ -3475,6 +3475,7 @@ class Worksheet:
     def add_chart(
         self,
         data_ranges: Union[str, List[str]],
+        domain_range: Optional[str] = None,
         chart_type: Union[str, ChartType] = ChartType.column,
         title: Optional[str] = None,
         anchor_cell: Optional[str] = None,
@@ -3488,8 +3489,13 @@ class Worksheet:
 
             - Single range: Used for series data, domain (x-axis) is auto-generated as 1, 2, 3...
             - Multiple ranges: First range is the domain (x-axis), remaining ranges are series (y-axis)
+              *unless* ``domain_range`` is provided.
 
         :type data_ranges: str or list
+        :param domain_range: (optional) Explicitly specify the range to use as the x-axis (domain).
+            When provided, all ``data_ranges`` are treated as series, allowing x-axis to be
+            any column regardless of order.
+        :type domain_range: str
         :param chart_type: The type of chart. Use ChartType enum or string like 'COLUMN', 'LINE', etc.
             Defaults to ChartType.column.
         :type chart_type: ChartType or str
@@ -3534,6 +3540,14 @@ class Worksheet:
             ...     y_axis_title='Value'
             ... )
 
+            >>> # Chart with explicit domain (x-axis any column)
+            >>> worksheet.add_chart(
+            ...     ['B1:B10', 'C1:C10'],
+            ...     domain_range='A1:A10',
+            ...     chart_type=ChartType.bar,
+            ...     title='Sales by Region'
+            ... )
+
         .. versionadded:: 6.2.2
         """
         # Convert chart_type to string if it's an enum
@@ -3560,24 +3574,64 @@ class Worksheet:
         if height <= 0:
             raise ValueError("height_pixels must be greater than 0")
 
+        # Expand 2D ranges into individual column ranges
+        # Google Sheets API requires chart source ranges to span only a single row or column
+        if len(data_ranges) == 1:
+            grid = a1_range_to_grid_range(data_ranges[0], self.id)
+            start_row = grid.get("startRowIndex", 0)
+            end_row = grid.get("endRowIndex", 0)
+            start_col = grid.get("startColumnIndex", 0)
+            end_col = grid.get("endColumnIndex", 0)
+
+            n_cols = end_col - start_col
+
+            # If range spans multiple columns, expand to individual column ranges
+            # First column becomes domain, rest become series
+            if n_cols > 1:
+                data_ranges = [
+                    f"{rowcol_to_a1(start_row + 1, start_col + i + 1)}:{rowcol_to_a1(end_row, start_col + i + 1)}"
+                    for i in range(n_cols)
+                ]
+
         # Build series data
         series = []
         domains = []
 
-        # Handle domain and series based on number of ranges provided
-        if len(data_ranges) == 1:
+        # Determine target axis based on chart type
+        # BAR charts have series on BOTTOM_AXIS, others use LEFT_AXIS
+        target_axis = (
+            ChartAxisPosition.bottom_axis
+            if chart_type == "BAR"
+            else ChartAxisPosition.left_axis
+        )
+
+        # Handle domain and series
+        if domain_range is not None:
+            # Explicit domain: all data_ranges are series
+            dr = a1_range_to_grid_range(domain_range, self.id)
+            domains.append({"domain": {"sourceRange": {"sources": [dr]}}})
+
+            for range_str in data_ranges:
+                series_range = a1_range_to_grid_range(range_str, self.id)
+                series.append(
+                    {
+                        "series": {"sourceRange": {"sources": [series_range]}},
+                        "targetAxis": str(target_axis),
+                    }
+                )
+        elif len(data_ranges) == 1:
             # Single range: use it for series only, domain will be auto-generated (1, 2, 3...)
             series_range = a1_range_to_grid_range(data_ranges[0], self.id)
             series.append(
                 {
                     "series": {"sourceRange": {"sources": [series_range]}},
-                    "targetAxis": str(ChartAxisPosition.left_axis),
+                    "targetAxis": str(target_axis),
                 }
             )
         else:
             # Multiple ranges: first is domain, rest are series
-            domain_range = a1_range_to_grid_range(data_ranges[0], self.id)
-            domains.append({"domain": {"sourceRange": {"sources": [domain_range]}}})
+            domain_range_grid = a1_range_to_grid_range(data_ranges[0], self.id)
+            domains.append({"domain": {"sourceRange": {"sources": [domain_range_grid]}}})
 
             # Remaining ranges are series (y-axis data)
             for range_str in data_ranges[1:]:
@@ -3585,7 +3639,7 @@ class Worksheet:
                 series.append(
                     {
                         "series": {"sourceRange": {"sources": [series_range]}},
-                        "targetAxis": str(ChartAxisPosition.left_axis),
+                        "targetAxis": str(target_axis),
                     }
                 )
 
@@ -3671,6 +3725,8 @@ class Worksheet:
     def update_chart(
         self,
         chart_id: int,
+        data_ranges: Optional[Union[str, List[str]]] = None,
+        domain_range: Optional[str] = None,
         chart_type: Optional[Union[str, ChartType]] = None,
         title: Optional[str] = None,
         legend_position: Optional[Union[str, ChartLegendPosition]] = None,
@@ -3680,6 +3736,17 @@ class Worksheet:
 
         :param chart_id: The ID of the chart to update. Get this from list_charts().
         :type chart_id: int
+        :param data_ranges: (optional) New data range(s) for the chart. Can be a single A1 notation string
+            (e.g., 'A1:B10') or a list of ranges for multiple series.
+
+            - Single range: Used for series data, domain (x-axis) is auto-generated as 1, 2, 3...
+            - Multiple ranges: First range is the domain (x-axis), remaining ranges are series (y-axis)
+              *unless* ``domain_range`` is provided.
+
+        :type data_ranges: str or list
+        :param domain_range: (optional) Explicitly specify the range to use as the x-axis (domain).
+            When provided, all ``data_ranges`` are treated as series.
+        :type domain_range: str
         :param chart_type: (optional) New chart type. Use ChartType enum or string.
         :type chart_type: ChartType or str
         :param title: (optional) New title for the chart.
@@ -3707,15 +3774,38 @@ class Worksheet:
             >>> # Update the chart
             >>> worksheet.update_chart(
             ...     chart_id,
+            ...     data_ranges='C1:D10',
             ...     title='Updated Sales Data',
             ...     chart_type=ChartType.line,
             ...     legend_position=ChartLegendPosition.top
             ... )
 
+            >>> # Update with explicit domain
+            >>> worksheet.update_chart(
+            ...     chart_id,
+            ...     data_ranges=['B1:B10', 'C1:C10'],
+            ...     domain_range='A1:A10'
+            ... )
+
         .. versionadded:: 6.2.2
         """
-        # Build chart specification with only provided fields
-        chart_spec: Dict[str, Any] = {}
+        # Ensure chart_id is an integer
+        if isinstance(chart_id, str):
+            chart_id = int(chart_id)
+
+        # Fetch existing chart to preserve its structure
+        charts = self.list_charts()
+        existing_chart: Optional[Dict[str, Any]] = None
+        for chart in charts:
+            if chart.get("chartId") == chart_id:
+                existing_chart = chart
+                break
+
+        if existing_chart is None:
+            raise ValueError(f"Chart with ID {chart_id} not found in this worksheet")
+
+        # Start with existing spec
+        chart_spec: Dict[str, Any] = dict(existing_chart.get("spec", {}))
 
         if title is not None:
             chart_spec["title"] = title
@@ -3724,37 +3814,152 @@ class Worksheet:
         if kwargs.get("font_name") is not None:
             chart_spec["fontName"] = kwargs["font_name"]
 
-        # Build basic chart spec if any basic chart properties are provided
-        basic_chart_spec: Dict[str, Any] = {}
+        # Build basic chart spec, starting with existing if present
+        basic_chart_spec: Dict[str, Any] = dict(
+            chart_spec.get("basicChart", {})
+        )
 
+        new_chart_type = None
         if chart_type is not None:
             if isinstance(chart_type, ChartType):
                 chart_type = str(chart_type)
             basic_chart_spec["chartType"] = chart_type
+            new_chart_type = chart_type
 
         if legend_position is not None:
             if isinstance(legend_position, ChartLegendPosition):
                 legend_position = str(legend_position)
             basic_chart_spec["legendPosition"] = legend_position
 
+        # If changing chart type, update series targetAxis and handle COMBO series types
+        if new_chart_type is not None and "series" in basic_chart_spec:
+            new_target_axis = (
+                ChartAxisPosition.bottom_axis
+                if new_chart_type == "BAR"
+                else ChartAxisPosition.left_axis
+            )
+            # For COMBO charts, each series must specify its own type
+            original_chart_type = chart_spec.get("basicChart", {}).get(
+                "chartType", "COLUMN"
+            )
+            for series in basic_chart_spec.get("series", []):
+                series["targetAxis"] = str(new_target_axis)
+                if new_chart_type == "COMBO" and "type" not in series:
+                    series["type"] = original_chart_type
+
         # Add axes configuration
-        axes = []
+        axes = list(basic_chart_spec.get("axis", []))
         if kwargs.get("x_axis_title"):
-            axes.append(
-                {
-                    "position": ChartAxisPosition.bottom_axis,
-                    "title": kwargs["x_axis_title"],
-                }
-            )
+            # Update or add x-axis title
+            x_axis_found = False
+            for axis in axes:
+                if axis.get("position") == ChartAxisPosition.bottom_axis:
+                    axis["title"] = kwargs["x_axis_title"]
+                    x_axis_found = True
+                    break
+            if not x_axis_found:
+                axes.append(
+                    {
+                        "position": ChartAxisPosition.bottom_axis,
+                        "title": kwargs["x_axis_title"],
+                    }
+                )
         if kwargs.get("y_axis_title"):
-            axes.append(
-                {
-                    "position": ChartAxisPosition.left_axis,
-                    "title": kwargs["y_axis_title"],
-                }
-            )
+            # Update or add y-axis title
+            y_axis_found = False
+            for axis in axes:
+                if axis.get("position") == ChartAxisPosition.left_axis:
+                    axis["title"] = kwargs["y_axis_title"]
+                    y_axis_found = True
+                    break
+            if not y_axis_found:
+                axes.append(
+                    {
+                        "position": ChartAxisPosition.left_axis,
+                        "title": kwargs["y_axis_title"],
+                    }
+                )
         if axes:
             basic_chart_spec["axis"] = axes
+
+        # Update data ranges if provided
+        if data_ranges is not None:
+            # Determine the effective chart type for series axis configuration
+            effective_chart_type = new_chart_type or basic_chart_spec.get("chartType", "COLUMN")
+
+            # Normalize data_ranges to a list
+            if isinstance(data_ranges, str):
+                data_ranges = [data_ranges]
+
+            # Expand 2D ranges into individual column ranges
+            if len(data_ranges) == 1 and domain_range is None:
+                grid = a1_range_to_grid_range(data_ranges[0], self.id)
+                start_row = grid.get("startRowIndex", 0)
+                end_row = grid.get("endRowIndex", 0)
+                start_col = grid.get("startColumnIndex", 0)
+                end_col = grid.get("endColumnIndex", 0)
+
+                n_cols = end_col - start_col
+
+                # If range spans multiple columns, expand to individual column ranges
+                if n_cols > 1:
+                    data_ranges = [
+                        f"{rowcol_to_a1(start_row + 1, start_col + i + 1)}:{rowcol_to_a1(end_row, start_col + i + 1)}"
+                        for i in range(n_cols)
+                    ]
+
+            # Build series and domains based on ranges
+            series = []
+            domains = []
+
+            # Determine target axis based on effective chart type
+            target_axis = (
+                ChartAxisPosition.bottom_axis
+                if effective_chart_type == "BAR"
+                else ChartAxisPosition.left_axis
+            )
+
+            if domain_range is not None:
+                # Explicit domain: all data_ranges are series
+                dr = a1_range_to_grid_range(domain_range, self.id)
+                domains.append({"domain": {"sourceRange": {"sources": [dr]}}})
+
+                for range_str in data_ranges:
+                    series_range = a1_range_to_grid_range(range_str, self.id)
+                    series.append(
+                        {
+                            "series": {"sourceRange": {"sources": [series_range]}},
+                            "targetAxis": str(target_axis),
+                        }
+                    )
+            elif len(data_ranges) == 1:
+                # Single range: use it for series only, domain will be auto-generated
+                series_range = a1_range_to_grid_range(data_ranges[0], self.id)
+                series.append(
+                    {
+                        "series": {"sourceRange": {"sources": [series_range]}},
+                        "targetAxis": str(target_axis),
+                    }
+                )
+            else:
+                # Multiple ranges: first is domain, rest are series
+                domain_range_grid = a1_range_to_grid_range(data_ranges[0], self.id)
+                domains.append({"domain": {"sourceRange": {"sources": [domain_range_grid]}}})
+
+                for range_str in data_ranges[1:]:
+                    series_range = a1_range_to_grid_range(range_str, self.id)
+                    series.append(
+                        {
+                            "series": {"sourceRange": {"sources": [series_range]}},
+                            "targetAxis": str(target_axis),
+                        }
+                    )
+
+            # Update basic_chart_spec with new series and domains
+            if series:
+                basic_chart_spec["series"] = series
+            if domains:
+                basic_chart_spec["domains"] = domains
 
         if kwargs.get("three_dimensional") is not None:
             basic_chart_spec["threeDimensional"] = kwargs["three_dimensional"]
@@ -3799,6 +4004,10 @@ class Worksheet:
 
         .. versionadded:: 6.2.2
         """
+        # Ensure chart_id is an integer
+        if isinstance(chart_id, str):
+            chart_id = int(chart_id)
+
         body = {"requests": [{"deleteEmbeddedObject": {"objectId": chart_id}}]}
 
         return self.client.batch_update(self.spreadsheet_id, body)
