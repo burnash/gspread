@@ -92,9 +92,16 @@ gspread uses [vcrpy](https://github.com/kevin1024/vcrpy) to record and replay HT
 
 ### `GS_CREDS_FILENAME` environment variable
 
-You must provide service account credentials using the `GS_CREDS_FILENAME` environment variable in order to make HTTP requests to the Sheets API.
+You must provide credentials using the `GS_CREDS_FILENAME` environment variable in order to make HTTP requests to the Sheets API. The test suite accepts either an OAuth *authorized user* file or a service account key.
 
-[Obtain service account credentials from Google Developers Console](https://docs.gspread.org/en/latest/oauth2.html#for-bots-using-service-account).
+> [!IMPORTANT]
+> Use **OAuth credentials** (recommended). The tests create spreadsheets, and
+> [service accounts no longer have Drive storage quota and cannot own files](https://discuss.google.dev/t/error-403-storagequotaexceeded-when-the-service-accounts-drive-is-completely-empty/194265/2),
+> so recording cassettes with a service account fails with
+> `403: The user's Drive storage quota has been exceeded`. OAuth credentials create the
+> spreadsheets in your own Drive instead.
+
+Refer to the [Appendix A](#appendix-a-obtaining-oauth-credentials) on how to obtain **OAuth credentials** (the `authorized_user.json` file)
 
 ### `GS_RECORD_MODE` environment variable
 
@@ -115,7 +122,7 @@ In the following cases, you must record new HTTP requests:
 In some cases if the test suite can't record new episodes, or it can't replay them offline, you can run a complete update of the cassettes.
 
 ```bash
-GS_CREDS_FILENAME=<./YOUR_CREDS.json> GS_RECORD_MODE=all tox -e py
+GS_CREDS_FILENAME=local_no_git/authorized_user.json GS_RECORD_MODE=all tox -e py
 ```
 
 ### Run test, capturing *only new* HTTP requests
@@ -130,7 +137,7 @@ To record new HTTP requests:
 1. Run the tests with `GS_RECORD_MODE=new_episodes`.
 
 ```bash
-GS_CREDS_FILENAME=<./YOUR_CREDS.json> GS_RECORD_MODE=new_episodes tox -e py
+GS_CREDS_FILENAME=local_no_git/authorized_user.json GS_RECORD_MODE=new_episodes tox -e py
 ```
 
 This will mostly result in a lot of updated files in `tests/cassettes/`. Don't forget to add them in your PR.
@@ -153,3 +160,52 @@ New release system:
 - Add a tag `vX.Y.Z` to the commit locally. This will trigger a new release on PyPi, and make a release on GitHub.
 - View the release on [GitHub](https://github.com/burnash/gspread/releases) and [PyPi](https://pypi.org/project/gspread/)!
 - Sync or add the latest version to the [Gspread ReadTheDocs](https://app.readthedocs.org/projects/gspread/)
+
+## Appendixes
+
+### Appendix A. Obtaining OAuth credentials
+
+
+#### Obtain `oauth_client.json`
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/), 
+2. Create a new project (e.g. gspread)
+3. [enable the Sheets API and the Drive API](https://docs.gspread.org/en/latest/oauth2.html#enable-api-access-for-a-project) for your project.
+4. Go to Credentials => Create credentials => OAuth client ID
+5. You will get a screen with the invitation to **Configure consent screen**. click on it
+6. Fill in App name, and User support email (choose your email). Click next
+7. For Audience click **External** and click Next
+8. Enter Contact information (your email) and click Next
+9. Click Finish, Click Create. You will go to the *OAuth Overview* screen.
+10. Click *Create OAuth client*
+11. Under *Application type* select *Desktop app*. Click *Create*.
+12. A popup window will come up with the invitation to download the JSON file. Download it
+13. Rename and move this file to some not git enabled directory (e.g. `local_no_git/oauth_client.json`)
+14. Go to Audience => Test users => Add users
+15. Add a Google email of the user whose account will be used to run online tests and whose Drive will be used to create test spreadsheets.
+16. Create an **OAuth client ID** of type *Desktop app* (APIs & Services → Credentials → Create credentials → OAuth client ID) and download the JSON, e.g. `oauth_client.json`.
+
+#### Obtain `authorized_user.json`
+
+1. Go to some temporary directory (e.g. `local_no_git`) and create a file (e.g. `make_token.py`)
+
+   ```python
+   import gspread
+
+   gc = gspread.oauth(
+       credentials_filename="oauth_client.json",
+       authorized_user_filename="authorized_user.json",
+   )
+   ```
+2. Run this file: `python local_no_git/make_token.py`
+3. This will open the browser. Make sure to login with the credentials of the user you have added as a test user above.
+4. Confirm, that the `authorized_user.json` has been created now
+
+   The resulting `authorized_user.json` contains a refresh token and is self-contained,
+   so tests can refresh access tokens without a browser. Point `GS_CREDS_FILENAME` at it.
+
+You can also consult [this video](https://www.youtube.com/watch?v=tgO_ADSvY1I&t=58s) for demonstration of the steps
+
+> [!NOTE]
+> While the OAuth app is in *Testing* publishing status, the refresh token expires after 7
+> days. If recording later fails with `invalid_grant`, re-generate `authorized_user.json`.

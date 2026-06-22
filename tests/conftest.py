@@ -1,5 +1,6 @@
 import io
 import itertools
+import json
 import os
 import unittest
 from typing import Any, Dict, Generator, Optional, Tuple
@@ -29,6 +30,18 @@ I18N_STR = "Iñtërnâtiônàlizætiøn"  # .encode('utf8')
 
 
 def read_credentials(filename: str) -> Credentials:
+    # Support both a service-account key and an OAuth "authorized_user" file.
+    # Service accounts have no Drive storage quota and can't own files, so
+    # recording cassettes (which create spreadsheets) requires OAuth user creds.
+    # An OAuth user file has a "refresh_token"; a service-account key has a
+    # "private_key" (and gspread's stored user file has no "type" field).
+    with open(filename) as file:
+        info = json.load(file)
+
+    if "refresh_token" in info:
+        # Scopes are taken from the stored token to avoid scope-mismatch errors.
+        return UserCredentials.from_authorized_user_info(info)
+
     return ServiceAccountCredentials.from_service_account_file(filename, scopes=SCOPE)
 
 
