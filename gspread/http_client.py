@@ -636,6 +636,7 @@ class BackOffHTTPClient(HTTPClient):
                 return response
 
             # failed too many times, raise APIEerror
+            self._NR_BACKOFF = 0
             raise err
 
 
