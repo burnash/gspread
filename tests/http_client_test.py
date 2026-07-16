@@ -1,9 +1,10 @@
 import datetime
 import json
 from unittest import TestCase
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
-from gspread.http_client import HTTPClient
+from gspread.exceptions import APIError
+from gspread.http_client import BackOffHTTPClient, HTTPClient
 from gspread.worksheet import Worksheet
 
 
@@ -101,3 +102,39 @@ class WorksheetForwardsSerializerTest(TestCase):
         worksheet, client = self._make_worksheet()
         worksheet.append_row([1, 2, 3], default_serializer=self.MARKER)
         self.assertIs(client.values_append.call_args.args[4], self.MARKER)
+
+
+class BackOffHTTPClientTest(TestCase):
+    @staticmethod
+    def _error_response(code, domain="global"):
+        response = Mock()
+        response.ok = False
+        response.text = "request failed"
+        response.json.return_value = {
+            "error": {
+                "code": code,
+                "message": "request failed",
+                "errors": [{"domain": domain}],
+            }
+        }
+        return response
+
+    def test_terminal_error_does_not_increase_next_retry_delay(self):
+        session = Mock()
+        success = Mock(ok=True)
+        session.request.side_effect = [
+            self._error_response(403),
+            self._error_response(500),
+            success,
+        ]
+        client = BackOffHTTPClient(auth=None, session=session)
+
+        with self.assertRaises(APIError):
+            client.request("get", "http://example.com/forbidden")
+
+        with patch("gspread.http_client.time.sleep") as sleep:
+            self.assertIs(
+                client.request("get", "http://example.com/retryable"), success
+            )
+
+        sleep.assert_called_once_with(2)
