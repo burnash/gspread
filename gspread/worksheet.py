@@ -2242,6 +2242,158 @@ class Worksheet:
         """
         return self.delete_dimension(Dimension.cols, start_index, end_index)
 
+    def delete_dimension_blocks(
+        self, dimension: Dimension, blocks: Sequence[Sequence[int]]
+    ) -> JSONResponse:
+        """Deletes multiple non-contiguous blocks of rows or columns from
+        the worksheet with a single API call.
+
+        :param dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
+        :type dimension: :class:`~gspread.utils.Dimension`
+        :param blocks: A sequence of ``(start_index, end_index)`` pairs, one
+            per block to delete. Each block may be a tuple or a list of
+            exactly two ints. Indexes are 1-based and inclusive, consistent
+            with :meth:`~gspread.worksheet.Worksheet.delete_rows`. Blocks may
+            be listed in any order but must not overlap.
+        :type blocks: Sequence[Sequence[int]]
+
+        :raises ValueError: If ``blocks`` is empty, a block does not contain
+            exactly 2 elements, a block has a start index lower than 1 or
+            greater than its end index, a block exceeds the current number
+            of rows/columns, or blocks overlap.
+
+        .. versionadded:: 6.3.0
+        """
+        if dimension == Dimension.rows:
+            dimension_size = self.row_count
+        else:
+            dimension_size = self.col_count
+
+        for block in blocks:
+            if len(block) != 2:
+                raise ValueError(
+                    "block {} must contain exactly 2 elements: a start index and an end index".format(
+                        block
+                    )
+                )
+
+        # blocks may mix lists and tuples, normalize to tuples before sorting
+        sorted_blocks = sorted((block[0], block[1]) for block in blocks)
+        self._validate_dimension_blocks(sorted_blocks, dimension, dimension_size)
+
+        # delete bottom-most blocks first so that the indexes of the
+        # remaining blocks are not shifted by preceding deletions
+        body = {
+            "requests": [
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": dimension,
+                            "startIndex": start_index - 1,
+                            "endIndex": end_index,
+                        }
+                    }
+                }
+                for start_index, end_index in reversed(sorted_blocks)
+            ]
+        }
+
+        res = self.client.batch_update(self.spreadsheet_id, body)
+        num_deleted = sum(end - start + 1 for start, end in sorted_blocks)
+        if dimension == Dimension.rows:
+            self._properties["gridProperties"]["rowCount"] -= num_deleted
+        elif dimension == Dimension.cols:
+            self._properties["gridProperties"]["columnCount"] -= num_deleted
+        return res
+
+    @staticmethod
+    def _validate_dimension_blocks(
+        sorted_blocks: List[Tuple[int, int]], dimension: Dimension, dimension_size: int
+    ) -> None:
+        """Validates blocks for :meth:`~gspread.worksheet.Worksheet.delete_dimension_blocks`.
+
+        ``sorted_blocks`` must already be sorted by start index.
+
+        :raises ValueError: If the blocks are invalid, see
+            :meth:`~gspread.worksheet.Worksheet.delete_dimension_blocks`.
+        """
+        if len(sorted_blocks) == 0:
+            raise ValueError("blocks must not be empty")
+
+        for start_index, end_index in sorted_blocks:
+            if start_index < 1:
+                raise ValueError(
+                    "block ({}, {}) has a start index lower than 1".format(
+                        start_index, end_index
+                    )
+                )
+            if end_index < start_index:
+                raise ValueError(
+                    "block ({}, {}) has an end index lower than its start index".format(
+                        start_index, end_index
+                    )
+                )
+            if end_index > dimension_size:
+                raise ValueError(
+                    "block ({}, {}) exceeds the worksheet size of {} {}".format(
+                        start_index, end_index, dimension_size, dimension.name
+                    )
+                )
+        for (_, previous_end), (next_start, _) in zip(sorted_blocks, sorted_blocks[1:]):
+            if next_start <= previous_end:
+                raise ValueError(
+                    "blocks must not overlap: a block ending at {} overlaps a block starting at {}".format(
+                        previous_end, next_start
+                    )
+                )
+
+    def delete_rows_blocks(self, blocks: Sequence[Sequence[int]]) -> JSONResponse:
+        """Deletes multiple non-contiguous blocks of rows from the worksheet
+        with a single API call.
+
+        :param blocks: A sequence of ``(start_index, end_index)`` pairs, one
+            per block to delete. Each block may be a tuple or a list of
+            exactly two ints. Indexes are 1-based and inclusive, consistent
+            with :meth:`~gspread.worksheet.Worksheet.delete_rows`. Blocks may
+            be listed in any order but must not overlap.
+        :type blocks: Sequence[Sequence[int]]
+
+        :raises ValueError: If the blocks are invalid, see
+            :meth:`~gspread.worksheet.Worksheet.delete_dimension_blocks`.
+
+        Example::
+
+            # Delete rows 3 to 5 and rows 8 to 9 (inclusive) in one API call
+            worksheet.delete_rows_blocks([(3, 5), (8, 9)])
+
+        .. versionadded:: 6.3.0
+        """
+        return self.delete_dimension_blocks(Dimension.rows, blocks)
+
+    def delete_columns_blocks(self, blocks: Sequence[Sequence[int]]) -> JSONResponse:
+        """Deletes multiple non-contiguous blocks of columns from the
+        worksheet with a single API call.
+
+        :param blocks: A sequence of ``(start_index, end_index)`` pairs, one
+            per block to delete. Each block may be a tuple or a list of
+            exactly two ints. Indexes are 1-based and inclusive, consistent
+            with :meth:`~gspread.worksheet.Worksheet.delete_columns`. Blocks
+            may be listed in any order but must not overlap.
+        :type blocks: Sequence[Sequence[int]]
+
+        :raises ValueError: If the blocks are invalid, see
+            :meth:`~gspread.worksheet.Worksheet.delete_dimension_blocks`.
+
+        Example::
+
+            # Delete columns 3 to 5 and columns 8 to 9 (inclusive) in one API call
+            worksheet.delete_columns_blocks([(3, 5), (8, 9)])
+
+        .. versionadded:: 6.3.0
+        """
+        return self.delete_dimension_blocks(Dimension.cols, blocks)
+
     def clear(self) -> JSONResponse:
         """Clears all cells in the worksheet."""
         return self.client.values_clear(
