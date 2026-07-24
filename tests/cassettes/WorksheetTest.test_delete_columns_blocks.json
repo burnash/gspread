@@ -223,6 +223,85 @@
         },
         {
             "request": {
+                "method": "POST",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA/values/%27Sheet1%27:clear",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.31.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-goog-api-client": [
+                        "cred-type/sa"
+                    ],
+                    "x-identity-trust-boundary": [
+                        "0"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ],
+                    "authorization": [
+                        "<ACCESS_TOKEN>"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Vary": [
+                        "Origin",
+                        "X-Origin",
+                        "Referer"
+                    ],
+                    "Cache-Control": [
+                        "private"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Server": [
+                        "ESF"
+                    ],
+                    "X-XSS-Protection": [
+                        "0"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "X-Frame-Options": [
+                        "SAMEORIGIN"
+                    ],
+                    "Date": [
+                        "Tue, 25 Jul 2023 15:45:49 GMT"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "content-length": [
+                        "107"
+                    ]
+                },
+                "body": {
+                    "string": "{\n  \"spreadsheetId\": \"102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA\",\n  \"clearedRange\": \"Sheet1!A1:Z1000\"\n}\n"
+                }
+            }
+        },
+        {
+            "request": {
                 "method": "PUT",
                 "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA/values/%27Sheet1%27%21A1%3AJ1?valueInputOption=RAW",
                 "body": "{\"values\": [[\"test_delete_columns_blocks 1\", \"test_delete_columns_blocks 2\", \"test_delete_columns_blocks 3\", \"test_delete_columns_blocks 4\", \"test_delete_columns_blocks 5\", \"test_delete_columns_blocks 6\", \"test_delete_columns_blocks 7\", \"test_delete_columns_blocks 8\", \"test_delete_columns_blocks 9\", \"test_delete_columns_blocks 10\"]], \"majorDimension\": null}",

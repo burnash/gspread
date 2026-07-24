@@ -20,3 +20,4 @@ docs/build/
 
 # local virtualenv
 venv/
+.venv/
