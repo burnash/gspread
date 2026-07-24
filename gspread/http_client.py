@@ -748,36 +748,46 @@ class BackOffHTTPClient(HTTPClient):
 
     def request(self, *args: Any, **kwargs: Any) -> Response:
 
-        def _should_retry(code: int, error: Any, wait: int) -> bool:
+        def _should_retry(code: int, error: Any) -> bool:
+            # Drive API returns a dict object 'errors', the sheet API does not
             if isinstance(error, dict) and "errors" in error:
+                # Drive API returns a 403 when reaching quotas/usage limits
                 if (
                     code == HTTPStatus.FORBIDDEN
                     and error["errors"][0].get("domain") == "usageLimits"
                 ):
                     return True
 
-            is_retryable_code = (
-                code in self._HTTP_ERROR_CODES
-                or code >= SERVER_ERROR_THRESHOLD
-                or code == -1
-            )
-
-            return is_retryable_code and wait <= self._MAX_BACKOFF
+            # We retry on rate-limit (429), request timeout (408), and any
+            # server error (>= 500).
+            return code in self._HTTP_ERROR_CODES or code >= SERVER_ERROR_THRESHOLD
 
         try:
             return super().request(*args, **kwargs)
 
-        except Exception as err:
+        # Only APIError and RefreshError are retryable. Any other exception
+        # (e.g. a request timeout or connection error) must propagate
+        # immediately -- otherwise it would be retried forever with real
+        # backoff sleeps.
+        except (APIError, RefreshError) as err:
             self._NR_BACKOFF += 1
             wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
 
-            # Extract status code from the underlying response or the error object
-            response_obj = getattr(err, "response", None)
-            code = getattr(response_obj, "status_code", getattr(err, "code", -1))
-            error_data = getattr(err, "error", {})
+            if isinstance(err, APIError):
+                # When the body is not valid JSON (e.g. a proxy 5xx HTML page),
+                # err.code is -1; fall back to the real HTTP status code so we
+                # still retry genuine server errors.
+                code = err.code if err.code != -1 else err.response.status_code
+                retry = _should_retry(code, err.error)
+            else:
+                # RefreshError carries no HTTP status; retry up to the ceiling.
+                code = -1
+                retry = True
 
-            if _should_retry(code, error_data, wait):
-                # detailed log of error and retry attempt
+            # Stop once the exponential backoff has passed the ceiling, so a
+            # persistently failing endpoint can't loop forever (wait itself is
+            # capped at _MAX_BACKOFF, so it can never trip this on its own).
+            if retry and 2**self._NR_BACKOFF <= self._MAX_BACKOFF:
                 logger.warning(
                     f"Request failed (Status: {code}). "
                     f"Error type: {type(err).__name__}. "
@@ -787,10 +797,12 @@ class BackOffHTTPClient(HTTPClient):
                 time.sleep(wait)
                 response = self.request(*args, **kwargs)
 
+                # reset counters for next time
                 self._NR_BACKOFF = 0
                 return response
 
-            # If it's not retryable, log the final failure before raising
+            # Not retryable, or retried too many times: reset and raise.
+            self._NR_BACKOFF = 0
             logger.error(f"Critical API failure: {err} (Status: {code})")
             raise err
 
