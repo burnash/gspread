@@ -563,13 +563,16 @@ def mock_success_response():
     return mock_response
 
 
-def _create_mock_error_response(status_code, error_dict=None, json_side_effect=None):
+def _create_mock_error_response(
+    status_code, error_dict=None, json_side_effect=None, text=None
+):
     """Helper to create a mock error response.
 
     Args:
         status_code: HTTP status code
         error_dict: Error dictionary for JSON response (if parseable)
         json_side_effect: Exception to raise when parsing JSON (for unparsable responses)
+        text: Custom response body text (used when json_side_effect is set)
     """
     mock_response = Mock(spec=Response)
     mock_response.ok = False
@@ -577,7 +580,7 @@ def _create_mock_error_response(status_code, error_dict=None, json_side_effect=N
 
     if json_side_effect:
         mock_response.json.side_effect = json_side_effect
-        mock_response.text = "Unparsable response"
+        mock_response.text = text if text is not None else "Unparsable response"
     elif error_dict:
         mock_response.json.return_value = {"error": error_dict}
 
@@ -686,6 +689,122 @@ def test_backoff_http_client_retries_with_valid_retryable_code(
     assert api_error.code == 429, "Error code should be 429"
 
     # Test that it retries for retryable 429 error
+    _test_backoff_retry_behavior(
+        backoff_client, api_error, mock_success_response, should_retry=True
+    )
+
+
+def test_backoff_http_client_retries_502_html_response(
+    backoff_client, mock_success_response
+):
+    """Test that a 502 Bad Gateway returning HTML instead of JSON is retried.
+
+    This simulates a common real-world scenario where a load balancer or proxy
+    returns an HTML error page for a 502 instead of a JSON API error.
+    """
+    html_body = (
+        "<html><head><title>502 Bad Gateway</title></head>"
+        "<body><h1>502 Bad Gateway</h1><p>nginx</p></body></html>"
+    )
+    mock_response = _create_mock_error_response(
+        status_code=502,
+        json_side_effect=ValueError("No JSON object could be decoded"),
+        text=html_body,
+    )
+
+    api_error = APIError(mock_response)
+
+    # APIError should set code=-1 since JSON parsing failed
+    assert api_error.code == -1
+    # The raw HTML should be preserved in the error message
+    assert "<html>" in api_error.error["message"]
+    # The underlying response still has the real status code
+    assert api_error.response.status_code == 502
+
+    _test_backoff_retry_behavior(
+        backoff_client, api_error, mock_success_response, should_retry=True
+    )
+
+
+def test_backoff_http_client_retries_503_html_response(
+    backoff_client, mock_success_response
+):
+    """Test that a 503 Service Unavailable returning HTML is retried."""
+    html_body = "<html><body><h1>Service Temporarily Unavailable</h1></body></html>"
+    mock_response = _create_mock_error_response(
+        status_code=503,
+        json_side_effect=ValueError("Expecting value"),
+        text=html_body,
+    )
+
+    api_error = APIError(mock_response)
+    assert api_error.code == -1
+    assert api_error.response.status_code == 503
+
+    _test_backoff_retry_behavior(
+        backoff_client, api_error, mock_success_response, should_retry=True
+    )
+
+
+def test_backoff_http_client_no_retry_403_html_response(
+    backoff_client, mock_success_response
+):
+    """Test that a 403 Forbidden returning HTML is NOT retried.
+
+    Even when JSON parsing fails (code=-1 on the APIError), the BackOffHTTPClient
+    extracts the real status code from response.status_code. Since 403 is not
+    a retryable code, it should not be retried.
+    """
+    html_body = "<html><body><h1>403 Forbidden</h1></body></html>"
+    mock_response = _create_mock_error_response(
+        status_code=403,
+        json_side_effect=ValueError("No JSON object could be decoded"),
+        text=html_body,
+    )
+
+    api_error = APIError(mock_response)
+    assert api_error.code == -1
+    # BackOffHTTPClient uses response.status_code (403), not err.code (-1)
+    assert api_error.response.status_code == 403
+
+    _test_backoff_retry_behavior(
+        backoff_client, api_error, mock_success_response, should_retry=False
+    )
+
+
+def test_backoff_http_client_retries_empty_response_body(
+    backoff_client, mock_success_response
+):
+    """Test that an empty response body (no JSON) is handled and retried."""
+    mock_response = _create_mock_error_response(
+        status_code=500,
+        json_side_effect=ValueError("Expecting value: line 1 column 1 (char 0)"),
+        text="",
+    )
+
+    api_error = APIError(mock_response)
+    assert api_error.code == -1
+    assert api_error.error["message"] == ""
+
+    _test_backoff_retry_behavior(
+        backoff_client, api_error, mock_success_response, should_retry=True
+    )
+
+
+def test_backoff_http_client_retries_plain_text_error_response(
+    backoff_client, mock_success_response
+):
+    """Test that a plain text error response (not JSON, not HTML) is retried."""
+    mock_response = _create_mock_error_response(
+        status_code=502,
+        json_side_effect=ValueError("No JSON object could be decoded"),
+        text="upstream connect error or disconnect/reset before headers",
+    )
+
+    api_error = APIError(mock_response)
+    assert api_error.code == -1
+    assert "upstream connect error" in api_error.error["message"]
+
     _test_backoff_retry_behavior(
         backoff_client, api_error, mock_success_response, should_retry=True
     )
