@@ -49,7 +49,7 @@ class UtilsTest(unittest.TestCase):
         for row in range(1, 257):
             for col in range(1, 512):
                 addr = utils.rowcol_to_a1(row, col)
-                (r, c) = utils.a1_to_rowcol(addr)
+                r, c = utils.a1_to_rowcol(addr)
                 self.assertEqual((row, col), (r, c))
 
     def test_get_gid(self):
@@ -456,6 +456,23 @@ class UtilsTest(unittest.TestCase):
         self.assertFalse(utils.is_full_a1_notation("A"))
         self.assertFalse(utils.is_full_a1_notation("1"))
         self.assertFalse(utils.is_full_a1_notation(""))
+
+    def test_extract_title_from_range(self):
+        """test extract_title_from_range function"""
+        # quoted title with spaces
+        self.assertEqual(
+            utils.extract_title_from_range("'Sheet Name'!A1:Z100"), "Sheet Name"
+        )
+        # unquoted title
+        self.assertEqual(utils.extract_title_from_range("Sheet1!A1:Z100"), "Sheet1")
+        # quoted title without range
+        self.assertEqual(utils.extract_title_from_range("'Sheet''1'!A1:B2"), "Sheet'1")
+        self.assertEqual(
+            utils.extract_title_from_range("'Sheet''''1'!A1:B2"), "Sheet''1"
+        )
+        # invalid input raises exception
+        with self.assertRaises(gspread.exceptions.InvalidInputValue):
+            utils.extract_title_from_range("no_exclamation_mark")
 
     def test_get_a1_from_absolute_range(self):
         """test get_a1_from_absolute_range function"""

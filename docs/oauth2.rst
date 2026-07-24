@@ -208,18 +208,23 @@ For End Users: Using OAuth Client ID
 This is the case where your application or a script is accessing spreadsheets on behalf of an end user. When you use this scenario, your application or a script will ask the end user (or yourself if you're running it) to grant access to the user's data.
 
 1. :ref:`enable-api-access` if you haven't done it yet.
-#. Go to "APIs & Services > OAuth Consent Screen." Click the button for "Configure Consent Screen".
+#. Configure the consent screen. Go to "APIs & Services > OAuth consent screen" (this opens the "Google Auth Platform"). If the project doesn't have a consent screen yet, click "Get started".
 
-  a. In the "1 OAuth consent screen" tab, give your app a name and fill the "User support email" and "Developer contact information". Click "SAVE AND CONTINUE".
-  #. There is no need to fill in anything in the tab "2 Scopes", just click "SAVE AND CONTINUE".
-  #. In the tab "3 Test users", add the Google account email of the end user, typically your own Google email. Click "SAVE AND CONTINUE".
-  #. Double check the "4 Summary" presented and click "BACK TO DASHBOARD".
+  a. Under "App Information", give your app a name and select a "User support email". Click "Next".
+  #. Under "Audience", select "External". Click "Next".
+  #. Under "Contact Information", enter your email address. Click "Next".
+  #. Agree to the user data policy and click "Create".
 
-3. Go to "APIs & Services > Credentials"
-#. Click "+ Create credentials" at the top, then select "OAuth client ID".
-#. Select "Desktop app", name the credentials and click "Create". Click "Ok" in the "OAuth client created" popup.
-#. Download the credentials by clicking the Download JSON button in "OAuth 2.0 Client IDs" section.
+3. Add yourself as a test user. Go to "Audience", and under "Test users" click "Add users". Add the Google account you will authorize with, typically your own.
+#. Create the OAuth client. Go to "Clients" and click "Create client".
+#. Select "Desktop app" as the "Application type", name the client and click "Create".
+#. Download the JSON file for the client you just created (the download icon in the "OAuth 2.0 Client IDs" list).
 #. Move the downloaded file to ``~/.config/gspread/credentials.json``. Windows users should put this file to ``%APPDATA%\gspread\credentials.json``.
+
+.. NOTE::
+    Only accounts listed under "Test users" can authorize the app while its publishing status is "Testing". 
+    Signing in with any other account fails with ``Error 403: access_denied``. If you are signed in to several Google 
+    accounts, make sure the browser uses the one you added above.
 
 Create a new Python file with this code:
 
@@ -233,8 +238,21 @@ Create a new Python file with this code:
 
     print(sh.sheet1.get('A1'))
 
-When you run this code, it launches a browser asking you for authentication. Follow the instruction on the web page. Once finished, gspread stores authorized credentials in the config directory next to `credentials.json`.
-You only need to do authorization in the browser once, following runs will reuse stored credentials.
+When you run this code, it launches a browser asking you for authentication. Follow the instruction on the web page. Once finished, gspread stores the authorized credentials in ``authorized_user.json``, in the config directory next to ``credentials.json`` — i.e. ``~/.config/gspread/authorized_user.json``, or ``%APPDATA%\gspread\authorized_user.json`` on Windows.
+This file contains a refresh token, so following runs reuse it: you only need to do authorization in the browser once.
+
+.. NOTE::
+    Google shows a "Google hasn't verified this app" warning during authorization. This is expected: the app requests sensitive scopes and has not gone through Google's verification process, which is only required to distribute it to other people. To continue, click "Advanced", then "Go to <your app name> (unsafe)".
+
+.. WARNING::
+    While the publishing status of your app is "Testing", Google expires the refresh token after **7 days**. 
+    Once it expires, gspread fails with ``google.auth.exceptions.RefreshError: invalid_grant``.
+
+    To authorize again, **delete** ``authorized_user.json`` and re-run your code. gspread reuses an existing ``authorized_user.json`` 
+    without checking whether it is still valid, so the browser flow does not start again while the stale file is in place.
+
+    To stop the token from expiring, publish the app: go to "APIs & Services → OAuth consent screen → Audience" and 
+    click "Publish app". Read more `here <https://support.google.com/cloud/answer/15549945>`_ about publishing an app.
 
 .. NOTE::
     If you want to store the credentials file somewhere else, specify the path to `credentials.json` and `authorized_user.json` in :meth:`~gspread.oauth`:

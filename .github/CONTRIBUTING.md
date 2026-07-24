@@ -27,6 +27,21 @@ then run:
 GS_CREDS_FILENAME="tests/creds.json" GS_RECORD_MODE="all" tox -e py -- -k "<specific test to run>"
 ```
 
+On Windows (PowerShell), set the environment variables first — PowerShell has no inline `VAR=value command` prefix:
+
+```powershell
+$env:GS_CREDS_FILENAME = "tests/creds.json"
+$env:GS_RECORD_MODE = "all"
+tox -e py -- -k "<specific test to run>"
+```
+
+The variables stay set for the rest of the PowerShell session. To clear them again, use
+`Remove-Item Env:GS_CREDS_FILENAME, Env:GS_RECORD_MODE` — this matters in particular for
+`GS_RECORD_MODE`, since leaving it set will keep later runs online.
+
+The rest of this guide shows the commands in `bash` form; on Windows, apply the same translation
+(export the variables with `$env:NAME = "value"`, then run the command on its own line).
+
 For more information on tests, see below.
 
 ## CI checks
@@ -61,10 +76,22 @@ The CI uses tox. For faster local development, you can set up an environment and
 
 ```bash
 python -m venv env
-source /env/bin/activate
-pip install test-requirements.txt
+source env/bin/activate
+pip install -r test-requirements.txt
 pytest -k TEST_NAME
 ```
+
+On Windows (PowerShell), the activation script lives elsewhere:
+
+```powershell
+python -m venv env
+.\env\Scripts\Activate.ps1
+pip install -r test-requirements.txt
+pytest -k TEST_NAME
+```
+
+If PowerShell refuses to run the activation script, allow local scripts for the current session with
+`Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned`.
 
 ## Format
 
@@ -94,9 +121,27 @@ gspread uses [vcrpy](https://github.com/kevin1024/vcrpy) to record and replay HT
 
 ### `GS_CREDS_FILENAME` environment variable
 
-You must provide service account credentials using the `GS_CREDS_FILENAME` environment variable in order to make HTTP requests to the Sheets API.
+You must provide **Service account** or **OAuth user credentials** using the `GS_CREDS_FILENAME` environment variable
+in order to make HTTP requests to the Sheets API. Note, that  **service account** can only be used in the
+Google Workspace environment, as otherwise service accounts have no Drive storage quota and can't own files, which is
+required to run tests.
 
-[Obtain service account credentials from Google Developers Console](https://docs.gspread.org/en/latest/oauth2.html#for-bots-using-service-account).
+#### To obtain the **Service Account credentials**
+
+* Follow the [Using Service Account](https://docs.gspread.org/en/latest/oauth2.html#for-bots-using-service-account) procedure
+
+* Point  `GS_CREDS_FILENAME` at the key file you download from the Google
+Cloud Console (the one containing `private_key` and `client_email`).
+  
+####  To obtain the **OAuth user credentials** 
+
+* Follow the [Using OAuth Client ID](https://docs.gspread.org/en/latest/oauth2.html#for-end-users-using-oauth-client-id) procedure
+
+
+* Point `GS_CREDS_FILENAME` at the `authorized_user.json` produced by the browser flow — the file
+containing `refresh_token` — **not** the OAuth client-secrets file, which the linked guide calls
+`credentials.json`.
+
 
 ### `GS_RECORD_MODE` environment variable
 
@@ -112,12 +157,32 @@ In the following cases, you must record new HTTP requests:
 - an existing test is updated and does a new HTTP request
 - gspread is updated and does a new HTTP request
 
+### Run tests online, but not capture any HTTP requests
+
+```bash
+GS_CREDS_FILENAME=<./YOUR_CREDS.json> tox -e py -- --disable-vcr
+```
+
+```powershell
+$env:GS_CREDS_FILENAME = "./YOUR_CREDS.json"
+tox -e py -- --disable-vcr
+```
+
+`--disable-vcr` runs every request against the live API and leaves `tests/cassettes/` untouched.
+`GS_RECORD_MODE` is ignored in this mode.
+
 ### Run test, capturing *all* HTTP requests
 
 In some cases if the test suite can't record new episodes, or it can't replay them offline, you can run a complete update of the cassettes.
 
 ```bash
 GS_CREDS_FILENAME=<./YOUR_CREDS.json> GS_RECORD_MODE=all tox -e py
+```
+
+```powershell
+$env:GS_CREDS_FILENAME = "./YOUR_CREDS.json"
+$env:GS_RECORD_MODE = "all"
+tox -e py
 ```
 
 ### Run test, capturing *only new* HTTP requests
@@ -135,10 +200,18 @@ To record new HTTP requests:
 GS_CREDS_FILENAME=<./YOUR_CREDS.json> GS_RECORD_MODE=new_episodes tox -e py
 ```
 
+```powershell
+$env:GS_CREDS_FILENAME = "./YOUR_CREDS.json"
+$env:GS_RECORD_MODE = "new_episodes"
+tox -e py
+```
+
 This will mostly result in a lot of updated files in `tests/cassettes/`. Don't forget to add them in your PR.
 Please add them in a dedicated commit, in order to make the review process easier.
 
 Afterwards, remember to [run the tests in offline mode](#run-tests-offline) to make sure you have recorded everything correctly.
+On Windows, clear `GS_RECORD_MODE` first (`Remove-Item Env:GS_RECORD_MODE`), otherwise the offline run
+will still try to record.
 
 ## Release
 

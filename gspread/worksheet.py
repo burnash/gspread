@@ -31,7 +31,7 @@ from typing import (
 
 from .cell import Cell
 from .exceptions import GSpreadException
-from .http_client import HTTPClient, ParamsType
+from .http_client import DefaultSerializerType, HTTPClient, ParamsType
 from .urls import WORKSHEET_DRIVE_URL
 from .utils import (
     DateTimeOption,
@@ -1115,6 +1115,7 @@ class Worksheet:
         include_values_in_response: Optional[bool] = None,
         response_value_render_option: Optional[ValueRenderOption] = None,
         response_date_time_render_option: Optional[DateTimeOption] = None,
+        default_serializer: DefaultSerializerType = None,
     ) -> JSONResponse:
         """Sets values in a cell range of the sheet.
 
@@ -1195,6 +1196,13 @@ class Worksheet:
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
+        :param default_serializer: (optional) A callable applied to values that
+            the standard ``json`` encoder cannot serialize on its own (e.g.
+            ``datetime`` or ``Decimal``). It receives the offending value and
+            must return a JSON-serializable substitute, mirroring the ``default``
+            argument of :func:`json.dumps`. For example, ``default_serializer=str``.
+        :type default_serializer: Callable[[Any], Any]
+
         Examples::
 
             # Sets 'Hello world' in 'A2' cell
@@ -1248,6 +1256,7 @@ class Worksheet:
             full_range_name,
             params=params,
             body={"values": values, "majorDimension": major_dimension},
+            default_serializer=default_serializer,
         )
 
         return response
@@ -1260,6 +1269,7 @@ class Worksheet:
         include_values_in_response: Optional[bool] = None,
         response_value_render_option: Optional[ValueRenderOption] = None,
         response_date_time_render_option: Optional[DateTimeOption] = None,
+        default_serializer: DefaultSerializerType = None,
     ) -> JSONResponse:
         """Sets values in one or more cell ranges of the sheet at once.
 
@@ -1333,6 +1343,13 @@ class Worksheet:
             The default ``date_time_render_option`` is ``DateTimeOption.serial_number``.
         :type date_time_render_option: :class:`~gspread.utils.DateTimeOption`
 
+        :param default_serializer: (optional) A callable applied to values that
+            the standard ``json`` encoder cannot serialize on its own (e.g.
+            ``datetime`` or ``Decimal``). It receives the offending value and
+            must return a JSON-serializable substitute, mirroring the ``default``
+            argument of :func:`json.dumps`. For example, ``default_serializer=str``.
+        :type default_serializer: Callable[[Any], Any]
+
         Examples::
 
             worksheet.batch_update([{
@@ -1365,7 +1382,9 @@ class Worksheet:
             "data": data,
         }
 
-        response = self.client.values_batch_update(self.spreadsheet_id, body=body)
+        response = self.client.values_batch_update(
+            self.spreadsheet_id, body=body, default_serializer=default_serializer
+        )
 
         return response
 
@@ -1785,6 +1804,7 @@ class Worksheet:
         insert_data_option: Optional[InsertDataOption] = None,
         table_range: Optional[str] = None,
         include_values_in_response: bool = False,
+        default_serializer: DefaultSerializerType = None,
     ) -> JSONResponse:
         """Adds a row to the worksheet and populates it with values.
 
@@ -1804,6 +1824,12 @@ class Worksheet:
         :param bool include_values_in_response: (optional) Determines if the
             update response should include the values of the cells that were
             appended. By default, responses do not include the updated values.
+        :param default_serializer: (optional) A callable applied to values that
+            the standard ``json`` encoder cannot serialize on its own (e.g.
+            ``datetime`` or ``Decimal``). It receives the offending value and
+            must return a JSON-serializable substitute, mirroring the ``default``
+            argument of :func:`json.dumps`. For example, ``default_serializer=str``.
+        :type default_serializer: Callable[[Any], Any]
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
@@ -1815,6 +1841,7 @@ class Worksheet:
             insert_data_option=insert_data_option,
             table_range=table_range,
             include_values_in_response=include_values_in_response,
+            default_serializer=default_serializer,
         )
 
     def append_rows(
@@ -1824,6 +1851,7 @@ class Worksheet:
         insert_data_option: Optional[InsertDataOption] = None,
         table_range: Optional[str] = None,
         include_values_in_response: Optional[bool] = None,
+        default_serializer: DefaultSerializerType = None,
     ) -> JSONResponse:
         """Adds multiple rows to the worksheet and populates them with values.
 
@@ -1845,6 +1873,12 @@ class Worksheet:
         :param bool include_values_in_response: (optional) Determines if the
             update response should include the values of the cells that were
             appended. By default, responses do not include the updated values.
+        :param default_serializer: (optional) A callable applied to values that
+            the standard ``json`` encoder cannot serialize on its own (e.g.
+            ``datetime`` or ``Decimal``). It receives the offending value and
+            must return a JSON-serializable substitute, mirroring the ``default``
+            argument of :func:`json.dumps`. For example, ``default_serializer=str``.
+        :type default_serializer: Callable[[Any], Any]
 
         .. _ValueInputOption: https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption
         .. _InsertDataOption: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append#InsertDataOption
@@ -1859,7 +1893,9 @@ class Worksheet:
 
         body = {"values": values}
 
-        res = self.client.values_append(self.spreadsheet_id, range_label, params, body)
+        res = self.client.values_append(
+            self.spreadsheet_id, range_label, params, body, default_serializer
+        )
         num_new_rows = len(values)
         self._properties["gridProperties"]["rowCount"] += num_new_rows
         return res
@@ -2205,6 +2241,158 @@ class Worksheet:
             column at ``start_index``.
         """
         return self.delete_dimension(Dimension.cols, start_index, end_index)
+
+    def delete_dimension_blocks(
+        self, dimension: Dimension, blocks: Sequence[Sequence[int]]
+    ) -> JSONResponse:
+        """Deletes multiple non-contiguous blocks of rows or columns from
+        the worksheet with a single API call.
+
+        :param dimension: A dimension to delete. ``Dimension.rows`` or ``Dimension.cols``.
+        :type dimension: :class:`~gspread.utils.Dimension`
+        :param blocks: A sequence of ``(start_index, end_index)`` pairs, one
+            per block to delete. Each block may be a tuple or a list of
+            exactly two ints. Indexes are 1-based and inclusive, consistent
+            with :meth:`~gspread.worksheet.Worksheet.delete_rows`. Blocks may
+            be listed in any order but must not overlap.
+        :type blocks: Sequence[Sequence[int]]
+
+        :raises ValueError: If ``blocks`` is empty, a block does not contain
+            exactly 2 elements, a block has a start index lower than 1 or
+            greater than its end index, a block exceeds the current number
+            of rows/columns, or blocks overlap.
+
+        .. versionadded:: 6.3.0
+        """
+        if dimension == Dimension.rows:
+            dimension_size = self.row_count
+        else:
+            dimension_size = self.col_count
+
+        for block in blocks:
+            if len(block) != 2:
+                raise ValueError(
+                    "block {} must contain exactly 2 elements: a start index and an end index".format(
+                        block
+                    )
+                )
+
+        # blocks may mix lists and tuples, normalize to tuples before sorting
+        sorted_blocks = sorted((block[0], block[1]) for block in blocks)
+        self._validate_dimension_blocks(sorted_blocks, dimension, dimension_size)
+
+        # delete bottom-most blocks first so that the indexes of the
+        # remaining blocks are not shifted by preceding deletions
+        body = {
+            "requests": [
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": dimension,
+                            "startIndex": start_index - 1,
+                            "endIndex": end_index,
+                        }
+                    }
+                }
+                for start_index, end_index in reversed(sorted_blocks)
+            ]
+        }
+
+        res = self.client.batch_update(self.spreadsheet_id, body)
+        num_deleted = sum(end - start + 1 for start, end in sorted_blocks)
+        if dimension == Dimension.rows:
+            self._properties["gridProperties"]["rowCount"] -= num_deleted
+        elif dimension == Dimension.cols:
+            self._properties["gridProperties"]["columnCount"] -= num_deleted
+        return res
+
+    @staticmethod
+    def _validate_dimension_blocks(
+        sorted_blocks: List[Tuple[int, int]], dimension: Dimension, dimension_size: int
+    ) -> None:
+        """Validates blocks for :meth:`~gspread.worksheet.Worksheet.delete_dimension_blocks`.
+
+        ``sorted_blocks`` must already be sorted by start index.
+
+        :raises ValueError: If the blocks are invalid, see
+            :meth:`~gspread.worksheet.Worksheet.delete_dimension_blocks`.
+        """
+        if len(sorted_blocks) == 0:
+            raise ValueError("blocks must not be empty")
+
+        for start_index, end_index in sorted_blocks:
+            if start_index < 1:
+                raise ValueError(
+                    "block ({}, {}) has a start index lower than 1".format(
+                        start_index, end_index
+                    )
+                )
+            if end_index < start_index:
+                raise ValueError(
+                    "block ({}, {}) has an end index lower than its start index".format(
+                        start_index, end_index
+                    )
+                )
+            if end_index > dimension_size:
+                raise ValueError(
+                    "block ({}, {}) exceeds the worksheet size of {} {}".format(
+                        start_index, end_index, dimension_size, dimension.name
+                    )
+                )
+        for (_, previous_end), (next_start, _) in zip(sorted_blocks, sorted_blocks[1:]):
+            if next_start <= previous_end:
+                raise ValueError(
+                    "blocks must not overlap: a block ending at {} overlaps a block starting at {}".format(
+                        previous_end, next_start
+                    )
+                )
+
+    def delete_rows_blocks(self, blocks: Sequence[Sequence[int]]) -> JSONResponse:
+        """Deletes multiple non-contiguous blocks of rows from the worksheet
+        with a single API call.
+
+        :param blocks: A sequence of ``(start_index, end_index)`` pairs, one
+            per block to delete. Each block may be a tuple or a list of
+            exactly two ints. Indexes are 1-based and inclusive, consistent
+            with :meth:`~gspread.worksheet.Worksheet.delete_rows`. Blocks may
+            be listed in any order but must not overlap.
+        :type blocks: Sequence[Sequence[int]]
+
+        :raises ValueError: If the blocks are invalid, see
+            :meth:`~gspread.worksheet.Worksheet.delete_dimension_blocks`.
+
+        Example::
+
+            # Delete rows 3 to 5 and rows 8 to 9 (inclusive) in one API call
+            worksheet.delete_rows_blocks([(3, 5), (8, 9)])
+
+        .. versionadded:: 6.3.0
+        """
+        return self.delete_dimension_blocks(Dimension.rows, blocks)
+
+    def delete_columns_blocks(self, blocks: Sequence[Sequence[int]]) -> JSONResponse:
+        """Deletes multiple non-contiguous blocks of columns from the
+        worksheet with a single API call.
+
+        :param blocks: A sequence of ``(start_index, end_index)`` pairs, one
+            per block to delete. Each block may be a tuple or a list of
+            exactly two ints. Indexes are 1-based and inclusive, consistent
+            with :meth:`~gspread.worksheet.Worksheet.delete_columns`. Blocks
+            may be listed in any order but must not overlap.
+        :type blocks: Sequence[Sequence[int]]
+
+        :raises ValueError: If the blocks are invalid, see
+            :meth:`~gspread.worksheet.Worksheet.delete_dimension_blocks`.
+
+        Example::
+
+            # Delete columns 3 to 5 and columns 8 to 9 (inclusive) in one API call
+            worksheet.delete_columns_blocks([(3, 5), (8, 9)])
+
+        .. versionadded:: 6.3.0
+        """
+        return self.delete_dimension_blocks(Dimension.cols, blocks)
 
     def clear(self) -> JSONResponse:
         """Clears all cells in the worksheet."""
@@ -2923,6 +3111,52 @@ class Worksheet:
         }
         return self.client.batch_update(self.spreadsheet_id, body)
 
+    def update_named_range(
+        self,
+        named_range_id: str,
+        new_name: Optional[str] = None,
+        new_range: Optional[str] = None,
+    ) -> JSONResponse:
+        """Update the name and/or range of an existing named range.
+
+        At least one of ``new_name`` or ``new_range`` must be provided.
+
+        :param str named_range_id: The ID of the named range to update.
+            Can be obtained with :meth:`~gspread.Spreadsheet.list_named_ranges`.
+        :param str new_name: The new name to assign to the named range.
+        :param str new_range: The new cell range in A1 notation (e.g. ``"A1:B10"``).
+
+        :returns: the response body from the request
+        :rtype: dict
+
+        :raises ValueError: if neither ``new_name`` nor ``new_range`` is provided.
+        """
+        if new_name is None and new_range is None:
+            raise ValueError("At least one of new_name or new_range must be provided.")
+
+        named_range: dict = {"namedRangeId": named_range_id}
+        fields: List[str] = []
+
+        if new_name is not None:
+            named_range["name"] = new_name
+            fields.append("name")
+
+        if new_range is not None:
+            named_range["range"] = a1_range_to_grid_range(new_range, self.id)
+            fields.append("range")
+
+        body = {
+            "requests": [
+                {
+                    "updateNamedRange": {
+                        "namedRange": named_range,
+                        "fields": ",".join(fields),
+                    }
+                }
+            ]
+        }
+        return self.client.batch_update(self.spreadsheet_id, body)
+
     def _add_dimension_group(
         self, start: int, end: int, dimension: Dimension
     ) -> JSONResponse:
@@ -3237,15 +3471,20 @@ class Worksheet:
 
            ``paste_type`` values are explained here: `Paste Types`_
 
+           See `CopyPasteRequest`_ for how the destination range is filled.
+
            .. _Paste Types: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#pastetype
 
+           .. _CopyPasteRequest: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#copypasterequest
+
         :param str source: The A1 notation of the source range to copy
-        :param str dest: The A1 notation of the destination where to paste the data
-            Can be the A1 notation of the top left corner where the range must be paste
-            ex: G16, or a complete range notation ex: G16:I20.
-            The dimensions of the destination range is not checked and has no effect,
-            if the destination range does not match the source range dimension, the entire
-            source range is copies anyway.
+        :param str dest: The A1 notation of the destination where to paste the data.
+            Can be the A1 notation of the top left corner where the range must be
+            pasted ex: ``G16``, or a complete range notation ex: ``G16:I20``.
+            The destination range does not need to match the source dimensions.
+            If ``dest`` spans a multiple of the source's height or width, the source
+            is repeated to fill the destination range. If ``dest`` is smaller than the
+            source, the entire source is copied anyway, beyond the end of ``dest``.
         :param paste_type: the paste type to apply. Many paste type are available from
             the Sheet API, see above note for detailed values for all values and their effects.
             Defaults to ``PasteType.normal``

@@ -17,3 +17,6 @@ env/
 gspread.egg-info/
 dist/
 docs/build/
+
+# local virtualenv
+venv/

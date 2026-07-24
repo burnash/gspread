@@ -327,7 +327,7 @@ class Client:
 
             permissions = original.list_permissions()
             for p in permissions:
-                if p.get("deleted"):
+                if p.get("deleted") or p.get("role") == "owner":
                     continue
 
                 # In case of domain type the domain extract the domain

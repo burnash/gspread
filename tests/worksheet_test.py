@@ -1435,6 +1435,74 @@ class WorksheetTest(GspreadTest):
         self.assertEqual(fourth_col_before, second_col_after)
 
     @pytest.mark.vcr()
+    def test_delete_rows_blocks(self):
+        sequence_generator = self._sequence_generator()
+        num_rows = 10
+        rows = [[next(sequence_generator)] for _ in range(num_rows)]
+        self.sheet.append_rows(rows)
+
+        row_count_before = self.sheet.row_count
+
+        # delete rows 3 to 5 and rows 8 to 9;
+        # blocks may be given in any order and mix lists and tuples
+        self.sheet.delete_rows_blocks([[8, 9], (3, 5)])
+
+        row_count_after = self.sheet.row_count
+        self.assertEqual(row_count_before - 5, row_count_after)
+
+        expected_values = [rows[0], rows[1], rows[5], rows[6], rows[9]]
+        self.assertEqual(self.sheet.get_values("A1:A5"), expected_values)
+
+    @pytest.mark.vcr()
+    def test_delete_columns_blocks(self):
+        sequence_generator = self._sequence_generator()
+        num_cols = 10
+        row = [next(sequence_generator) for _ in range(num_cols)]
+        self.sheet.update([row], "A1:J1")
+
+        col_count_before = self.sheet.col_count
+
+        # delete columns 3 to 5 and columns 8 to 9;
+        # blocks may be given in any order and mix lists and tuples
+        self.sheet.delete_columns_blocks([[8, 9], (3, 5)])
+
+        col_count_after = self.sheet.col_count
+        self.assertEqual(col_count_before - 5, col_count_after)
+
+        expected_values = [row[0], row[1], row[5], row[6], row[9]]
+        self.assertEqual(self.sheet.row_values(1), expected_values)
+
+    @pytest.mark.vcr()
+    def test_delete_dimension_blocks_validation(self):
+        # empty blocks list
+        with self.assertRaises(ValueError):
+            self.sheet.delete_rows_blocks([])
+
+        # block does not contain exactly 2 elements
+        with self.assertRaises(ValueError):
+            self.sheet.delete_rows_blocks([(3, 5, 7)])
+        with self.assertRaises(ValueError):
+            self.sheet.delete_rows_blocks([[3]])
+
+        # start index lower than 1
+        with self.assertRaises(ValueError):
+            self.sheet.delete_rows_blocks([(0, 2)])
+
+        # end index lower than start index
+        with self.assertRaises(ValueError):
+            self.sheet.delete_rows_blocks([(5, 3)])
+
+        # block exceeds the worksheet size
+        with self.assertRaises(ValueError):
+            self.sheet.delete_rows_blocks([(1, self.sheet.row_count + 1)])
+        with self.assertRaises(ValueError):
+            self.sheet.delete_columns_blocks([(1, self.sheet.col_count + 1)])
+
+        # overlapping blocks
+        with self.assertRaises(ValueError):
+            self.sheet.delete_rows_blocks([(3, 5), (5, 7)])
+
+    @pytest.mark.vcr()
     def test_clear(self):
         rows = [
             ["", "", "", ""],

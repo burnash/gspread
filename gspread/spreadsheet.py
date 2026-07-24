@@ -15,7 +15,7 @@ from .cell import Cell
 from .exceptions import WorksheetNotFound
 from .http_client import HTTPClient, ParamsType
 from .urls import DRIVE_FILES_API_V3_URL, SPREADSHEET_DRIVE_URL
-from .utils import ExportFormat, finditem
+from .utils import ExportFormat, absolute_range_name, extract_title_from_range, finditem
 from .worksheet import Worksheet
 
 
@@ -283,6 +283,36 @@ class Spreadsheet:
             return Worksheet(self, item["properties"], self.id, self.client)
         except (StopIteration, KeyError):
             raise WorksheetNotFound("id {} not found".format(worksheet_id_int))
+
+    def get_all_worksheet_values(
+        self,
+        skip_worksheet_titles: Optional[List[str]] = None,
+        params: Optional[ParamsType] = None,
+    ) -> Dict:
+        """Returns all values from all worksheets in a single API call.
+
+        :param list skip_worksheet_titles: (optional) A list of worksheet titles to skip.
+        :returns: A dict mapping worksheet title to its values.
+        :rtype: dict
+        """
+        if skip_worksheet_titles is None:
+            skip_worksheet_titles = []
+
+        ranges = [
+            absolute_range_name(ws.title)
+            for ws in self.worksheets()
+            if ws.title not in skip_worksheet_titles
+        ]
+
+        if not ranges:
+            return {}
+
+        response = self.values_batch_get(ranges, params=params)
+
+        return {
+            extract_title_from_range(vr["range"]): vr.get("values", [])
+            for vr in response.get("valueRanges", [])
+        }
 
     def worksheets(self, exclude_hidden: bool = False) -> List[Worksheet]:
         """Returns a list of all :class:`worksheets <gspread.worksheet.Worksheet>`

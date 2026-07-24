@@ -175,7 +175,10 @@ class ClientTest(GspreadTest):
         # Once recorded it takes 0.001 seconds to run it, so 1 second should be a large enough value
         timeout = 1
         self.gc.set_timeout(timeout)
-
+        # the client fixture is module-scoped, restore the default timeout so it
+        # does not leak into the tests that run after this one
+        # this fixes issue #1594
+        self.addCleanup(self.gc.set_timeout, None)
         start = time.time()
         self.spreadsheet.fetch_sheet_metadata()
         end = time.time()

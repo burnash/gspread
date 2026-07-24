@@ -42,6 +42,7 @@ MAGIC_NUMBER = 64
 CELL_ADDR_RE = re.compile(r"([A-Za-z]+)([1-9]\d*)")
 A1_ADDR_ROW_COL_RE = re.compile(r"([A-Za-z]+)?([1-9]\d*)?$")
 A1_ADDR_FULL_RE = re.compile(r"[A-Za-z]+\d+:[A-Za-z]+\d+")  # e.g. A1:B2 not A1:B
+SHEET_TITLE_RE = re.compile(r"'((?:[^']|'')+)'!|([^!]+)!")
 
 URL_KEY_V1_RE = re.compile(r"key=([^&#]+)")
 URL_KEY_V2_RE = re.compile(r"/spreadsheets/d/([a-zA-Z0-9-_]+)")
@@ -365,7 +366,7 @@ def rowcol_to_a1(row: int, col: int) -> str:
     column_label = ""
 
     while div:
-        (div, mod) = divmod(div, 26)
+        div, mod = divmod(div, 26)
         if mod == 0:
             mod = 26
             div -= 1
@@ -561,7 +562,7 @@ def column_letter_to_index(column: str) -> int:
     gspread.exceptions.InvalidInputValue: invalid value: !@#$%^&, must be a column letter
     """
     try:
-        (_, index) = _a1_to_rowcol_unbounded(column)
+        _, index = _a1_to_rowcol_unbounded(column)
     except IncorrectCellLabel:
         # make it coherent and raise the same exception in case of any error
         # from user input value
@@ -620,6 +621,22 @@ def extract_id_from_url(url: str) -> str:
         return m1.group(1)
 
     raise NoValidUrlKeyFound
+
+
+def extract_title_from_range(range_string: str) -> str:
+    """Extracts the worksheet title from a range string.
+
+    :param str range_string: A range string e.g. ``'Sheet Name'!A1:Z100`` or ``Sheet1!A1:Z100``
+    :returns: The worksheet title.
+    :rtype: str
+
+    :raises:
+        :class:`~gspread.exceptions.InvalidInputValue`: if the title cannot be extracted.
+    """
+    match = SHEET_TITLE_RE.match(range_string)
+    if match:
+        return (match.group(1) or match.group(2)).replace("''", "'")
+    raise InvalidInputValue
 
 
 def wid_to_gid(wid: str) -> str:

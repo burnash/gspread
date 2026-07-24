@@ -111,7 +111,7 @@ Updating a Worksheet's name and color
 .. code:: python
 
    worksheet.update_title("December Transactions")
-   worksheet.update_tab_color({"red": 1, "green": 0.5, "blue": 0.5})
+   worksheet.update_tab_color("#FF0000")
 
 
 Getting a Cell Value
@@ -227,9 +227,53 @@ Getting All Values From a Worksheet as a List of Lists
 Getting All Values From a Worksheet as a List of Dictionaries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Using ``get_all_records()`` (assumes first row contains headers):
+
 .. code:: python
 
    list_of_dicts = worksheet.get_all_records()
+
+Alternatively, use ``gspread.utils.to_records()`` for more control over headers:
+
+.. code:: python
+
+   # Define custom headers
+   headers = ["fruit", "alternate name", "tastiness"]
+   values = worksheet.get()
+   records = gspread.utils.to_records(headers, values)
+
+   for record in records:
+       print(record)
+       # {'fruit': 'apple', 'alternate name': 'red circle', 'tastiness': 'very'}
+       # {'fruit': 'banana', 'alternate name': 'yellow stick', 'tastiness': 'quite'}
+
+
+Getting All Values From Every Worksheet at Once
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Using ``get_all_worksheet_values()`` (fetches every worksheet in a single API call):
+
+.. code:: python
+
+   all_values = spreadsheet.get_all_worksheet_values()
+   # {'Sheet1': [['a', 'b'], ['c', 'd']], 'Sheet 2': [['1', '2']]}
+
+Optionally, pass ``skip_worksheet_titles`` to leave out worksheets you don't need:
+
+.. code:: python
+
+   all_values = spreadsheet.get_all_worksheet_values(skip_worksheet_titles=["Sheet1"])
+
+
+Loading Worksheet Data into a DataFrame
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Using pandas (or polars):**
+
+.. code:: python
+
+   records = worksheet.get_all_records()
+   df = pd.DataFrame(records)
 
 
 Finding a Cell
@@ -317,6 +361,47 @@ Update a range
    worksheet.update([[1, 2], [3, 4]], 'A1:B2')
 
 
+Serializing Values the Standard ``json`` Module Cannot Encode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+gspread encodes request bodies with the standard library ``json`` module,
+which cannot encode some types such as ``datetime`` or ``Decimal``. The
+data-writing methods (``update``, ``batch_update``, ``append_row`` and
+``append_rows``) accept a ``default_serializer`` argument for these cases. It
+works exactly like the ``default`` argument of :func:`json.dumps`: it receives
+a value the encoder cannot handle and returns a JSON-serializable substitute.
+
+.. code:: python
+
+   import datetime
+
+   worksheet.update(
+       [[datetime.date(2026, 6, 23)]],
+       "A1",
+       default_serializer=str,
+   )
+
+``str`` covers common types like ``datetime``, ``date``, ``Decimal`` and
+``UUID``. For finer control, pass your own callable:
+
+.. code:: python
+
+   def encode(value):
+       if isinstance(value, datetime.datetime):
+           return value.isoformat()
+       raise TypeError(f"cannot serialize {type(value)}")
+
+   worksheet.update([[some_value]], "A1", default_serializer=encode)
+
+.. note::
+
+   The substitute you return determines how the value lands in the cell. For
+   example ``default_serializer=str`` sends a ``Decimal`` as the JSON string
+   ``"19.99"`` (stored as text unless ``value_input_option`` parses it),
+   whereas returning ``float(value)`` sends a number. Choose the form that
+   matches how you want the cell interpreted.
+
+
 Adding Data Validation
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -341,7 +426,7 @@ Or add validation with a drop down.
       'C2:C7',
       ValidationConditionType.one_of_list,
       ['Yes',
-      'No',]
+      'No'],
       showCustomUi=True
    )
 
@@ -457,6 +542,33 @@ The second argument to :meth:`~gspread.models.Worksheet.format` is a dictionary 
 
 .. Tip::
     for more complex formatting see :ref:`gspread-formating-label`.
+
+
+Named Ranges
+~~~~~~~~~~~~
+
+List all named ranges in a spreadsheet:
+
+.. code:: python
+
+   named_ranges = spreadsheet.list_named_ranges()
+
+Update an existing named range (rename it, change its range, or both):
+
+.. code:: python
+
+   worksheet.update_named_range("named_range_id", new_name="new_name")
+   worksheet.update_named_range("named_range_id", new_range="A1:B10")
+   worksheet.update_named_range("named_range_id", new_name="new_name", new_range="A1:B10")
+
+Delete a named range:
+
+.. code:: python
+
+   worksheet.delete_named_range("named_range_id")
+
+.. Note::
+    The ``named_range_id`` can be obtained from :meth:`~gspread.Spreadsheet.list_named_ranges`.
 
 
 Using gspread with pandas
