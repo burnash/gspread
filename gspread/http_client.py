@@ -574,7 +574,6 @@ class BackOffHTTPClient(HTTPClient):
         def _should_retry(
             code: int,
             error: Mapping[str, Any],
-            wait: int,
         ) -> bool:
             # Drive API return a dict object 'errors', the sheet API does not
             if "errors" in error:
@@ -594,7 +593,7 @@ class BackOffHTTPClient(HTTPClient):
             return (
                 code in self._HTTP_ERROR_CODES
                 or code >= HTTPStatus.INTERNAL_SERVER_ERROR
-            ) and wait <= self._MAX_BACKOFF
+            ) and 2**self._NR_BACKOFF <= self._MAX_BACKOFF
 
         try:
             return super().request(*args, **kwargs)
@@ -606,7 +605,7 @@ class BackOffHTTPClient(HTTPClient):
             wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
 
             # check if error should retry
-            if _should_retry(code, error, wait) is True:
+            if _should_retry(code, error) is True:
                 time.sleep(wait)
 
                 # make the request again
@@ -624,7 +623,7 @@ class BackOffHTTPClient(HTTPClient):
             self._NR_BACKOFF += 1
             wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
 
-            if wait <= self._MAX_BACKOFF:
+            if 2**self._NR_BACKOFF <= self._MAX_BACKOFF:
                 time.sleep(wait)
 
                 # make the request again
