@@ -23,6 +23,7 @@ from .exceptions import (
 )
 from .http_client import BackOffHTTPClient, HTTPClient
 from .spreadsheet import Spreadsheet
+from .utils import ChartAxisPosition, ChartLegendPosition, ChartType
 from .worksheet import ValueRange, Worksheet
 
 from . import urls as urls
@@ -53,6 +54,11 @@ __all__ = [
     # from .worksheet
     "Worksheet",
     "ValueRange",
+
+    # from .utils
+    "ChartType",
+    "ChartLegendPosition",
+    "ChartAxisPosition",
 
     # from .exceptions
     "GSpreadException",
