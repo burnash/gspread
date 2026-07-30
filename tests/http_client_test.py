@@ -138,3 +138,32 @@ class BackOffHTTPClientTest(TestCase):
             )
 
         sleep.assert_called_once_with(2)
+
+    def test_gives_up_after_max_backoff(self):
+        # A permanently failing retryable request must stop once the backoff
+        # reaches the maximum, instead of retrying without bound.
+        session = Mock()
+        session.request.return_value = self._error_response(429)
+        client = BackOffHTTPClient(auth=None, session=session)
+
+        with patch("gspread.http_client.time.sleep"):
+            with self.assertRaises(APIError):
+                client.request("get", "http://example.com/rate-limited")
+
+        # 2 ** n stops being <= _MAX_BACKOFF (128) once n reaches 8, i.e. after
+        # the initial call plus 7 retries.
+        self.assertEqual(session.request.call_count, 8)
+
+    def test_gives_up_after_max_backoff_on_usage_limits(self):
+        # A 403 usageLimits error is retryable too, so it must also stop once
+        # the backoff reaches the maximum rather than retrying without bound.
+        session = Mock()
+        session.request.return_value = self._error_response(403, domain="usageLimits")
+        client = BackOffHTTPClient(auth=None, session=session)
+
+        with patch("gspread.http_client.time.sleep"):
+            with self.assertRaises(APIError):
+                client.request("get", "http://example.com/usage-limits")
+
+        # Same bound as the other retryable errors: initial call plus 7 retries.
+        self.assertEqual(session.request.call_count, 8)

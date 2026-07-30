@@ -574,8 +574,11 @@ class BackOffHTTPClient(HTTPClient):
         def _should_retry(
             code: int,
             error: Mapping[str, Any],
-            wait: int,
         ) -> bool:
+            # Stop retrying once the backoff has grown past the maximum, so a
+            # permanently failing request cannot retry without bound.
+            within_max_backoff = 2**self._NR_BACKOFF <= self._MAX_BACKOFF
+
             # Drive API return a dict object 'errors', the sheet API does not
             if "errors" in error:
                 # Drive API returns a code 403 when reaching quotas/usage limits
@@ -583,7 +586,7 @@ class BackOffHTTPClient(HTTPClient):
                     code == HTTPStatus.FORBIDDEN
                     and error["errors"][0]["domain"] == "usageLimits"
                 ):
-                    return True
+                    return within_max_backoff
 
             # We retry if:
             #   - the return code is one of:
@@ -594,7 +597,7 @@ class BackOffHTTPClient(HTTPClient):
             return (
                 code in self._HTTP_ERROR_CODES
                 or code >= HTTPStatus.INTERNAL_SERVER_ERROR
-            ) and wait <= self._MAX_BACKOFF
+            ) and within_max_backoff
 
         try:
             return super().request(*args, **kwargs)
@@ -606,7 +609,7 @@ class BackOffHTTPClient(HTTPClient):
             wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
 
             # check if error should retry
-            if _should_retry(code, error, wait) is True:
+            if _should_retry(code, error) is True:
                 time.sleep(wait)
 
                 # make the request again
@@ -624,7 +627,7 @@ class BackOffHTTPClient(HTTPClient):
             self._NR_BACKOFF += 1
             wait = min(2**self._NR_BACKOFF, self._MAX_BACKOFF)
 
-            if wait <= self._MAX_BACKOFF:
+            if 2**self._NR_BACKOFF <= self._MAX_BACKOFF:
                 time.sleep(wait)
 
                 # make the request again
