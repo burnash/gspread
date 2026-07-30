@@ -503,6 +503,7 @@ class Worksheet:
         numericise_ignore: Iterable[Union[str, int]] = [],
         allow_underscores_in_numeric_literals: bool = False,
         empty2zero: bool = False,
+        combine_merged_cells: bool = False,
     ) -> List[Dict[str, Union[int, float, str]]]:
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
@@ -562,6 +563,7 @@ class Worksheet:
         entire_sheet = self.get(
             value_render_option=value_render_option,
             pad_values=True,
+            combine_merged_cells=combine_merged_cells,
         )
         if entire_sheet == [[]]:
             # see test_get_all_records_with_all_values_blank
