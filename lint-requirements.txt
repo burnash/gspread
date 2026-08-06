@@ -1,5 +1,5 @@
 bandit==1.7.10
-black==24.8.0
+black==24.10.0
 codespell==2.2.5
 flake8==7.1.1
 isort==5.12.0
