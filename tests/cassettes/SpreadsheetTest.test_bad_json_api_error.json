@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test SpreadsheetTest test_bad_json_api_error\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -84,7 +84,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1YCFTdhfXm6o_JeYoFgYquVItZBeeAju8sF7Xuz1Tr-Y?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1YCFTdhfXm6o_JeYoFgYquVItZBeeAju8sF7Xuz1Tr-Y?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -157,7 +157,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1YCFTdhfXm6o_JeYoFgYquVItZBeeAju8sF7Xuz1Tr-Y?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1YCFTdhfXm6o_JeYoFgYquVItZBeeAju8sF7Xuz1Tr-Y?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [

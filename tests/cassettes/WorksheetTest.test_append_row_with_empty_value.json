@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test WorksheetTest test_append_row_with_empty_value\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -90,7 +90,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -166,7 +166,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
+                "uri": "https://www.googleapis.com/drive/v3/files/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -246,7 +246,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -322,7 +322,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0/values/%27Sheet1%27:clear",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0/values/%27Sheet1%27:clear?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -401,7 +401,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0/values/%27Sheet1%27:append?valueInputOption=RAW&includeValuesInResponse=False",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0/values/%27Sheet1%27:append?valueInputOption=RAW&includeValuesInResponse=False&prettyPrint=false",
                 "body": "{\"values\": [[\"test_append_row_with_empty_value 1\", \"\", \"test_append_row_with_empty_value 3\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -483,7 +483,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0/values/%27Sheet1%27:append?valueInputOption=RAW&includeValuesInResponse=False",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0/values/%27Sheet1%27:append?valueInputOption=RAW&includeValuesInResponse=False&prettyPrint=false",
                 "body": "{\"values\": [[\"test_append_row_with_empty_value 1\", \"\", \"test_append_row_with_empty_value 3\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -565,7 +565,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0/values/%27Sheet1%27%21A2%3A2",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0/values/%27Sheet1%27%21A2%3A2?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -641,7 +641,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1cNWHu1-cVJM0FAmqJH3Pq9NNg29Sgp6jsysikvTkBO0?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -721,7 +721,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test WorksheetTest test_append_row_with_empty_value\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -801,7 +801,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -871,7 +871,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -944,7 +944,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY/values/%27Sheet1%27:clear",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY/values/%27Sheet1%27:clear?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1017,7 +1017,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY/values/%27Sheet1%27:append?valueInputOption=RAW&includeValuesInResponse=False",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY/values/%27Sheet1%27:append?valueInputOption=RAW&includeValuesInResponse=False&prettyPrint=false",
                 "body": "{\"values\": [[\"test_append_row_with_empty_value 1\", \"\", \"test_append_row_with_empty_value 3\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -1093,7 +1093,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY/values/%27Sheet1%27:append?valueInputOption=RAW&includeValuesInResponse=False",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY/values/%27Sheet1%27:append?valueInputOption=RAW&includeValuesInResponse=False&prettyPrint=false",
                 "body": "{\"values\": [[\"test_append_row_with_empty_value 1\", \"\", \"test_append_row_with_empty_value 3\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -1172,7 +1172,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY/values/%27Sheet1%27%21A2%3A2",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY/values/%27Sheet1%27%21A2%3A2?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1245,7 +1245,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1IdFTLTKxYB2wsi5Xtvh1jq1rw8DbOhxzyAlRjvkneVY?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [

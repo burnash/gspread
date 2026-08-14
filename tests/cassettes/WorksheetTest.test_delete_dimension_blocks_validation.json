@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test WorksheetTest test_delete_dimension_blocks_validation\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -84,7 +84,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/12XVkRoZzK4vij5L1GC1mBQQJ1c1WHGrlcjHd2LJ5mXM?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/12XVkRoZzK4vij5L1GC1mBQQJ1c1WHGrlcjHd2LJ5mXM?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -154,7 +154,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/12XVkRoZzK4vij5L1GC1mBQQJ1c1WHGrlcjHd2LJ5mXM?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/12XVkRoZzK4vij5L1GC1mBQQJ1c1WHGrlcjHd2LJ5mXM?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -224,7 +224,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/12XVkRoZzK4vij5L1GC1mBQQJ1c1WHGrlcjHd2LJ5mXM?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/12XVkRoZzK4vij5L1GC1mBQQJ1c1WHGrlcjHd2LJ5mXM?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [

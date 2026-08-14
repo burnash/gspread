@@ -120,6 +120,11 @@ class HTTPClient:
             data = json_dumps(dict(json), default=default_serializer)
             json = None
             headers = {**(headers or {}), "Content-Type": "application/json"}
+        # Responses are parsed before the caller sees them, so the API default of
+        # pretty-printed JSON only adds whitespace to transfer and parse. A caller
+        # passing prettyPrint explicitly still wins.
+        params = dict(params or {})
+        params.setdefault("prettyPrint", "false")
         response = self.session.request(
             method=method,
             url=endpoint,

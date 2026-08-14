@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test ClientTest test_no_found_exeption\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -84,7 +84,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1JqtFK-Vbd3zd8I1dfQ5oA3v6mXoKp9r7INJywCS9ous?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1JqtFK-Vbd3zd8I1dfQ5oA3v6mXoKp9r7INJywCS9ous?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -154,7 +154,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files/1JqtFK-Vbd3zd8I1dfQ5oA3v6mXoKp9r7INJywCS9ous?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
+                "uri": "https://www.googleapis.com/drive/v3/files/1JqtFK-Vbd3zd8I1dfQ5oA3v6mXoKp9r7INJywCS9ous?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -228,7 +228,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Please+don%27t+use+this+phrase+as+a+name+of+a+sheet.%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29",
+                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Please+don%27t+use+this+phrase+as+a+name+of+a+sheet.%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -302,7 +302,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1JqtFK-Vbd3zd8I1dfQ5oA3v6mXoKp9r7INJywCS9ous?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1JqtFK-Vbd3zd8I1dfQ5oA3v6mXoKp9r7INJywCS9ous?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -376,7 +376,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test ClientTest test_no_found_exeption\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -456,7 +456,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1qgKNpaL-WBRXTcrrf4RGcqfWVX8vwua_g_XyjWDVpiU?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1qgKNpaL-WBRXTcrrf4RGcqfWVX8vwua_g_XyjWDVpiU?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -526,7 +526,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Please+don%27t+use+this+phrase+as+a+name+of+a+sheet.%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29",
+                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Please+don%27t+use+this+phrase+as+a+name+of+a+sheet.%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -600,7 +600,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1qgKNpaL-WBRXTcrrf4RGcqfWVX8vwua_g_XyjWDVpiU?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1qgKNpaL-WBRXTcrrf4RGcqfWVX8vwua_g_XyjWDVpiU?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [

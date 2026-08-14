@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test WorksheetTest test_delete_columns_blocks\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -84,7 +84,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -154,7 +154,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -224,7 +224,7 @@
         {
             "request": {
                 "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA/values/%27Sheet1%27%21A1%3AJ1?valueInputOption=RAW",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA/values/%27Sheet1%27%21A1%3AJ1?valueInputOption=RAW&prettyPrint=false",
                 "body": "{\"values\": [[\"test_delete_columns_blocks 1\", \"test_delete_columns_blocks 2\", \"test_delete_columns_blocks 3\", \"test_delete_columns_blocks 4\", \"test_delete_columns_blocks 5\", \"test_delete_columns_blocks 6\", \"test_delete_columns_blocks 7\", \"test_delete_columns_blocks 8\", \"test_delete_columns_blocks 9\", \"test_delete_columns_blocks 10\"]], \"majorDimension\": null}",
                 "headers": {
                     "User-Agent": [
@@ -300,7 +300,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA:batchUpdate?prettyPrint=false",
                 "body": "{\"requests\": [{\"deleteDimension\": {\"range\": {\"sheetId\": 0, \"dimension\": \"COLUMNS\", \"startIndex\": 7, \"endIndex\": 9}}}, {\"deleteDimension\": {\"range\": {\"sheetId\": 0, \"dimension\": \"COLUMNS\", \"startIndex\": 2, \"endIndex\": 5}}}]}",
                 "headers": {
                     "User-Agent": [
@@ -376,7 +376,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA/values/%27Sheet1%27%21A1%3A1",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA/values/%27Sheet1%27%21A1%3A1?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -446,7 +446,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/102zaKrWBOwRfnS4QfRAdmP9yzCQcg6W_-BqqEEZkwyA?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
