@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test ClientTest test_list_spreadsheet_files\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -90,7 +90,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/16x4eVnmuWxnblLaqAE7Z7qdztmy9lHruvJ_lvPQKNgc?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/16x4eVnmuWxnblLaqAE7Z7qdztmy9lHruvJ_lvPQKNgc?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -169,7 +169,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29",
+                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -249,7 +249,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/16x4eVnmuWxnblLaqAE7Z7qdztmy9lHruvJ_lvPQKNgc?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/16x4eVnmuWxnblLaqAE7Z7qdztmy9lHruvJ_lvPQKNgc?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [

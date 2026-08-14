@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test WorksheetTest test_insert_cols\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -90,7 +90,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -166,7 +166,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
+                "uri": "https://www.googleapis.com/drive/v3/files/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -246,7 +246,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -322,7 +322,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27:clear",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27:clear?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -401,7 +401,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21A1%3AD6",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21A1%3AD6?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -477,7 +477,7 @@
         {
             "request": {
                 "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW&prettyPrint=false",
                 "body": "{\"values\": [[\"test_insert_cols 1\", \"test_insert_cols 2\", \"test_insert_cols 3\", \"test_insert_cols 4\"], [\"test_insert_cols 5\", \"test_insert_cols 6\", \"test_insert_cols 7\", \"test_insert_cols 8\"], [\"test_insert_cols 9\", \"test_insert_cols 10\", \"test_insert_cols 11\", \"test_insert_cols 12\"], [\"test_insert_cols 13\", \"test_insert_cols 14\", \"test_insert_cols 15\", \"test_insert_cols 16\"], [\"test_insert_cols 17\", \"test_insert_cols 18\", \"test_insert_cols 19\", \"test_insert_cols 20\"], [\"test_insert_cols 21\", \"test_insert_cols 22\", \"test_insert_cols 23\", \"test_insert_cols 24\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -559,7 +559,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA:batchUpdate?prettyPrint=false",
                 "body": "{\"requests\": [{\"insertDimension\": {\"range\": {\"sheetId\": 0, \"dimension\": \"COLUMNS\", \"startIndex\": 1, \"endIndex\": 3}, \"inheritFromBefore\": false}}]}",
                 "headers": {
                     "User-Agent": [
@@ -641,7 +641,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21B1:append?valueInputOption=RAW",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21B1:append?valueInputOption=RAW&prettyPrint=false",
                 "body": "{\"majorDimension\": \"COLUMNS\", \"values\": [[\"test_insert_cols 25\", \"test_insert_cols 26\", \"test_insert_cols 27\", \"test_insert_cols 28\"], [\"test_insert_cols 29\", \"test_insert_cols 30\", \"test_insert_cols 31\", \"test_insert_cols 32\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -723,7 +723,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21B1%3AB?valueRenderOption=FORMATTED_VALUE&majorDimension=COLUMNS",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21B1%3AB?valueRenderOption=FORMATTED_VALUE&majorDimension=COLUMNS&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -799,7 +799,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21C1%3AC?valueRenderOption=FORMATTED_VALUE&majorDimension=COLUMNS",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA/values/%27Sheet1%27%21C1%3AC?valueRenderOption=FORMATTED_VALUE&majorDimension=COLUMNS&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -875,7 +875,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/14ArdW5h8Jj5unQea2IKY27VkT-408d1VDCgbvmF_zXA?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -955,7 +955,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test WorksheetTest test_insert_cols\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -1035,7 +1035,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1105,7 +1105,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1178,7 +1178,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27:clear",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27:clear?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1254,7 +1254,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21A1%3AD6",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21A1%3AD6?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1327,7 +1327,7 @@
         {
             "request": {
                 "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21A1%3AD6?valueInputOption=RAW&prettyPrint=false",
                 "body": "{\"values\": [[\"test_insert_cols 1\", \"test_insert_cols 2\", \"test_insert_cols 3\", \"test_insert_cols 4\"], [\"test_insert_cols 5\", \"test_insert_cols 6\", \"test_insert_cols 7\", \"test_insert_cols 8\"], [\"test_insert_cols 9\", \"test_insert_cols 10\", \"test_insert_cols 11\", \"test_insert_cols 12\"], [\"test_insert_cols 13\", \"test_insert_cols 14\", \"test_insert_cols 15\", \"test_insert_cols 16\"], [\"test_insert_cols 17\", \"test_insert_cols 18\", \"test_insert_cols 19\", \"test_insert_cols 20\"], [\"test_insert_cols 21\", \"test_insert_cols 22\", \"test_insert_cols 23\", \"test_insert_cols 24\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -1403,7 +1403,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI:batchUpdate?prettyPrint=false",
                 "body": "{\"requests\": [{\"insertDimension\": {\"range\": {\"sheetId\": 0, \"dimension\": \"COLUMNS\", \"startIndex\": 1, \"endIndex\": 3}, \"inheritFromBefore\": false}}]}",
                 "headers": {
                     "User-Agent": [
@@ -1482,7 +1482,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21B1:append?valueInputOption=RAW",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21B1:append?valueInputOption=RAW&prettyPrint=false",
                 "body": "{\"majorDimension\": \"COLUMNS\", \"values\": [[\"test_insert_cols 25\", \"test_insert_cols 26\", \"test_insert_cols 27\", \"test_insert_cols 28\"], [\"test_insert_cols 29\", \"test_insert_cols 30\", \"test_insert_cols 31\", \"test_insert_cols 32\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -1558,7 +1558,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21B1%3AB?valueRenderOption=FORMATTED_VALUE&majorDimension=COLUMNS",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21B1%3AB?valueRenderOption=FORMATTED_VALUE&majorDimension=COLUMNS&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1631,7 +1631,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21C1%3AC?valueRenderOption=FORMATTED_VALUE&majorDimension=COLUMNS",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI/values/%27Sheet1%27%21C1%3AC?valueRenderOption=FORMATTED_VALUE&majorDimension=COLUMNS&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1701,7 +1701,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1r_JLiepCwqR79gO9vNOj8lfCt6hbNziLBFHLiztJmDI?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [

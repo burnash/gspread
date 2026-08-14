@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test CellTest test_define_named_range\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -84,7 +84,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -157,7 +157,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -230,7 +230,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4:batchUpdate?prettyPrint=false",
                 "body": "{\"requests\": [{\"addNamedRange\": {\"namedRange\": {\"name\": \"TestDefineNamedRange\", \"range\": {\"startRowIndex\": 0, \"endRowIndex\": 2, \"startColumnIndex\": 0, \"endColumnIndex\": 2, \"sheetId\": 0}}}}]}",
                 "headers": {
                     "User-Agent": [
@@ -309,7 +309,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?fields=namedRanges",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?fields=namedRanges&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -382,7 +382,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4:batchUpdate?prettyPrint=false",
                 "body": "{\"requests\": [{\"deleteNamedRange\": {\"namedRangeId\": \"220755387\"}}]}",
                 "headers": {
                     "User-Agent": [
@@ -461,7 +461,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?fields=namedRanges",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?fields=namedRanges&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -534,7 +534,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4:batchUpdate?prettyPrint=false",
                 "body": "{\"requests\": [{\"addNamedRange\": {\"namedRange\": {\"name\": \"TestDefineNamedRange\", \"range\": {\"startRowIndex\": 0, \"endRowIndex\": 2, \"startColumnIndex\": 0, \"endColumnIndex\": 2, \"sheetId\": 0}}}}]}",
                 "headers": {
                     "User-Agent": [
@@ -613,7 +613,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?fields=namedRanges",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?fields=namedRanges&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -686,7 +686,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1S_BLfCbQDFbROywtjC4LXZO18nIcmpsnVafpKgy0Kl4?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [

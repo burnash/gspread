@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test CellTest test_properties\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -90,7 +90,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -166,7 +166,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
+                "uri": "https://www.googleapis.com/drive/v3/files/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -246,7 +246,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -322,7 +322,7 @@
         {
             "request": {
                 "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw/values/%27Sheet1%27%21A1?valueInputOption=USER_ENTERED",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw/values/%27Sheet1%27%21A1?valueInputOption=USER_ENTERED&prettyPrint=false",
                 "body": "{\"values\": [[\"test_properties 1\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -404,7 +404,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw/values/%27Sheet1%27%21A1?valueRenderOption=FORMATTED_VALUE",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw/values/%27Sheet1%27%21A1?valueRenderOption=FORMATTED_VALUE&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -480,7 +480,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1fkVKz-EZPp1z2TI-TLKj06V3BmLl4iQExKt6D_RdQdw?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -560,7 +560,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test CellTest test_properties\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -646,7 +646,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -722,7 +722,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
+                "uri": "https://www.googleapis.com/drive/v3/files/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -802,7 +802,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -878,7 +878,7 @@
         {
             "request": {
                 "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE/values/%27Sheet1%27%21A1?valueInputOption=USER_ENTERED",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE/values/%27Sheet1%27%21A1?valueInputOption=USER_ENTERED&prettyPrint=false",
                 "body": "{\"values\": [[\"test_properties 1\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -960,7 +960,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE/values/%27Sheet1%27%21A1?valueRenderOption=FORMATTED_VALUE",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE/values/%27Sheet1%27%21A1?valueRenderOption=FORMATTED_VALUE&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1036,7 +1036,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1ep2_AnhXBX_hNgISlk9mDD-k2yVSqWKHqkuVUK_h9aE?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1116,7 +1116,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test CellTest test_properties\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -1196,7 +1196,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1269,7 +1269,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1342,7 +1342,7 @@
         {
             "request": {
                 "method": "PUT",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4/values/%27Sheet1%27%21A1?valueInputOption=USER_ENTERED",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4/values/%27Sheet1%27%21A1?valueInputOption=USER_ENTERED&prettyPrint=false",
                 "body": "{\"values\": [[\"test_properties 1\"]]}",
                 "headers": {
                     "User-Agent": [
@@ -1418,7 +1418,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4/values/%27Sheet1%27%21A1?valueRenderOption=FORMATTED_VALUE",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4/values/%27Sheet1%27%21A1?valueRenderOption=FORMATTED_VALUE&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1491,7 +1491,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1zZiLt1MZ-FKC9_cAHjWS_uQqFgT-HvJbIoiId3nYwY4?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [

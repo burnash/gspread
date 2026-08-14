@@ -53,6 +53,39 @@ class HTTPClientSerializerTest(TestCase):
         self.assertIn("2026-06-19", kwargs["data"])
 
 
+class HTTPClientPrettyPrintTest(TestCase):
+    def _make_client(self):
+        session = Mock()
+        session.request.return_value.ok = True
+        return HTTPClient(auth=None, session=session), session
+
+    def test_compact_json_is_requested_by_default(self):
+        client, session = self._make_client()
+
+        client.request("get", "http://example.com")
+
+        self.assertEqual(
+            session.request.call_args.kwargs["params"]["prettyPrint"], "false"
+        )
+
+    def test_explicit_pretty_print_is_preserved(self):
+        client, session = self._make_client()
+
+        client.request("get", "http://example.com", params={"prettyPrint": "true"})
+
+        self.assertEqual(
+            session.request.call_args.kwargs["params"]["prettyPrint"], "true"
+        )
+
+    def test_callers_params_are_not_modified(self):
+        client, _ = self._make_client()
+        params = {"includeGridData": "false"}
+
+        client.request("get", "http://example.com", params=params)
+
+        self.assertEqual(params, {"includeGridData": "false"})
+
+
 class WorksheetForwardsSerializerTest(TestCase):
     """default_serializer must reach the client from each write method."""
 

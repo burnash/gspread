@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test SpreadsheetTest test_lastUpdateTime_prop\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -90,7 +90,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -166,7 +166,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
+                "uri": "https://www.googleapis.com/drive/v3/files/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -246,7 +246,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY:batchUpdate?prettyPrint=false",
                 "body": "{\"requests\": [{\"updateSpreadsheetProperties\": {\"properties\": {\"title\": \"\\ud83c\\udf8a Updated Title #123 \\ud83c\\udf89\"}, \"fields\": \"title\"}}]}",
                 "headers": {
                     "User-Agent": [
@@ -328,7 +328,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
+                "uri": "https://www.googleapis.com/drive/v3/files/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -408,7 +408,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1t7XL0RyoW8MOxx15O0pLm-DK4fj1xhZeunM9ThbcgvY?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [

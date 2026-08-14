@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test WorksheetTest test_update_tab_color\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -90,7 +90,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -166,7 +166,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime",
+                "uri": "https://www.googleapis.com/drive/v3/files/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?supportsAllDrives=True&includeItemsFromAllDrives=True&fields=id%2Cname%2CcreatedTime%2CmodifiedTime&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -246,7 +246,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -322,7 +322,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ/values/%27Sheet1%27:clear",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ/values/%27Sheet1%27:clear?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -401,7 +401,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?fields=sheets.properties.tabColorStyle",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?fields=sheets.properties.tabColorStyle&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -477,7 +477,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ:batchUpdate?prettyPrint=false",
                 "body": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 0, \"tabColorStyle\": {\"rgbColor\": {\"red\": 1, \"green\": 0, \"blue\": 0.5}}}, \"fields\": \"tabColorStyle\"}}]}",
                 "headers": {
                     "User-Agent": [
@@ -559,7 +559,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?fields=sheets.properties.tabColorStyle",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?fields=sheets.properties.tabColorStyle&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -635,7 +635,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1TWoZhXtsJieNWLc2QJJ953D8r6Ukog2gPGUWX6iEIKQ?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -715,7 +715,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files?supportsAllDrives=True&prettyPrint=false",
                 "body": "{\"name\": \"Test WorksheetTest test_update_tab_color\", \"mimeType\": \"application/vnd.google-apps.spreadsheet\"}",
                 "headers": {
                     "User-Agent": [
@@ -795,7 +795,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -865,7 +865,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?includeGridData=false",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?includeGridData=false&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -935,7 +935,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI/values/%27Sheet1%27:clear",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI/values/%27Sheet1%27:clear?prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1008,7 +1008,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?fields=sheets.properties.tabColorStyle",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?fields=sheets.properties.tabColorStyle&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1078,7 +1078,7 @@
         {
             "request": {
                 "method": "POST",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI:batchUpdate",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI:batchUpdate?prettyPrint=false",
                 "body": "{\"requests\": [{\"updateSheetProperties\": {\"properties\": {\"sheetId\": 0, \"tabColorStyle\": {\"rgbColor\": {\"red\": 1, \"green\": 0, \"blue\": 0.5}}}, \"fields\": \"tabColorStyle\"}}]}",
                 "headers": {
                     "User-Agent": [
@@ -1157,7 +1157,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?fields=sheets.properties.tabColorStyle",
+                "uri": "https://sheets.googleapis.com/v4/spreadsheets/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?fields=sheets.properties.tabColorStyle&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -1227,7 +1227,7 @@
         {
             "request": {
                 "method": "DELETE",
-                "uri": "https://www.googleapis.com/drive/v3/files/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?supportsAllDrives=True",
+                "uri": "https://www.googleapis.com/drive/v3/files/1c002K7DCPuPUIZE2yckZh3zzc1FASrLKPdDNylfI-WI?supportsAllDrives=True&prettyPrint=false",
                 "body": null,
                 "headers": {
                     "User-Agent": [
