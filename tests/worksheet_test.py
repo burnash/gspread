@@ -1116,6 +1116,24 @@ class WorksheetTest(GspreadTest):
         self.assertDictEqual(expected_values_3, read_records[2])
 
     @pytest.mark.vcr()
+    def test_get_all_records_rename_identical_headers(self):
+        self.sheet.resize(4, 4)
+        # duplicate header "faff" would normally raise
+        rows = [
+            ["A1", "faff", "C3", "faff"],
+            [1, "b2", 1.45, ""],
+            ["", "", "", ""],
+            ["A4", 0.4, "", 4],
+        ]
+        self.sheet.update(rows, "A1:D4")
+
+        read_records = self.sheet.get_all_records(rename_identical_headers=True)
+
+        self.assertEqual(list(read_records[0].keys()), ["A1", "faff", "C3", "faff_1"])
+        self.assertEqual(read_records[0]["faff"], "b2")
+        self.assertEqual(read_records[0]["faff_1"], "")
+
+    @pytest.mark.vcr()
     def test_get_all_records_with_blank_final_headers(self):
         # regression test for #590, #629, #1354
         self.sheet.resize(4, 4)

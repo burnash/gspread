@@ -59,6 +59,7 @@ from .utils import (
     finditem,
     get_a1_from_absolute_range,
     is_full_a1_notation,
+    make_headers_unique,
     numericise_all,
     rowcol_to_a1,
     to_records,
@@ -503,6 +504,7 @@ class Worksheet:
         numericise_ignore: Iterable[Union[str, int]] = [],
         allow_underscores_in_numeric_literals: bool = False,
         empty2zero: bool = False,
+        rename_identical_headers: bool = False,
     ) -> List[Dict[str, Union[int, float, str]]]:
         """Returns a list of dictionaries, all of them having the contents of
         the spreadsheet with the head row as keys and each of these
@@ -541,6 +543,10 @@ class Worksheet:
             underscores in numeric literals, as introduced in PEP 515
         :param bool empty2zero: (optional) Determines whether empty cells are
             converted to zeros when numericised, defaults to False.
+        :param bool rename_identical_headers: (optional) When the header row has
+            duplicate or blank entries, renaming makes them unique so they can all
+            be used as keys instead of raising. Only applies when ``expected_headers``
+            is not given. Defaults to False. See :func:`gspread.utils.make_headers_unique`.
 
 
         Examples::
@@ -576,6 +582,8 @@ class Worksheet:
             return [item for item in counts if counts[item] > 1]
 
         if expected_headers is None:
+            if rename_identical_headers:
+                keys = make_headers_unique(keys)
             duplicates = get_dupes(keys)
             if duplicates:
                 raise GSpreadException(
