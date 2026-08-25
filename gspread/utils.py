@@ -1002,6 +1002,62 @@ def to_records(
     return [dict(zip(headers, row)) for row in values]
 
 
+def make_headers_unique(
+    headers: List[str],
+    duplicate_template: str = "{header}_{index}",
+    empty_template: str = "header_{index}",
+) -> List[str]:
+    """Return a copy of ``headers`` where every value is unique and non empty.
+
+    This is handy before building records (see :func:`to_records`), since
+    duplicate or blank headers can't all survive as dictionary keys. Spreadsheets
+    edited by hand often end up with repeated column titles or a title left blank,
+    so this mirrors what pandas does when reading such a sheet.
+
+    Empty headers are named after their column position, and any header that
+    collides with an earlier one gets a numbered suffix. Both patterns can be
+    overridden with a ``str.format`` template. ``duplicate_template`` receives
+    ``header`` and ``index``, ``empty_template`` receives ``index``.
+
+    Examples::
+
+        >>> make_headers_unique(["name", "value", "name", ""])
+        ['name', 'value', 'name_1', 'header_3']
+
+        >>> make_headers_unique(["a", "a", "a"], duplicate_template="{header}.{index}")
+        ['a', 'a.1', 'a.2']
+
+    :param list headers: the header row to make unique.
+    :param str duplicate_template: template for a repeated header, formatted with
+        ``header`` (the colliding name) and ``index`` (a counter starting at 1).
+    :param str empty_template: template for a blank header, formatted with
+        ``index`` (the column position, starting at 0).
+
+    :returns: a new list of unique, non empty headers.
+    :rtype: list
+    """
+    used: Dict[str, int] = {}
+    unique: List[str] = []
+    for position, header in enumerate(headers):
+        name = (
+            header
+            if header not in ("", None)
+            else empty_template.format(index=position)
+        )
+        if name in used:
+            index = used[name]
+            candidate = duplicate_template.format(header=name, index=index)
+            # a generated name might itself clash with an existing header
+            while candidate in used:
+                index += 1
+                candidate = duplicate_template.format(header=name, index=index)
+            used[name] = index + 1
+            name = candidate
+        used[name] = used.get(name, 1)
+        unique.append(name)
+    return unique
+
+
 def _expand_right(values: List[List[str]], start: int, end: int, row: int) -> int:
     """This is a private function, returning the column index of the last non empty cell
     on the given row.

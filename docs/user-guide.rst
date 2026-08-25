@@ -233,6 +233,14 @@ Using ``get_all_records()`` (assumes first row contains headers):
 
    list_of_dicts = worksheet.get_all_records()
 
+If the first row has duplicate or blank headers, ``get_all_records()`` raises by
+default (they can't all be dictionary keys). Pass ``rename_identical_headers=True``
+to make them unique instead, similar to how pandas reads such a sheet:
+
+.. code:: python
+
+   list_of_dicts = worksheet.get_all_records(rename_identical_headers=True)
+
 Alternatively, use ``gspread.utils.to_records()`` for more control over headers:
 
 .. code:: python

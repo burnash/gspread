@@ -441,6 +441,39 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+    def test_make_headers_unique(self):
+        """test make_headers_unique function"""
+        headers = ["name", "value", "name", "value", "name"]
+        expected = ["name", "value", "name_1", "value_1", "name_2"]
+        self.assertEqual(utils.make_headers_unique(headers), expected)
+
+    def test_make_headers_unique_leaves_unique_headers_untouched(self):
+        """test make_headers_unique function"""
+        headers = ["a", "b", "c"]
+        self.assertEqual(utils.make_headers_unique(headers), headers)
+
+    def test_make_headers_unique_names_empty_headers(self):
+        """test make_headers_unique function"""
+        headers = ["fruit", "", "colour", ""]
+        expected = ["fruit", "header_1", "colour", "header_3"]
+        self.assertEqual(utils.make_headers_unique(headers), expected)
+
+    def test_make_headers_unique_custom_templates(self):
+        """test make_headers_unique function"""
+        headers = ["a", "a", "", "a"]
+        actual = utils.make_headers_unique(
+            headers,
+            duplicate_template="{header}.{index}",
+            empty_template="unnamed_{index}",
+        )
+        self.assertEqual(actual, ["a", "a.1", "unnamed_2", "a.2"])
+
+    def test_make_headers_unique_avoids_clash_with_existing_header(self):
+        """test make_headers_unique function"""
+        # the generated "a_1" already exists, so the duplicate must skip past it
+        headers = ["a", "a_1", "a"]
+        self.assertEqual(utils.make_headers_unique(headers), ["a", "a_1", "a_2"])
+
     def test_is_full_a1_notation(self):
         """test is_full_a1_notation function"""
         self.assertTrue(utils.is_full_a1_notation("A1:B2"))
