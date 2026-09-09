@@ -566,6 +566,14 @@ class BackOffHTTPClient(HTTPClient):
         HTTPStatus.REQUEST_TIMEOUT,  # in case of a timeout
         HTTPStatus.TOO_MANY_REQUESTS,  # sheet API usage rate limit exceeded
     ]
+    # Drive API 403 reasons in the 'usageLimits' domain that clear by waiting.
+    # The other reasons in that domain do not: 'dailyLimitExceeded' needs the
+    # usage cap raised (the quota resets at midnight Pacific) and
+    # 'UrlLeaseLimitExceeded' needs the pending uploads finished or cancelled.
+    _RETRYABLE_403_REASONS: List[str] = [
+        "rateLimitExceeded",
+        "userRateLimitExceeded",
+    ]
     _NR_BACKOFF: int = 0
     _MAX_BACKOFF: int = 128  # arbitrary maximum backoff
 
@@ -581,10 +589,11 @@ class BackOffHTTPClient(HTTPClient):
 
             # Drive API return a dict object 'errors', the sheet API does not
             if "errors" in error:
-                # Drive API returns a code 403 when reaching quotas/usage limits
+                # Drive API returns a code 403 when reaching quotas/usage
+                # limits, but only the rate limits are worth waiting for
                 if (
                     code == HTTPStatus.FORBIDDEN
-                    and error["errors"][0]["domain"] == "usageLimits"
+                    and error["errors"][0].get("reason") in self._RETRYABLE_403_REASONS
                 ):
                     return within_max_backoff
 
