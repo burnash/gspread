@@ -106,7 +106,11 @@ class WorksheetForwardsSerializerTest(TestCase):
 
 class BackOffHTTPClientTest(TestCase):
     @staticmethod
-    def _error_response(code, domain="global"):
+    def _error_response(code, domain="global", reason=None):
+        error = {"domain": domain}
+        if reason is not None:
+            error["reason"] = reason
+
         response = Mock()
         response.ok = False
         response.text = "request failed"
@@ -114,7 +118,7 @@ class BackOffHTTPClientTest(TestCase):
             "error": {
                 "code": code,
                 "message": "request failed",
-                "errors": [{"domain": domain}],
+                "errors": [error],
             }
         }
         return response
@@ -158,7 +162,9 @@ class BackOffHTTPClientTest(TestCase):
         # A 403 usageLimits error is retryable too, so it must also stop once
         # the backoff reaches the maximum rather than retrying without bound.
         session = Mock()
-        session.request.return_value = self._error_response(403, domain="usageLimits")
+        session.request.return_value = self._error_response(
+            403, domain="usageLimits", reason="rateLimitExceeded"
+        )
         client = BackOffHTTPClient(auth=None, session=session)
 
         with patch("gspread.http_client.time.sleep"):
@@ -167,3 +173,40 @@ class BackOffHTTPClientTest(TestCase):
 
         # Same bound as the other retryable errors: initial call plus 7 retries.
         self.assertEqual(session.request.call_count, 8)
+
+    def test_retries_user_rate_limit_exceeded(self):
+        # The per-user rate limit clears by waiting, so it must be retried.
+        session = Mock()
+        success = Mock(ok=True)
+        session.request.side_effect = [
+            self._error_response(
+                403, domain="usageLimits", reason="userRateLimitExceeded"
+            ),
+            success,
+        ]
+        client = BackOffHTTPClient(auth=None, session=session)
+
+        with patch("gspread.http_client.time.sleep") as sleep:
+            self.assertIs(
+                client.request("get", "http://example.com/user-rate-limit"), success
+            )
+
+        sleep.assert_called_once_with(2)
+
+    def test_does_not_retry_terminal_usage_limits(self):
+        # These two reasons share the 'usageLimits' domain with the rate limits
+        # but cannot clear by waiting: the daily quota needs the usage cap
+        # raised and the URL lease limit needs the pending uploads finished.
+        for reason in ("dailyLimitExceeded", "UrlLeaseLimitExceeded"):
+            session = Mock()
+            session.request.return_value = self._error_response(
+                403, domain="usageLimits", reason=reason
+            )
+            client = BackOffHTTPClient(auth=None, session=session)
+
+            with patch("gspread.http_client.time.sleep") as sleep:
+                with self.assertRaises(APIError):
+                    client.request("get", "http://example.com/usage-limits")
+
+            self.assertEqual(session.request.call_count, 1, reason)
+            sleep.assert_not_called()
