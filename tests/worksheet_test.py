@@ -1571,18 +1571,20 @@ class WorksheetTest(GspreadTest):
 
     @pytest.mark.vcr()
     def test_batch_update(self):
-        self.sheet.batch_update(
-            [
-                {
-                    "range": "A1:D1",
-                    "values": [["A1", "B1", "", "D1"]],
-                },
-                {
-                    "range": "A4:D4",
-                    "values": [["A4", "B4", "", "D4"]],
-                },
-            ]
-        )
+        batch_data = [
+            {
+                "range": "A1:D1",
+                "values": [["A1", "B1", "", "D1"]],
+            },
+            {
+                "range": "A4:D4",
+                "values": [["A4", "B4", "", "D4"]],
+            },
+        ]
+        self.sheet.batch_update(batch_data)
+
+        self.assertEqual(batch_data[0]["range"], "A1:D1")
+        self.assertEqual(batch_data[1]["range"], "A4:D4")
 
         data = self.sheet.get("A1:D4")
 
