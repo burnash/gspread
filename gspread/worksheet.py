@@ -1371,8 +1371,10 @@ class Worksheet:
                 ValueInputOption.raw if raw is True else ValueInputOption.user_entered
             )
 
-        for values in data:
-            values["range"] = absolute_range_name(self.title, values["range"])
+        data = [
+            {**values, "range": absolute_range_name(self.title, values["range"])}
+            for values in data
+        ]
 
         body: MutableMapping[str, Any] = {
             "valueInputOption": value_input_option,
