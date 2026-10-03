@@ -363,6 +363,114 @@ class UtilsTest(unittest.TestCase):
 
         self.assertEqual(actual_combine, expected_combined_cropped)
 
+    def test_combine_merge_values_with_unpadded_rows(self):
+        """Make sure that merges are combined when the rows are not padded,
+        as returned by `Worksheet.get` with the default `pad_values=False`
+        """
+        # the API leaves out the empty cells at the end of each row
+        sheet_data = [
+            ["1"],
+            ["", "", "title"],
+            ["", "", "2"],
+            ["num", "val", "", "0"],
+        ]
+        sheet_metadata = {
+            "properties": {"sheetId": 0},
+            "merges": [
+                {
+                    "startRowIndex": 0,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 0,
+                    "endColumnIndex": 2,
+                },
+                {
+                    "startRowIndex": 1,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 2,
+                    "endColumnIndex": 4,
+                },
+                {
+                    "startRowIndex": 2,
+                    "endRowIndex": 4,
+                    "startColumnIndex": 2,
+                    "endColumnIndex": 3,
+                },
+            ],
+        }
+        expected_combine = [
+            ["1", "1"],
+            ["1", "1", "title", "title"],
+            ["", "", "2"],
+            ["num", "val", "2", "0"],
+        ]
+
+        actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data, 0, 0)
+
+        self.assertEqual(actual_combine, expected_combine)
+
+    def test_combine_merge_values_with_empty_rows(self):
+        """Make sure that a merge spanning a shorter or empty row does not raise
+        an IndexError, and that a merge with an empty top-left cell is ignored
+        """
+        sheet_data = [
+            ["1", "", "2", "3"],
+            [],
+            ["", "4"],
+            ["", "5"],
+        ]
+        sheet_metadata = {
+            "properties": {"sheetId": 0},
+            "merges": [
+                {
+                    "startRowIndex": 0,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 0,
+                    "endColumnIndex": 2,
+                },
+                {
+                    "startRowIndex": 0,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 2,
+                    "endColumnIndex": 3,
+                },
+                {
+                    "startRowIndex": 0,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 3,
+                    "endColumnIndex": 4,
+                },
+                {
+                    "startRowIndex": 2,
+                    "endRowIndex": 3,
+                    "startColumnIndex": 1,
+                    "endColumnIndex": 3,
+                },
+                {
+                    "startRowIndex": 3,
+                    "endRowIndex": 4,
+                    "startColumnIndex": 1,
+                    "endColumnIndex": 3,
+                },
+                # empty merged cells D3:D4, the API returns nothing for them
+                {
+                    "startRowIndex": 2,
+                    "endRowIndex": 4,
+                    "startColumnIndex": 3,
+                    "endColumnIndex": 4,
+                },
+            ],
+        }
+        expected_combine = [
+            ["1", "1", "2", "3"],
+            ["1", "1", "2", "3"],
+            ["", "4", "4"],
+            ["", "5", "5"],
+        ]
+
+        actual_combine = utils.combined_merge_values(sheet_metadata, sheet_data, 0, 0)
+
+        self.assertEqual(actual_combine, expected_combine)
+
     def test_convert_hex_to_color(self):
         hexcolor = "#FF7F00"
         expected_color = {"red": 1, "green": 0.49803922, "blue": 0}

@@ -820,8 +820,10 @@ def combined_merge_values(
     new_values = [list(row) for row in values]
 
     # max row and column indices
+    # rows can have different lengths if the values are not padded,
+    # the API leaves out the empty cells at the end of each row
     max_row_index = len(values) - 1
-    max_col_index = len(values[0]) - 1
+    max_col_index = max((len(row) for row in values), default=0) - 1
 
     for merge in merges:
         merge_start_row, merge_end_row = merge["startRowIndex"], merge["endRowIndex"]
@@ -839,6 +841,9 @@ def combined_merge_values(
             continue
         if merge_start_row < 0 or merge_start_col < 0:
             continue
+        # if the top-left cell was left out, it is empty: nothing to copy
+        if merge_start_col >= len(values[merge_start_row]):
+            continue
         top_left_value = values[merge_start_row][merge_start_col]
         row_indices = range(merge_start_row, merge_end_row)
         col_indices = range(merge_start_col, merge_end_col)
@@ -847,7 +852,11 @@ def combined_merge_values(
                 # if out of bounds, ignore
                 if row_index > max_row_index or col_index > max_col_index:
                     continue
-                new_values[row_index][col_index] = top_left_value
+                row = new_values[row_index]
+                # if the row is too short, pad it up to the merged cell
+                if col_index >= len(row):
+                    row.extend([""] * (col_index + 1 - len(row)))
+                row[col_index] = top_left_value
 
     return new_values
 
