@@ -483,6 +483,15 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(utils.get_a1_from_absolute_range("A1:B"), "A1:B")
         self.assertEqual(utils.get_a1_from_absolute_range("2"), "2")
 
+    def test_get_a1_from_absolute_range_with_exclamation_in_title(self):
+        for title in ("Important! Sheet", "A!!B", "Bob's! Sheet", "!"):
+            for cell_range in ("A1:B2", "C3:D", "2:5"):
+                with self.subTest(title=title, cell_range=cell_range):
+                    absolute_range = utils.absolute_range_name(title, cell_range)
+                    self.assertEqual(
+                        utils.get_a1_from_absolute_range(absolute_range), cell_range
+                    )
+
     def test_to_records_empty_args(self):
         """Test to_records with empty args"""
 

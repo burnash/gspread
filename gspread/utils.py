@@ -969,7 +969,7 @@ def get_a1_from_absolute_range(range_name: str) -> str:
         str: The A1 notation of the range name stripped of the sheet.
     """
     if "!" in range_name:
-        return range_name.split("!")[1]
+        return range_name.rsplit("!", 1)[1]
     return range_name
 
 
