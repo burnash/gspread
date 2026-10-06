@@ -521,6 +521,22 @@ class UtilsTest(unittest.TestCase):
                 # but they must match a value from the given input values
                 self.assertIn(record[key], values[i])
 
+    def test_to_records_with_iterator_headers(self):
+        headers = (header for header in ("name", "city"))
+        values = (
+            row for row in ([], ["Ada"], ["Grace", "New York"], ["Lin", "Taipei"])
+        )
+
+        self.assertEqual(
+            utils.to_records(headers, values),
+            [
+                {},
+                {"name": "Ada"},
+                {"name": "Grace", "city": "New York"},
+                {"name": "Lin", "city": "Taipei"},
+            ],
+        )
+
     def test_find_table_simple(self):
         """Test find table with basic case"""
         values = [

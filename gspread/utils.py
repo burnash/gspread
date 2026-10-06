@@ -999,6 +999,7 @@ def to_records(
         ]
     """
 
+    headers = list(headers)
     return [dict(zip(headers, row)) for row in values]
 
 
