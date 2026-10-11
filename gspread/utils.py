@@ -392,7 +392,7 @@ def a1_to_rowcol(label: str) -> Tuple[int, int]:
     (1, 1)
 
     """
-    m = CELL_ADDR_RE.match(label)
+    m = CELL_ADDR_RE.fullmatch(label)
     if m:
         column_label = m.group(1).upper()
         row = int(m.group(2))

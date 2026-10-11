@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import Mock
 
 import gspread
 import gspread.utils as utils
@@ -40,6 +41,35 @@ class UtilsTest(unittest.TestCase):
 
     def test_a1_to_rowcol(self):
         self.assertEqual(utils.a1_to_rowcol("ABC3"), (3, 731))
+        self.assertEqual(utils.a1_to_rowcol("aBc123"), (123, 731))
+
+    def test_a1_to_rowcol_rejects_incomplete_matches(self):
+        for label in (
+            "A1:B2",
+            "B2!D4",
+            "C3suffix",
+            "D4.5",
+            "E5\n",
+            "F6 ",
+            "G7\nH8",
+        ):
+            with self.subTest(label=label):
+                with self.assertRaises(gspread.IncorrectCellLabel):
+                    utils.a1_to_rowcol(label)
+
+    def test_single_cell_methods_reject_sheet_qualified_label(self):
+        label = "B2!D4"
+        with self.assertRaises(gspread.IncorrectCellLabel):
+            gspread.Cell.from_address(label, "replacement")
+
+        worksheet = Mock(spec=gspread.Worksheet)
+        with self.assertRaises(gspread.IncorrectCellLabel):
+            gspread.Worksheet.update_acell(worksheet, label, "replacement")
+        worksheet.update_cell.assert_not_called()
+
+        with self.assertRaises(gspread.IncorrectCellLabel):
+            gspread.Worksheet.acell(worksheet, label)
+        worksheet.cell.assert_not_called()
 
     def test_rowcol_to_a1(self):
         self.assertEqual(utils.rowcol_to_a1(3, 731), "ABC3")
