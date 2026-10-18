@@ -2544,10 +2544,7 @@ class Worksheet:
         :rtype: list
         """
 
-        return [
-            elem
-            for elem in self._finder(filter, query, case_sensitive, in_row, in_column)
-        ]
+        return list(self._finder(filter, query, case_sensitive, in_row, in_column))
 
     def freeze(
         self, rows: Optional[int] = None, cols: Optional[int] = None
