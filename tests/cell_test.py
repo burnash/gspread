@@ -1,3 +1,4 @@
+import unittest
 from typing import Generator
 
 import pytest
@@ -232,3 +233,15 @@ class CellTest(GspreadTest):
     def test_update_named_range_no_args(self):
         with self.assertRaises(ValueError):
             self.sheet.update_named_range("some_id")
+
+
+class CellNumericValueTest(unittest.TestCase):
+    """Offline tests for Cell.numeric_value."""
+
+    def test_numeric_value_of_non_finite_text_is_none(self):
+        """Text such as "NaN" or "Infinity" is not a number in Google Sheets."""
+        for value in ["NaN", "Nan", "inf", "-Infinity"]:
+            with self.subTest(value=value):
+                self.assertIsNone(gspread.Cell(1, 1, value).numeric_value)
+
+        self.assertEqual(gspread.Cell(1, 1, "1.5").numeric_value, 1.5)

@@ -7,6 +7,7 @@ This module contains utility functions.
 """
 
 import enum
+import math
 import re
 from collections import defaultdict
 from collections.abc import Sequence
@@ -225,6 +226,20 @@ def finditem(func: Callable[[T], bool], seq: Iterable[T]) -> T:
     return next(item for item in seq if func(item))
 
 
+def _finite_float(value: str) -> float:
+    """Convert ``value`` to a float, like :func:`float`, but raise
+    :exc:`ValueError` if the result is NaN or infinite.
+
+    :func:`float` also accepts strings such as ``"nan"``, ``"inf"`` and
+    ``"Infinity"``. Google Sheets has no such numbers and treats these
+    values as text, so they must not be converted.
+    """
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError("not a finite number: {!r}".format(value))
+    return result
+
+
 def numericise(
     value: Optional[AnyStr],
     empty2zero: bool = False,
@@ -233,7 +248,7 @@ def numericise(
 ) -> Optional[Union[int, float, AnyStr]]:
     """Returns a value that depends on the input:
 
-        - Float if input is a string that can be converted to Float
+        - Float if input is a string that can be converted to a finite Float
         - Integer if input is a string that can be converted to integer
         - Zero if the input is a string that is empty and empty2zero flag is set
         - The unmodified input value, otherwise.
@@ -257,6 +272,9 @@ def numericise(
 
     >>> numericise("2,000.1")
     2000.1
+
+    >>> numericise("nan")
+    'nan'
 
     >>> numericise("", empty2zero=True)
     0
@@ -289,7 +307,7 @@ def numericise(
             numericised = int(cleaned_value)
         except ValueError:
             try:
-                numericised = float(cleaned_value)
+                numericised = _finite_float(cleaned_value)
             except ValueError:
                 if value == "":
                     if empty2zero:

@@ -96,6 +96,38 @@ class UtilsTest(unittest.TestCase):
         # provide explicit `None` as ignored list
         self.assertEqual(utils.numericise_all(inputs, ignore=None), expected)
 
+    def test_numericise_keeps_non_finite_values_as_text(self):
+        """float() accepts "nan", "inf" and "infinity" (in any case, with an
+        optional sign), but Google Sheets treats them as text, not numbers.
+        They must not be turned into NaN/infinity floats."""
+        for value in [
+            "nan",
+            "NaN",
+            "Nan",
+            "-nan",
+            "inf",
+            "-inf",
+            "+Inf",
+            "Infinity",
+            "-infinity",
+            "1e999",
+        ]:
+            with self.subTest(value=value):
+                self.assertEqual(utils.numericise(value), value)
+                self.assertEqual(
+                    utils.numericise(value, allow_underscores_in_numeric_literals=True),
+                    value,
+                )
+
+        self.assertEqual(
+            utils.numericise_all(["Nan", "Infinity", "1.5", "2"]),
+            ["Nan", "Infinity", 1.5, 2],
+        )
+
+        # finite floats are still converted
+        self.assertEqual(utils.numericise("1e3"), 1000.0)
+        self.assertEqual(utils.numericise("-2,000.5"), -2000.5)
+
     def test_a1_to_grid_range_simple(self):
         expected_single_dimension = {
             "startRowIndex": 0,
