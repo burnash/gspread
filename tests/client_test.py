@@ -44,6 +44,7 @@ class ClientTest(GspreadTest):
             self.assertIn("name", f)
             self.assertIn("createdTime", f)
             self.assertIn("modifiedTime", f)
+            self.assertIn("trashed", f)
 
     @pytest.mark.vcr()
     def test_openall(self):

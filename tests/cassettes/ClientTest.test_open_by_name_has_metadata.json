@@ -228,7 +228,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+ClientTest+test_open_by_name_has_metadata%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29",
+                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+ClientTest+test_open_by_name_has_metadata%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%2Ctrashed%29",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -295,7 +295,7 @@
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"kind\": \"drive#fileList\",\n  \"files\": [\n    {\n      \"id\": \"1eheWgScd8RMa1VTKd93q7b646dtTz8RqSHroPLhJpEo\",\n      \"name\": \"Test ClientTest test_open_by_name_has_metadata\",\n      \"createdTime\": \"2023-08-17T10:53:46.447Z\",\n      \"modifiedTime\": \"2023-08-17T10:53:46.472Z\"\n    }\n  ]\n}\n"
+                    "string": "{\n  \"kind\": \"drive#fileList\",\n  \"files\": [\n    {\n      \"id\": \"1eheWgScd8RMa1VTKd93q7b646dtTz8RqSHroPLhJpEo\",\n      \"name\": \"Test ClientTest test_open_by_name_has_metadata\",\n      \"createdTime\": \"2023-08-17T10:53:46.447Z\",\n      \"modifiedTime\": \"2023-08-17T10:53:46.472Z\",\n      \"trashed\": false\n    }\n  ]\n}\n"
                 }
             }
         },
@@ -673,7 +673,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+ClientTest+test_open_by_name_has_metadata%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%29",
+                "uri": "https://www.googleapis.com/drive/v3/files?q=mimeType%3D%22application%2Fvnd.google-apps.spreadsheet%22+and+name+%3D+%22Test+ClientTest+test_open_by_name_has_metadata%22&pageSize=1000&supportsAllDrives=True&includeItemsFromAllDrives=True&fields=kind%2CnextPageToken%2Cfiles%28id%2Cname%2CcreatedTime%2CmodifiedTime%2Ctrashed%29",
                 "body": null,
                 "headers": {
                     "User-Agent": [
@@ -740,7 +740,7 @@
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"kind\": \"drive#fileList\",\n  \"files\": [\n    {\n      \"id\": \"1B3X2PMfjF-uLQwvXV2jyGNBxJVEGwCJhoEBkFv-hLJ8\",\n      \"name\": \"Test ClientTest test_open_by_name_has_metadata\",\n      \"createdTime\": \"2023-09-06T21:15:03.860Z\",\n      \"modifiedTime\": \"2023-09-06T21:15:03.881Z\"\n    }\n  ]\n}\n"
+                    "string": "{\n  \"kind\": \"drive#fileList\",\n  \"files\": [\n    {\n      \"id\": \"1B3X2PMfjF-uLQwvXV2jyGNBxJVEGwCJhoEBkFv-hLJ8\",\n      \"name\": \"Test ClientTest test_open_by_name_has_metadata\",\n      \"createdTime\": \"2023-09-06T21:15:03.860Z\",\n      \"modifiedTime\": \"2023-09-06T21:15:03.881Z\",\n      \"trashed\": false\n    }\n  ]\n}\n"
                 }
             }
         },

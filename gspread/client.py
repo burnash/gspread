@@ -85,7 +85,7 @@ class Client:
             a folder in a web browser as follow:
             ``https://drive.google.com/drive/u/0/folders/<folder_id>``
 
-        :returns: a list of dicts containing the keys id, name, createdTime and modifiedTime.
+        :returns: a list of dicts containing the keys id, name, createdTime, modifiedTime and trashed.
         """
         files, _ = self._list_spreadsheet_files(title=title, folder_id=folder_id)
         return files
@@ -108,7 +108,7 @@ class Client:
             "pageSize": 1000,
             "supportsAllDrives": True,
             "includeItemsFromAllDrives": True,
-            "fields": "kind,nextPageToken,files(id,name,createdTime,modifiedTime)",
+            "fields": "kind,nextPageToken,files(id,name,createdTime,modifiedTime,trashed)",
         }
 
         while True:
